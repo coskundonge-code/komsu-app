@@ -73,10 +73,10 @@ export function Sidebar({ className, ...props }: SidebarProps) {
           <HelpCircle className="w-4 h-4" />
           Yardım Merkezi
         </Link>
-        <button className="flex items-center gap-2 text-sm text-[#8f8f8f] hover:text-[#404040] transition-colors">
+        <Link href="/mesajlar" className="flex items-center gap-2 text-sm text-[#8f8f8f] hover:text-[#404040] transition-colors">
           <UserPlus className="w-4 h-4" />
           Komşularını Davet Et
-        </button>
+        </Link>
       </div>
     </aside>
   )

@@ -63,11 +63,11 @@ export function RightSidebar() {
       {/* Footer links */}
       <div className="px-2 pt-2">
         <div className="flex flex-wrap gap-x-2 gap-y-1 text-[11px] text-[#8f8f8f]">
-          <a href="#" className="hover:text-[#404040]">Gizlilik</a>
+          <Link href="/gizlilik" className="hover:text-[#404040]">Gizlilik</Link>
           <span>·</span>
-          <a href="#" className="hover:text-[#404040]">Koşullar</a>
+          <Link href="/kosullar" className="hover:text-[#404040]">Koşullar</Link>
           <span>·</span>
-          <a href="#" className="hover:text-[#404040]">Hakkında</a>
+          <Link href="/hakkinda" className="hover:text-[#404040]">Hakkında</Link>
         </div>
         <p className="text-[11px] text-[#8f8f8f] mt-1">© 2026 KomşuApp</p>
       </div>

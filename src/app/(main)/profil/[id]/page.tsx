@@ -119,16 +119,19 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
             {/* Action Button */}
             {isOwnProfile ? (
               <Link
-                href="/ayarlar/profil"
+                href="/ayarlar"
                 className="flex items-center gap-2 px-4 py-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-colors flex-shrink-0"
               >
                 <Edit size={16} />
                 Düzenle
               </Link>
             ) : (
-              <button className="px-4 py-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-colors flex-shrink-0">
+              <Link
+                href="/mesajlar"
+                className="px-4 py-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-colors flex-shrink-0"
+              >
                 Mesaj Gönder
-              </button>
+              </Link>
             )}
           </div>
 
@@ -178,7 +181,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                   </div>
                 ) : (
                   mockProfile.recentPosts.map((post) => (
-                    <div key={post.id} className="p-4 hover:bg-[#f0f2f5] transition-colors">
+                    <Link key={post.id} href="/" className="block p-4 hover:bg-[#f0f2f5] transition-colors">
                       <p className="text-[#333] text-sm mb-3">{post.text}</p>
                       <div className="flex items-center gap-4 text-xs text-[#8f8f8f]">
                         <span className="flex items-center gap-1">
@@ -192,7 +195,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                         </span>
                         <span className="ml-auto">{post.time}</span>
                       </div>
-                    </div>
+                    </Link>
                   ))
                 )}
               </div>
@@ -240,26 +243,28 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
               <div className="p-4">
                 <div className="space-y-3">
                   {[
-                    { name: 'Ahmet Yılmaz', location: 'Blok A, Daire 5' },
-                    { name: 'Fatma Şahin', location: 'Blok B, Daire 12' },
-                    { name: 'Mehmet Demir', location: 'Blok A, Daire 8' },
-                    { name: 'Zeynep Kaya', location: 'Blok C, Daire 3' },
-                    { name: 'Elif Demir', location: 'Blok B, Daire 7' },
+                    { name: 'Ahmet Yılmaz', location: 'Blok A, Daire 5', id: '10' },
+                    { name: 'Fatma Şahin', location: 'Blok B, Daire 12', id: '11' },
+                    { name: 'Mehmet Demir', location: 'Blok A, Daire 8', id: '12' },
+                    { name: 'Zeynep Kaya', location: 'Blok C, Daire 3', id: '13' },
+                    { name: 'Elif Demir', location: 'Blok B, Daire 7', id: '14' },
                   ].map((neighbor) => (
                     <div
                       key={neighbor.name}
                       className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#f0f2f5] transition-colors border border-[#e0e0e0]"
                     >
-                      <div className="w-10 h-10 bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                        {neighbor.name.charAt(0)}
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-[#333]">{neighbor.name}</p>
-                        <p className="text-xs text-[#8f8f8f]">{neighbor.location}</p>
-                      </div>
-                      <button className="text-[#00833e] hover:text-[#006b32] transition-colors">
+                      <Link href={`/profil/${neighbor.id}`} className="flex items-center gap-3 flex-1 min-w-0">
+                        <div className="w-10 h-10 bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                          {neighbor.name.charAt(0)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-[#333]">{neighbor.name}</p>
+                          <p className="text-xs text-[#8f8f8f]">{neighbor.location}</p>
+                        </div>
+                      </Link>
+                      <Link href="/mesajlar" className="text-[#00833e] hover:text-[#006b32] transition-colors flex-shrink-0">
                         <MessageCircle size={18} />
-                      </button>
+                      </Link>
                     </div>
                   ))}
                 </div>

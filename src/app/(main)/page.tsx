@@ -19,13 +19,15 @@ const onboardingCards = [
     icon: Building2,
     title: 'İşletme sahibi? Sayfanı oluştur',
     cta: 'Başla',
-    ctaColor: 'bg-[#00833e] text-white',
+    ctaColor: 'bg-[#00833e] text-white hover:bg-[#006b32]',
+    href: '/isletme-ekle',
   },
   {
     icon: Download,
     title: 'Mobil uygulamayı indir',
     cta: 'Uygulamayı İndir',
-    ctaColor: 'bg-[#333] text-white',
+    ctaColor: 'bg-[#333] text-white hover:bg-[#1a1a1a]',
+    href: '/yardim',
   },
 ];
 
@@ -33,7 +35,7 @@ const onboardingCards = [
 const mockPosts = [
   {
     id: '1',
-    author: { name: 'Ayşe K.', initial: 'A', neighborhood: 'Kadıköy, Moda' },
+    author: { name: 'Ayşe K.', initial: 'A', neighborhood: 'Kadıköy, Moda', profileId: 'ayse-k' },
     timeAgo: '2 dk',
     isSponsored: false,
     title: '',
@@ -44,7 +46,7 @@ const mockPosts = [
   },
   {
     id: '2',
-    author: { name: 'Mehmet Y.', initial: 'M', neighborhood: 'Kadıköy, Caferağa' },
+    author: { name: 'Mehmet Y.', initial: 'M', neighborhood: 'Kadıköy, Caferağa', profileId: 'mehmet-y' },
     timeAgo: '1 sa',
     isSponsored: false,
     title: 'Kayıp Kedi - Turuncu Tekir',
@@ -55,7 +57,7 @@ const mockPosts = [
   },
   {
     id: '3',
-    author: { name: 'Fatma Ç.', initial: 'F', neighborhood: 'Kadıköy, Moda' },
+    author: { name: 'Fatma Ç.', initial: 'F', neighborhood: 'Kadıköy, Moda', profileId: 'fatma-c' },
     timeAgo: '3 sa',
     isSponsored: false,
     title: '',
@@ -65,7 +67,7 @@ const mockPosts = [
   },
   {
     id: 'sponsored',
-    author: { name: 'Moda Ev Temizlik', initial: 'M', neighborhood: '' },
+    author: { name: 'Moda Ev Temizlik', initial: 'M', neighborhood: '', profileId: 'moda-ev-temizlik' },
     timeAgo: '',
     isSponsored: true,
     title: 'Profesyonel Ev Temizliği Hizmeti',
@@ -76,7 +78,7 @@ const mockPosts = [
   },
   {
     id: '4',
-    author: { name: 'Emre D.', initial: 'E', neighborhood: 'Kadıköy, Moda' },
+    author: { name: 'Emre D.', initial: 'E', neighborhood: 'Kadıköy, Moda', profileId: 'emre-d' },
     timeAgo: '5 sa',
     isSponsored: false,
     title: 'Mahallede Şüpheli Araç',
@@ -88,26 +90,32 @@ const mockPosts = [
 
 export default function FeedPage() {
   const [activeTab, setActiveTab] = useState('foryou');
+  const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
+  const [showOnboarding, setShowOnboarding] = useState(true);
+
+  const toggleLike = (postId: string) => {
+    setLikedPosts((prev) => ({ ...prev, [postId]: !prev[postId] }));
+  };
 
   return (
     <div className="max-w-[680px] mx-auto px-4 py-4">
       {/* Create Post Box - Nextdoor style */}
-      <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-4 mb-3">
+      <Link href="/?post=new" className="block bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-4 mb-3 hover:shadow-md transition-shadow">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-[#404040] rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
             C
           </div>
-          <button className="flex-1 px-4 py-2.5 bg-[#f0f2f5] text-[#8f8f8f] rounded-full hover:bg-[#e4e6e9] transition-colors text-left text-[15px]">
+          <div className="flex-1 px-4 py-2.5 bg-[#f0f2f5] text-[#8f8f8f] rounded-full text-[15px]">
             Neler oluyor, komşu?
-          </button>
-          <button className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors">
+          </div>
+          <div className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors">
             <Camera className="w-5 h-5 text-[#8f8f8f]" />
-          </button>
-          <button className="px-5 py-2 bg-[#00833e] hover:bg-[#006b32] text-white font-semibold text-sm rounded-full transition-colors">
+          </div>
+          <div className="px-5 py-2 bg-[#00833e] text-white font-semibold text-sm rounded-full">
             Paylaş
-          </button>
+          </div>
         </div>
-      </div>
+      </Link>
 
       {/* Feed Tabs - Nextdoor style pill buttons */}
       <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
@@ -128,38 +136,46 @@ export default function FeedPage() {
       </div>
 
       {/* Onboarding Section */}
-      <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-4 mb-3">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-bold text-[#333]">KomşuApp&apos;a Başla</h2>
-          <button className="p-1 hover:bg-[#f0f2f5] rounded-full">
-            <MoreHorizontal className="w-5 h-5 text-[#8f8f8f]" />
-          </button>
-        </div>
-        <div className="flex gap-3 overflow-x-auto">
-          {onboardingCards.map((card, i) => {
-            const Icon = card.icon;
-            return (
-              <div key={i} className="min-w-[200px] border border-[#e0e0e0] rounded-lg p-4 flex flex-col items-start gap-3">
-                <div className="w-10 h-10 bg-[#f0f2f5] rounded-full flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-[#404040]" />
+      {showOnboarding && (
+        <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-4 mb-3">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-bold text-[#333]">KomşuApp&apos;a Başla</h2>
+            <button
+              onClick={() => setShowOnboarding(false)}
+              className="p-1 hover:bg-[#f0f2f5] rounded-full"
+            >
+              <MoreHorizontal className="w-5 h-5 text-[#8f8f8f]" />
+            </button>
+          </div>
+          <div className="flex gap-3 overflow-x-auto">
+            {onboardingCards.map((card, i) => {
+              const Icon = card.icon;
+              return (
+                <div key={i} className="min-w-[200px] border border-[#e0e0e0] rounded-lg p-4 flex flex-col items-start gap-3">
+                  <div className="w-10 h-10 bg-[#f0f2f5] rounded-full flex items-center justify-center">
+                    <Icon className="w-5 h-5 text-[#404040]" />
+                  </div>
+                  <p className="text-sm font-medium text-[#333]">{card.title}</p>
+                  <Link
+                    href={card.href}
+                    className={cn('px-4 py-2 rounded-full text-sm font-semibold transition-colors', card.ctaColor)}
+                  >
+                    {card.cta}
+                  </Link>
                 </div>
-                <p className="text-sm font-medium text-[#333]">{card.title}</p>
-                <button className={cn('px-4 py-2 rounded-full text-sm font-semibold', card.ctaColor)}>
-                  {card.cta}
-                </button>
-              </div>
-            );
-          })}
-        </div>
-        <div className="mt-3 pt-3 border-t border-[#e0e0e0]">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-[#00833e] font-medium">3 / 7 adım tamamlandı</span>
+              );
+            })}
           </div>
-          <div className="w-full h-1.5 bg-[#e0e0e0] rounded-full mt-2">
-            <div className="h-full bg-[#00833e] rounded-full" style={{ width: '43%' }} />
+          <div className="mt-3 pt-3 border-t border-[#e0e0e0]">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-[#00833e] font-medium">3 / 7 adım tamamlandı</span>
+            </div>
+            <div className="w-full h-1.5 bg-[#e0e0e0] rounded-full mt-2">
+              <div className="h-full bg-[#00833e] rounded-full" style={{ width: '43%' }} />
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Posts Feed */}
       <div className="space-y-3">
@@ -169,11 +185,13 @@ export default function FeedPage() {
             <div className="p-4 pb-0">
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-[#e0e0e0] rounded-full flex items-center justify-center text-[#404040] text-sm font-bold flex-shrink-0">
+                  <Link href={`/profil/${post.author.profileId}`} className="w-10 h-10 bg-[#e0e0e0] rounded-full flex items-center justify-center text-[#404040] text-sm font-bold flex-shrink-0 hover:ring-2 hover:ring-[#00833e] transition-all">
                     {post.author.initial}
-                  </div>
+                  </Link>
                   <div>
-                    <p className="text-[15px] font-bold text-[#333]">{post.author.name}</p>
+                    <Link href={`/profil/${post.author.profileId}`} className="text-[15px] font-bold text-[#333] hover:underline">
+                      {post.author.name}
+                    </Link>
                     {post.isSponsored ? (
                       <p className="text-xs text-[#8f8f8f]">Sponsorlu</p>
                     ) : (
@@ -189,13 +207,13 @@ export default function FeedPage() {
               </div>
             </div>
 
-            {/* Post Content */}
-            <div className="px-4 py-2">
+            {/* Post Content - Clickable */}
+            <Link href={`/profil/${post.author.profileId}`} className="block px-4 py-2 hover:bg-[#fafafa] transition-colors">
               {post.title && (
                 <h3 className="text-[15px] font-bold text-[#333] mb-1">{post.title}</h3>
               )}
               <p className="text-[15px] text-[#404040] leading-relaxed">{post.body}</p>
-            </div>
+            </Link>
 
             {/* Post Image */}
             {post.image && (
@@ -210,10 +228,10 @@ export default function FeedPage() {
 
             {/* Learn more for sponsored */}
             {post.isSponsored && (
-              <div className="px-4 py-3 border-t border-[#e0e0e0] flex items-center justify-between">
+              <Link href="/isletmeler" className="block px-4 py-3 border-t border-[#e0e0e0] flex items-center justify-between hover:bg-[#f0f2f5] transition-colors">
                 <span className="text-sm font-medium text-[#404040]">Daha fazla bilgi</span>
                 <ChevronRight className="w-4 h-4 text-[#8f8f8f]" />
-              </div>
+              </Link>
             )}
 
             {/* Reactions summary */}
@@ -225,7 +243,7 @@ export default function FeedPage() {
                       <span className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center text-white text-[10px]">👍</span>
                       <span className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white text-[10px]">❤️</span>
                     </span>
-                    <span className="ml-1 text-[13px]">{post.reactions}</span>
+                    <span className="ml-1 text-[13px]">{post.reactions + (likedPosts[post.id] ? 1 : 0)}</span>
                   </div>
                   <span className="text-[13px]">{post.comments} yorum</span>
                 </div>
@@ -233,9 +251,17 @@ export default function FeedPage() {
                 {/* Action buttons */}
                 <div className="px-4 py-1 border-t border-[#e0e0e0]">
                   <div className="flex items-center">
-                    <button className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-[#404040] hover:bg-[#f0f2f5] rounded-lg transition-colors">
-                      <ThumbsUp className="w-5 h-5" />
-                      Beğen
+                    <button
+                      onClick={() => toggleLike(post.id)}
+                      className={cn(
+                        'flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg transition-colors',
+                        likedPosts[post.id]
+                          ? 'text-[#00833e] bg-[#e6f4ec]'
+                          : 'text-[#404040] hover:bg-[#f0f2f5]'
+                      )}
+                    >
+                      <ThumbsUp className={cn('w-5 h-5', likedPosts[post.id] && 'fill-current')} />
+                      {likedPosts[post.id] ? 'Beğendin' : 'Beğen'}
                     </button>
                     <button className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-[#404040] hover:bg-[#f0f2f5] rounded-lg transition-colors">
                       <MessageCircle className="w-5 h-5" />

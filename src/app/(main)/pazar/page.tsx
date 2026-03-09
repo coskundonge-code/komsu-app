@@ -194,6 +194,7 @@ export default function MarketplacePage() {
   const [activeTab, setActiveTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [visibleCount, setVisibleCount] = useState(6);
 
   const toggleFavorite = (id: string) => {
     const next = new Set(favorites);
@@ -202,10 +203,13 @@ export default function MarketplacePage() {
     setFavorites(next);
   };
 
-  const filtered = mockListings.filter((l) => {
+  const allFiltered = mockListings.filter((l) => {
     if (searchQuery && !l.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    if (activeTab === 'saved' && !favorites.has(l.id)) return false;
     return true;
   });
+  const filtered = allFiltered.slice(0, visibleCount);
+  const hasMore = visibleCount < allFiltered.length;
 
   return (
     <div className="min-h-screen bg-[#f0f2f5]">
@@ -343,11 +347,16 @@ export default function MarketplacePage() {
             </div>
 
             {/* Load More Button */}
-            <div className="text-center mt-8">
-              <button className="px-8 py-3 border border-[#e0e0e0] bg-white rounded-full text-sm font-semibold text-[#404040] hover:bg-[#f0f2f5] transition-colors shadow-sm">
-                Daha Fazla Göster
-              </button>
-            </div>
+            {hasMore && (
+              <div className="text-center mt-8">
+                <button
+                  onClick={() => setVisibleCount((prev) => prev + 6)}
+                  className="px-8 py-3 border border-[#e0e0e0] bg-white rounded-full text-sm font-semibold text-[#404040] hover:bg-[#f0f2f5] transition-colors shadow-sm"
+                >
+                  Daha Fazla Göster ({allFiltered.length - visibleCount} ilan daha)
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Right Sidebar - Chat Widget */}
@@ -378,9 +387,9 @@ export default function MarketplacePage() {
                   </div>
                 </div>
 
-                <button className="w-full px-4 py-2.5 bg-white text-[#00833e] rounded-full font-semibold text-sm hover:bg-green-50 transition-colors">
+                <Link href="/mesajlar" className="block w-full px-4 py-2.5 bg-white text-[#00833e] rounded-full font-semibold text-sm hover:bg-green-50 transition-colors text-center">
                   Sohbeti Aç
-                </button>
+                </Link>
               </div>
 
               <div className="p-4 bg-[#f0f2f5]">

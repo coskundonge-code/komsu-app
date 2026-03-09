@@ -83,8 +83,9 @@ export default function MessagesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [messageText, setMessageText] = useState('');
 
+  const [allMessages, setAllMessages] = useState(mockMessages);
   const selected = mockConversations.find((c) => c.id === selectedId);
-  const messages = mockMessages[selectedId] || [];
+  const messages = allMessages[selectedId] || [];
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -92,6 +93,23 @@ export default function MessagesPage() {
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
+
+  const handleSend = () => {
+    if (!messageText.trim() || !selectedId) return;
+    const now = new Date();
+    const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    const newMsg = {
+      id: `msg-${Date.now()}`,
+      text: messageText.trim(),
+      time: timeStr,
+      isOwn: true,
+    };
+    setAllMessages((prev) => ({
+      ...prev,
+      [selectedId]: [...(prev[selectedId] || []), newMsg],
+    }));
+    setMessageText('');
+  };
 
   const filteredConversations = mockConversations.filter((c) => {
     if (searchQuery && !c.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
@@ -224,13 +242,14 @@ export default function MessagesPage() {
             type="text"
             value={messageText}
             onChange={(e) => setMessageText(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleSend(); }}
             placeholder="Mesajınızı yazın..."
             className="flex-1 px-4 py-2 bg-[#f0f2f5] border border-[#e0e0e0] rounded-full text-sm text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e]"
           />
           <button className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors">
             <Smile size={20} className="text-[#8f8f8f]" />
           </button>
-          <button className="p-2 bg-[#00833e] hover:bg-[#006b32] rounded-full transition-colors">
+          <button onClick={handleSend} className="p-2 bg-[#00833e] hover:bg-[#006b32] rounded-full transition-colors">
             <Send size={18} className="text-white" />
           </button>
         </div>

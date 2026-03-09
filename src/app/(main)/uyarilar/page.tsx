@@ -11,6 +11,7 @@ interface Alert {
   location: string;
   time: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
+  category: string;
   icon: React.ReactNode;
 }
 
@@ -22,6 +23,7 @@ const mockAlerts: Alert[] = [
     location: 'Ana Cadde, Dönüş Noktası',
     time: '15 dakika önce',
     severity: 'critical',
+    category: 'traffic',
     icon: <AlertOctagon size={20} />,
   },
   {
@@ -31,6 +33,7 @@ const mockAlerts: Alert[] = [
     location: 'Tüm Bölge',
     time: '30 dakika önce',
     severity: 'high',
+    category: 'weather',
     icon: <Cloud size={20} />,
   },
   {
@@ -40,6 +43,7 @@ const mockAlerts: Alert[] = [
     location: 'Mahalle Merkezi',
     time: '2 saat önce',
     severity: 'medium',
+    category: 'emergency',
     icon: <Zap size={20} />,
   },
   {
@@ -49,6 +53,7 @@ const mockAlerts: Alert[] = [
     location: 'Merkez Parkı',
     time: '4 saat önce',
     severity: 'high',
+    category: 'security',
     icon: <AlertTriangle size={20} />,
   },
   {
@@ -58,6 +63,7 @@ const mockAlerts: Alert[] = [
     location: '2. Sokak',
     time: '1 gün önce',
     severity: 'low',
+    category: 'traffic',
     icon: <AlertCircle size={20} />,
   },
 ];
@@ -122,7 +128,8 @@ export default function AlertsPage() {
   const filteredAlerts = mockAlerts.filter((alert) => {
     const matchesSearch = alert.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       alert.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesSearch;
+    const matchesCategory = activeFilter === 'all' || alert.category === activeFilter;
+    return matchesSearch && matchesCategory;
   });
 
   return (
@@ -183,9 +190,10 @@ export default function AlertsPage() {
         ) : (
           <div className="space-y-3">
             {filteredAlerts.map((alert) => (
-              <div
+              <Link
                 key={alert.id}
-                className={`${getSeverityColor(alert.severity)} rounded-lg p-4 border border-[#e0e0e0] hover:shadow-md transition-shadow cursor-pointer`}
+                href={`/uyarilar/${alert.id}`}
+                className={`block ${getSeverityColor(alert.severity)} rounded-lg p-4 border border-[#e0e0e0] hover:shadow-md transition-shadow`}
               >
                 <div className="flex items-start gap-3">
                   {/* Icon */}
@@ -216,7 +224,7 @@ export default function AlertsPage() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

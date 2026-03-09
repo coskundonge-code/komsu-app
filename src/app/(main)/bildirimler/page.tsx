@@ -12,6 +12,7 @@ import {
   Calendar,
   Users,
 } from 'lucide-react';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
 type NotificationType = 'like' | 'comment' | 'message' | 'follow' | 'alert' | 'share' | 'event' | 'group' | 'marketplace';
@@ -24,6 +25,7 @@ interface Notification {
   timestamp: string;
   read: boolean;
   avatar: string;
+  href: string;
 }
 
 const mockNotifications: Notification[] = [
@@ -35,6 +37,7 @@ const mockNotifications: Notification[] = [
     timestamp: '2 dakika',
     read: false,
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop',
+    href: '/',
   },
   {
     id: '2',
@@ -44,6 +47,7 @@ const mockNotifications: Notification[] = [
     timestamp: '15 dakika',
     read: false,
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=96&h=96&fit=crop',
+    href: '/',
   },
   {
     id: '3',
@@ -53,6 +57,7 @@ const mockNotifications: Notification[] = [
     timestamp: '1 saat',
     read: false,
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=96&h=96&fit=crop',
+    href: '/mesajlar',
   },
   {
     id: '4',
@@ -62,6 +67,7 @@ const mockNotifications: Notification[] = [
     timestamp: '3 saat',
     read: true,
     avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=96&h=96&fit=crop',
+    href: '/profil/4',
   },
   {
     id: '5',
@@ -71,6 +77,7 @@ const mockNotifications: Notification[] = [
     timestamp: '5 saat',
     read: true,
     avatar: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=96&h=96&fit=crop',
+    href: '/etkinlikler/1',
   },
   {
     id: '6',
@@ -80,6 +87,7 @@ const mockNotifications: Notification[] = [
     timestamp: '1 gün',
     read: true,
     avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=96&h=96&fit=crop',
+    href: '/profil/6',
   },
   {
     id: '7',
@@ -89,6 +97,7 @@ const mockNotifications: Notification[] = [
     timestamp: '2 gün',
     read: true,
     avatar: 'https://images.unsplash.com/photo-1534528741775-53a8c7b1e899?w=96&h=96&fit=crop',
+    href: '/',
   },
   {
     id: '8',
@@ -98,6 +107,7 @@ const mockNotifications: Notification[] = [
     timestamp: '2 gün',
     read: true,
     avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=96&h=96&fit=crop',
+    href: '/',
   },
 ];
 
@@ -233,11 +243,12 @@ export default function NotificationsPage() {
                 </h2>
                 <div className="space-y-1">
                   {items.map((notification) => (
-                    <button
+                    <Link
                       key={notification.id}
+                      href={notification.href}
                       onClick={() => markAsRead(notification.id)}
                       className={cn(
-                        'w-full flex items-center gap-3 p-3 rounded-lg transition-colors border border-transparent hover:border-[#e0e0e0]',
+                        'flex items-center gap-3 p-3 rounded-lg transition-colors border border-transparent hover:border-[#e0e0e0]',
                         !notification.read
                           ? 'bg-[#e6f4ec] hover:bg-[#d1fae5]'
                           : 'bg-white hover:bg-[#f0f2f5]'
@@ -278,7 +289,7 @@ export default function NotificationsPage() {
                       {!notification.read && (
                         <span className="w-2 h-2 bg-[#00833e] rounded-full flex-shrink-0" />
                       )}
-                    </button>
+                    </Link>
                   ))}
                 </div>
               </div>

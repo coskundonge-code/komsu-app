@@ -92,11 +92,13 @@ export default function EventsPage() {
   const [interested, setInterested] = useState<Record<string, boolean>>(
     mockEvents.reduce((acc, e) => ({ ...acc, [e.id]: e.isInterested }), {})
   );
+  const [showMine, setShowMine] = useState(false);
 
-  const filtered = mockEvents.filter((e) =>
-    e.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    e.location.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filtered = mockEvents.filter((e) => {
+    if (showMine && !interested[e.id]) return false;
+    return e.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      e.location.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   const handleInterested = (e: React.MouseEvent, eventId: string) => {
     e.preventDefault();
@@ -135,7 +137,14 @@ export default function EventsPage() {
             <Plus className="w-4 h-4" />
             Etkinlik Oluştur
           </Link>
-          <button className="px-6 py-2.5 border-2 border-gray-400 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">
+          <button
+            onClick={() => setShowMine(!showMine)}
+            className={`px-6 py-2.5 border-2 rounded-full text-sm font-medium transition-colors ${
+              showMine
+                ? 'bg-[#00833e] text-white border-[#00833e]'
+                : 'border-gray-400 text-gray-700 hover:bg-gray-50'
+            }`}
+          >
             Etkinliklerim
           </button>
         </div>

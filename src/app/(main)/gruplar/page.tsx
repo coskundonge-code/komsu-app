@@ -65,6 +65,7 @@ const mockGroups = [
 
 export default function GroupsPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [joinedGroups, setJoinedGroups] = useState<Set<string>>(new Set());
 
   const filtered = mockGroups.filter((g) =>
     g.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -137,10 +138,22 @@ export default function GroupsPage() {
 
                 {/* Join Button */}
                 <button
-                  onClick={(e) => e.preventDefault()}
-                  className="px-8 py-2 border-2 border-[#00833e] text-[#00833e] rounded-full font-medium text-sm hover:bg-[#f0f0f0] transition-colors"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setJoinedGroups((prev) => {
+                      const next = new Set(prev);
+                      if (next.has(group.id)) next.delete(group.id);
+                      else next.add(group.id);
+                      return next;
+                    });
+                  }}
+                  className={`px-8 py-2 border-2 rounded-full font-medium text-sm transition-colors ${
+                    joinedGroups.has(group.id)
+                      ? 'bg-[#00833e] text-white border-[#00833e]'
+                      : 'border-[#00833e] text-[#00833e] hover:bg-[#f0f0f0]'
+                  }`}
                 >
-                  Katıl
+                  {joinedGroups.has(group.id) ? '✓ Katıldın' : 'Katıl'}
                 </button>
               </Link>
             ))}

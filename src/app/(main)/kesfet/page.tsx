@@ -11,6 +11,7 @@ interface NewsItem {
   source: string;
   time: string;
   category: string;
+  categoryId: string;
   thumbnail?: string;
 }
 
@@ -22,6 +23,7 @@ const mockNews: NewsItem[] = [
     source: 'Komşu Haberleri',
     time: '2 saat önce',
     category: 'İşletmeler',
+    categoryId: 'business',
     thumbnail: 'https://images.unsplash.com/photo-1521017713117-d52e7b7e8c5d?w=200&h=150&fit=crop',
   },
   {
@@ -31,6 +33,7 @@ const mockNews: NewsItem[] = [
     source: 'Belediye Duyurusu',
     time: '4 saat önce',
     category: 'Belediye',
+    categoryId: 'municipality',
     thumbnail: 'https://images.unsplash.com/photo-1535678057203-ef71b8f8b21e?w=200&h=150&fit=crop',
   },
   {
@@ -40,6 +43,7 @@ const mockNews: NewsItem[] = [
     source: 'Emlak Bilgisi',
     time: '6 saat önce',
     category: 'Gayrimenkul',
+    categoryId: 'realestate',
     thumbnail: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=200&h=150&fit=crop',
   },
   {
@@ -49,6 +53,7 @@ const mockNews: NewsItem[] = [
     source: 'Etkinlik Davet',
     time: '8 saat önce',
     category: 'Haberler',
+    categoryId: 'news',
     thumbnail: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=200&h=150&fit=crop',
   },
   {
@@ -58,6 +63,7 @@ const mockNews: NewsItem[] = [
     source: 'Komşu Profili',
     time: '1 gün önce',
     category: 'İşletmeler',
+    categoryId: 'business',
     thumbnail: 'https://images.unsplash.com/photo-1581092916550-e323be2ae537?w=200&h=150&fit=crop',
   },
 ];
@@ -77,7 +83,8 @@ export default function KesfetPage() {
   const filteredNews = mockNews.filter((item) => {
     const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesSearch;
+    const matchesCategory = activeCategory === 'all' || item.categoryId === activeCategory;
+    return matchesSearch && matchesCategory;
   });
 
   return (
@@ -189,15 +196,15 @@ export default function KesfetPage() {
 
           <div className="space-y-3">
             {[
-              'Mahallede başlatılan yenileme projesi',
-              'Yakın komşuluk etkinlikleri ve davetler',
-              'Yerel işletmelerdeki güncellemeler',
-              'Gayrimenkul piyasası analizi',
+              { title: 'Mahallede başlatılan yenileme projesi', id: '2' },
+              { title: 'Yakın komşuluk etkinlikleri ve davetler', id: '4' },
+              { title: 'Yerel işletmelerdeki güncellemeler', id: '1' },
+              { title: 'Gayrimenkul piyasası analizi', id: '3' },
             ].map((trend, index) => (
-              <div key={index} className="flex items-center gap-3 p-3 hover:bg-[#f0f2f5] rounded-lg transition-colors">
+              <Link key={index} href={`/kesfet/${trend.id}`} className="flex items-center gap-3 p-3 hover:bg-[#f0f2f5] rounded-lg transition-colors">
                 <span className="text-sm font-bold text-[#00833e] min-w-max">{index + 1}</span>
-                <p className="text-sm text-[#333]">{trend}</p>
-              </div>
+                <p className="text-sm text-[#333]">{trend.title}</p>
+              </Link>
             ))}
           </div>
         </div>
