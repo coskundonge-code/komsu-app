@@ -1,249 +1,247 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Plus, ArrowUpDown } from 'lucide-react';
-import { ListingCard } from '@/components/marketplace/listing-card';
-import { CategoryFilter } from '@/components/marketplace/category-filter';
+import { Search, Plus, SlidersHorizontal, Heart, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import type { CategoryType } from '@/components/marketplace/category-filter';
 
-// Mock data
+const tabs = [
+  { id: 'all', label: 'Tüm İlanlar' },
+  { id: 'mine', label: 'İlanlarım' },
+  { id: 'saved', label: 'Kaydedilenler' },
+];
+
+const categories = [
+  'Tümü', 'Ücretsiz', 'Mobilya', 'Elektronik', 'Giyim', 'Ev Eşyaları',
+  'Spor', 'Kitap', 'Oyuncak', 'Araç', 'Diğer',
+];
+
 const mockListings = [
   {
     id: '1',
     title: 'Laptop Lenovo IdeaPad 5',
     price: 8500,
-    imageUrl:
-      'https://images.unsplash.com/photo-1588405748847-5e9d6f6abc05?w=400&h=300&fit=crop',
-    condition: 'good' as const,
-    location: 'Şişli, İstanbul',
-    timeAgo: '2 saat önce',
+    image: 'https://images.unsplash.com/photo-1588405748847-5e9d6f6abc05?w=400&h=300&fit=crop',
+    location: 'Kadıköy',
+    timeAgo: '2 sa',
+    isFree: false,
   },
   {
     id: '2',
     title: 'IKEA Kanepe - Açık Gri',
     price: 2200,
-    imageUrl:
-      'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop',
-    condition: 'excellent' as const,
-    location: 'Beşiktaş, İstanbul',
-    timeAgo: '4 saat önce',
+    image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop',
+    location: 'Moda',
+    timeAgo: '4 sa',
+    isFree: false,
   },
   {
     id: '3',
-    title: 'Nike Spor Ayakkabı - 42 Beden',
+    title: 'Nike Spor Ayakkabı 42',
     price: 450,
-    imageUrl:
-      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop',
-    condition: 'excellent' as const,
-    location: 'Nişantaşı, İstanbul',
-    timeAgo: '5 saat önce',
+    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop',
+    location: 'Caferağa',
+    timeAgo: '5 sa',
+    isFree: false,
   },
   {
     id: '4',
-    title: 'Öğrenci Ders Kitapları Paketi',
-    price: 350,
-    imageUrl:
-      'https://images.unsplash.com/photo-1507842217343-583f20270319?w=400&h=300&fit=crop',
-    condition: 'good' as const,
-    location: 'Kadıköy, İstanbul',
-    timeAgo: '6 saat önce',
+    title: 'Çocuk Kitapları Seti',
+    price: 0,
+    image: 'https://images.unsplash.com/photo-1507842217343-583f20270319?w=400&h=300&fit=crop',
+    location: 'Kadıköy',
+    timeAgo: '6 sa',
+    isFree: true,
   },
   {
     id: '5',
-    title: 'DumbbellSeti 20kg',
+    title: 'Dumbbell Seti 20kg',
     price: 1200,
-    imageUrl:
-      'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop',
-    condition: 'used' as const,
-    location: 'Taksim, İstanbul',
-    timeAgo: '1 gün önce',
+    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop',
+    location: 'Moda',
+    timeAgo: '1 gün',
+    isFree: false,
   },
   {
     id: '6',
-    title: 'Playstation 5 Konsolu',
+    title: 'PlayStation 5',
     price: 6500,
-    imageUrl:
-      'https://images.unsplash.com/photo-1606841838e57-76cd55ab8e8f?w=400&h=300&fit=crop',
-    condition: 'excellent' as const,
-    location: 'Levent, İstanbul',
-    timeAgo: '1 gün önce',
+    image: 'https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=400&h=300&fit=crop',
+    location: 'Kadıköy',
+    timeAgo: '1 gün',
+    isFree: false,
   },
   {
     id: '7',
     title: 'Ahşap Yemek Masası',
     price: 1800,
-    imageUrl:
-      'https://images.unsplash.com/photo-1565636192335-14c9cbf2b0ae?w=400&h=300&fit=crop',
-    condition: 'fair' as const,
-    location: 'Aksaray, İstanbul',
-    timeAgo: '1 gün önce',
+    image: 'https://images.unsplash.com/photo-1565636192335-14c9cbf2b0ae?w=400&h=300&fit=crop',
+    location: 'Fenerbahçe',
+    timeAgo: '1 gün',
+    isFree: false,
   },
   {
     id: '8',
-    title: 'Çocuk Oyuncak Koleksiyonu',
-    price: 600,
-    imageUrl:
-      'https://images.unsplash.com/photo-1605026312519-c90900e2a306?w=400&h=300&fit=crop',
-    condition: 'used' as const,
-    location: 'Bakırköy, İstanbul',
-    timeAgo: '2 gün önce',
+    title: 'Bebek Arabası',
+    price: 0,
+    image: 'https://images.unsplash.com/photo-1605026312519-c90900e2a306?w=400&h=300&fit=crop',
+    location: 'Moda',
+    timeAgo: '2 gün',
+    isFree: true,
+  },
+  {
+    id: '9',
+    title: 'Samsung Galaxy Tab S9',
+    price: 4200,
+    image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=300&fit=crop',
+    location: 'Caferağa',
+    timeAgo: '2 gün',
+    isFree: false,
   },
 ];
 
-type SortOption = 'newest' | 'price-asc' | 'price-desc' | 'popular';
-
 export default function MarketplacePage() {
+  const [activeTab, setActiveTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState<CategoryType>('all');
-  const [sortBy, setSortBy] = useState<SortOption>('newest');
+  const [selectedCategory, setSelectedCategory] = useState('Tümü');
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
-  const handleCategoryChange = (category: CategoryType) => {
-    setActiveCategory(category);
+  const toggleFavorite = (id: string) => {
+    const next = new Set(favorites);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    setFavorites(next);
   };
 
-  const handleFavorite = (id: string) => {
-    const newFavorites = new Set(favorites);
-    if (newFavorites.has(id)) {
-      newFavorites.delete(id);
-    } else {
-      newFavorites.add(id);
-    }
-    setFavorites(newFavorites);
-  };
-
-  // Filter and sort listings
-  let filteredListings = [...mockListings];
-
-  if (searchQuery) {
-    filteredListings = filteredListings.filter((listing) =>
-      listing.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }
-
-  // Sort listings
-  switch (sortBy) {
-    case 'price-asc':
-      filteredListings.sort((a, b) => a.price - b.price);
-      break;
-    case 'price-desc':
-      filteredListings.sort((a, b) => b.price - a.price);
-      break;
-    case 'popular':
-      filteredListings.sort(() => Math.random() - 0.5);
-      break;
-    default:
-      break;
-  }
+  const filtered = mockListings.filter((l) => {
+    if (searchQuery && !l.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    if (selectedCategory === 'Ücretsiz' && !l.isFree) return false;
+    if (selectedCategory !== 'Tümü' && selectedCategory !== 'Ücretsiz') return true; // would filter by category
+    return true;
+  });
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-6">
+    <div className="min-h-screen bg-gray-100">
+      <div className="max-w-[900px] mx-auto px-4 py-4">
         {/* Header */}
-        <div className="mb-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-4">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold text-gray-900">Pazar Yeri</h1>
+            <h1 className="text-xl font-bold text-gray-900">Satılık ve Ücretsiz</h1>
             <Link
               href="/pazar/ilan-ver"
-              className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+              className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium"
             >
-              <Plus size={20} />
+              <Plus className="w-4 h-4" />
               İlan Ver
             </Link>
           </div>
 
-          {/* Search Bar */}
-          <div className="relative">
-            <Search
-              size={20}
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-            />
+          {/* Search */}
+          <div className="relative mb-3">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
-              placeholder="İlan ara... (telefon, masa, elbise...)"
+              placeholder="Eşya ara..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full pl-10 pr-4 py-2.5 bg-gray-100 border-0 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
+          </div>
+
+          {/* Tabs */}
+          <div className="flex gap-1 border-b border-gray-100 -mx-4 px-4">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={cn(
+                  'px-4 py-2.5 text-sm font-medium border-b-2 transition-colors',
+                  activeTab === tab.id
+                    ? 'text-emerald-700 border-emerald-600'
+                    : 'text-gray-500 border-transparent hover:text-gray-700'
+                )}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Sidebar Filters */}
-          <div className="lg:col-span-1">
-            <CategoryFilter
-              onCategoryChange={handleCategoryChange}
-              defaultCategory="all"
-              variant="sidebar"
-            />
-          </div>
+        {/* Filters bar */}
+        <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={cn(
+                'px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap border transition-colors',
+                selectedCategory === cat
+                  ? 'bg-emerald-600 text-white border-emerald-600'
+                  : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
+              )}
+            >
+              {cat}
+            </button>
+          ))}
+          <button className="px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap border border-gray-200 bg-white text-gray-700 hover:border-gray-300 flex items-center gap-1">
+            <SlidersHorizontal className="w-3 h-3" />
+            Filtreler
+          </button>
+        </div>
 
-          {/* Main Content */}
-          <div className="lg:col-span-3">
-            {/* Sort Options */}
-            <div className="flex items-center justify-between mb-6 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              <div className="flex items-center gap-2">
-                <p className="text-sm text-gray-600">
-                  {filteredListings.length} ilan bulundu
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <ArrowUpDown size={16} className="text-gray-400" />
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as SortOption)}
-                  className="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
-                  <option value="newest">En Yeni</option>
-                  <option value="price-asc">Fiyat: Düşük-Yüksek</option>
-                  <option value="price-desc">Fiyat: Yüksek-Düşük</option>
-                  <option value="popular">Popüler</option>
-                </select>
-              </div>
-            </div>
+        {/* Results count */}
+        <p className="text-sm text-gray-500 mb-3">{filtered.length} ilan bulundu</p>
 
-            {/* Listings Grid */}
-            {filteredListings.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-gray-500 text-lg mb-4">Arama sonucu bulunamadı</p>
+        {/* Listings Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {filtered.map((listing) => (
+            <Link
+              key={listing.id}
+              href={`/pazar/ilan/${listing.id}`}
+              className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow group"
+            >
+              <div className="relative aspect-square">
+                <img
+                  src={listing.image}
+                  alt={listing.title}
+                  className="w-full h-full object-cover"
+                />
+                {listing.isFree && (
+                  <span className="absolute top-2 left-2 bg-emerald-600 text-white text-xs font-bold px-2 py-0.5 rounded">
+                    ÜCRETSİZ
+                  </span>
+                )}
                 <button
-                  onClick={() => {
-                    setSearchQuery('');
-                    setActiveCategory('all');
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toggleFavorite(listing.id);
                   }}
-                  className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+                  className="absolute top-2 right-2 p-1.5 bg-white/80 rounded-full hover:bg-white transition-colors"
                 >
-                  Filtreleri Temizle
+                  <Heart
+                    className={cn('w-4 h-4', favorites.has(listing.id) ? 'fill-red-500 text-red-500' : 'text-gray-600')}
+                  />
                 </button>
               </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredListings.map((listing) => (
-                  <Link
-                    key={listing.id}
-                    href={`/pazar/ilan/${listing.id}`}
-                  >
-                    <ListingCard
-                      {...listing}
-                      isFavorite={favorites.has(listing.id)}
-                      onFavoriteClick={() => handleFavorite(listing.id)}
-                    />
-                  </Link>
-                ))}
+              <div className="p-3">
+                <p className="text-sm font-bold text-gray-900 mb-0.5">
+                  {listing.isFree ? 'Ücretsiz' : `₺${listing.price.toLocaleString('tr-TR')}`}
+                </p>
+                <p className="text-sm text-gray-700 line-clamp-2 mb-1">{listing.title}</p>
+                <div className="flex items-center gap-1 text-xs text-gray-500">
+                  <MapPin className="w-3 h-3" />
+                  {listing.location} · {listing.timeAgo}
+                </div>
               </div>
-            )}
+            </Link>
+          ))}
+        </div>
 
-            {/* Load More */}
-            {filteredListings.length > 0 && (
-              <div className="text-center mt-8">
-                <button className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors">
-                  Daha Fazla Yükle
-                </button>
-              </div>
-            )}
-          </div>
+        {/* Load more */}
+        <div className="text-center mt-6 mb-4">
+          <button className="px-6 py-2.5 border border-gray-300 bg-white rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+            Daha Fazla Göster
+          </button>
         </div>
       </div>
     </div>

@@ -1,274 +1,240 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import {
-  ArrowLeft,
   MapPin,
   Calendar,
   MessageCircle,
-  Share2,
+  Settings,
   Heart,
+  Bookmark,
+  Users,
+  Star,
+  Edit,
 } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import { cn } from '@/lib/utils';
 
-const mockUserProfile = {
-  id: '1',
-  name: 'Ayşe Yılmaz',
-  bio: 'Mahalle temsilcisi ve sosyal aktiviteler koordinatörü. Komşularla iletişim ve toplum oluşturmada tutkulu.',
-  avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
-  neighborhood: 'Güngören, İstanbul',
-  joinDate: new Date(2023, 5, 15),
-  followers: 324,
-  following: 187,
-  listings: [
-    {
-      id: '1',
-      title: 'Temizlik Hizmeti',
-      description: 'Evlerini ve işyerlerini hijyenik bir şekilde temizliyorum.',
-      category: 'Hizmet',
-      image: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=300&h=300&fit=crop',
-      rating: 4.8,
-      reviews: 24,
-    },
-    {
-      id: '2',
-      title: 'İnsan Kaynakları Danışmanlığı',
-      description: 'Şirketler için HR danışmanlığı ve eğitim hizmetleri sunuyorum.',
-      category: 'Danışmanlık',
-      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=300&h=300&fit=crop',
-      rating: 4.9,
-      reviews: 18,
-    },
+const mockProfile = {
+  name: 'Coşkun Dönge',
+  avatar: null, // Will use initials
+  initials: 'C',
+  coverImage: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&h=400&fit=crop',
+  neighborhood: 'Kadıköy, Moda',
+  city: 'İstanbul, Türkiye',
+  joinDate: 'Mart 2026',
+  bio: 'Mahalle gönüllüsü. Toplum oluşturmada tutkulu.',
+  profileProgress: 65,
+  stats: {
+    posts: 12,
+    thanks: 45,
+    neighbors: 87,
+  },
+  interests: ['Spor', 'Müzik', 'Teknoloji', 'Bahçecilik'],
+  groups: [
+    { name: 'Komşu Kahvaltıları', members: 47 },
+    { name: 'Mahalle Spor Kulübü', members: 89 },
   ],
-  posts: [
-    {
-      id: '1',
-      content: 'Gelecek cumartesi yine mahalle kahvaltısı yapacağız! Herkesi davetliyorum.',
-      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      likes: 45,
-      comments: 12,
-    },
-    {
-      id: '2',
-      content: 'Mahallede yeni bir spor kulübü kuruyoruz. İlgilenenler lütfen yazın!',
-      timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-      likes: 67,
-      comments: 23,
-    },
-    {
-      id: '3',
-      content: 'Bu ay kütüphanede edebiyat klasikleri üzerine tartışma yapacağız.',
-      timestamp: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000),
-      likes: 34,
-      comments: 15,
-    },
+  bookmarks: [
+    { title: 'Mahalle Temizlik Günü Organizasyonu', author: 'Mehmet Y.', timeAgo: '2 gün' },
+    { title: 'Yeni açılan kafe hakkında', author: 'Fatma Ç.', timeAgo: '3 gün' },
+  ],
+  recentActivity: [
+    { type: 'post', text: 'Gelecek cumartesi yine mahalle kahvaltısı yapacağız!', likes: 45, comments: 12, timeAgo: '2 gün' },
+    { type: 'post', text: 'Mahallede yeni bir spor kulübü kuruyoruz.', likes: 67, comments: 23, timeAgo: '5 gün' },
+    { type: 'post', text: 'Kütüphanede edebiyat klasikleri tartışması yapacağız.', likes: 34, comments: 15, timeAgo: '8 gün' },
   ],
 };
 
+const tabs = [
+  { id: 'activity', label: 'Aktivite' },
+  { id: 'about', label: 'Hakkında' },
+  { id: 'bookmarks', label: 'Kaydedilenler' },
+];
+
 export default function ProfilePage({ params }: { params: { id: string } }) {
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [liked, setLiked] = useState<string[]>([]);
-
-  const joinDateStr = mockUserProfile.joinDate.toLocaleDateString('tr-TR', {
-    month: 'long',
-    year: 'numeric',
-  });
-
-  const handleLike = (postId: string) => {
-    if (liked.includes(postId)) {
-      setLiked(liked.filter(id => id !== postId));
-    } else {
-      setLiked([...liked, postId]);
-    }
-  };
+  const [activeTab, setActiveTab] = useState('activity');
+  const isOwnProfile = params.id === 'me';
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Back Button */}
-      <div className="bg-white border-b py-4">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link href="/etkinlikler" className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-semibold">
-            <ArrowLeft className="w-4 h-4" />
-            Geri Dön
-          </Link>
-        </div>
+    <div className="min-h-screen bg-gray-100">
+      {/* Cover Image */}
+      <div className="relative h-[200px] bg-emerald-600">
+        <img
+          src={mockProfile.coverImage}
+          alt="Kapak"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
       </div>
 
       {/* Profile Header */}
-      <div className="bg-white border-b">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex flex-col md:flex-row items-start md:items-end gap-8">
+      <div className="max-w-[680px] mx-auto px-4">
+        <div className="relative -mt-16 mb-4">
+          <div className="flex items-end gap-4">
             {/* Avatar */}
-            <Image
-              src={mockUserProfile.avatar}
-              alt={mockUserProfile.name}
-              width={120}
-              height={120}
-              className="w-32 h-32 rounded-full object-cover border-4 border-emerald-600"
-            />
-
-            {/* Profile Info */}
-            <div className="flex-1">
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                {mockUserProfile.name}
-              </h1>
-              <p className="text-gray-600 mb-4">{mockUserProfile.bio}</p>
-
-              <div className="flex flex-wrap gap-6 mb-6">
-                <div className="flex items-center gap-2 text-gray-700">
-                  <MapPin className="w-5 h-5 text-emerald-600" />
-                  <span>{mockUserProfile.neighborhood}</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-700">
-                  <Calendar className="w-5 h-5 text-emerald-600" />
-                  <span>{joinDateStr}'den beri üye</span>
-                </div>
+            <div className="w-28 h-28 bg-gray-700 rounded-full flex items-center justify-center text-white text-4xl font-bold border-4 border-white shadow-lg flex-shrink-0">
+              {mockProfile.initials}
+            </div>
+            <div className="flex-1 pb-2">
+              <h1 className="text-2xl font-bold text-gray-900">{mockProfile.name}</h1>
+              <div className="flex items-center gap-1 text-sm text-gray-500 mt-0.5">
+                <MapPin className="w-3.5 h-3.5" />
+                {mockProfile.neighborhood}
               </div>
-
-              {/* Stats */}
-              <div className="flex gap-8 mb-6">
-                <div>
-                  <p className="text-2xl font-bold text-emerald-600">
-                    {mockUserProfile.followers}
-                  </p>
-                  <p className="text-gray-600 text-sm">Takipçi</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-emerald-600">
-                    {mockUserProfile.following}
-                  </p>
-                  <p className="text-gray-600 text-sm">Takip Edilen</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-emerald-600">
-                    {mockUserProfile.posts.length}
-                  </p>
-                  <p className="text-gray-600 text-sm">Gönderi</p>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setIsFollowing(!isFollowing)}
-                  className={`px-6 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2 ${
-                    isFollowing
-                      ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      : 'bg-emerald-600 text-white hover:bg-emerald-700'
-                  }`}
+            </div>
+            {isOwnProfile ? (
+              <div className="flex gap-2 pb-2">
+                <Link
+                  href="/ayarlar"
+                  className="flex items-center gap-2 px-4 py-2 border border-gray-200 bg-white rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                 >
-                  {isFollowing ? 'Takip Ediliyor' : 'Takip Et'}
-                </button>
-                <button className="px-6 py-2 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2">
-                  <MessageCircle className="w-4 h-4" />
+                  <Edit className="w-4 h-4" />
+                  Profili Düzenle
+                </Link>
+              </div>
+            ) : (
+              <div className="flex gap-2 pb-2">
+                <button className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors">
                   Mesaj Gönder
                 </button>
               </div>
+            )}
+          </div>
+        </div>
+
+        {/* Profile Progress (Nextdoor Dashboard style) */}
+        {isOwnProfile && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-4">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-semibold text-gray-900">Profil Tamamlama</h3>
+              <span className="text-sm font-bold text-emerald-600">{mockProfile.profileProgress}%</span>
+            </div>
+            <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-emerald-500 rounded-full transition-all"
+                style={{ width: `${mockProfile.profileProgress}%` }}
+              />
+            </div>
+            <p className="text-xs text-gray-500 mt-2">Bio ve fotoğraf ekleyerek profilini tamamla.</p>
+          </div>
+        )}
+
+        {/* Stats */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-4">
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <p className="text-xl font-bold text-gray-900">{mockProfile.stats.posts}</p>
+              <p className="text-xs text-gray-500">Gönderi</p>
+            </div>
+            <div>
+              <p className="text-xl font-bold text-gray-900">{mockProfile.stats.thanks}</p>
+              <p className="text-xs text-gray-500">Teşekkür</p>
+            </div>
+            <div>
+              <p className="text-xl font-bold text-gray-900">{mockProfile.stats.neighbors}</p>
+              <p className="text-xs text-gray-500">Komşu</p>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid md:grid-cols-3 gap-8">
-          {/* Posts */}
-          <div className="md:col-span-2">
-            {/* Posts Section */}
-            <div className="mb-12">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                Gönderiler
-              </h2>
-              <div className="space-y-6">
-                {mockUserProfile.posts.map((post) => (
-                  <div key={post.id} className="bg-white rounded-lg shadow-md p-6">
-                    <p className="text-gray-700 mb-4">{post.content}</p>
-                    <p className="text-sm text-gray-500 mb-4">
-                      {post.timestamp.toLocaleDateString('tr-TR')}
-                    </p>
-                    <div className="flex gap-6 pt-4 border-t">
-                      <button
-                        onClick={() => handleLike(post.id)}
-                        className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors"
-                      >
-                        <Heart
-                          className="w-5 h-5"
-                          fill={liked.includes(post.id) ? 'currentColor' : 'none'}
-                        />
-                        <span className={liked.includes(post.id) ? 'text-emerald-600' : ''}>
-                          {post.likes}
-                        </span>
-                      </button>
-                      <button className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors">
-                        <MessageCircle className="w-5 h-5" />
-                        <span>{post.comments}</span>
-                      </button>
+        {/* Tabs */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-4">
+          <div className="flex border-b border-gray-100">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={cn(
+                  'flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors',
+                  activeTab === tab.id
+                    ? 'text-emerald-700 border-emerald-600'
+                    : 'text-gray-500 border-transparent hover:text-gray-700'
+                )}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="p-4">
+            {/* Activity Tab */}
+            {activeTab === 'activity' && (
+              <div className="space-y-4">
+                {mockProfile.recentActivity.map((item, idx) => (
+                  <div key={idx} className="p-4 border border-gray-100 rounded-lg">
+                    <p className="text-sm text-gray-800 mb-2">{item.text}</p>
+                    <div className="flex items-center gap-4 text-xs text-gray-500">
+                      <span className="flex items-center gap-1">
+                        <Heart className="w-3.5 h-3.5" /> {item.likes}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <MessageCircle className="w-3.5 h-3.5" /> {item.comments}
+                      </span>
+                      <span>{item.timeAgo}</span>
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
+            )}
 
-          {/* Sidebar */}
-          <div>
-            {/* Listings */}
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Hizmetler ve Ürünler
-              </h3>
-              <div className="space-y-4">
-                {mockUserProfile.listings.map((listing) => (
-                  <Link
-                    key={listing.id}
-                    href="#"
-                    className="block p-3 border border-gray-200 rounded-lg hover:border-emerald-600 hover:bg-emerald-50 transition-colors"
-                  >
-                    <div className="flex gap-3">
-                      <Image
-                        src={listing.image}
-                        alt={listing.title}
-                        width={60}
-                        height={60}
-                        className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-gray-900 truncate">
-                          {listing.title}
-                        </p>
-                        <p className="text-xs text-gray-600 mb-1">
-                          {listing.category}
-                        </p>
-                        <p className="text-sm text-emerald-600 font-semibold">
-                          {listing.rating} ⭐ ({listing.reviews})
-                        </p>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            {/* About Card */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Hakkında</h3>
-              <div className="space-y-3 text-sm text-gray-700">
-                <div className="pb-3 border-b">
-                  <p className="text-gray-600 mb-1">Mahalle</p>
-                  <p className="font-semibold">{mockUserProfile.neighborhood}</p>
-                </div>
-                <div className="pb-3 border-b">
-                  <p className="text-gray-600 mb-1">Üye Olma Tarihi</p>
-                  <p className="font-semibold">{joinDateStr}</p>
+            {/* About Tab */}
+            {activeTab === 'about' && (
+              <div className="space-y-6">
+                {mockProfile.bio && (
+                  <div>
+                    <h4 className="text-sm font-semibold text-gray-900 mb-1">Bio</h4>
+                    <p className="text-sm text-gray-600">{mockProfile.bio}</p>
+                  </div>
+                )}
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-900 mb-2">İlgi Alanları</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {mockProfile.interests.map((interest) => (
+                      <span key={interest} className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-700">
+                        {interest}
+                      </span>
+                    ))}
+                  </div>
                 </div>
                 <div>
-                  <p className="text-gray-600 mb-1">Profil Durumu</p>
-                  <p className="font-semibold text-emerald-600">Doğrulanmış</p>
+                  <h4 className="text-sm font-semibold text-gray-900 mb-2">Gruplar</h4>
+                  <div className="space-y-2">
+                    {mockProfile.groups.map((group) => (
+                      <div key={group.name} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
+                        <Users className="w-5 h-5 text-emerald-600" />
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">{group.name}</p>
+                          <p className="text-xs text-gray-500">{group.members} üye</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-900 mb-1">Üye Olma Tarihi</h4>
+                  <div className="flex items-center gap-1 text-sm text-gray-600">
+                    <Calendar className="w-4 h-4" />
+                    {mockProfile.joinDate}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
+
+            {/* Bookmarks Tab */}
+            {activeTab === 'bookmarks' && (
+              <div className="space-y-3">
+                {mockProfile.bookmarks.map((bm, idx) => (
+                  <div key={idx} className="flex items-start gap-3 p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+                    <Bookmark className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{bm.title}</p>
+                      <p className="text-xs text-gray-500">{bm.author} · {bm.timeAgo}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,186 +1,71 @@
-"use client";
+'use client'
 
-import * as React from "react";
-import { cn } from "@/lib/utils";
-import {
-  Home,
-  Compass,
-  ShoppingBag,
-  MessageSquare,
-  Bell,
-  Menu,
-  X,
-  Search,
-} from "lucide-react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown";
-import { Button } from "@/components/ui/button";
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { Bell, MessageCircle, Search, Home, ShoppingBag } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface NavbarProps {
-  onMenuToggle?: (open: boolean) => void;
+  onMenuToggle?: (open: boolean) => void
 }
 
-const Navbar = React.forwardRef<HTMLDivElement, NavbarProps>(
-  ({ onMenuToggle }, ref) => {
-    const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
-    const [searchFocused, setSearchFocused] = React.useState(false);
+export function Navbar({ onMenuToggle }: NavbarProps) {
+  const pathname = usePathname()
 
-    const handleMenuToggle = () => {
-      const newState = !mobileMenuOpen;
-      setMobileMenuOpen(newState);
-      onMenuToggle?.(newState);
-    };
-
-    return (
-      <nav
-        ref={ref}
-        className="sticky top-0 z-40 border-b border-gray-200 bg-white shadow-sm"
-      >
-        <div className="flex items-center justify-between gap-4 px-4 py-3 sm:px-6">
-          {/* Logo and Brand Name */}
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white font-bold">
-              K
+  return (
+    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
+      <div className="max-w-[1100px] mx-auto flex items-center justify-between h-14 px-4">
+        {/* Left: Logo + Neighborhood */}
+        <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">
+              <Home className="w-4 h-4 text-white" />
             </div>
-            <span className="hidden font-bold text-gray-900 sm:inline">
-              KomşuApp
-            </span>
-          </div>
-
-          {/* Search Bar - Hidden on Mobile */}
-          <div className="hidden flex-1 max-w-md md:block">
-            <div
-              className={cn(
-                "relative flex items-center rounded-full border-2 border-gray-200 bg-gray-50 px-4 py-2 transition-all",
-                searchFocused && "border-emerald-600 bg-white"
-              )}
-            >
-              <Search className="h-4 w-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Ara..."
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setSearchFocused(false)}
-                className="ml-2 flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400"
-              />
-            </div>
-          </div>
-
-          {/* Desktop Navigation Icons */}
-          <div className="hidden items-center gap-1 lg:flex">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <Home className="h-5 w-5" />
-              <span className="text-sm">Ana Sayfa</span>
-            </Button>
-            <Button variant="ghost" size="sm" className="gap-2">
-              <Compass className="h-5 w-5" />
-              <span className="text-sm">Keşfet</span>
-            </Button>
-            <Button variant="ghost" size="sm" className="gap-2">
-              <ShoppingBag className="h-5 w-5" />
-              <span className="text-sm">Pazar</span>
-            </Button>
-            <Button variant="ghost" size="sm" className="gap-2">
-              <MessageSquare className="h-5 w-5" />
-              <span className="text-sm">Mesajlar</span>
-            </Button>
-            <Button variant="ghost" size="sm" className="gap-2">
-              <Bell className="h-5 w-5" />
-              <span className="text-sm">Bildirimler</span>
-            </Button>
-          </div>
-
-          {/* Right Side - Icons and User Menu */}
-          <div className="flex items-center gap-3">
-            {/* Mobile Search Icon */}
-            <Button variant="ghost" size="sm" className="md:hidden">
-              <Search className="h-5 w-5" />
-            </Button>
-
-            {/* Mobile Navigation Icons */}
-            <div className="flex items-center gap-1 lg:hidden">
-              <Button variant="ghost" size="sm">
-                <MessageSquare className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="sm">
-                <Bell className="h-5 w-5" />
-              </Button>
-            </div>
-
-            {/* User Dropdown Menu */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="rounded-full p-0 h-10 w-10"
-                >
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src="https://github.com/shadcn.png" alt="Kullanıcı" />
-                    <AvatarFallback>KB</AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem className="flex flex-col gap-1">
-                  <span className="font-semibold text-gray-900">Kullanıcı Adı</span>
-                  <span className="text-xs text-gray-500">kullanici@example.com</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Profilim</DropdownMenuItem>
-                <DropdownMenuItem>Ayarlar</DropdownMenuItem>
-                <DropdownMenuItem>Favorilerim</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Yardım ve Destek</DropdownMenuItem>
-                <DropdownMenuItem className="text-red-600">Çıkış Yap</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Mobile Menu Toggle */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="lg:hidden"
-              onClick={handleMenuToggle}
-            >
-              {mobileMenuOpen ? (
-                <X className="h-5 w-5" />
-              ) : (
-                <Menu className="h-5 w-5" />
-              )}
-            </Button>
-          </div>
+          </Link>
+          <span className="hidden sm:inline text-sm font-semibold text-gray-800">Kadıköy, Moda</span>
         </div>
 
-        {/* Mobile Search Bar */}
-        <div className="border-t border-gray-200 px-4 py-2 md:hidden">
-          <div
-            className={cn(
-              "relative flex items-center rounded-full border-2 border-gray-200 bg-gray-50 px-4 py-2 transition-all",
-              searchFocused && "border-emerald-600 bg-white"
-            )}
-          >
-            <Search className="h-4 w-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Ara..."
-              onFocus={() => setSearchFocused(true)}
-              onBlur={() => setSearchFocused(false)}
-              className="ml-2 flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400"
-            />
-          </div>
+        {/* Center: Navigation Links (Desktop) */}
+        <div className="hidden md:flex items-center gap-1">
+          <NavLink href="/" icon={<Home className="w-5 h-5" />} label="Ana Sayfa" active={pathname === '/'} />
+          <NavLink href="/kesfet" icon={<Search className="w-5 h-5" />} label="Keşfet" active={pathname === '/kesfet'} />
+          <NavLink href="/pazar" icon={<ShoppingBag className="w-5 h-5" />} label="Pazar" active={pathname?.startsWith('/pazar')} />
         </div>
-      </nav>
-    );
-  }
-);
 
-Navbar.displayName = "Navbar";
+        {/* Right: Notifications, Messages, Profile */}
+        <div className="flex items-center gap-1">
+          <Link href="/bildirimler" className={cn(
+            "relative p-2 rounded-full hover:bg-gray-100 transition-colors",
+            pathname === '/bildirimler' && "bg-gray-100"
+          )}>
+            <Bell className="w-5 h-5 text-gray-700" />
+            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+          </Link>
+          <Link href="/mesajlar" className={cn(
+            "relative p-2 rounded-full hover:bg-gray-100 transition-colors",
+            pathname?.startsWith('/mesajlar') && "bg-gray-100"
+          )}>
+            <MessageCircle className="w-5 h-5 text-gray-700" />
+          </Link>
+          <Link href="/profil/me" className="ml-1">
+            <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-white text-sm font-bold">
+              C
+            </div>
+          </Link>
+        </div>
+      </div>
+    </nav>
+  )
+}
 
-export { Navbar };
+function NavLink({ href, icon, label, active }: { href: string; icon: React.ReactNode; label: string; active?: boolean }) {
+  return (
+    <Link href={href} className={cn(
+      "flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors",
+      active ? "bg-emerald-50 text-emerald-700" : "text-gray-600 hover:bg-gray-100"
+    )}>
+      {icon}
+      <span className="hidden lg:inline">{label}</span>
+    </Link>
+  )
+}

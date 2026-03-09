@@ -1,248 +1,191 @@
 'use client';
 
-import { EventCard } from '@/components/events/event-card';
-import { Button } from '@/components/ui/button';
-import {
-  Calendar,
-  Grid3x3,
-  List,
-  Plus,
-  Search,
-} from 'lucide-react';
+import { Calendar, Clock, MapPin, Plus, Search, Users } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import { cn } from '@/lib/utils';
 
 const mockEvents = [
   {
     id: '1',
     title: 'Komşu Kahvaltısı',
-    description: 'Mahallede tüm komşular bir araya gelip sohbet edecek ve lezzetli bir kahvaltı yapacağız.',
-    date: new Date(2026, 2, 15, 10, 0),
+    description: 'Tüm komşular bir araya gelip sohbet edecek.',
+    date: '15 Mar',
+    dayName: 'Cmt',
+    time: '10:00',
     location: 'Mahalle Parkı',
     coverImage: 'https://images.unsplash.com/photo-1585518419759-ab60cb0bf33f?w=500&h=300&fit=crop',
-    organizer: {
-      name: 'Ayşe Yılmaz',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
-    },
     attendeeCount: 24,
-    maxAttendees: 50,
-    isOnline: false,
+    isInterested: false,
   },
   {
     id: '2',
     title: 'Yoga Dersi - Sabah Seansı',
-    description: 'Rahatlatıcı yoga dersi ile günü en iyi şekilde başlayın. Tüm seviyeler için uygun.',
-    date: new Date(2026, 2, 16, 7, 0),
+    description: 'Rahatlatıcı yoga dersi ile güne başlayın.',
+    date: '16 Mar',
+    dayName: 'Paz',
+    time: '07:00',
     location: 'Mahalle Spor Salonu',
     coverImage: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=500&h=300&fit=crop',
-    organizer: {
-      name: 'Fatih Demir',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2',
-    },
     attendeeCount: 18,
-    maxAttendees: 20,
-    isOnline: false,
+    isInterested: true,
   },
   {
     id: '3',
-    title: 'Online Kitap Kulübü Toplantısı',
-    description: 'Bu ay okuduğumuz kitap hakkında tartışacağız. "Simavi Kütüphanesi" üzerine konuşma yapılacak.',
-    date: new Date(2026, 2, 18, 19, 30),
+    title: 'Online Kitap Kulübü',
+    description: 'Bu ay okuduğumuz kitap hakkında tartışma.',
+    date: '18 Mar',
+    dayName: 'Sal',
+    time: '19:30',
     location: 'Çevrimiçi',
     coverImage: 'https://images.unsplash.com/photo-1507842217343-583f20270319?w=500&h=300&fit=crop',
-    organizer: {
-      name: 'Zeynep Kaya',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=3',
-    },
     attendeeCount: 32,
-    maxAttendees: undefined,
-    isOnline: true,
+    isInterested: false,
   },
   {
     id: '4',
-    title: 'Çocuk Oyun Parkında Piknik',
-    description: 'Çocuklar için eğlenceli bir öğleden sonra. Oyunlar, çizgi roman ve eğlencelendirme.',
-    date: new Date(2026, 2, 22, 14, 0),
-    location: 'Mahalle Parkı - Çocuk Bölümü',
+    title: 'Çocuk Parkında Piknik',
+    description: 'Çocuklar için eğlenceli bir öğleden sonra.',
+    date: '22 Mar',
+    dayName: 'Cmt',
+    time: '14:00',
+    location: 'Moda Parkı',
     coverImage: 'https://images.unsplash.com/photo-1552821081-7ffcfbf6ef14?w=500&h=300&fit=crop',
-    organizer: {
-      name: 'Meral Çetin',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=4',
-    },
     attendeeCount: 42,
-    maxAttendees: 60,
-    isOnline: false,
+    isInterested: false,
   },
   {
     id: '5',
     title: 'Bahçe Tasarımı Atölyesi',
-    description: 'Balkonunuzu ve bahçenizi daha güzel hale getirmek için ipuçları ve teknikler öğrenin.',
-    date: new Date(2026, 2, 25, 15, 0),
-    location: 'Mahalle Toplantı Salonu',
+    description: 'Balkonunuzu güzelleştirmek için ipuçları.',
+    date: '25 Mar',
+    dayName: 'Sal',
+    time: '15:00',
+    location: 'Toplantı Salonu',
     coverImage: 'https://images.unsplash.com/photo-1585516031632-dfd21dbdc8b3?w=500&h=300&fit=crop',
-    organizer: {
-      name: 'Hakan Yağız',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=5',
-    },
     attendeeCount: 15,
-    maxAttendees: 25,
-    isOnline: false,
+    isInterested: true,
   },
   {
     id: '6',
-    title: 'Komşu Spor Turnuvası',
-    description: 'Mahalle takımları arasında futsal turnuvası. Herkes katılabilir, takım oluşturabilirsiniz.',
-    date: new Date(2026, 3, 5, 18, 0),
-    location: 'Mahalle Spor Alanı',
+    title: 'Mahalle Spor Turnuvası',
+    description: 'Mahalle takımları arası futsal turnuvası.',
+    date: '5 Nis',
+    dayName: 'Cmt',
+    time: '18:00',
+    location: 'Spor Alanı',
     coverImage: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=500&h=300&fit=crop',
-    organizer: {
-      name: 'Emre Kılıç',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=6',
-    },
     attendeeCount: 56,
-    maxAttendees: 100,
-    isOnline: false,
+    isInterested: false,
   },
 ];
 
 export default function EventsPage() {
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const now = new Date();
-  const filteredEvents = mockEvents.filter((event) => {
-    const matchesSearch = event.title
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    const isUpcoming = event.date > now;
-
-    if (activeTab === 'upcoming') {
-      return matchesSearch && isUpcoming;
-    } else {
-      return matchesSearch && !isUpcoming;
-    }
-  });
+  const filtered = mockEvents.filter((e) =>
+    e.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">Etkinlikler</h1>
-            <Link href="/etkinlikler/olustur">
-              <Button className="bg-emerald-600 hover:bg-emerald-700 flex items-center gap-2">
+    <div className="min-h-screen bg-gray-100">
+      <div className="max-w-[900px] mx-auto px-4 py-4">
+        {/* Header */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-4">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-xl font-bold text-gray-900">Etkinlikler</h1>
+            <div className="flex items-center gap-2">
+              <button className="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                Etkinliklerim
+              </button>
+              <Link
+                href="/etkinlikler/olustur"
+                className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium"
+              >
                 <Plus className="w-4 h-4" />
                 Etkinlik Oluştur
-              </Button>
-            </Link>
+              </Link>
+            </div>
           </div>
-
-          {/* Search Bar */}
+          {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
               placeholder="Etkinlik ara..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full pl-10 pr-4 py-2.5 bg-gray-100 border-0 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
           </div>
         </div>
-      </div>
 
-      {/* Tabs and Controls */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex gap-4">
-              <button
-                onClick={() => setActiveTab('upcoming')}
-                className={`px-4 py-2 font-semibold border-b-2 transition-colors ${
-                  activeTab === 'upcoming'
-                    ? 'text-emerald-600 border-emerald-600'
-                    : 'text-gray-600 border-transparent hover:text-gray-900'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  Yaklaşan Etkinlikler
-                </div>
-              </button>
-              <button
-                onClick={() => setActiveTab('past')}
-                className={`px-4 py-2 font-semibold border-b-2 transition-colors ${
-                  activeTab === 'past'
-                    ? 'text-emerald-600 border-emerald-600'
-                    : 'text-gray-600 border-transparent hover:text-gray-900'
-                }`}
-              >
-                Geçmiş Etkinlikler
-              </button>
-            </div>
-
-            {/* View Toggle */}
-            <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`p-2 rounded transition-colors ${
-                  viewMode === 'grid'
-                    ? 'bg-white text-emerald-600'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <Grid3x3 className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={`p-2 rounded transition-colors ${
-                  viewMode === 'list'
-                    ? 'bg-white text-emerald-600'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <List className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Events Grid/List */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {filteredEvents.length === 0 ? (
-          <div className="text-center py-12">
-            <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              {activeTab === 'upcoming'
-                ? 'Yaklaşan etkinlik bulunamadı'
-                : 'Geçmiş etkinlik bulunamadı'}
-            </h3>
-            <p className="text-gray-600 mb-6">
-              {activeTab === 'upcoming'
-                ? 'Yeni etkinlikler oluşturulmadı henüz.'
-                : 'Henüz katılmış etkinlik yok.'}
-            </p>
-            {activeTab === 'upcoming' && (
-              <Link href="/etkinlikler/olustur">
-                <Button className="bg-emerald-600 hover:bg-emerald-700">
-                  İlk Etkinliği Oluştur
-                </Button>
-              </Link>
-            )}
+        {/* Events List */}
+        {filtered.length === 0 ? (
+          <div className="text-center py-16">
+            <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+            <p className="text-gray-600 font-medium mb-1">Etkinlik bulunamadı</p>
+            <p className="text-gray-400 text-sm">Yeni bir etkinlik oluşturabilirsiniz.</p>
           </div>
         ) : (
-          <div
-            className={
-              viewMode === 'grid'
-                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-                : 'space-y-4'
-            }
-          >
-            {filteredEvents.map((event) => (
-              <EventCard key={event.id} {...event} />
+          <div className="space-y-3">
+            {filtered.map((event) => (
+              <Link
+                key={event.id}
+                href={`/etkinlikler/${event.id}`}
+                className="block bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+              >
+                <div className="flex flex-col sm:flex-row">
+                  {/* Image with date badge */}
+                  <div className="relative sm:w-[200px] h-[160px] sm:h-auto flex-shrink-0">
+                    <img
+                      src={event.coverImage}
+                      alt={event.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-3 left-3 bg-white rounded-lg shadow-md px-3 py-1.5 text-center">
+                      <p className="text-xs font-bold text-emerald-600 uppercase">{event.dayName}</p>
+                      <p className="text-lg font-bold text-gray-900 leading-tight">{event.date.split(' ')[0]}</p>
+                      <p className="text-xs text-gray-500">{event.date.split(' ')[1]}</p>
+                    </div>
+                  </div>
+
+                  {/* Event info */}
+                  <div className="flex-1 p-4 flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-base font-bold text-gray-900 mb-1">{event.title}</h3>
+                      <p className="text-sm text-gray-600 mb-3">{event.description}</p>
+                      <div className="flex flex-wrap gap-3 text-xs text-gray-500">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3.5 h-3.5" />
+                          {event.time}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5" />
+                          {event.location}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Users className="w-3.5 h-3.5" />
+                          {event.attendeeCount} ilgileniyor
+                        </span>
+                      </div>
+                    </div>
+                    <div className="mt-3">
+                      <button
+                        onClick={(e) => e.preventDefault()}
+                        className={cn(
+                          'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+                          event.isInterested
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        )}
+                      >
+                        {event.isInterested ? '✓ İlgileniyorum' : 'İlgileniyorum'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </Link>
             ))}
           </div>
         )}
