@@ -104,12 +104,12 @@ const TRENDING = [
 
 export default function KesfetPage() {
   return (
-    <div className="min-h-screen bg-emerald-50">
+    <div className="min-h-screen bg-[#e6f4ec]">
       {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-600 to-green-600 text-white py-8 px-4 sticky top-0 z-30">
+      <div className="bg-gradient-to-r from-[#00833e] to-green-600 text-white py-8 px-4 sticky top-0 z-30">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-3xl font-bold">Keşfet</h1>
-          <p className="text-emerald-100 mt-1">
+          <p className="text-[#d1fae5] mt-1">
             Mahallendeki haberler ve trendler
           </p>
         </div>
@@ -120,9 +120,9 @@ export default function KesfetPage() {
           {/* Main Content - Activities */}
           <div className="lg:col-span-2">
             {/* Map Placeholder */}
-            <div className="bg-white rounded-lg border border-emerald-100 p-6 mb-6">
+            <div className="bg-white rounded-lg border border-[#d1fae5] p-6 mb-6">
               <div className="flex items-center gap-2 mb-4">
-                <MapPin size={20} className="text-emerald-600" />
+                <MapPin size={20} className="text-[#00833e]" />
                 <h2 className="text-lg font-bold text-gray-900">Yakında Neler Oluyor?</h2>
               </div>
               <div className="bg-gray-200 rounded-lg h-64 flex items-center justify-center text-gray-500">
@@ -142,11 +142,11 @@ export default function KesfetPage() {
                 {NEARBY_ACTIVITIES.map((activity) => (
                   <div
                     key={activity.id}
-                    className="bg-white rounded-lg border border-emerald-100 p-6 hover:shadow-md transition-shadow"
+                    className="bg-white rounded-lg border border-[#d1fae5] p-6 hover:shadow-md transition-shadow"
                   >
                     {/* Header */}
                     <div className="flex items-start gap-4 mb-4">
-                      <div className="w-10 h-10 bg-emerald-200 rounded-full flex items-center justify-center text-emerald-700 font-bold flex-shrink-0">
+                      <div className="w-10 h-10 bg-[#a7dbb8] rounded-full flex items-center justify-center text-[#006b32] font-bold flex-shrink-0">
                         {activity.author.charAt(0)}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -154,7 +154,7 @@ export default function KesfetPage() {
                           <p className="font-medium text-gray-900">
                             {activity.author}
                           </p>
-                          <span className="text-xs font-medium px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full">
+                          <span className="text-xs font-medium px-2 py-1 bg-[#d1fae5] text-[#006b32] rounded-full">
                             {activity.category}
                           </span>
                         </div>
@@ -171,7 +171,7 @@ export default function KesfetPage() {
                     </p>
 
                     {/* Engagement */}
-                    <div className="flex gap-4 border-t border-emerald-100 pt-3">
+                    <div className="flex gap-4 border-t border-[#d1fae5] pt-3">
                       <button className="flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors text-sm font-medium">
                         <Heart size={16} />
                         {activity.reactions}
@@ -180,7 +180,7 @@ export default function KesfetPage() {
                         <MessageCircle size={16} />
                         {activity.comments}
                       </button>
-                      <button className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors text-sm font-medium ml-auto">
+                      <button className="flex items-center gap-2 text-gray-600 hover:text-[#00833e] transition-colors text-sm font-medium ml-auto">
                         <Eye size={16} />
                         Görüntüle
                       </button>
@@ -194,9 +194,9 @@ export default function KesfetPage() {
           {/* Sidebar - Trending */}
           <div className="lg:col-span-1">
             {/* Trending Section */}
-            <div className="bg-white rounded-lg border border-emerald-100 p-6 sticky top-24">
+            <div className="bg-white rounded-lg border border-[#d1fae5] p-6 sticky top-24">
               <div className="flex items-center gap-2 mb-6">
-                <TrendingUp size={20} className="text-emerald-600" />
+                <TrendingUp size={20} className="text-[#00833e]" />
                 <h2 className="text-lg font-bold text-gray-900">Mahalleden Trendler</h2>
               </div>
 
@@ -204,10 +204,10 @@ export default function KesfetPage() {
                 {TRENDING.map((trend, index) => (
                   <button
                     key={trend.id}
-                    className="w-full text-left p-3 hover:bg-emerald-50 rounded-lg transition-colors border border-transparent hover:border-emerald-200"
+                    className="w-full text-left p-3 hover:bg-[#e6f4ec] rounded-lg transition-colors border border-transparent hover:border-[#a7dbb8]"
                   >
                     <div className="flex items-start gap-3">
-                      <span className="text-xl font-bold text-emerald-600">
+                      <span className="text-xl font-bold text-[#00833e]">
                         #{index + 1}
                       </span>
                       <div className="flex-1 min-w-0">
@@ -236,25 +236,25 @@ export default function KesfetPage() {
               </div>
 
               {/* Explore More */}
-              <button className="w-full mt-6 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 font-medium py-2 px-4 rounded-lg transition-colors text-sm">
+              <button className="w-full mt-6 bg-[#d1fae5] hover:bg-[#a7dbb8] text-[#006b32] font-medium py-2 px-4 rounded-lg transition-colors text-sm">
                 Tüm Trendleri Gör
               </button>
             </div>
 
             {/* Stats Card */}
-            <div className="bg-gradient-to-br from-emerald-600 to-green-600 rounded-lg text-white p-6 mt-6">
+            <div className="bg-gradient-to-br from-[#00833e] to-green-600 rounded-lg text-white p-6 mt-6">
               <h3 className="font-bold mb-4">Mahalle İstatistikleri</h3>
               <div className="space-y-3">
                 <div>
-                  <p className="text-emerald-100 text-sm">Aktif Komşu</p>
+                  <p className="text-[#d1fae5] text-sm">Aktif Komşu</p>
                   <p className="text-2xl font-bold">2,847</p>
                 </div>
                 <div>
-                  <p className="text-emerald-100 text-sm">Bu ay Paylaşım</p>
+                  <p className="text-[#d1fae5] text-sm">Bu ay Paylaşım</p>
                   <p className="text-2xl font-bold">1,234</p>
                 </div>
                 <div>
-                  <p className="text-emerald-100 text-sm">Katılılan Etkinlik</p>
+                  <p className="text-[#d1fae5] text-sm">Katılılan Etkinlik</p>
                   <p className="text-2xl font-bold">45</p>
                 </div>
               </div>

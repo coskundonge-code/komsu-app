@@ -71,7 +71,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2">
-              <div className="w-9 h-9 bg-[#00965b] rounded-xl flex items-center justify-center shadow-md shadow-emerald-200/50">
+              <div className="w-9 h-9 bg-[#00965b] rounded-xl flex items-center justify-center shadow-md shadow-[#a7dbb8]/50">
                 <Home className="w-5 h-5 text-white" />
               </div>
               <span className="text-xl font-bold tracking-tight">
@@ -98,7 +98,7 @@ export default function LandingPage() {
               </Link>
               <Link
                 href="/kayit"
-                className="px-5 py-2.5 text-sm font-semibold text-white bg-[#00965b] hover:bg-[#007a4a] rounded-full transition-all shadow-md shadow-emerald-200/50 hover:shadow-lg"
+                className="px-5 py-2.5 text-sm font-semibold text-white bg-[#00965b] hover:bg-[#007a4a] rounded-full transition-all shadow-md shadow-[#a7dbb8]/50 hover:shadow-lg"
               >
                 Ücretsiz Kaydol
               </Link>
@@ -141,14 +141,14 @@ export default function LandingPage() {
 
       {/* HERO */}
       <section className="relative pt-24 pb-16 lg:pt-32 lg:pb-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/60" />
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-emerald-100/40 to-transparent rounded-full -translate-y-1/2 translate-x-1/4" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#e6f4ec]/80 via-white to-[#e6f4ec]/60" />
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-[#d1fae5]/40 to-transparent rounded-full -translate-y-1/2 translate-x-1/4" />
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-teal-100/30 to-transparent rounded-full translate-y-1/2 -translate-x-1/4" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="max-w-xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full text-sm font-medium text-[#00965b] mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#e6f4ec] border border-[#d1fae5] rounded-full text-sm font-medium text-[#00965b] mb-6">
                 <Sparkles className="w-4 h-4" />
                 Türkiye&apos;nin mahalle ağı
               </div>
@@ -166,7 +166,7 @@ export default function LandingPage() {
               <div className="flex flex-col sm:flex-row gap-3 mb-10">
                 <Link
                   href="/kayit"
-                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 text-base font-semibold text-white bg-[#00965b] hover:bg-[#007a4a] rounded-full transition-all shadow-lg shadow-emerald-200/50 hover:shadow-xl hover:-translate-y-0.5"
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 text-base font-semibold text-white bg-[#00965b] hover:bg-[#007a4a] rounded-full transition-all shadow-lg shadow-[#a7dbb8]/50 hover:shadow-xl hover:-translate-y-0.5"
                 >
                   Hemen Başla
                   <ArrowRight className="w-5 h-5" />
@@ -196,7 +196,7 @@ export default function LandingPage() {
             {/* Phone Preview */}
             <div className="relative lg:pl-8">
               <div className="relative mx-auto w-[320px] sm:w-[360px]">
-                <div className="absolute inset-0 bg-gradient-to-b from-emerald-200/30 to-teal-200/20 rounded-[40px] blur-3xl scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-b from-[#a7dbb8]/30 to-teal-200/20 rounded-[40px] blur-3xl scale-110" />
 
                 <div className="relative bg-white rounded-[32px] shadow-2xl shadow-gray-300/50 border border-gray-200/60 overflow-hidden">
                   {/* Status bar */}
@@ -222,7 +222,7 @@ export default function LandingPage() {
                           <Bell className="w-4 h-4 text-gray-400" />
                           <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
                         </div>
-                        <div className="w-6 h-6 bg-emerald-100 rounded-full flex items-center justify-center">
+                        <div className="w-6 h-6 bg-[#d1fae5] rounded-full flex items-center justify-center">
                           <span className="text-[10px] font-bold text-[#00965b]">AK</span>
                         </div>
                       </div>
@@ -288,7 +288,7 @@ export default function LandingPage() {
                       <p className="text-xs text-gray-700 leading-relaxed mb-2">
                         Cumartesi mahalle temizlik günü! Katılmak isteyen komşular buluşma noktasına gelsin 🌿
                       </p>
-                      <div className="bg-emerald-50 rounded-lg p-2 mb-2">
+                      <div className="bg-[#e6f4ec] rounded-lg p-2 mb-2">
                         <div className="flex items-center gap-2">
                           <Calendar className="w-3.5 h-3.5 text-[#00965b]" />
                           <div>
@@ -310,7 +310,7 @@ export default function LandingPage() {
                     <div className="bg-white rounded-xl p-3 shadow-sm">
                       <div className="flex items-start gap-2.5 mb-2">
                         <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-xs font-bold text-teal-600">ZD</span>
+                          <span className="text-xs font-bold text-[#00833e]">ZD</span>
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5">
@@ -319,7 +319,7 @@ export default function LandingPage() {
                           </div>
                           <span className="text-[10px] text-gray-400">Kadıköy, Moda</span>
                         </div>
-                        <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[10px] font-medium rounded-full">Pazar</span>
+                        <span className="px-2 py-0.5 bg-[#e6f4ec] text-[#00833e] text-[10px] font-medium rounded-full">Pazar</span>
                       </div>
                       <p className="text-xs text-gray-700 leading-relaxed">
                         Satılık bisiklet - az kullanılmış, uygun fiyat. İlgilenen komşular mesaj atabilir 🚲
@@ -348,7 +348,7 @@ export default function LandingPage() {
 
               {/* Floating badges */}
               <div className="absolute top-8 -left-4 bg-white rounded-2xl shadow-xl shadow-gray-200/50 p-3 flex items-center gap-2" style={{animation: 'floatSlow 4s ease-in-out infinite'}}>
-                <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-[#d1fae5] rounded-full flex items-center justify-center">
                   <Shield className="w-4 h-4 text-[#00965b]" />
                 </div>
                 <div>
@@ -387,7 +387,7 @@ export default function LandingPage() {
       <section id="ozellikler" className="py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full text-sm font-medium text-[#00965b] mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#e6f4ec] border border-[#d1fae5] rounded-full text-sm font-medium text-[#00965b] mb-4">
               Özellikler
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-4">
@@ -401,11 +401,11 @@ export default function LandingPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               { icon: Shield, title: 'Güvenlik Uyarıları', desc: 'Mahallenizdeki güvenlik olaylarından anında haberdar olun. Şüpheli durumları raporlayın.', color: 'bg-red-50 text-red-600', border: 'hover:border-red-200' },
-              { icon: ShoppingBag, title: 'Mahalle Pazarı', desc: 'Komşularınızla güvenle alışveriş yapın, ilan verin. Yakındaki fırsatları keşfedin.', color: 'bg-emerald-50 text-emerald-600', border: 'hover:border-emerald-200' },
+              { icon: ShoppingBag, title: 'Mahalle Pazarı', desc: 'Komşularınızla güvenle alışveriş yapın, ilan verin. Yakındaki fırsatları keşfedin.', color: 'bg-[#e6f4ec] text-[#00833e]', border: 'hover:border-[#a7dbb8]' },
               { icon: Calendar, title: 'Etkinlikler', desc: 'Mahallenizdeki etkinlikleri keşfedin, organize edin ve komşularınızla buluşun.', color: 'bg-purple-50 text-purple-600', border: 'hover:border-purple-200' },
               { icon: Users, title: 'Gruplar', desc: 'Ortak ilgi alanlarına göre gruplara katılın. Evcil hayvan, spor, bahçe ve daha fazlası.', color: 'bg-blue-50 text-blue-600', border: 'hover:border-blue-200' },
               { icon: Building2, title: 'Yerel İşletmeler', desc: 'Mahallenizdeki esnaf ve işletmeleri keşfedin. Komşu tavsiyelerini okuyun.', color: 'bg-amber-50 text-amber-600', border: 'hover:border-amber-200' },
-              { icon: MessageSquare, title: 'Özel Mesajlaşma', desc: 'Komşularınızla güvenli şekilde birebir veya grup mesajlaşması yapın.', color: 'bg-teal-50 text-teal-600', border: 'hover:border-teal-200' },
+              { icon: MessageSquare, title: 'Özel Mesajlaşma', desc: 'Komşularınızla güvenli şekilde birebir veya grup mesajlaşması yapın.', color: 'bg-[#e6f4ec] text-[#00833e]', border: 'hover:border-teal-200' },
             ].map((f) => (
               <div key={f.title} className={`group p-6 bg-white border border-gray-100 rounded-2xl transition-all duration-300 hover:shadow-lg hover:shadow-gray-100/50 hover:-translate-y-1 ${f.border}`}>
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${f.color}`}>
@@ -423,7 +423,7 @@ export default function LandingPage() {
       <section id="nasil-calisir" className="py-20 lg:py-28 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full text-sm font-medium text-[#00965b] mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#e6f4ec] border border-[#d1fae5] rounded-full text-sm font-medium text-[#00965b] mb-4">
               Nasıl Çalışır
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-4">
@@ -433,7 +433,7 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { step: '01', icon: UserPlus, title: 'Kaydolun', desc: 'E-mail adresinizle ücretsiz kaydolun ve mahalle adresinizi doğrulayın.', color: 'from-emerald-500 to-teal-500' },
+              { step: '01', icon: UserPlus, title: 'Kaydolun', desc: 'E-mail adresinizle ücretsiz kaydolun ve mahalle adresinizi doğrulayın.', color: 'from-[#00833e] to-[#e6f4ec]0' },
               { step: '02', icon: MapPin, title: 'Mahallenizi Bulun', desc: 'Adresinize göre mahalleniz otomatik belirlenir. Komşularınızı görün.', color: 'from-blue-500 to-indigo-500' },
               { step: '03', icon: Zap, title: 'Bağlantı Kurun', desc: 'Paylaşımlar yapın, etkinliklere katılın, mahalle pazarını keşfedin.', color: 'from-orange-500 to-red-500' },
             ].map((item) => (
@@ -459,7 +459,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full text-sm font-medium text-[#00965b] mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#e6f4ec] border border-[#d1fae5] rounded-full text-sm font-medium text-[#00965b] mb-4">
                 <Lock className="w-4 h-4" />
                 Güvenlik
               </div>
@@ -478,7 +478,7 @@ export default function LandingPage() {
                   { title: 'Kişisel Veri Koruması', desc: 'KVKK uyumlu veri işleme politikası' },
                 ].map((item) => (
                   <div key={item.title} className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <div className="w-6 h-6 rounded-full bg-[#d1fae5] flex items-center justify-center flex-shrink-0 mt-0.5">
                       <CheckCircle2 className="w-4 h-4 text-[#00965b]" />
                     </div>
                     <div>
@@ -491,7 +491,7 @@ export default function LandingPage() {
             </div>
 
             <div className="relative">
-              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl p-8 lg:p-12">
+              <div className="bg-gradient-to-br from-[#e6f4ec] to-[#e6f4ec] rounded-3xl p-8 lg:p-12">
                 <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4">
                   <div className="flex items-center gap-3 pb-4 border-b border-gray-100">
                     <div className="w-10 h-10 bg-[#00965b] rounded-xl flex items-center justify-center">
@@ -526,7 +526,7 @@ export default function LandingPage() {
       <section className="py-20 lg:py-28 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full text-sm font-medium text-[#00965b] mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#e6f4ec] border border-[#d1fae5] rounded-full text-sm font-medium text-[#00965b] mb-4">
               Yorumlar
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-4">
@@ -538,7 +538,7 @@ export default function LandingPage() {
             {[
               { name: 'Ayşe Kaya', loc: 'Kadıköy, Moda', text: 'Kayıp kedimi KomşuApp sayesinde 2 saat içinde buldum! Komşularım hemen paylaşımı görüp yardım etti. Harika bir topluluk.', avatar: 'AK', bg: 'bg-orange-100', tc: 'text-orange-600' },
               { name: 'Mehmet Yıldız', loc: 'Beşiktaş, Etiler', text: 'Mahalledeki güvenlik sorunlarını birlikte çözüyoruz. Muhtar bile kullanıyor artık. Güvenlik uyarıları çok işe yarıyor.', avatar: 'MY', bg: 'bg-blue-100', tc: 'text-blue-600' },
-              { name: 'Zeynep Demir', loc: 'Bakırköy, Ataköy', text: 'Pazar yerinden harika fırsatlar buluyorum. Komşularla alışveriş yapınca güven oluyor. İkinci el eşyalar için birebir.', avatar: 'ZD', bg: 'bg-teal-100', tc: 'text-teal-600' },
+              { name: 'Zeynep Demir', loc: 'Bakırköy, Ataköy', text: 'Pazar yerinden harika fırsatlar buluyorum. Komşularla alışveriş yapınca güven oluyor. İkinci el eşyalar için birebir.', avatar: 'ZD', bg: 'bg-teal-100', tc: 'text-[#00833e]' },
             ].map((t) => (
               <div key={t.name} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all">
                 <div className="flex gap-1 mb-4">
@@ -572,7 +572,7 @@ export default function LandingPage() {
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
                 Mahallenizi keşfetmeye hazır mısınız?
               </h2>
-              <p className="text-emerald-100 text-lg mb-8 max-w-xl mx-auto">
+              <p className="text-[#d1fae5] text-lg mb-8 max-w-xl mx-auto">
                 Binlerce komşu sizi bekliyor. Hemen ücretsiz kaydolun ve mahalle yaşamına katılın.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

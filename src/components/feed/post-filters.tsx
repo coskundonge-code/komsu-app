@@ -39,7 +39,7 @@ export function PostFilters({
             className={cn(
               'px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all',
               activeFilter === filter.value
-                ? 'bg-emerald-600 text-white'
+                ? 'bg-[#00833e] text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             )}
           >

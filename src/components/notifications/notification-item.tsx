@@ -26,12 +26,12 @@ interface NotificationItemProps {
 }
 
 const iconMap: Record<string, React.ReactNode> = {
-  message: <MessageCircle size={20} className="text-emerald-500" />,
+  message: <MessageCircle size={20} className="text-[#00833e]" />,
   like: <Heart size={20} className="text-red-500" />,
-  share: <Share2 size={20} className="text-emerald-500" />,
+  share: <Share2 size={20} className="text-[#00833e]" />,
   alert: <AlertCircle size={20} className="text-yellow-500" />,
-  follow: <User size={20} className="text-emerald-500" />,
-  comment: <MessageCircle size={20} className="text-emerald-500" />,
+  follow: <User size={20} className="text-[#00833e]" />,
+  comment: <MessageCircle size={20} className="text-[#00833e]" />,
 };
 
 export function NotificationItem({
@@ -41,8 +41,8 @@ export function NotificationItem({
   return (
     <button
       onClick={() => onActionClick?.(notification.id, notification.actionLink)}
-      className={`w-full p-4 border-b border-emerald-100 transition-colors text-left hover:bg-emerald-25 ${
-        !notification.read ? 'bg-emerald-50' : 'bg-white'
+      className={`w-full p-4 border-b border-[#d1fae5] transition-colors text-left hover:bg-[#f0fdf4] ${
+        !notification.read ? 'bg-[#e6f4ec]' : 'bg-white'
       }`}
     >
       <div className="flex gap-3">
@@ -55,7 +55,7 @@ export function NotificationItem({
               className="w-12 h-12 rounded-full object-cover"
             />
           ) : (
-            <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-[#d1fae5] flex items-center justify-center">
               {iconMap[notification.type]}
             </div>
           )}
@@ -64,21 +64,21 @@ export function NotificationItem({
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start gap-2">
-            <h3 className="font-semibold text-emerald-900 truncate">
+            <h3 className="font-semibold text-[#004d24] truncate">
               {notification.title}
             </h3>
             {!notification.read && (
-              <div className="flex-shrink-0 w-2 h-2 bg-emerald-500 rounded-full" />
+              <div className="flex-shrink-0 w-2 h-2 bg-[#00833e] rounded-full" />
             )}
           </div>
 
-          <p className="text-sm text-emerald-700 line-clamp-2 mt-1">
+          <p className="text-sm text-[#006b32] line-clamp-2 mt-1">
             {notification.body}
           </p>
 
           <div className="flex justify-between items-center gap-2 mt-2">
-            <span className="text-xs text-emerald-600">{notification.timestamp}</span>
-            <ChevronRight size={16} className="text-emerald-400" />
+            <span className="text-xs text-[#00833e]">{notification.timestamp}</span>
+            <ChevronRight size={16} className="text-[#00a24d]" />
           </div>
         </div>
       </div>

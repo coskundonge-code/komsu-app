@@ -34,7 +34,7 @@ const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(
         )}
         {...props}
       >
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#d1fae5] text-[#00833e]">
           {icon}
         </div>
         <div className="flex flex-col gap-2">

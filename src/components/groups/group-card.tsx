@@ -40,7 +40,7 @@ export function GroupCard({
             className="object-cover hover:scale-105 transition-transform"
           />
           {/* Category Badge */}
-          <div className="absolute top-3 right-3 bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+          <div className="absolute top-3 right-3 bg-[#00833e] text-white px-3 py-1 rounded-full text-xs font-semibold">
             {category}
           </div>
         </div>
@@ -59,7 +59,7 @@ export function GroupCard({
 
           {/* Member Count */}
           <div className="flex items-center gap-2 text-gray-700 text-sm mb-4 pb-4 border-b">
-            <Users className="w-4 h-4 text-emerald-600" />
+            <Users className="w-4 h-4 text-[#00833e]" />
             <span>{memberCount} Üye</span>
           </div>
 
@@ -71,8 +71,8 @@ export function GroupCard({
             }}
             className={`w-full py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 ${
               joined
-                ? 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200'
-                : 'bg-emerald-600 text-white hover:bg-emerald-700'
+                ? 'bg-[#d1fae5] text-[#00833e] hover:bg-[#a7dbb8]'
+                : 'bg-[#00833e] text-white hover:bg-[#006b32]'
             }`}
           >
             {joined ? 'Grubun Üyesisin' : 'Gruba Katıl'}

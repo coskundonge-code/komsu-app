@@ -121,7 +121,7 @@ export default function MessagesPage() {
             placeholder="Sohbet ara..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-gray-100 border-0 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full pl-10 pr-4 py-2 bg-[#f0f2f5] border border-[#e0e0e0] rounded-full text-sm text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e]"
           />
         </div>
         {/* Tabs */}
@@ -133,7 +133,7 @@ export default function MessagesPage() {
               className={cn(
                 'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
                 activeTab === tab.id
-                  ? 'bg-emerald-600 text-white'
+                  ? 'bg-[#00833e] text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               )}
             >
@@ -151,7 +151,7 @@ export default function MessagesPage() {
             onClick={() => setSelectedId(convo.id)}
             className={cn(
               'w-full flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors text-left',
-              selectedId === convo.id && 'bg-emerald-50'
+              selectedId === convo.id && 'bg-[#e6f4ec]'
             )}
           >
             <div className="relative flex-shrink-0">
@@ -172,7 +172,7 @@ export default function MessagesPage() {
               </p>
             </div>
             {convo.unread > 0 && (
-              <span className="w-5 h-5 bg-emerald-600 text-white text-xs rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="w-5 h-5 bg-[#00833e] text-white text-xs rounded-full flex items-center justify-center flex-shrink-0">
                 {convo.unread}
               </span>
             )}
@@ -206,11 +206,11 @@ export default function MessagesPage() {
             <div className={cn(
               'max-w-[70%] px-4 py-2.5 rounded-2xl text-sm',
               msg.isOwn
-                ? 'bg-emerald-600 text-white rounded-br-md'
+                ? 'bg-[#00833e] text-white rounded-br-md'
                 : 'bg-white text-gray-800 border border-gray-200 rounded-bl-md'
             )}>
               <p>{msg.text}</p>
-              <p className={cn('text-[10px] mt-1', msg.isOwn ? 'text-emerald-200' : 'text-gray-400')}>
+              <p className={cn('text-[10px] mt-1', msg.isOwn ? 'text-[#a7dbb8]' : 'text-gray-400')}>
                 {msg.time}
               </p>
             </div>
@@ -229,12 +229,12 @@ export default function MessagesPage() {
             value={messageText}
             onChange={(e) => setMessageText(e.target.value)}
             placeholder="Mesajınızı yazın..."
-            className="flex-1 px-4 py-2 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="flex-1 px-4 py-2 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[#00833e]"
           />
           <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
             <Smile className="w-5 h-5 text-gray-500" />
           </button>
-          <button className="p-2 bg-emerald-600 hover:bg-emerald-700 rounded-full transition-colors">
+          <button className="p-2 bg-[#00833e] hover:bg-[#006b32] rounded-full transition-colors">
             <Send className="w-4 h-4 text-white" />
           </button>
         </div>

@@ -39,23 +39,23 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       <div
         className={`${
           sidebarOpen ? 'w-64' : 'w-20'
-        } bg-emerald-900 text-white transition-all duration-300 flex flex-col overflow-hidden`}
+        } bg-[#004d24] text-white transition-all duration-300 flex flex-col overflow-hidden`}
       >
         {/* Logo */}
-        <div className="p-4 border-b border-emerald-800">
+        <div className="p-4 border-b border-[#005a2b]">
           <div className="flex items-center justify-between">
             {sidebarOpen && (
-              <h1 className="text-xl font-bold text-emerald-300">KomşuApp</h1>
+              <h1 className="text-xl font-bold text-[#34d399]">KomşuApp</h1>
             )}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-1 hover:bg-emerald-800 rounded transition-colors"
+              className="p-1 hover:bg-[#005a2b] rounded transition-colors"
             >
               {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
           {sidebarOpen && (
-            <p className="text-xs text-emerald-400 mt-2">Yönetici Paneli</p>
+            <p className="text-xs text-[#00a24d] mt-2">Yönetici Paneli</p>
           )}
         </div>
 
@@ -69,8 +69,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   isActive
-                    ? 'bg-emerald-600 text-white'
-                    : 'text-emerald-100 hover:bg-emerald-800'
+                    ? 'bg-[#00833e] text-white'
+                    : 'text-[#d1fae5] hover:bg-[#005a2b]'
                 }`}
                 title={!sidebarOpen ? item.label : ''}
               >
@@ -82,12 +82,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </nav>
 
         {/* Bottom Actions */}
-        <div className="p-4 border-t border-emerald-800 space-y-2">
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-emerald-100 hover:bg-emerald-800 rounded-lg transition-colors">
+        <div className="p-4 border-t border-[#005a2b] space-y-2">
+          <button className="w-full flex items-center gap-3 px-4 py-3 text-[#d1fae5] hover:bg-[#005a2b] rounded-lg transition-colors">
             <Settings size={20} />
             {sidebarOpen && <span className="text-sm font-medium">Ayarlar</span>}
           </button>
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-emerald-100 hover:bg-red-900 rounded-lg transition-colors">
+          <button className="w-full flex items-center gap-3 px-4 py-3 text-[#d1fae5] hover:bg-red-900 rounded-lg transition-colors">
             <LogOut size={20} />
             {sidebarOpen && <span className="text-sm font-medium">Çıkış</span>}
           </button>
@@ -100,7 +100,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         <div className="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
           <h2 className="text-xl font-bold text-gray-900">Yönetim Paneli</h2>
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-emerald-200 rounded-full flex items-center justify-center text-emerald-700 font-bold">
+            <div className="w-10 h-10 bg-[#a7dbb8] rounded-full flex items-center justify-center text-[#006b32] font-bold">
               A
             </div>
             <span className="text-sm font-medium text-gray-700">Admin User</span>

@@ -111,7 +111,7 @@ export default function AlertsPage() {
             onClick={() => setFilterSeverity('all')}
             className={`px-4 py-2 rounded-lg font-medium transition-colors ${
               filterSeverity === 'all'
-                ? 'bg-emerald-500 text-white'
+                ? 'bg-[#00833e] text-white'
                 : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
             }`}
           >
@@ -141,8 +141,8 @@ export default function AlertsPage() {
             onClick={() => setFilterSeverity('info')}
             className={`px-4 py-2 rounded-lg font-medium transition-colors ${
               filterSeverity === 'info'
-                ? 'bg-emerald-500 text-white'
-                : 'bg-white text-emerald-700 border border-emerald-300 hover:bg-emerald-50'
+                ? 'bg-[#00833e] text-white'
+                : 'bg-white text-[#006b32] border border-[#34d399] hover:bg-[#e6f4ec]'
             }`}
           >
             Bilgi ({severityCount.info})

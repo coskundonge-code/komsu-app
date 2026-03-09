@@ -78,7 +78,7 @@ export default function GroupsPage() {
             <h1 className="text-xl font-bold text-gray-900">Gruplar</h1>
             <Link
               href="/gruplar/olustur"
-              className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium"
+              className="flex items-center gap-2 px-4 py-2 bg-[#00833e] text-white rounded-lg hover:bg-[#006b32] transition-colors text-sm font-medium"
             >
               <Plus className="w-4 h-4" />
               Grup Oluştur
@@ -92,7 +92,7 @@ export default function GroupsPage() {
               placeholder="Grup ara..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-gray-100 border-0 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full pl-10 pr-4 py-2.5 bg-gray-100 border-0 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[#00833e]"
             />
           </div>
         </div>
@@ -135,7 +135,7 @@ export default function GroupsPage() {
                       'mt-3 w-full py-2 rounded-lg text-sm font-medium transition-colors',
                       group.isJoined
                         ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        : 'bg-emerald-600 text-white hover:bg-emerald-700'
+                        : 'bg-[#00833e] text-white hover:bg-[#006b32]'
                     )}
                   >
                     {group.isJoined ? 'Katıldın ✓' : 'Katıl'}

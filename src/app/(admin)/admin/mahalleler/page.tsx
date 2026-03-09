@@ -88,7 +88,7 @@ export default function MahalleleriPage() {
         </div>
         <button
           onClick={() => setShowAddForm(true)}
-          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+          className="flex items-center gap-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium py-2 px-4 rounded-lg transition-colors"
         >
           <Plus size={20} />
           Mahalle Ekle
@@ -97,7 +97,7 @@ export default function MahalleleriPage() {
 
       {/* Add Neighborhood Form */}
       {showAddForm && (
-        <div className="bg-white rounded-lg border border-emerald-200 p-6 mb-6">
+        <div className="bg-white rounded-lg border border-[#a7dbb8] p-6 mb-6">
           <h2 className="text-lg font-bold text-gray-900 mb-4">Yeni Mahalle Ekle</h2>
           <form onSubmit={handleAddNeighborhood} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -115,7 +115,7 @@ export default function MahalleleriPage() {
                     })
                   }
                   placeholder="Örn: Beşiktaş"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
                   required
                 />
               </div>
@@ -133,7 +133,7 @@ export default function MahalleleriPage() {
                     })
                   }
                   placeholder="Örn: İstanbul"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
                   required
                 />
               </div>
@@ -141,7 +141,7 @@ export default function MahalleleriPage() {
             <div className="flex gap-3">
               <button
                 type="submit"
-                className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
+                className="bg-[#00833e] hover:bg-[#006b32] text-white font-medium py-2 px-6 rounded-lg transition-colors"
               >
                 Ekle
               </button>
@@ -165,7 +165,7 @@ export default function MahalleleriPage() {
             className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow"
           >
             <div className="flex items-start justify-between mb-4">
-              <div className="p-3 bg-emerald-100 rounded-lg text-emerald-600">
+              <div className="p-3 bg-[#d1fae5] rounded-lg text-[#00833e]">
                 <MapPin size={24} />
               </div>
               <button className="p-2 hover:bg-gray-100 rounded transition-colors">
@@ -182,7 +182,7 @@ export default function MahalleleriPage() {
             <div className="space-y-3 py-4 border-t border-b border-gray-200">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-gray-700">
-                  <Users size={16} className="text-emerald-600" />
+                  <Users size={16} className="text-[#00833e]" />
                   <span className="text-sm">Üyeler</span>
                 </div>
                 <span className="font-bold text-gray-900">
@@ -191,7 +191,7 @@ export default function MahalleleriPage() {
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-gray-700">
-                  <MapPin size={16} className="text-emerald-600" />
+                  <MapPin size={16} className="text-[#00833e]" />
                   <span className="text-sm">Paylaşım</span>
                 </div>
                 <span className="font-bold text-gray-900">
@@ -207,7 +207,7 @@ export default function MahalleleriPage() {
 
             {/* Actions */}
             <div className="flex gap-2 mt-4">
-              <button className="flex-1 flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-medium py-2 px-3 rounded-lg transition-colors text-sm">
+              <button className="flex-1 flex items-center justify-center gap-2 bg-[#e6f4ec] hover:bg-[#d1fae5] text-[#006b32] font-medium py-2 px-3 rounded-lg transition-colors text-sm">
                 <Edit2 size={16} />
                 Düzenle
               </button>
@@ -221,21 +221,21 @@ export default function MahalleleriPage() {
       </div>
 
       {/* Stats Summary */}
-      <div className="bg-gradient-to-r from-emerald-600 to-green-600 rounded-lg text-white p-6 mt-8">
+      <div className="bg-gradient-to-r from-[#00833e] to-green-600 rounded-lg text-white p-6 mt-8">
         <h2 className="text-lg font-bold mb-4">Genel İstatistikler</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <p className="text-emerald-100 text-sm">Toplam Mahalle</p>
+            <p className="text-[#d1fae5] text-sm">Toplam Mahalle</p>
             <p className="text-3xl font-bold">{MOCK_NEIGHBORHOODS.length}</p>
           </div>
           <div>
-            <p className="text-emerald-100 text-sm">Toplam Üye</p>
+            <p className="text-[#d1fae5] text-sm">Toplam Üye</p>
             <p className="text-3xl font-bold">
               {MOCK_NEIGHBORHOODS.reduce((sum, n) => sum + n.members, 0).toLocaleString()}
             </p>
           </div>
           <div>
-            <p className="text-emerald-100 text-sm">Toplam Paylaşım</p>
+            <p className="text-[#d1fae5] text-sm">Toplam Paylaşım</p>
             <p className="text-3xl font-bold">
               {MOCK_NEIGHBORHOODS.reduce((sum, n) => sum + n.posts, 0).toLocaleString()}
             </p>

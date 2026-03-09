@@ -23,7 +23,7 @@ export default function SettingsLayout({
       {/* Header */}
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <Link href="/" className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-semibold mb-4">
+          <Link href="/" className="flex items-center gap-2 text-[#00833e] hover:text-[#006b32] font-semibold mb-4">
             <ArrowLeft className="w-4 h-4" />
             Ana Sayfaya Dön
           </Link>
@@ -50,7 +50,7 @@ export default function SettingsLayout({
                       href={item.href}
                       className={`flex items-center gap-3 px-4 py-4 border-l-4 transition-colors ${
                         isActive
-                          ? 'bg-emerald-50 border-l-emerald-600 text-emerald-600'
+                          ? 'bg-[#e6f4ec] border-l-[#00833e] text-[#00833e]'
                           : 'border-l-transparent text-gray-700 hover:bg-gray-50'
                       }`}
                     >
@@ -72,7 +72,7 @@ export default function SettingsLayout({
               <p className="text-sm text-gray-600 mb-4">
                 Sorunuz mu var? Tıklayarak cevaplar bulabilirsiniz.
               </p>
-              <button className="w-full px-4 py-2 border border-emerald-600 text-emerald-600 rounded-lg font-medium hover:bg-emerald-50 transition-colors">
+              <button className="w-full px-4 py-2 border border-[#00833e] text-[#00833e] rounded-lg font-medium hover:bg-[#e6f4ec] transition-colors">
                 Yardım Merkezi
               </button>
             </div>

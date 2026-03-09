@@ -215,7 +215,7 @@ export default function ChatPage() {
   if (!conversation) {
     return (
       <div className="flex items-center justify-center h-screen bg-white">
-        <p className="text-emerald-600">Sohbet bulunamadı</p>
+        <p className="text-[#00833e]">Sohbet bulunamadı</p>
       </div>
     );
   }
@@ -223,17 +223,17 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col h-screen bg-white">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-emerald-100 bg-white">
+      <div className="flex items-center justify-between p-4 border-b border-[#d1fae5] bg-white">
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.back()}
-            className="p-2 hover:bg-emerald-50 rounded-lg transition-colors"
+            className="p-2 hover:bg-[#e6f4ec] rounded-lg transition-colors"
           >
-            <ChevronLeft size={24} className="text-emerald-600" />
+            <ChevronLeft size={24} className="text-[#00833e]" />
           </button>
           <div>
-            <h2 className="font-semibold text-emerald-900">{conversation.name}</h2>
-            <p className="text-xs text-emerald-600">
+            <h2 className="font-semibold text-[#004d24]">{conversation.name}</h2>
+            <p className="text-xs text-[#00833e]">
               {conversation.online ? 'Çevrimiçi' : 'Çevrimdışı'}
             </p>
           </div>
@@ -246,28 +246,28 @@ export default function ChatPage() {
 
         <div className="flex items-center gap-2">
           <button
-            className="p-2 hover:bg-emerald-50 rounded-lg transition-colors"
+            className="p-2 hover:bg-[#e6f4ec] rounded-lg transition-colors"
             title="Ara"
           >
-            <Phone size={20} className="text-emerald-600" />
+            <Phone size={20} className="text-[#00833e]" />
           </button>
           <button
-            className="p-2 hover:bg-emerald-50 rounded-lg transition-colors"
+            className="p-2 hover:bg-[#e6f4ec] rounded-lg transition-colors"
             title="Video ara"
           >
-            <Video size={20} className="text-emerald-600" />
+            <Video size={20} className="text-[#00833e]" />
           </button>
           <button
-            className="p-2 hover:bg-emerald-50 rounded-lg transition-colors"
+            className="p-2 hover:bg-[#e6f4ec] rounded-lg transition-colors"
             title="Seçenekler"
           >
-            <MoreVertical size={20} className="text-emerald-600" />
+            <MoreVertical size={20} className="text-[#00833e]" />
           </button>
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 bg-emerald-25">
+      <div className="flex-1 overflow-y-auto p-4 bg-[#f0fdf4]">
         {messages.map((message) => (
           <ChatBubble key={message.id} message={message} />
         ))}

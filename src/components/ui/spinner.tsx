@@ -18,7 +18,7 @@ const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
     };
 
     const variants = {
-      primary: "border-emerald-200 border-t-emerald-600",
+      primary: "border-[#a7dbb8] border-t-[#00833e]",
       secondary: "border-gray-200 border-t-gray-600",
     };
 

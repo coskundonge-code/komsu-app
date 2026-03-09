@@ -10,7 +10,7 @@ const STATS = [
     value: '12,847',
     change: '+5.2%',
     icon: Users,
-    color: 'emerald',
+    color: 'green',
   },
   {
     id: 2,
@@ -86,7 +86,7 @@ export default function AdminDashboard() {
         {STATS.map((stat) => {
           const Icon = stat.icon;
           const colorClasses = {
-            emerald: 'bg-emerald-100 text-emerald-600',
+            emerald: 'bg-[#d1fae5] text-[#00833e]',
             blue: 'bg-blue-100 text-blue-600',
             red: 'bg-red-100 text-red-600',
             green: 'bg-green-100 text-green-600',
@@ -156,7 +156,7 @@ export default function AdminDashboard() {
                 key={activity.id}
                 className="flex items-start gap-4 pb-4 border-b border-gray-100 last:border-b-0"
               >
-                <div className="p-2 bg-emerald-50 rounded-lg text-emerald-600">
+                <div className="p-2 bg-[#e6f4ec] rounded-lg text-[#00833e]">
                   <Icon size={18} />
                 </div>
                 <div className="flex-1 min-w-0">

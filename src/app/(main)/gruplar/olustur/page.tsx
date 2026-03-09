@@ -57,7 +57,7 @@ export default function CreateGroupPage() {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-white rounded-lg shadow-md p-8">
           {/* Back Button */}
-          <Link href="/gruplar" className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 mb-6">
+          <Link href="/gruplar" className="flex items-center gap-2 text-[#00833e] hover:text-[#006b32] mb-6">
             <ArrowLeft className="w-4 h-4" />
             <span>Gruplara Geri Dön</span>
           </Link>
@@ -114,7 +114,7 @@ export default function CreateGroupPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, category: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
               >
                 {categories.map((cat) => (
                   <option key={cat} value={cat}>
@@ -127,7 +127,7 @@ export default function CreateGroupPage() {
             {/* Cover Image */}
             <div>
               <label className="block text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                <ImageIcon className="w-4 h-4 text-emerald-600" />
+                <ImageIcon className="w-4 h-4 text-[#00833e]" />
                 Kapak Resmi
               </label>
               <div className="relative">
@@ -140,7 +140,7 @@ export default function CreateGroupPage() {
                 />
                 <label
                   htmlFor="cover-image"
-                  className="block border-2 border-dashed border-emerald-300 rounded-lg p-8 text-center cursor-pointer hover:border-emerald-500 hover:bg-emerald-50 transition-colors"
+                  className="block border-2 border-dashed border-[#34d399] rounded-lg p-8 text-center cursor-pointer hover:border-[#00833e] hover:bg-[#e6f4ec] transition-colors"
                 >
                   {preview ? (
                     <div className="space-y-2">
@@ -149,13 +149,13 @@ export default function CreateGroupPage() {
                         alt="Preview"
                         className="w-full h-48 object-cover rounded-lg"
                       />
-                      <p className="text-sm text-emerald-600 font-medium">
+                      <p className="text-sm text-[#00833e] font-medium">
                         Değiştirmek için tıklayın
                       </p>
                     </div>
                   ) : (
                     <div className="space-y-2">
-                      <ImageIcon className="w-12 h-12 mx-auto text-emerald-300" />
+                      <ImageIcon className="w-12 h-12 mx-auto text-[#34d399]" />
                       <p className="font-medium text-gray-900">
                         Resim yüklemek için tıklayın
                       </p>
@@ -171,7 +171,7 @@ export default function CreateGroupPage() {
             {/* Group Rules */}
             <div>
               <label className="block text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-emerald-600" />
+                <FileText className="w-4 h-4 text-[#00833e]" />
                 Grup Kuralları
               </label>
               <Textarea
@@ -197,7 +197,7 @@ export default function CreateGroupPage() {
               </Link>
               <button
                 type="submit"
-                className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-lg font-semibold transition-colors"
+                className="flex-1 bg-[#00833e] hover:bg-[#006b32] text-white py-2 px-4 rounded-lg font-semibold transition-colors"
               >
                 Grup Oluştur
               </button>

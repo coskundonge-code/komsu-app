@@ -97,7 +97,7 @@ function SifreSifirlaContent() {
       {/* Header */}
       <div className="text-center space-y-2">
         <div className="flex justify-center mb-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center">
+          <div className="w-12 h-12 bg-gradient-to-br from-[#00833e] to-[#00833e] rounded-full flex items-center justify-center">
             <span className="text-white text-xl font-bold">K</span>
           </div>
         </div>
@@ -120,7 +120,7 @@ function SifreSifirlaContent() {
 
       {/* Success Message */}
       {success && (
-        <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-700 text-sm flex items-start gap-2">
+        <div className="p-3 bg-[#e6f4ec] border border-[#a7dbb8] rounded-lg text-[#006b32] text-sm flex items-start gap-2">
           <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
           <span>{success}</span>
         </div>
@@ -143,7 +143,7 @@ function SifreSifirlaContent() {
                 placeholder="ornek@email.com"
                 required
                 disabled={isLoading}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition disabled:bg-gray-50 disabled:cursor-not-allowed"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00833e] focus:border-transparent outline-none transition disabled:bg-gray-50 disabled:cursor-not-allowed"
               />
             </div>
             <p className="text-xs text-gray-500 mt-2">
@@ -154,7 +154,7 @@ function SifreSifirlaContent() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-medium py-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-[#00833e] to-[#00833e] hover:from-[#00833e] hover:to-[#006b32] text-white font-medium py-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? 'Gönderiliyor...' : 'Sıfırlama Bağlantısı Gönder'}
           </button>
@@ -178,7 +178,7 @@ function SifreSifirlaContent() {
                 placeholder="••••••••"
                 required
                 disabled={isLoading}
-                className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition disabled:bg-gray-50 disabled:cursor-not-allowed"
+                className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00833e] focus:border-transparent outline-none transition disabled:bg-gray-50 disabled:cursor-not-allowed"
               />
               <button
                 type="button"
@@ -210,7 +210,7 @@ function SifreSifirlaContent() {
                 placeholder="••••••••"
                 required
                 disabled={isLoading}
-                className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition disabled:bg-gray-50 disabled:cursor-not-allowed"
+                className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00833e] focus:border-transparent outline-none transition disabled:bg-gray-50 disabled:cursor-not-allowed"
               />
               <button
                 type="button"
@@ -230,7 +230,7 @@ function SifreSifirlaContent() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-medium py-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-[#00833e] to-[#00833e] hover:from-[#00833e] hover:to-[#006b32] text-white font-medium py-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? 'Güncelleniyor...' : 'Şifre Güncelle'}
           </button>
@@ -240,7 +240,7 @@ function SifreSifirlaContent() {
       {/* Back to Login */}
       <Link
         href="/giris"
-        className="flex items-center justify-center gap-2 text-emerald-600 hover:text-emerald-700 font-medium transition"
+        className="flex items-center justify-center gap-2 text-[#00833e] hover:text-[#006b32] font-medium transition"
       >
         <ArrowLeft className="w-4 h-4" />
         Giriş Sayfasına Dön
@@ -253,7 +253,7 @@ export default function SifreSifirlaPage() {
   return (
     <Suspense fallback={
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00833e]"></div>
       </div>
     }>
       <SifreSifirlaContent />

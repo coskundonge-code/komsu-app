@@ -56,7 +56,7 @@ export default function ListingDetailPage({ params }: { params: { id: string } }
       <div className="max-w-6xl mx-auto px-4 py-6">
         <Link
           href="/pazar"
-          className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 font-medium mb-4"
+          className="flex items-center gap-1 text-[#00833e] hover:text-[#006b32] font-medium mb-4"
         >
           <ChevronLeft size={20} />
           Pazara Dön
@@ -117,7 +117,7 @@ export default function ListingDetailPage({ params }: { params: { id: string } }
                       className={cn(
                         'w-20 h-20 rounded-lg flex-shrink-0 overflow-hidden border-2 transition-colors',
                         currentImageIndex === idx
-                          ? 'border-emerald-600'
+                          ? 'border-[#00833e]'
                           : 'border-gray-300'
                       )}
                     >
@@ -170,7 +170,7 @@ export default function ListingDetailPage({ params }: { params: { id: string } }
 
               <button
                 onClick={() => setShowContactForm(!showContactForm)}
-                className="w-full px-4 py-3 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2"
+                className="w-full px-4 py-3 bg-[#00833e] text-white rounded-lg font-medium hover:bg-[#006b32] transition-colors flex items-center justify-center gap-2"
               >
                 <MessageCircle size={18} />
                 Satıcıya Mesaj Gönder
@@ -183,9 +183,9 @@ export default function ListingDetailPage({ params }: { params: { id: string } }
                 <textarea
                   placeholder="Sorunuz veya teklifinizi yazın..."
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#00833e] resize-none"
                 />
-                <button className="w-full mt-3 px-4 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors">
+                <button className="w-full mt-3 px-4 py-2 bg-[#00833e] text-white rounded-lg font-medium hover:bg-[#006b32] transition-colors">
                   Gönder
                 </button>
               </div>
@@ -214,7 +214,7 @@ export default function ListingDetailPage({ params }: { params: { id: string } }
                 </div>
               </div>
 
-              <button className="w-full px-4 py-2 border border-emerald-600 text-emerald-600 rounded-lg font-medium hover:bg-emerald-50 transition-colors">
+              <button className="w-full px-4 py-2 border border-[#00833e] text-[#00833e] rounded-lg font-medium hover:bg-[#e6f4ec] transition-colors">
                 Profili Görüntüle
               </button>
             </div>

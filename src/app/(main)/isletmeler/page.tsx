@@ -124,12 +124,12 @@ export default function IsletmelerPage() {
   }, [search, selectedCategory]);
 
   return (
-    <div className="min-h-screen bg-emerald-50">
+    <div className="min-h-screen bg-[#e6f4ec]">
       {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-600 to-green-600 text-white py-8 px-4">
+      <div className="bg-gradient-to-r from-[#00833e] to-green-600 text-white py-8 px-4">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-4xl font-bold mb-2">Komşu İşletmeleri Keşfet</h1>
-          <p className="text-emerald-100">
+          <p className="text-[#d1fae5]">
             Mahallenizdeki en iyi işletmeleri bul ve yorumlarını oku
           </p>
         </div>
@@ -139,13 +139,13 @@ export default function IsletmelerPage() {
         {/* Search Bar */}
         <div className="mb-8">
           <div className="relative">
-            <Search className="absolute left-3 top-3 text-emerald-600" size={20} />
+            <Search className="absolute left-3 top-3 text-[#00833e]" size={20} />
             <input
               type="text"
               placeholder="İşletme adı veya konum ara..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-lg border-2 border-emerald-200 focus:border-emerald-500 focus:outline-none bg-white"
+              className="w-full pl-10 pr-4 py-3 rounded-lg border-2 border-[#a7dbb8] focus:border-[#00833e] focus:outline-none bg-white"
             />
           </div>
         </div>
@@ -159,8 +159,8 @@ export default function IsletmelerPage() {
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 rounded-full font-medium transition-colors ${
                   selectedCategory === category
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-white text-gray-700 border border-emerald-200 hover:border-emerald-400'
+                    ? 'bg-[#00833e] text-white'
+                    : 'bg-white text-gray-700 border border-[#a7dbb8] hover:border-[#00a24d]'
                 }`}
               >
                 {category}
@@ -202,7 +202,7 @@ export default function IsletmelerPage() {
         )}
 
         {/* Add Business CTA */}
-        <div className="bg-white rounded-lg border-2 border-emerald-200 p-6 text-center mb-8">
+        <div className="bg-white rounded-lg border-2 border-[#a7dbb8] p-6 text-center mb-8">
           <h3 className="text-lg font-bold text-gray-900 mb-2">
             Kendi İşletmenizi Ekleyin
           </h3>
@@ -211,7 +211,7 @@ export default function IsletmelerPage() {
           </p>
           <Link
             href="/isletme-ekle"
-            className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium py-2 px-6 rounded-lg transition-colors"
           >
             İşletme Ekle
             <ChevronRight size={18} />

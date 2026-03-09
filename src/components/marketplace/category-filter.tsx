@@ -53,7 +53,7 @@ export function CategoryFilter({
             className={cn(
               'px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all',
               activeCategory === category.value
-                ? 'bg-emerald-600 text-white'
+                ? 'bg-[#00833e] text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             )}
           >
@@ -76,7 +76,7 @@ export function CategoryFilter({
             className={cn(
               'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm',
               activeCategory === category.value
-                ? 'bg-emerald-50 text-emerald-700 font-semibold'
+                ? 'bg-[#e6f4ec] text-[#006b32] font-semibold'
                 : 'text-gray-700 hover:bg-gray-50'
             )}
           >
@@ -85,7 +85,7 @@ export function CategoryFilter({
                 className={cn(
                   'transition-colors',
                   activeCategory === category.value
-                    ? 'text-emerald-600'
+                    ? 'text-[#00833e]'
                     : 'text-gray-400'
                 )}
               >

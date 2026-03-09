@@ -54,7 +54,7 @@ export function EventCard({
             className="object-cover hover:scale-105 transition-transform"
           />
           {/* Date Badge */}
-          <div className="absolute top-3 left-3 bg-emerald-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+          <div className="absolute top-3 left-3 bg-[#00833e] text-white px-3 py-1 rounded-full text-sm font-semibold">
             {dateStr}
           </div>
         </div>
@@ -73,7 +73,7 @@ export function EventCard({
 
           {/* Location */}
           <div className="flex items-center gap-2 text-gray-700 text-sm mb-3">
-            <MapPin className="w-4 h-4 text-emerald-600" />
+            <MapPin className="w-4 h-4 text-[#00833e]" />
             <span className="line-clamp-1">
               {isOnline ? 'Çevrimiçi Etkinlik' : location}
             </span>
@@ -94,7 +94,7 @@ export function EventCard({
           {/* Attendees and Actions */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-emerald-600" />
+              <Users className="w-4 h-4 text-[#00833e]" />
               <span className="text-sm text-gray-700">
                 {attendeeCount}
                 {maxAttendees ? `/${maxAttendees}` : ''} Katılımcı
@@ -108,7 +108,7 @@ export function EventCard({
               }}
               className={`p-2 rounded-full transition-colors ${
                 isInterested
-                  ? 'bg-emerald-100 text-emerald-600'
+                  ? 'bg-[#d1fae5] text-[#00833e]'
                   : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
               }`}
             >
@@ -123,7 +123,7 @@ export function EventCard({
                 e.preventDefault();
               }}
               disabled={isFull}
-              className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-2 rounded-lg text-sm font-semibold transition-colors"
+              className="flex-1 bg-[#00833e] hover:bg-[#006b32] disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-2 rounded-lg text-sm font-semibold transition-colors"
             >
               {isFull ? 'Dolu' : 'Katılıyorum'}
             </button>
@@ -132,7 +132,7 @@ export function EventCard({
                 e.preventDefault();
                 setIsInterested(!isInterested);
               }}
-              className="flex-1 border border-emerald-600 text-emerald-600 hover:bg-emerald-50 py-2 rounded-lg text-sm font-semibold transition-colors"
+              className="flex-1 border border-[#00833e] text-[#00833e] hover:bg-[#e6f4ec] py-2 rounded-lg text-sm font-semibold transition-colors"
             >
               İlgileniyorum
             </button>

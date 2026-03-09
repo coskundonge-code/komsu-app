@@ -29,25 +29,25 @@ export default function BusinessLayout({ children }: BusinessLayoutProps) {
   const pathname = usePathname();
 
   return (
-    <div className="flex h-screen bg-emerald-50">
+    <div className="flex h-screen bg-[#e6f4ec]">
       {/* Sidebar */}
       <div
         className={`${
           sidebarOpen ? 'w-64' : 'w-20'
-        } bg-gradient-to-b from-emerald-900 to-green-900 text-white transition-all duration-300 flex flex-col overflow-hidden`}
+        } bg-gradient-to-b from-[#004d24] to-green-900 text-white transition-all duration-300 flex flex-col overflow-hidden`}
       >
         {/* Logo */}
-        <div className="p-4 border-b border-emerald-800">
+        <div className="p-4 border-b border-[#005a2b]">
           <div className="flex items-center justify-between">
             {sidebarOpen && (
               <div>
-                <h1 className="text-xl font-bold text-emerald-300">KomşuApp</h1>
-                <p className="text-xs text-emerald-400 mt-1">İşletme Paneli</p>
+                <h1 className="text-xl font-bold text-[#34d399]">KomşuApp</h1>
+                <p className="text-xs text-[#00a24d] mt-1">İşletme Paneli</p>
               </div>
             )}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-1 hover:bg-emerald-800 rounded transition-colors"
+              className="p-1 hover:bg-[#005a2b] rounded transition-colors"
             >
               {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -56,14 +56,14 @@ export default function BusinessLayout({ children }: BusinessLayoutProps) {
 
         {/* Business Info */}
         {sidebarOpen && (
-          <div className="p-4 border-b border-emerald-800 bg-emerald-800/30">
+          <div className="p-4 border-b border-[#005a2b] bg-[#005a2b]/30">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 bg-emerald-400 rounded-full flex items-center justify-center text-emerald-900 font-bold text-lg">
+              <div className="w-12 h-12 bg-[#00a24d] rounded-full flex items-center justify-center text-[#004d24] font-bold text-lg">
                 K
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-sm line-clamp-1">Kahvehane Keyif</p>
-                <p className="text-xs text-emerald-300">Aktif</p>
+                <p className="text-xs text-[#34d399]">Aktif</p>
               </div>
             </div>
           </div>
@@ -79,8 +79,8 @@ export default function BusinessLayout({ children }: BusinessLayoutProps) {
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   isActive
-                    ? 'bg-emerald-600 text-white'
-                    : 'text-emerald-100 hover:bg-emerald-800'
+                    ? 'bg-[#00833e] text-white'
+                    : 'text-[#d1fae5] hover:bg-[#005a2b]'
                 }`}
                 title={!sidebarOpen ? item.label : ''}
               >
@@ -92,12 +92,12 @@ export default function BusinessLayout({ children }: BusinessLayoutProps) {
         </nav>
 
         {/* Bottom Actions */}
-        <div className="p-4 border-t border-emerald-800 space-y-2">
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-emerald-100 hover:bg-emerald-800 rounded-lg transition-colors">
+        <div className="p-4 border-t border-[#005a2b] space-y-2">
+          <button className="w-full flex items-center gap-3 px-4 py-3 text-[#d1fae5] hover:bg-[#005a2b] rounded-lg transition-colors">
             <Settings size={20} />
             {sidebarOpen && <span className="text-sm font-medium">Ayarlar</span>}
           </button>
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-emerald-100 hover:bg-red-900 rounded-lg transition-colors">
+          <button className="w-full flex items-center gap-3 px-4 py-3 text-[#d1fae5] hover:bg-red-900 rounded-lg transition-colors">
             <LogOut size={20} />
             {sidebarOpen && <span className="text-sm font-medium">Çıkış</span>}
           </button>
@@ -107,7 +107,7 @@ export default function BusinessLayout({ children }: BusinessLayoutProps) {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Bar */}
-        <div className="bg-white border-b border-emerald-200 px-8 py-4 flex items-center justify-between">
+        <div className="bg-white border-b border-[#a7dbb8] px-8 py-4 flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">İşletme Paneli</h2>
             <p className="text-sm text-gray-600 mt-1">
@@ -115,10 +115,10 @@ export default function BusinessLayout({ children }: BusinessLayoutProps) {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <button className="px-4 py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 rounded-lg font-medium text-sm transition-colors">
+            <button className="px-4 py-2 bg-[#d1fae5] hover:bg-[#a7dbb8] text-[#006b32] rounded-lg font-medium text-sm transition-colors">
               İşletmemi Görüntüle
             </button>
-            <div className="w-10 h-10 bg-emerald-200 rounded-full flex items-center justify-center text-emerald-700 font-bold">
+            <div className="w-10 h-10 bg-[#a7dbb8] rounded-full flex items-center justify-center text-[#006b32] font-bold">
               K
             </div>
           </div>

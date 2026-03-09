@@ -25,10 +25,10 @@ interface AlertCardProps {
 
 const severityConfig = {
   info: {
-    bgColor: 'bg-emerald-50',
-    borderColor: 'border-emerald-200',
-    badgeColor: 'bg-emerald-100 text-emerald-700',
-    iconColor: 'text-emerald-600',
+    bgColor: 'bg-[#e6f4ec]',
+    borderColor: 'border-[#a7dbb8]',
+    badgeColor: 'bg-[#d1fae5] text-[#006b32]',
+    iconColor: 'text-[#00833e]',
   },
   warning: {
     bgColor: 'bg-yellow-50',

@@ -132,13 +132,13 @@ const notificationIcon = (type: NotificationType) => {
   switch (type) {
     case 'like': return <Heart className="w-4 h-4 text-red-500" />;
     case 'comment': return <MessageCircle className="w-4 h-4 text-blue-500" />;
-    case 'message': return <MessageCircle className="w-4 h-4 text-emerald-500" />;
+    case 'message': return <MessageCircle className="w-4 h-4 text-[#00833e]" />;
     case 'follow': return <UserPlus className="w-4 h-4 text-purple-500" />;
     case 'alert': return <AlertTriangle className="w-4 h-4 text-red-600" />;
     case 'share': return <Share2 className="w-4 h-4 text-blue-500" />;
     case 'event': return <Calendar className="w-4 h-4 text-orange-500" />;
-    case 'group': return <Users className="w-4 h-4 text-emerald-600" />;
-    case 'marketplace': return <ShoppingBag className="w-4 h-4 text-emerald-600" />;
+    case 'group': return <Users className="w-4 h-4 text-[#00833e]" />;
+    case 'marketplace': return <ShoppingBag className="w-4 h-4 text-[#00833e]" />;
   }
 };
 
@@ -146,13 +146,13 @@ const notificationBgIcon = (type: NotificationType) => {
   switch (type) {
     case 'like': return 'bg-red-100';
     case 'comment': return 'bg-blue-100';
-    case 'message': return 'bg-emerald-100';
+    case 'message': return 'bg-[#d1fae5]';
     case 'follow': return 'bg-purple-100';
     case 'alert': return 'bg-red-100';
     case 'share': return 'bg-blue-100';
     case 'event': return 'bg-orange-100';
-    case 'group': return 'bg-emerald-100';
-    case 'marketplace': return 'bg-emerald-100';
+    case 'group': return 'bg-[#d1fae5]';
+    case 'marketplace': return 'bg-[#d1fae5]';
   }
 };
 
@@ -216,7 +216,7 @@ export default function NotificationsPage() {
               {unreadCount > 0 && (
                 <button
                   onClick={markAllAsRead}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[#00833e] hover:bg-[#e6f4ec] rounded-lg transition-colors"
                 >
                   <CheckCheck className="w-4 h-4" />
                   Tümünü Oku
@@ -237,7 +237,7 @@ export default function NotificationsPage() {
                 className={cn(
                   'flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors',
                   activeTab === tab.id
-                    ? 'text-emerald-700 border-emerald-600'
+                    ? 'text-[#006b32] border-[#00833e]'
                     : 'text-gray-500 border-transparent hover:text-gray-700'
                 )}
               >
@@ -273,7 +273,7 @@ export default function NotificationsPage() {
                       onClick={() => markAsRead(n.id)}
                       className={cn(
                         'w-full flex items-start gap-3 p-4 text-left hover:bg-gray-50 transition-colors',
-                        !n.read && 'bg-emerald-50/50'
+                        !n.read && 'bg-[#e6f4ec]/50'
                       )}
                     >
                       {/* Avatar or Icon */}
@@ -313,7 +313,7 @@ export default function NotificationsPage() {
 
                       {/* Unread dot */}
                       {!n.read && (
-                        <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full flex-shrink-0 mt-2" />
+                        <span className="w-2.5 h-2.5 bg-[#00833e] rounded-full flex-shrink-0 mt-2" />
                       )}
                     </button>
                   ))}

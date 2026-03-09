@@ -25,7 +25,7 @@ export function ReviewForm({ businessName, onSubmit }: ReviewFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-emerald-100 p-6">
+    <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-[#d1fae5] p-6">
       <h3 className="text-lg font-bold text-gray-900 mb-4">{businessName} için Yorum Yaz</h3>
 
       {/* Star Rating */}
@@ -71,7 +71,7 @@ export function ReviewForm({ businessName, onSubmit }: ReviewFormProps) {
           placeholder="Bu işletmeniz hakkında ne düşünüyorsunuz?"
           maxLength={500}
           rows={4}
-          className="w-full rounded-lg border border-emerald-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none"
+          className="w-full rounded-lg border border-[#a7dbb8] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00833e] focus:border-transparent resize-none"
         />
         <p className="text-xs text-gray-500 mt-1">{text.length}/500</p>
       </div>
@@ -80,7 +80,7 @@ export function ReviewForm({ businessName, onSubmit }: ReviewFormProps) {
       <button
         type="submit"
         disabled={!text.trim()}
-        className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+        className="w-full bg-[#00833e] hover:bg-[#006b32] disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
       >
         <Send size={16} />
         Yorumu Gönder
@@ -88,7 +88,7 @@ export function ReviewForm({ businessName, onSubmit }: ReviewFormProps) {
 
       {/* Success Message */}
       {submitted && (
-        <div className="mt-3 p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-sm text-emerald-700 font-medium">
+        <div className="mt-3 p-3 bg-[#e6f4ec] border border-[#a7dbb8] rounded-lg text-sm text-[#006b32] font-medium">
           ✓ Yorum başarıyla gönderildi!
         </div>
       )}

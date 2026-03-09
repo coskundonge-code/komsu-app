@@ -100,7 +100,7 @@ export default function EventsPage() {
               </button>
               <Link
                 href="/etkinlikler/olustur"
-                className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium"
+                className="flex items-center gap-2 px-4 py-2 bg-[#00833e] text-white rounded-lg hover:bg-[#006b32] transition-colors text-sm font-medium"
               >
                 <Plus className="w-4 h-4" />
                 Etkinlik Oluştur
@@ -115,7 +115,7 @@ export default function EventsPage() {
               placeholder="Etkinlik ara..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-gray-100 border-0 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full pl-10 pr-4 py-2.5 bg-gray-100 border-0 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[#00833e]"
             />
           </div>
         </div>
@@ -144,7 +144,7 @@ export default function EventsPage() {
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute top-3 left-3 bg-white rounded-lg shadow-md px-3 py-1.5 text-center">
-                      <p className="text-xs font-bold text-emerald-600 uppercase">{event.dayName}</p>
+                      <p className="text-xs font-bold text-[#00833e] uppercase">{event.dayName}</p>
                       <p className="text-lg font-bold text-gray-900 leading-tight">{event.date.split(' ')[0]}</p>
                       <p className="text-xs text-gray-500">{event.date.split(' ')[1]}</p>
                     </div>
@@ -176,7 +176,7 @@ export default function EventsPage() {
                         className={cn(
                           'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
                           event.isInterested
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                            ? 'bg-[#e6f4ec] text-[#006b32] border border-[#a7dbb8]'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         )}
                       >

@@ -47,10 +47,10 @@ export default function SettingsPage() {
             alt={mockUser.name}
             width={100}
             height={100}
-            className="w-24 h-24 rounded-full object-cover border-4 border-emerald-600"
+            className="w-24 h-24 rounded-full object-cover border-4 border-[#00833e]"
           />
           <div>
-            <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2">
+            <button className="bg-[#00833e] hover:bg-[#006b32] text-white px-6 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2">
               <Camera className="w-4 h-4" />
               Fotoğraf Yükle
             </button>
@@ -95,7 +95,7 @@ export default function SettingsPage() {
               className="w-full"
             />
             <p className="text-sm text-gray-600 mt-2">
-              <span className="text-emerald-600 font-semibold">✓ Doğrulanmış</span>
+              <span className="text-[#00833e] font-semibold">✓ Doğrulanmış</span>
             </p>
           </div>
 
@@ -162,7 +162,7 @@ export default function SettingsPage() {
           <div className="flex justify-end pt-6 border-t">
             <button
               onClick={handleSave}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2"
+              className="bg-[#00833e] hover:bg-[#006b32] text-white px-8 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2"
             >
               {isSaved && <Check className="w-4 h-4" />}
               {isSaved ? 'Kaydedildi' : 'Değişiklikleri Kaydet'}
@@ -217,7 +217,7 @@ export default function SettingsPage() {
 
           {/* Change Password Button */}
           <div className="flex justify-end pt-6 border-t">
-            <Button className="bg-emerald-600 hover:bg-emerald-700">
+            <Button className="bg-[#00833e] hover:bg-[#006b32]">
               Şifreyi Değiştir
             </Button>
           </div>

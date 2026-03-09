@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { Sidebar } from "@/components/layout/sidebar";
+import { RightSidebar } from "@/components/layout/right-sidebar";
 import { BottomBar } from "@/components/layout/bottom-bar";
 
 interface MainLayoutProps {
@@ -10,29 +10,27 @@ interface MainLayoutProps {
 }
 
 export default function MainLayout({ children }: MainLayoutProps) {
-  const [activeTab, setActiveTab] = React.useState("home");
-
   return (
-    <div className="flex min-h-screen flex-col bg-gray-100">
+    <div className="flex min-h-screen flex-col bg-[#f0f2f5]">
       {/* Navbar */}
       <Navbar />
 
-      {/* Main Content Area */}
-      <div className="flex flex-1">
-        {/* Sidebar - hidden on mobile */}
-        <Sidebar className="sticky top-14 h-[calc(100vh-56px)]" />
+      {/* Main Content Area - 3 column layout */}
+      <div className="max-w-[1280px] mx-auto w-full flex flex-1">
+        {/* Left Sidebar */}
+        <Sidebar className="sticky top-[56px] h-[calc(100vh-56px)]" />
 
-        {/* Content */}
-        <main className="flex-1 overflow-y-auto">
+        {/* Center Content */}
+        <main className="flex-1 min-w-0 pb-20 lg:pb-4">
           {children}
         </main>
+
+        {/* Right Sidebar */}
+        <RightSidebar />
       </div>
 
       {/* Mobile Bottom Bar */}
-      <BottomBar
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-      />
+      <BottomBar />
     </div>
   );
 }

@@ -88,7 +88,7 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
       {/* Back Button */}
       <div className="bg-white border-b py-4">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link href="/gruplar" className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-semibold">
+          <Link href="/gruplar" className="flex items-center gap-2 text-[#00833e] hover:text-[#006b32] font-semibold">
             <ArrowLeft className="w-4 h-4" />
             Gruplara Geri Dön
           </Link>
@@ -130,11 +130,11 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
                       <div className="flex-1">
                         <textarea
                           placeholder="Gruba bir şeyler paylaş..."
-                          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
+                          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] resize-none"
                           rows={3}
                         />
                         <div className="flex justify-end mt-2">
-                          <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
+                          <button className="bg-[#00833e] hover:bg-[#006b32] text-white px-6 py-2 rounded-lg font-semibold transition-colors">
                             Gönder
                           </button>
                         </div>
@@ -192,17 +192,17 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
                     <div className="flex gap-6 pt-4 border-t">
                       <button
                         onClick={() => handleLike(post.id)}
-                        className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors"
+                        className="flex items-center gap-2 text-gray-600 hover:text-[#00833e] transition-colors"
                       >
                         <Heart
                           className="w-5 h-5"
                           fill={likedPosts.includes(post.id) ? 'currentColor' : 'none'}
                         />
-                        <span className={likedPosts.includes(post.id) ? 'text-emerald-600' : ''}>
+                        <span className={likedPosts.includes(post.id) ? 'text-[#00833e]' : ''}>
                           {likedPosts.includes(post.id) ? post.likes + 1 : post.likes}
                         </span>
                       </button>
-                      <button className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors">
+                      <button className="flex items-center gap-2 text-gray-600 hover:text-[#00833e] transition-colors">
                         <MessageCircle className="w-5 h-5" />
                         <span>{post.comments}</span>
                       </button>
@@ -229,7 +229,7 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
                           className="w-20 h-20 rounded-full object-cover mx-auto mb-3"
                         />
                         <p className="font-semibold text-gray-900">{member.name}</p>
-                        <p className="text-xs text-emerald-600 font-semibold mt-1">
+                        <p className="text-xs text-[#00833e] font-semibold mt-1">
                           {member.role}
                         </p>
                       </div>
@@ -257,13 +257,13 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
               <div className="space-y-4">
                 <div className="pb-4 border-b">
                   <p className="text-sm text-gray-600 mb-1">Üye Sayısı</p>
-                  <p className="text-2xl font-bold text-emerald-600">
+                  <p className="text-2xl font-bold text-[#00833e]">
                     {mockGroupDetail.memberCount}
                   </p>
                 </div>
                 <div className="pb-4 border-b">
                   <p className="text-sm text-gray-600 mb-1">Toplam Gönderi</p>
-                  <p className="text-2xl font-bold text-emerald-600">
+                  <p className="text-2xl font-bold text-[#00833e]">
                     {mockGroupDetail.postCount}
                   </p>
                 </div>
@@ -279,19 +279,19 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
               <h3 className="text-lg font-bold text-gray-900 mb-4">Grup Kuralları</h3>
               <ul className="space-y-3 text-sm text-gray-700">
                 <li className="flex gap-2">
-                  <span className="text-emerald-600 font-bold">•</span>
+                  <span className="text-[#00833e] font-bold">•</span>
                   <span>Saygılı ve nazik bir dil kullanın</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-emerald-600 font-bold">•</span>
+                  <span className="text-[#00833e] font-bold">•</span>
                   <span>Spam ve ticari içerik paylaşmayın</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-emerald-600 font-bold">•</span>
+                  <span className="text-[#00833e] font-bold">•</span>
                   <span>Başkalarının mahremiyetine saygı gösterin</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-emerald-600 font-bold">•</span>
+                  <span className="text-[#00833e] font-bold">•</span>
                   <span>Hayaletçilik ve mobbing yasaktır</span>
                 </li>
               </ul>

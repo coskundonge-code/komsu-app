@@ -95,7 +95,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
       {/* Header with Back Button */}
       <div className="bg-white border-b py-4">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link href="/etkinlikler" className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-semibold">
+          <Link href="/etkinlikler" className="flex items-center gap-2 text-[#00833e] hover:text-[#006b32] font-semibold">
             <ArrowLeft className="w-4 h-4" />
             Etkinliklere Geri Dön
           </Link>
@@ -134,7 +134,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
           {/* Event Info Grid */}
           <div className="grid md:grid-cols-3 gap-6 mb-8 pb-8 border-b">
             <div className="flex gap-4">
-              <Calendar className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-1" />
+              <Calendar className="w-5 h-5 text-[#00833e] flex-shrink-0 mt-1" />
               <div>
                 <p className="text-sm text-gray-600 font-medium">Tarih ve Saat</p>
                 <p className="text-lg font-semibold text-gray-900">
@@ -144,7 +144,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
               </div>
             </div>
             <div className="flex gap-4">
-              <MapPin className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-1" />
+              <MapPin className="w-5 h-5 text-[#00833e] flex-shrink-0 mt-1" />
               <div>
                 <p className="text-sm text-gray-600 font-medium">Konum</p>
                 <p className="text-lg font-semibold text-gray-900">
@@ -153,7 +153,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
               </div>
             </div>
             <div className="flex gap-4">
-              <Users className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-1" />
+              <Users className="w-5 h-5 text-[#00833e] flex-shrink-0 mt-1" />
               <div>
                 <p className="text-sm text-gray-600 font-medium">Katılımcılar</p>
                 <p className="text-lg font-semibold text-gray-900">
@@ -176,10 +176,10 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
               disabled={isFull && !isJoined}
               className={`flex-1 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 ${
                 isJoined
-                  ? 'bg-emerald-100 text-emerald-600'
+                  ? 'bg-[#d1fae5] text-[#00833e]'
                   : isFull
                   ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                  : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                  : 'bg-[#00833e] hover:bg-[#006b32] text-white'
               }`}
             >
               {isJoined && <Check className="w-5 h-5" />}
@@ -189,8 +189,8 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
               onClick={() => setIsInterested(!isInterested)}
               className={`flex-1 py-3 rounded-lg font-semibold transition-colors border-2 flex items-center justify-center gap-2 ${
                 isInterested
-                  ? 'border-emerald-600 bg-emerald-50 text-emerald-600'
-                  : 'border-gray-300 text-gray-600 hover:border-emerald-600'
+                  ? 'border-[#00833e] bg-[#e6f4ec] text-[#00833e]'
+                  : 'border-gray-300 text-gray-600 hover:border-[#00833e]'
               }`}
             >
               <Heart className="w-5 h-5" fill={isInterested ? 'currentColor' : 'none'} />
@@ -261,7 +261,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
         {/* Comments */}
         <div className="bg-white rounded-lg shadow-md p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <MessageCircle className="w-6 h-6 text-emerald-600" />
+            <MessageCircle className="w-6 h-6 text-[#00833e]" />
             Yorumlar ({comments.length})
           </h2>
 
@@ -280,14 +280,14 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
                   placeholder="Bir yorum ekle..."
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] resize-none"
                   rows={3}
                 />
                 <div className="flex justify-end mt-2">
                   <button
                     onClick={handleAddComment}
                     disabled={!commentText.trim()}
-                    className="bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
+                    className="bg-[#00833e] hover:bg-[#006b32] disabled:bg-gray-300 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
                   >
                     Gönder
                   </button>
@@ -315,7 +315,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
                     </span>
                   </div>
                   <p className="text-gray-700 mt-1">{comment.text}</p>
-                  <button className="mt-2 text-sm text-gray-600 hover:text-emerald-600 flex items-center gap-1">
+                  <button className="mt-2 text-sm text-gray-600 hover:text-[#00833e] flex items-center gap-1">
                     <Heart className="w-4 h-4" />
                     {comment.likes} Beğeni
                   </button>

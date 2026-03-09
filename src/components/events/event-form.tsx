@@ -42,7 +42,7 @@ export function EventForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Back Button */}
-      <Link href="/etkinlikler" className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700">
+      <Link href="/etkinlikler" className="flex items-center gap-2 text-[#00833e] hover:text-[#006b32]">
         <ArrowLeft className="w-4 h-4" />
         <span>Geri Dön</span>
       </Link>
@@ -84,7 +84,7 @@ export function EventForm() {
       <div className="grid md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-emerald-600" />
+            <Calendar className="w-4 h-4 text-[#00833e]" />
             Tarih
           </label>
           <Input
@@ -129,7 +129,7 @@ export function EventForm() {
 
       {/* Online Toggle */}
       <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-        <Globe className="w-5 h-5 text-emerald-600" />
+        <Globe className="w-5 h-5 text-[#00833e]" />
         <label className="flex items-center gap-3 cursor-pointer flex-1">
           <input
             type="checkbox"
@@ -137,7 +137,7 @@ export function EventForm() {
             onChange={(e) =>
               setFormData({ ...formData, isOnline: e.target.checked })
             }
-            className="w-4 h-4 rounded border-gray-300 text-emerald-600"
+            className="w-4 h-4 rounded border-gray-300 text-[#00833e]"
           />
           <span className="text-gray-700 font-medium">
             Çevrimiçi Etkinlik
@@ -149,7 +149,7 @@ export function EventForm() {
       {!formData.isOnline && (
         <div>
           <label className="block text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-emerald-600" />
+            <MapPin className="w-4 h-4 text-[#00833e]" />
             Konum
           </label>
           <Input
@@ -167,7 +167,7 @@ export function EventForm() {
       {/* Cover Image Upload */}
       <div>
         <label className="block text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-          <ImageIcon className="w-4 h-4 text-emerald-600" />
+          <ImageIcon className="w-4 h-4 text-[#00833e]" />
           Kapak Resmi
         </label>
         <div className="relative">
@@ -180,7 +180,7 @@ export function EventForm() {
           />
           <label
             htmlFor="cover-image"
-            className="block border-2 border-dashed border-emerald-300 rounded-lg p-8 text-center cursor-pointer hover:border-emerald-500 hover:bg-emerald-50 transition-colors"
+            className="block border-2 border-dashed border-[#34d399] rounded-lg p-8 text-center cursor-pointer hover:border-[#00833e] hover:bg-[#e6f4ec] transition-colors"
           >
             {preview ? (
               <div className="space-y-2">
@@ -189,13 +189,13 @@ export function EventForm() {
                   alt="Preview"
                   className="w-full h-48 object-cover rounded-lg"
                 />
-                <p className="text-sm text-emerald-600 font-medium">
+                <p className="text-sm text-[#00833e] font-medium">
                   Değiştirmek için tıklayın
                 </p>
               </div>
             ) : (
               <div className="space-y-2">
-                <ImageIcon className="w-12 h-12 mx-auto text-emerald-300" />
+                <ImageIcon className="w-12 h-12 mx-auto text-[#34d399]" />
                 <p className="font-medium text-gray-900">
                   Resim yüklemek için tıklayın
                 </p>
@@ -217,7 +217,7 @@ export function EventForm() {
         </Link>
         <button
           type="submit"
-          className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-lg font-semibold transition-colors"
+          className="flex-1 bg-[#00833e] hover:bg-[#006b32] text-white py-2 px-4 rounded-lg font-semibold transition-colors"
         >
           Etkinlik Oluştur
         </button>

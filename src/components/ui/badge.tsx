@@ -8,9 +8,9 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
   ({ className, variant = "default", ...props }, ref) => {
     const variants = {
-      default: "bg-emerald-100 text-emerald-800",
+      default: "bg-[#d1fae5] text-[#005a2b]",
       secondary: "bg-gray-100 text-gray-800",
-      outline: "border border-emerald-600 text-emerald-600",
+      outline: "border border-[#00833e] text-[#00833e]",
       success: "bg-green-100 text-green-800",
       warning: "bg-yellow-100 text-yellow-800",
       destructive: "bg-red-100 text-red-800",

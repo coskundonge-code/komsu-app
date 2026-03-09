@@ -153,7 +153,7 @@ export default function ModerasjonPage() {
               placeholder="Yazar veya içerik ile ara..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
             />
           </div>
         </div>
@@ -166,7 +166,7 @@ export default function ModerasjonPage() {
               onClick={() => setStatusFilter(status)}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 statusFilter === status
-                  ? 'bg-emerald-600 text-white'
+                  ? 'bg-[#00833e] text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
@@ -246,7 +246,7 @@ export default function ModerasjonPage() {
                   {/* Actions */}
                   {report.status === 'pending' && (
                     <div className="flex gap-2">
-                      <button className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg font-medium text-sm transition-colors">
+                      <button className="flex items-center gap-2 px-4 py-2 bg-[#e6f4ec] text-[#006b32] hover:bg-[#d1fae5] rounded-lg font-medium text-sm transition-colors">
                         <CheckCircle size={16} />
                         Onayla
                       </button>

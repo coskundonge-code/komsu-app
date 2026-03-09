@@ -69,19 +69,19 @@ export default function IsletmeEklePage() {
   const isStep2Valid = formData.phone && formData.email;
 
   return (
-    <div className="min-h-screen bg-emerald-50">
+    <div className="min-h-screen bg-[#e6f4ec]">
       {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-600 to-green-600 text-white py-8 px-4">
+      <div className="bg-gradient-to-r from-[#00833e] to-green-600 text-white py-8 px-4">
         <div className="max-w-2xl mx-auto">
           <Link
             href="/isletmeler"
-            className="inline-flex items-center gap-2 text-emerald-100 hover:text-white mb-4"
+            className="inline-flex items-center gap-2 text-[#d1fae5] hover:text-white mb-4"
           >
             <ChevronLeft size={20} />
             Geri Dön
           </Link>
           <h1 className="text-4xl font-bold">İşletme Ekle</h1>
-          <p className="text-emerald-100 mt-2">
+          <p className="text-[#d1fae5] mt-2">
             Komşularınıza ulaşın ve işletmenizi tanıtın
           </p>
         </div>
@@ -95,10 +95,10 @@ export default function IsletmeEklePage() {
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${
                   num < step
-                    ? 'bg-emerald-600 text-white'
+                    ? 'bg-[#00833e] text-white'
                     : num === step
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-white text-emerald-600 border-2 border-emerald-200'
+                    ? 'bg-[#00833e] text-white'
+                    : 'bg-white text-[#00833e] border-2 border-[#a7dbb8]'
                 }`}
               >
                 {num < step ? <Check size={20} /> : num}
@@ -107,7 +107,7 @@ export default function IsletmeEklePage() {
                 <div
                   className={`h-1 w-20 mx-2 rounded ${
                     num < step
-                      ? 'bg-emerald-600'
+                      ? 'bg-[#00833e]'
                       : 'bg-gray-300'
                   }`}
                 />
@@ -118,9 +118,9 @@ export default function IsletmeEklePage() {
 
         {step === 3 ? (
           // Success Screen
-          <div className="bg-white rounded-lg border border-emerald-100 p-12 text-center">
-            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Check size={32} className="text-emerald-600" />
+          <div className="bg-white rounded-lg border border-[#d1fae5] p-12 text-center">
+            <div className="w-16 h-16 bg-[#d1fae5] rounded-full flex items-center justify-center mx-auto mb-4">
+              <Check size={32} className="text-[#00833e]" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               İşletme Başarıyla Eklendi!
@@ -135,7 +135,7 @@ export default function IsletmeEklePage() {
               <div className="flex gap-3 justify-center">
                 <Link
                   href="/isletmeler"
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
+                  className="bg-[#00833e] hover:bg-[#006b32] text-white font-medium py-2 px-6 rounded-lg transition-colors"
                 >
                   İşletmeleri Görüntüle
                 </Link>
@@ -149,7 +149,7 @@ export default function IsletmeEklePage() {
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-emerald-100 p-8">
+          <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-[#d1fae5] p-8">
             {step === 1 && (
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">
@@ -168,7 +168,7 @@ export default function IsletmeEklePage() {
                     value={formData.name}
                     onChange={handleInputChange}
                     placeholder="Örn: Kahvehane Keyif"
-                    className="w-full px-4 py-2 rounded-lg border border-emerald-200 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                    className="w-full px-4 py-2 rounded-lg border border-[#a7dbb8] focus:border-[#00833e] focus:outline-none focus:ring-2 focus:ring-[#d1fae5]"
                     required
                   />
                 </div>
@@ -186,7 +186,7 @@ export default function IsletmeEklePage() {
                     name="category"
                     value={formData.category}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 rounded-lg border border-emerald-200 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                    className="w-full px-4 py-2 rounded-lg border border-[#a7dbb8] focus:border-[#00833e] focus:outline-none focus:ring-2 focus:ring-[#d1fae5]"
                     required
                   >
                     <option value="">Kategori Seç</option>
@@ -213,7 +213,7 @@ export default function IsletmeEklePage() {
                     value={formData.address}
                     onChange={handleInputChange}
                     placeholder="Mahalle, Sokak, No..."
-                    className="w-full px-4 py-2 rounded-lg border border-emerald-200 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                    className="w-full px-4 py-2 rounded-lg border border-[#a7dbb8] focus:border-[#00833e] focus:outline-none focus:ring-2 focus:ring-[#d1fae5]"
                     required
                   />
                 </div>
@@ -223,8 +223,8 @@ export default function IsletmeEklePage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Logo Yükle (İsteğe Bağlı)
                   </label>
-                  <div className="border-2 border-dashed border-emerald-300 rounded-lg p-6 text-center cursor-pointer hover:border-emerald-500 transition-colors">
-                    <Upload size={24} className="text-emerald-600 mx-auto mb-2" />
+                  <div className="border-2 border-dashed border-[#34d399] rounded-lg p-6 text-center cursor-pointer hover:border-[#00833e] transition-colors">
+                    <Upload size={24} className="text-[#00833e] mx-auto mb-2" />
                     <p className="text-sm text-gray-700 font-medium">
                       Logoyu sürükle veya tıkla
                     </p>
@@ -262,7 +262,7 @@ export default function IsletmeEklePage() {
                     value={formData.phone}
                     onChange={handleInputChange}
                     placeholder="+90 212 123 4567"
-                    className="w-full px-4 py-2 rounded-lg border border-emerald-200 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                    className="w-full px-4 py-2 rounded-lg border border-[#a7dbb8] focus:border-[#00833e] focus:outline-none focus:ring-2 focus:ring-[#d1fae5]"
                     required
                   />
                 </div>
@@ -282,7 +282,7 @@ export default function IsletmeEklePage() {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="info@isletme.com"
-                    className="w-full px-4 py-2 rounded-lg border border-emerald-200 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                    className="w-full px-4 py-2 rounded-lg border border-[#a7dbb8] focus:border-[#00833e] focus:outline-none focus:ring-2 focus:ring-[#d1fae5]"
                     required
                   />
                 </div>
@@ -302,7 +302,7 @@ export default function IsletmeEklePage() {
                     value={formData.website}
                     onChange={handleInputChange}
                     placeholder="www.isletme.com"
-                    className="w-full px-4 py-2 rounded-lg border border-emerald-200 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                    className="w-full px-4 py-2 rounded-lg border border-[#a7dbb8] focus:border-[#00833e] focus:outline-none focus:ring-2 focus:ring-[#d1fae5]"
                   />
                 </div>
 
@@ -321,7 +321,7 @@ export default function IsletmeEklePage() {
                     value={formData.hours}
                     onChange={handleInputChange}
                     placeholder="08:00 - 23:00"
-                    className="w-full px-4 py-2 rounded-lg border border-emerald-200 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                    className="w-full px-4 py-2 rounded-lg border border-[#a7dbb8] focus:border-[#00833e] focus:outline-none focus:ring-2 focus:ring-[#d1fae5]"
                   />
                 </div>
 
@@ -340,7 +340,7 @@ export default function IsletmeEklePage() {
                     onChange={handleInputChange}
                     placeholder="İşletmeniz hakkında kısaca bilgi verin..."
                     rows={4}
-                    className="w-full px-4 py-2 rounded-lg border border-emerald-200 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100 resize-none"
+                    className="w-full px-4 py-2 rounded-lg border border-[#a7dbb8] focus:border-[#00833e] focus:outline-none focus:ring-2 focus:ring-[#d1fae5] resize-none"
                   />
                 </div>
               </div>
@@ -366,7 +366,7 @@ export default function IsletmeEklePage() {
                 className={`flex-1 font-medium py-3 px-4 rounded-lg transition-colors ${
                   (step === 1 && !isStep1Valid)
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                    : 'bg-[#00833e] hover:bg-[#006b32] text-white'
                 }`}
               >
                 {step === 1 ? 'İleri' : 'Gönder'}
@@ -374,8 +374,8 @@ export default function IsletmeEklePage() {
             </div>
 
             {submitted && (
-              <div className="mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-center">
-                <p className="text-emerald-700 font-medium">
+              <div className="mt-4 p-4 bg-[#e6f4ec] border border-[#a7dbb8] rounded-lg text-center">
+                <p className="text-[#006b32] font-medium">
                   ✓ İşletme başarıyla ekleniyor...
                 </p>
               </div>

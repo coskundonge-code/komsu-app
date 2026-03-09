@@ -21,14 +21,14 @@ export function ChatBubble({ message }: ChatBubbleProps) {
       <div
         className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
           message.isOwn
-            ? 'bg-emerald-500 text-white rounded-br-none'
-            : 'bg-emerald-100 text-emerald-900 rounded-bl-none'
+            ? 'bg-[#00833e] text-white rounded-br-none'
+            : 'bg-[#d1fae5] text-[#004d24] rounded-bl-none'
         }`}
       >
         <p className="break-words">{message.text}</p>
         <div
           className={`flex items-center justify-end gap-1 mt-1 ${
-            message.isOwn ? 'text-emerald-100' : 'text-emerald-600'
+            message.isOwn ? 'text-[#d1fae5]' : 'text-[#00833e]'
           }`}
         >
           <span className="text-xs">{message.timestamp}</span>

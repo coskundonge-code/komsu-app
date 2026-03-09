@@ -45,7 +45,7 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
                     <li key={link}>
                       <a
                         href="#"
-                        className="text-sm text-gray-600 hover:text-emerald-600 transition-colors"
+                        className="text-sm text-gray-600 hover:text-[#00833e] transition-colors"
                       >
                         {link}
                       </a>
@@ -61,7 +61,7 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
             {/* Logo and Description */}
             <div className="mb-8">
               <div className="flex items-center gap-2 mb-4">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white font-bold">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#00833e] text-white font-bold">
                   K
                 </div>
                 <span className="font-bold text-gray-900">KomşuApp</span>
@@ -80,13 +80,13 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
               <div className="flex gap-4">
                 <a
                   href="#"
-                  className="text-xs text-gray-600 hover:text-emerald-600 transition-colors"
+                  className="text-xs text-gray-600 hover:text-[#00833e] transition-colors"
                 >
                   Tercih Merkezi
                 </a>
                 <a
                   href="#"
-                  className="text-xs text-gray-600 hover:text-emerald-600 transition-colors"
+                  className="text-xs text-gray-600 hover:text-[#00833e] transition-colors"
                 >
                   Erişilebilirlik
                 </a>

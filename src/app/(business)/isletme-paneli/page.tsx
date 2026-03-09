@@ -18,7 +18,7 @@ const STATS = [
     value: '2,847',
     change: '+12.5%',
     icon: Eye,
-    color: 'emerald',
+    color: 'green',
   },
   {
     id: 2,
@@ -80,7 +80,7 @@ export default function IsletmePaneliPage() {
         {STATS.map((stat) => {
           const Icon = stat.icon;
           const colorClasses = {
-            emerald: 'bg-emerald-100 text-emerald-600',
+            emerald: 'bg-[#d1fae5] text-[#00833e]',
             yellow: 'bg-yellow-100 text-yellow-600',
             blue: 'bg-blue-100 text-blue-600',
             green: 'bg-green-100 text-green-600',
@@ -89,7 +89,7 @@ export default function IsletmePaneliPage() {
           return (
             <div
               key={stat.id}
-              className="bg-white rounded-lg border border-emerald-100 p-6 hover:shadow-lg transition-shadow"
+              className="bg-white rounded-lg border border-[#d1fae5] p-6 hover:shadow-lg transition-shadow"
             >
               <div className="flex items-start justify-between mb-4">
                 <div
@@ -114,12 +114,12 @@ export default function IsletmePaneliPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Reviews */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-lg border border-emerald-100 p-6">
+          <div className="bg-white rounded-lg border border-[#d1fae5] p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-bold text-gray-900">Son Yorumlar</h2>
               <Link
                 href="#"
-                className="text-emerald-600 hover:text-emerald-700 font-medium text-sm flex items-center gap-1"
+                className="text-[#00833e] hover:text-[#006b32] font-medium text-sm flex items-center gap-1"
               >
                 Tümünü Gör
                 <ChevronRight size={16} />
@@ -130,7 +130,7 @@ export default function IsletmePaneliPage() {
               {RECENT_REVIEWS.map((review) => (
                 <div
                   key={review.id}
-                  className="border-b border-emerald-100 pb-4 last:border-b-0"
+                  className="border-b border-[#d1fae5] pb-4 last:border-b-0"
                 >
                   <div className="flex justify-between items-start mb-2">
                     <div>
@@ -157,7 +157,7 @@ export default function IsletmePaneliPage() {
 
                   {/* Quick Actions */}
                   <div className="flex gap-3 mt-3">
-                    <button className="text-xs text-emerald-600 hover:text-emerald-700 font-medium">
+                    <button className="text-xs text-[#00833e] hover:text-[#006b32] font-medium">
                       Cevap Ver
                     </button>
                     <button className="text-xs text-gray-500 hover:text-gray-700 font-medium">
@@ -173,29 +173,29 @@ export default function IsletmePaneliPage() {
         {/* Sidebar */}
         <div className="lg:col-span-1 space-y-6">
           {/* Quick Actions */}
-          <div className="bg-gradient-to-br from-emerald-600 to-green-600 rounded-lg text-white p-6">
+          <div className="bg-gradient-to-br from-[#00833e] to-green-600 rounded-lg text-white p-6">
             <h3 className="text-lg font-bold mb-4">Hızlı İşlemler</h3>
             <div className="space-y-3">
               <Link
                 href="/isletme-paneli/istatistikler"
-                className="block w-full bg-emerald-700 hover:bg-emerald-800 font-medium py-2 px-4 rounded-lg transition-colors text-center"
+                className="block w-full bg-[#006b32] hover:bg-[#005a2b] font-medium py-2 px-4 rounded-lg transition-colors text-center"
               >
                 İstatistikleri Görüntüle
               </Link>
               <Link
                 href="/isletme-paneli/reklamlar"
-                className="block w-full bg-emerald-700 hover:bg-emerald-800 font-medium py-2 px-4 rounded-lg transition-colors text-center"
+                className="block w-full bg-[#006b32] hover:bg-[#005a2b] font-medium py-2 px-4 rounded-lg transition-colors text-center"
               >
                 Reklam Yönet
               </Link>
-              <button className="w-full bg-emerald-700 hover:bg-emerald-800 font-medium py-2 px-4 rounded-lg transition-colors">
+              <button className="w-full bg-[#006b32] hover:bg-[#005a2b] font-medium py-2 px-4 rounded-lg transition-colors">
                 Profili Düzenle
               </button>
             </div>
           </div>
 
           {/* Performance Card */}
-          <div className="bg-white rounded-lg border border-emerald-100 p-6">
+          <div className="bg-white rounded-lg border border-[#d1fae5] p-6">
             <h3 className="text-lg font-bold text-gray-900 mb-4">
               Performans Özeti
             </h3>
@@ -204,7 +204,7 @@ export default function IsletmePaneliPage() {
                 <p className="text-sm text-gray-600 mb-2">Profil Tamamlama</p>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
-                    className="bg-emerald-600 h-2 rounded-full"
+                    className="bg-[#00833e] h-2 rounded-full"
                     style={{ width: '85%' }}
                   ></div>
                 </div>

@@ -120,7 +120,7 @@ export function ListingForm({ onSubmit, onCancel }: ListingFormProps) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="İlanın başlığını girin"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
             required
           />
         </div>
@@ -135,7 +135,7 @@ export function ListingForm({ onSubmit, onCancel }: ListingFormProps) {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Ürünü detaylıca açıklayın..."
             rows={4}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] resize-none"
           />
         </div>
 
@@ -152,7 +152,7 @@ export function ListingForm({ onSubmit, onCancel }: ListingFormProps) {
               placeholder="0"
               min="0"
               step="0.01"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
               required
             />
           </div>
@@ -165,7 +165,7 @@ export function ListingForm({ onSubmit, onCancel }: ListingFormProps) {
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Mahalle/İlçe"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
               required
             />
           </div>
@@ -180,7 +180,7 @@ export function ListingForm({ onSubmit, onCancel }: ListingFormProps) {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as Category)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
             >
               {categories.map((cat) => (
                 <option key={cat.value} value={cat.value}>
@@ -196,7 +196,7 @@ export function ListingForm({ onSubmit, onCancel }: ListingFormProps) {
             <select
               value={condition}
               onChange={(e) => setCondition(e.target.value as Condition)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
             >
               {conditions.map((cond) => (
                 <option key={cond.value} value={cond.value}>
@@ -217,7 +217,7 @@ export function ListingForm({ onSubmit, onCancel }: ListingFormProps) {
           </label>
 
           {/* Upload Area */}
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-emerald-500 transition-colors">
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-[#00833e] transition-colors">
             <Upload size={32} className="mx-auto text-gray-400 mb-2" />
             <p className="text-sm font-medium text-gray-900">
               Fotoğraf yüklemek için tıklayın
@@ -297,7 +297,7 @@ export function ListingForm({ onSubmit, onCancel }: ListingFormProps) {
           <button
             type="submit"
             disabled={isLoading || !title.trim() || !price || !location.trim() || imageUrls.length === 0}
-            className="flex-1 px-4 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 px-4 py-2 bg-[#00833e] text-white rounded-lg font-medium hover:bg-[#006b32] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? 'Yükleniyor...' : 'İlanı Yayınla'}
           </button>

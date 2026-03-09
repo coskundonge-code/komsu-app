@@ -59,7 +59,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Cover Image */}
-      <div className="relative h-[200px] bg-emerald-600">
+      <div className="relative h-[200px] bg-[#00833e]">
         <img
           src={mockProfile.coverImage}
           alt="Kapak"
@@ -95,7 +95,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
               </div>
             ) : (
               <div className="flex gap-2 pb-2">
-                <button className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors">
+                <button className="px-4 py-2 bg-[#00833e] text-white rounded-lg text-sm font-medium hover:bg-[#006b32] transition-colors">
                   Mesaj Gönder
                 </button>
               </div>
@@ -108,11 +108,11 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-4">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-sm font-semibold text-gray-900">Profil Tamamlama</h3>
-              <span className="text-sm font-bold text-emerald-600">{mockProfile.profileProgress}%</span>
+              <span className="text-sm font-bold text-[#00833e]">{mockProfile.profileProgress}%</span>
             </div>
             <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
               <div
-                className="h-full bg-emerald-500 rounded-full transition-all"
+                className="h-full bg-[#00833e] rounded-full transition-all"
                 style={{ width: `${mockProfile.profileProgress}%` }}
               />
             </div>
@@ -148,7 +148,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                 className={cn(
                   'flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors',
                   activeTab === tab.id
-                    ? 'text-emerald-700 border-emerald-600'
+                    ? 'text-[#006b32] border-[#00833e]'
                     : 'text-gray-500 border-transparent hover:text-gray-700'
                 )}
               >
@@ -202,7 +202,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                   <div className="space-y-2">
                     {mockProfile.groups.map((group) => (
                       <div key={group.name} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
-                        <Users className="w-5 h-5 text-emerald-600" />
+                        <Users className="w-5 h-5 text-[#00833e]" />
                         <div>
                           <p className="text-sm font-medium text-gray-900">{group.name}</p>
                           <p className="text-xs text-gray-500">{group.members} üye</p>
@@ -226,7 +226,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
               <div className="space-y-3">
                 {mockProfile.bookmarks.map((bm, idx) => (
                   <div key={idx} className="flex items-start gap-3 p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
-                    <Bookmark className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                    <Bookmark className="w-5 h-5 text-[#00833e] flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium text-gray-900">{bm.title}</p>
                       <p className="text-xs text-gray-500">{bm.author} · {bm.timeAgo}</p>
