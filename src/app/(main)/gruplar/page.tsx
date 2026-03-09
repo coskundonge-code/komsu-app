@@ -12,6 +12,7 @@ const mockGroups = [
     name: 'Moda Anneler Kulübü',
     memberCount: 142,
     avatar: 'https://picsum.photos/200/200?random=32',
+    category: 'Sosyal',
   },
   {
     id: '2',
@@ -19,6 +20,7 @@ const mockGroups = [
     name: 'Kadıköy Koşucuları',
     memberCount: 287,
     avatar: 'https://picsum.photos/200/200?random=33',
+    category: 'Spor',
   },
   {
     id: '3',
@@ -26,6 +28,7 @@ const mockGroups = [
     name: 'Mahalle Yardımlaşma',
     memberCount: 156,
     avatar: 'https://picsum.photos/200/200?random=34',
+    category: 'Yardımlaşma',
   },
   {
     id: '4',
@@ -33,6 +36,7 @@ const mockGroups = [
     name: 'Bahçe Severler',
     memberCount: 98,
     avatar: 'https://picsum.photos/200/200?random=35',
+    category: 'Hobi',
   },
   {
     id: '5',
@@ -40,6 +44,7 @@ const mockGroups = [
     name: 'Kitap Kurdu Rehberi',
     memberCount: 203,
     avatar: 'https://picsum.photos/200/200?random=36',
+    category: 'Eğitim',
   },
   {
     id: '6',
@@ -47,6 +52,7 @@ const mockGroups = [
     name: 'Yoga & Meditasyon',
     memberCount: 124,
     avatar: 'https://picsum.photos/200/200?random=37',
+    category: 'Spor',
   },
   {
     id: '7',
@@ -54,6 +60,7 @@ const mockGroups = [
     name: 'Mahalle Çocuk Oyun',
     memberCount: 267,
     avatar: 'https://picsum.photos/200/200?random=33',
+    category: 'Sosyal',
   },
   {
     id: '8',
@@ -61,16 +68,29 @@ const mockGroups = [
     name: 'Pazar Pazarlığı',
     memberCount: 178,
     avatar: 'https://picsum.photos/200/200?random=38',
+    category: 'Hobi',
   },
+];
+
+const categories = [
+  { id: 'all', label: 'Tümü' },
+  { id: 'Sosyal', label: 'Sosyal' },
+  { id: 'Hobi', label: 'Hobi' },
+  { id: 'Spor', label: 'Spor' },
+  { id: 'Eğitim', label: 'Eğitim' },
+  { id: 'Yardımlaşma', label: 'Yardımlaşma' },
 ];
 
 export default function GroupsPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState('all');
   const [joinedGroups, setJoinedGroups] = useState<Set<string>>(new Set());
 
-  const filtered = mockGroups.filter((g) =>
-    g.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filtered = mockGroups.filter((g) => {
+    const matchesSearch = g.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = activeCategory === 'all' || g.category === activeCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="min-h-screen bg-white">
@@ -100,6 +120,23 @@ export default function GroupsPage() {
           </Link>
         </div>
 
+        {/* Category Filter Buttons */}
+        <div className="mb-8 flex gap-2 overflow-x-auto pb-2 -mx-4 px-4">
+          {categories.map((category) => (
+            <button
+              key={category.id}
+              onClick={() => setActiveCategory(category.id)}
+              className={`px-4 py-2 font-medium whitespace-nowrap rounded-full transition-all ${
+                activeCategory === category.id
+                  ? 'bg-[#00833e] text-white'
+                  : 'bg-[#f0f2f5] text-[#333] hover:bg-[#e0e0e0]'
+              }`}
+            >
+              {category.label}
+            </button>
+          ))}
+        </div>
+
         {/* Section Heading */}
         <h2 className="text-xl font-semibold text-[#333] mb-6">Yakınındaki Gruplar</h2>
 
@@ -116,7 +153,7 @@ export default function GroupsPage() {
               <Link
                 key={group.id}
                 href={`/gruplar/${group.slug}`}
-                className="flex flex-col items-center text-center p-6 rounded-lg border border-[#e0e0e0] hover:border-[#00833e] transition-colors hover:shadow-md"
+                className="card-hover flex flex-col items-center text-center p-6 rounded-lg border border-[#e0e0e0] bg-white transition-all duration-200 hover:border-[#00833e] hover:shadow-lg hover:scale-105"
               >
                 {/* Circle Avatar */}
                 <div className="mb-4">

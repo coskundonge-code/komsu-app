@@ -69,6 +69,13 @@ const mockNews: NewsItem[] = [
   },
 ];
 
+const trendingTopics = [
+  { title: 'Mahallede başlatılan yenileme projesi', id: '2', discussions: 48 },
+  { title: 'Yakın komşuluk etkinlikleri ve davetler', id: '4', discussions: 32 },
+  { title: 'Yerel işletmelerdeki güncellemeler', id: '1', discussions: 27 },
+  { title: 'Gayrimenkul piyasası analizi', id: '3', discussions: 19 },
+];
+
 const categories = [
   { id: 'all', label: 'Tümü' },
   { id: 'news', label: 'Haberler' },
@@ -141,7 +148,7 @@ export default function KesfetPage() {
               <Link
                 key={item.id}
                 href={`/kesfet/${item.id}`}
-                className="block bg-white border border-[#e0e0e0] rounded-lg p-4 hover:shadow-md hover:border-[#00833e] transition-all"
+                className="card-hover block bg-white border border-[#e0e0e0] rounded-lg p-4 transition-all duration-200 hover:shadow-lg hover:border-[#00833e] hover:scale-102"
               >
                 <div className="flex gap-3">
                   {/* Thumbnail */}
@@ -161,15 +168,15 @@ export default function KesfetPage() {
                   {/* Content */}
                   <div className="flex-1 min-w-0 flex flex-col justify-between">
                     <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs font-medium px-2 py-1 bg-[#f0f2f5] text-[#00833e] rounded-full">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs font-medium px-3 py-1 bg-[#00833e] text-white rounded-full">
                           {item.category}
                         </span>
                       </div>
 
-                      <h3 className="font-bold text-[#333] line-clamp-2 mb-1">{item.title}</h3>
+                      <h3 className="font-bold text-[#333] line-clamp-2 mb-2">{item.title}</h3>
 
-                      <p className="text-sm text-[#404040] line-clamp-2 mb-2">{item.excerpt}</p>
+                      <p className="text-sm text-[#404040] line-clamp-2 mb-3">{item.excerpt}</p>
 
                       <div className="flex items-center gap-3 text-xs text-[#8f8f8f]">
                         <span className="font-medium">{item.source}</span>
@@ -192,22 +199,20 @@ export default function KesfetPage() {
         )}
 
         {/* Trending Section */}
-        <div className="mt-8 bg-white border border-[#e0e0e0] rounded-lg p-5">
-          <div className="flex items-center gap-2 mb-4">
+        <div className="mt-8 bg-white border border-[#e0e0e0] rounded-lg p-6">
+          <div className="flex items-center gap-2 mb-6">
             <Flame size={20} className="text-orange-500" />
-            <h2 className="text-lg font-bold text-[#333]">Sıcak Haberler</h2>
+            <h2 className="text-lg font-bold text-[#333]">Sıcak Konular</h2>
           </div>
 
           <div className="space-y-3">
-            {[
-              { title: 'Mahallede başlatılan yenileme projesi', id: '2' },
-              { title: 'Yakın komşuluk etkinlikleri ve davetler', id: '4' },
-              { title: 'Yerel işletmelerdeki güncellemeler', id: '1' },
-              { title: 'Gayrimenkul piyasası analizi', id: '3' },
-            ].map((trend, index) => (
-              <Link key={index} href={`/kesfet/${trend.id}`} className="flex items-center gap-3 p-3 hover:bg-[#f0f2f5] rounded-lg transition-colors">
-                <span className="text-sm font-bold text-[#00833e] min-w-max">{index + 1}</span>
-                <p className="text-sm text-[#333]">{trend.title}</p>
+            {trendingTopics.map((trend, index) => (
+              <Link key={index} href={`/kesfet/${trend.id}`} className="card-hover flex items-center gap-3 p-4 rounded-lg transition-all duration-200 hover:bg-[#f0f2f5]">
+                <span className="text-base font-bold text-white bg-[#00833e] rounded-full w-8 h-8 flex items-center justify-center min-w-max">{index + 1}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-[#333] line-clamp-2">{trend.title}</p>
+                  <p className="text-xs text-[#8f8f8f] mt-1">{trend.discussions} konuşma</p>
+                </div>
               </Link>
             ))}
           </div>
