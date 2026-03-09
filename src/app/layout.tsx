@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Providers } from "@/lib/providers";
+import { CookieBanner } from "@/components/shared/cookie-banner";
+import { PWAInstallPrompt } from "@/components/shared/pwa-install-prompt";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -69,7 +71,11 @@ export default function RootLayout({
   return (
     <html lang="tr">
       <body className="antialiased">
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <PWAInstallPrompt />
+          <CookieBanner />
+        </Providers>
       </body>
     </html>
   );

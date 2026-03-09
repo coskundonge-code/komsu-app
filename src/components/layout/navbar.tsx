@@ -1,16 +1,26 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Bell, MessageSquare, Search, ChevronDown } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { SearchDropdown } from './search-dropdown'
+import { UserDropdown } from './user-dropdown'
 
 export function Navbar() {
   const pathname = usePathname()
+  const router = useRouter()
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false)
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchQuery.trim()) {
+      router.push(`/ara?q=${encodeURIComponent(searchQuery)}`)
+      setIsSearchOpen(false)
+    }
+  }
 
   return (
     <nav className="sticky top-0 z-50 bg-white border-b border-[#e0e0e0] shadow-sm">
@@ -35,6 +45,7 @@ export function Navbar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setIsSearchOpen(true)}
+              onKeyDown={handleSearchKeyDown}
               className="w-full pl-10 pr-4 py-2 bg-[#f0f2f5] border border-[#e0e0e0] rounded-full text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e] transition"
             />
             <SearchDropdown
@@ -68,12 +79,24 @@ export function Navbar() {
             <MessageSquare className="w-5 h-5 text-[#404040]" />
           </Link>
 
-          <Link href="/profil/me" className="ml-1 flex items-center">
-            <div className="w-8 h-8 bg-[#404040] rounded-full flex items-center justify-center text-white text-sm font-semibold">
-              C
-            </div>
-            <ChevronDown className="w-3 h-3 text-gray-500 ml-0.5 hidden lg:block" />
-          </Link>
+          <div className="relative ml-1">
+            <button
+              onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+              className="flex items-center hover:opacity-80 transition-opacity"
+            >
+              <div className="w-8 h-8 bg-[#404040] rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                C
+              </div>
+              <ChevronDown className={cn(
+                "w-3 h-3 text-gray-500 ml-0.5 hidden lg:block transition-transform duration-200",
+                isUserDropdownOpen && "rotate-180"
+              )} />
+            </button>
+            <UserDropdown
+              isOpen={isUserDropdownOpen}
+              onClose={() => setIsUserDropdownOpen(false)}
+            />
+          </div>
         </div>
       </div>
     </nav>

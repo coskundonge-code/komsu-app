@@ -183,10 +183,21 @@ export function SearchDropdown({ isOpen, onClose, searchQuery }: SearchDropdownP
         )}
       </div>
 
-      {/* Footer with brand color hint */}
-      <div className="px-4 py-2 bg-[#f0f2f5] text-xs text-gray-600 border-t border-[#e0e0e0] rounded-b-lg">
-        Daha fazla sonuç görmek için tam arama yap
-      </div>
+      {/* Footer with "View all results" link */}
+      {searchQuery && (
+        <Link
+          href={`/ara?q=${encodeURIComponent(searchQuery)}`}
+          onClick={onClose}
+          className="block px-4 py-3 bg-[#f0f2f5] text-sm font-medium text-[#00833e] hover:bg-[#e4e6eb] border-t border-[#e0e0e0] rounded-b-lg transition-colors text-center"
+        >
+          Tüm Sonuçları Gör ({mockResults.length}+)
+        </Link>
+      )}
+      {!searchQuery && (
+        <div className="px-4 py-2 bg-[#f0f2f5] text-xs text-gray-600 border-t border-[#e0e0e0] rounded-b-lg text-center">
+          Ara ve başında olması için arayı yazın
+        </div>
+      )}
     </div>
   )
 }

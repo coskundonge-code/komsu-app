@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { X, Send, ImagePlus, MapPin, Globe, BarChart3, Shield, HelpCircle, Tag, ChevronDown } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { X, Send, ImagePlus, MapPin, Globe, BarChart3, Shield, HelpCircle, Tag, ChevronDown, Video } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const POST_TYPES = [
@@ -17,6 +17,21 @@ const VISIBILITY_OPTIONS = [
   { id: 'nearby', label: 'Yakın Mahalleler' },
   { id: 'city', label: 'Şehir' },
 ];
+
+const getPlaceholderText = (postType: string): string => {
+  switch (postType) {
+    case 'security':
+      return 'Dikkat çeken bir durum var mı? Güvenlik uyarısını paylaş...';
+    case 'recommendation':
+      return 'Mahallede beğendiğin bir mekan veya hizmet? Fikrinizi paylaş...';
+    case 'lost-found':
+      return 'Kayıp veya bulunan bir eşya mı? Detaylarını paylaş...';
+    case 'poll':
+      return 'Anket konusu hakkında bilgi ver...';
+    default:
+      return 'Komşularınızla ne paylaşmak istersiniz?';
+  }
+};
 
 interface PostFormModalProps {
   isOpen: boolean;
@@ -34,7 +49,22 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
   const [location, setLocation] = useState<string | null>(null);
   const [pollQuestion, setPollQuestion] = useState('');
   const [pollOptions, setPollOptions] = useState(['', '']);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Keyboard shortcut: Esc to close
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -85,36 +115,49 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
     setLocation(null);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!body.trim()) {
       alert('Lütfen gönderi içeriği yazınız');
       return;
     }
 
-    const newPost = {
-      id: Date.now().toString(),
-      type: postType,
-      title: title.trim() || undefined,
-      body: body.trim(),
-      visibility,
-      images,
-      location,
-      poll:
-        postType === 'poll' && pollQuestion.trim()
-          ? {
-              question: pollQuestion.trim(),
-              options: pollOptions.filter((opt) => opt.trim()),
-            }
-          : undefined,
-      author: { name: 'Siz', initial: 'S', neighborhood: 'Kadıköy, Moda', profileId: 'you' },
-      timeAgo: 'Az önce',
-      reactions: 0,
-      comments: 0,
-    };
+    if (postType === 'poll') {
+      const validOptions = pollOptions.filter((opt) => opt.trim());
+      if (!pollQuestion.trim() || validOptions.length < 2) {
+        alert('Lütfen anket sorusu ve en az 2 seçenek yazınız');
+        return;
+      }
+    }
 
-    onSubmit(newPost);
-    resetForm();
-    onClose();
+    setIsSubmitting(true);
+    try {
+      const newPost = {
+        id: Date.now().toString(),
+        type: postType,
+        title: title.trim() || undefined,
+        body: body.trim(),
+        visibility,
+        images,
+        location,
+        poll:
+          postType === 'poll' && pollQuestion.trim()
+            ? {
+                question: pollQuestion.trim(),
+                options: pollOptions.filter((opt) => opt.trim()),
+              }
+            : undefined,
+        author: { name: 'Siz', initial: 'S', neighborhood: 'Kadıköy, Moda', profileId: 'you' },
+        timeAgo: 'Az önce',
+        reactions: 0,
+        comments: 0,
+      };
+
+      onSubmit(newPost);
+      resetForm();
+      onClose();
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const resetForm = () => {
@@ -205,34 +248,45 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
           />
 
           {/* Body Textarea */}
-          <textarea
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-            placeholder="Komşularınızla ne paylaşmak istersiniz?"
-            className="w-full min-h-[120px] p-3 bg-[#f0f2f5] border border-[#e0e0e0] rounded-lg text-[15px] text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e] resize-none transition-colors"
-          />
-
-          {/* Media Upload Area */}
-          <div
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-[#e0e0e0] rounded-lg p-6 text-center cursor-pointer hover:border-[#00833e] hover:bg-[#f0f2f5] transition-colors"
-          >
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="hidden"
+          <div className="relative">
+            <textarea
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              placeholder={getPlaceholderText(postType)}
+              className="w-full min-h-[120px] p-3 bg-[#f0f2f5] border border-[#e0e0e0] rounded-lg text-[15px] text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e] resize-none transition-colors"
             />
-            <div className="flex flex-col items-center gap-2">
-              <ImagePlus className="w-6 h-6 text-[#8f8f8f]" />
-              <p className="text-sm font-medium text-[#333]">Fotoğraf ekle</p>
-              <p className="text-xs text-[#8f8f8f]">veya sürükle ve bırak</p>
+            {/* Character count */}
+            <div className="absolute bottom-2 right-3 text-xs text-[#8f8f8f]">
+              {body.length}/5000
             </div>
           </div>
+
+          {/* Media Upload Area */}
+          {images.length === 0 && (
+            <div
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+              className="border-2 border-dashed border-[#e0e0e0] rounded-lg p-6 text-center cursor-pointer hover:border-[#00833e] hover:bg-[#f0f2f5] transition-colors"
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                accept="image/*,video/*"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+              <div className="flex flex-col items-center gap-2">
+                <div className="flex gap-2">
+                  <ImagePlus className="w-6 h-6 text-[#8f8f8f]" />
+                  <Video className="w-6 h-6 text-[#8f8f8f]" />
+                </div>
+                <p className="text-sm font-medium text-[#333]">Fotoğraf veya video ekle</p>
+                <p className="text-xs text-[#8f8f8f]">Tıkla ya da sürükle ve bırak</p>
+              </div>
+            </div>
+          )}
 
           {/* Image Preview */}
           {images.length > 0 && (
@@ -367,22 +421,23 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
         <div className="flex items-center justify-between gap-2 p-4 border-t border-[#e0e0e0] bg-[#f9f9f9]">
           <button
             onClick={handleClose}
-            className="px-5 py-2 text-sm font-medium text-[#333] bg-white border border-[#e0e0e0] rounded-full hover:bg-[#f0f2f5] transition-colors"
+            disabled={isSubmitting}
+            className="px-5 py-2 text-sm font-medium text-[#333] bg-white border border-[#e0e0e0] rounded-full hover:bg-[#f0f2f5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             İptal
           </button>
           <button
             onClick={handleSubmit}
-            disabled={!body.trim() || (postType === 'poll' && (!pollQuestion.trim() || pollOptions.filter((o) => o.trim()).length < 2))}
+            disabled={!body.trim() || isSubmitting || (postType === 'poll' && (!pollQuestion.trim() || pollOptions.filter((o) => o.trim()).length < 2))}
             className={cn(
               'flex items-center gap-2 px-5 py-2 text-sm font-semibold rounded-full transition-colors',
-              body.trim() && (postType !== 'poll' || (pollQuestion.trim() && pollOptions.filter((o) => o.trim()).length >= 2))
+              body.trim() && (postType !== 'poll' || (pollQuestion.trim() && pollOptions.filter((o) => o.trim()).length >= 2)) && !isSubmitting
                 ? 'bg-[#00833e] text-white hover:bg-[#006b32]'
                 : 'bg-[#e0e0e0] text-[#8f8f8f] cursor-not-allowed'
             )}
           >
             <Send className="w-4 h-4" />
-            Paylaş
+            {isSubmitting ? 'Gönderiliyor...' : 'Paylaş'}
           </button>
         </div>
       </div>

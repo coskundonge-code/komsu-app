@@ -15,3 +15,6 @@ export type { CommentSectionProps, Comment } from './comment-section';
 
 export { PollCard } from './poll-card';
 export type { PollCardProps, PollOption } from './poll-card';
+
+export { PostFormModal } from './post-form-modal';
+export type {} from './post-form-modal';

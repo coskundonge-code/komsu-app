@@ -4,6 +4,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { Sidebar } from "@/components/layout/sidebar";
 import { RightSidebar } from "@/components/layout/right-sidebar";
 import { BottomBar } from "@/components/layout/bottom-bar";
+import { Footer } from "@/components/layout/footer";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -28,6 +29,9 @@ export default function MainLayout({ children }: MainLayoutProps) {
         {/* Right Sidebar */}
         <RightSidebar />
       </div>
+
+      {/* Footer - hidden on mobile where bottom bar is shown */}
+      <Footer className="hidden lg:block" />
 
       {/* Mobile Bottom Bar */}
       <BottomBar />
