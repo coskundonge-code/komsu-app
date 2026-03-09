@@ -1,9 +1,8 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
-import { useParams, useRouter } from 'next/navigation';
-import { ChevronLeft, Phone, Video, MoreVertical, Send, Paperclip, Smile, ArrowDown } from 'lucide-react';
+import React, { useState, useEffect, useRef } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { ChevronLeft, Phone, Video, MoreVertical, Send, Paperclip, Smile, ArrowDown, MessageSquare } from "lucide-react";
 
 // Types
 interface Message {
@@ -13,7 +12,7 @@ interface Message {
   timestamp: string;
   isOwn: boolean;
   read: boolean;
-  type: 'text' | 'image' | 'system';
+  type: "text" | "image" | "system";
   date?: string;
 }
 
@@ -27,403 +26,497 @@ interface Conversation {
 // Mock data - same as in main messages page
 const mockConversations: Conversation[] = [
   {
-    id: '1',
-    name: 'Ahmet Yılmaz',
-    avatar: 'https://picsum.photos/400/400?random=66',
+    id: "1",
+    name: "Ahmet Yılmaz",
+    avatar: "https://picsum.photos/400/400?random=66",
     online: true,
   },
   {
-    id: '2',
-    name: 'Fatma Şahin',
-    avatar: 'https://picsum.photos/400/400?random=67',
+    id: "2",
+    name: "Fatma Şahin",
+    avatar: "https://picsum.photos/400/400?random=67",
     online: false,
   },
   {
-    id: '3',
-    name: 'Komşu Yardım Grubu',
-    avatar: 'https://picsum.photos/400/400?random=68',
+    id: "3",
+    name: "Komşu Yardım Grubu",
+    avatar: "https://picsum.photos/400/400?random=68",
     online: true,
   },
   {
-    id: '4',
-    name: 'Mehmet Demir',
-    avatar: 'https://picsum.photos/400/400?random=69',
+    id: "4",
+    name: "Mehmet Demir",
+    avatar: "https://picsum.photos/400/400?random=69",
     online: false,
   },
   {
-    id: '5',
-    name: 'Zeynep Kaya',
-    avatar: 'https://picsum.photos/400/400?random=70',
+    id: "5",
+    name: "Zeynep Kaya",
+    avatar: "https://picsum.photos/400/400?random=70",
+    online: true,
+  },
+  {
+    id: "6",
+    name: "Soner Köse",
+    avatar: "https://picsum.photos/400/400?random=78",
+    online: false,
+  },
+  {
+    id: "7",
+    name: "Gamze Daşkan",
+    avatar: "https://picsum.photos/400/400?random=79",
+    online: true,
+  },
+  {
+    id: "8",
+    name: "Veli Kışlağı",
+    avatar: "https://picsum.photos/400/400?random=80",
+    online: false,
+  },
+  {
+    id: "9",
+    name: "Nilüfer Çolak",
+    avatar: "https://picsum.photos/400/400?random=81",
+    online: true,
+  },
+  {
+    id: "10",
+    name: "Mobilya Pazar Yeri",
+    avatar: "https://picsum.photos/400/400?random=82",
     online: true,
   },
 ];
 
 const mockMessages: Record<string, Message[]> = {
-  '1': [
+  "1": [
     {
-      id: '0',
-      text: 'Bugün',
-      timestamp: '09:00',
+      id: "0",
+      text: "Bugün",
+      timestamp: "09:00",
       isOwn: false,
       read: true,
-      type: 'system',
-      date: 'Bugün',
+      type: "system",
+      date: "Bugün",
     },
     {
-      id: '1',
-      text: 'Merhaba! Halı temizleme hakkında bir sorum vardı.',
-      timestamp: '10:30',
+      id: "1",
+      text: "Merhaba! Halı temizleme hakkında bir sorum vardı.",
+      timestamp: "10:30",
       isOwn: true,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '2',
-      text: 'Merhaba! Elbette, yardımcı olabilirim. Ne tür halı temizliği arıyorsunuz?',
-      timestamp: '10:35',
+      id: "2",
+      text: "Merhaba! Elbette, yardımcı olabilirim. Ne tür halı temizliği arıyorsunuz?",
+      timestamp: "10:35",
       isOwn: false,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '2.5',
-      image: 'https://picsum.photos/300/300?random=100',
-      timestamp: '10:38',
+      id: "2.5",
+      image: "https://picsum.photos/300/300?random=100",
+      timestamp: "10:38",
       isOwn: false,
       read: true,
-      type: 'image',
+      type: "image",
     },
     {
-      id: '3',
-      text: 'Oturma odasındaki halı için uygun bir yöntem önerebilir misiniz? Çok eski ve çok katlı.',
-      timestamp: '10:40',
+      id: "3",
+      text: "Oturma odasındaki halı için uygun bir yöntem önerebilir misiniz? Çok eski ve çok katlı halı.",
+      timestamp: "10:40",
       isOwn: true,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '4',
-      text: 'Taze lekeler için buz ve limonlu su denemekten başlayabilirsiniz. Daha kalıcı lekeler için profesyonel temizlik önerilir.',
-      timestamp: '10:45',
+      id: "4",
+      text: "Taze lekeler için buz ve limonlu su denemekten başlayabilirsiniz. Daha kalıcı lekeler için profesyonel temizlik önerilir.",
+      timestamp: "10:45",
       isOwn: false,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '5',
-      image: 'https://picsum.photos/300/300?random=101',
-      timestamp: '10:50',
+      id: "5",
+      image: "https://picsum.photos/300/300?random=101",
+      timestamp: "10:50",
       isOwn: true,
       read: true,
-      type: 'image',
+      type: "image",
     },
     {
-      id: '6',
-      text: 'Çok faydalı bilgi, teşekkürler! Temizlik malzemeleri hakkında bilgi alabilir miyim?',
-      timestamp: '11:00',
+      id: "6",
+      text: "Çok faydalı bilgi, teşekkürler! Temizlik malzemeleri hakkında bilgi alabilir miyim?",
+      timestamp: "11:00",
       isOwn: true,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '7',
-      text: 'Tabii, hangi malzemelere ihtiyacınız olduğunu söyleyin. Belki birimizde vardır.',
-      timestamp: '11:05',
+      id: "7",
+      text: "Tabii, hangi malzemelere ihtiyacınız olduğunu söyleyin. Belki birimizde vardır.",
+      timestamp: "11:05",
       isOwn: false,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '8',
-      text: 'Beyaz sirke, limon suyu ve tuz var mı evde? Bunları birleştirince güzel bir karışım çıkıyor.',
-      timestamp: '11:08',
+      id: "8",
+      text: "Beyaz sirke, limon suyu ve tuz var mı evde? Bunları birleştirince güzel bir karışım çıkıyor.",
+      timestamp: "11:08",
       isOwn: true,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '9',
-      text: 'Evet, hepsi var! Başka ne gerekiyor?',
-      timestamp: '11:12',
+      id: "9",
+      text: "Evet, hepsi var! Başka ne gerekiyor?",
+      timestamp: "11:12",
       isOwn: false,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '10',
-      text: 'Bir fırça ve temiz bez. İyi çalışmalar! Merak etmeyin.',
-      timestamp: '11:15',
+      id: "10",
+      text: "Bir fırça ve temiz bez. İyi çalışmalar! Merak etmeyin.",
+      timestamp: "11:15",
       isOwn: true,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '11',
-      text: 'Çok teşekkürler! Sonuçlarını sana yazarım. Kesinlikle deneyeceğim.',
-      timestamp: '11:18',
+      id: "11",
+      text: "Çok teşekkürler! Sonuçlarını sana yazarım. Kesinlikle deneyeceğim.",
+      timestamp: "11:18",
       isOwn: false,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '12',
-      text: 'Lütfen! Beklemede olacağım. Başarı dilerim!',
-      timestamp: '11:20',
+      id: "12",
+      text: "Lütfen! Beklemede olacağım. Başarı dilerim!",
+      timestamp: "11:20",
       isOwn: true,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '13',
-      text: 'Harika! Yardımcı olabildiğim için mutluyum. İyi komşuluk bu işte 😊',
-      timestamp: '11:22',
+      id: "13",
+      text: "Harika! Yardımcı olabildiğim için mutluyum. İyi komşuluk bu işte.",
+      timestamp: "11:22",
       isOwn: false,
       read: false,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '14',
-      text: 'Aynen öyle! Çok sağol Ahmet abi.',
-      timestamp: '11:25',
+      id: "14",
+      text: "Aynen öyle! Çok sağol Ahmet abi. Tekrar görüşürüz.",
+      timestamp: "11:25",
       isOwn: true,
       read: true,
-      type: 'text',
+      type: "text",
     },
   ],
-  '2': [
+  "2": [
     {
-      id: '0',
-      text: 'Sohbet başlatıldı',
-      timestamp: '08:00',
+      id: "0",
+      text: "Sohbet başlatıldı",
+      timestamp: "08:00",
       isOwn: false,
       read: true,
-      type: 'system',
-      date: '9 Mart, Pazar',
+      type: "system",
+      date: "9 Mart, Pazar",
     },
     {
-      id: '1',
-      text: 'Merhabalar, çocuklara tükenmez kalem ve defter satın aldım ama çok fazla.',
-      timestamp: '08:20',
+      id: "1",
+      text: "Merhabalar, çocuklara tükenmez kalem ve defter satın aldım ama çok fazla.",
+      timestamp: "08:20",
       isOwn: false,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '2',
-      text: 'Bizim çocuklardan şampiyon fiyatlanı kalmış. İlgilenirseniz bölüştürebiliriz.',
-      timestamp: '08:25',
+      id: "2",
+      text: "Bizim çocuklardan yazı malzemeleri eksik. İlgilenirseniz bölüştürebiliriz.",
+      timestamp: "08:25",
       isOwn: false,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '3',
-      image: 'https://picsum.photos/300/300?random=102',
-      timestamp: '08:30',
+      id: "3",
+      image: "https://picsum.photos/300/300?random=102",
+      timestamp: "08:30",
       isOwn: false,
       read: true,
-      type: 'image',
+      type: "image",
     },
     {
-      id: '4',
-      text: 'Çok iyi! Kaç kalem ve defter var?',
-      timestamp: '09:00',
+      id: "4",
+      text: "Çok iyi! Kaç kalem ve defter var?",
+      timestamp: "09:00",
       isOwn: true,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '5',
-      text: 'Yaklaşık 100 kalem ve 50 defter. Dönemi boyunca kullanabilirsiniz.',
-      timestamp: '09:10',
+      id: "5",
+      text: "Yaklaşık 100 kalem ve 50 defter. Dönemi boyunca kullanabilirsiniz.",
+      timestamp: "09:10",
       isOwn: false,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '6',
-      text: 'Harika, bu çok yardımcı olur! Bize kaç lira gerekir?',
-      timestamp: '09:15',
+      id: "6",
+      text: "Harika, bu çok yardımcı olur! Bize kaç lira gerekir?",
+      timestamp: "09:15",
       isOwn: true,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '7',
-      text: 'Komşu olduğumuz için ücretsiz olsun. Aralarında hariç tutabilecekler de var.',
-      timestamp: '09:20',
+      id: "7",
+      text: "Komşu olduğumuz için ücretsiz olsun. Aralarında hariç tutabilecekler de var.",
+      timestamp: "09:20",
       isOwn: false,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '8',
-      text: 'Çok cömertsin! Çok teşekkürler Fatma hanım 🙏',
-      timestamp: '09:25',
+      id: "8",
+      text: "Çok cömertsin! Çok teşekkürler Fatma hanım.",
+      timestamp: "09:25",
       isOwn: true,
       read: true,
-      type: 'text',
+      type: "text",
+    },
+    {
+      id: "9",
+      text: "Bir rahatlık istiyorsun, ben de isterim. Hoşça kalın.",
+      timestamp: "09:30",
+      isOwn: false,
+      read: true,
+      type: "text",
+    },
+    {
+      id: "10",
+      text: "Siz de hoşça kalın!",
+      timestamp: "09:32",
+      isOwn: true,
+      read: true,
+      type: "text",
     },
   ],
-  '3': [
+  "3": [
     {
-      id: '0',
-      text: 'Sohbet başlatıldı',
-      timestamp: '16:00',
+      id: "0",
+      text: "Sohbet başlatıldı",
+      timestamp: "16:00",
       isOwn: false,
       read: true,
-      type: 'system',
-      date: '8 Mart, Cumartesi',
+      type: "system",
+      date: "8 Mart, Cumartesi",
     },
     {
-      id: '1',
-      text: 'Arkadaşlar, bu hafta sonu piknik düşünüyoruz. Katılmak ister misiniz?',
-      timestamp: '16:45',
+      id: "1",
+      text: "Arkadaşlar, bu hafta sonu piknik düşünüyoruz. Katılmak ister misiniz?",
+      timestamp: "16:45",
       isOwn: false,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '2',
-      text: 'Yer neresi? Saat kaçta?',
-      timestamp: '17:00',
+      id: "2",
+      text: "Yer neresi? Saat kaçta?",
+      timestamp: "17:00",
       isOwn: true,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '3',
-      text: 'Yeşil park, saat 10 sabahında. Herkes birşey getirsin.',
-      timestamp: '17:05',
+      id: "3",
+      text: "Yeşil park, saat 10 sabahında. Herkes birşey getirsin lütfen.",
+      timestamp: "17:05",
       isOwn: false,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '4',
-      text: 'Biz salata getiririz!',
-      timestamp: '17:10',
+      id: "4",
+      text: "Biz salata ve meyve getiririz!",
+      timestamp: "17:10",
       isOwn: true,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '5',
-      text: 'Harika! Ben de tatlı getirelim.',
-      timestamp: '17:15',
+      id: "5",
+      text: "Harika! Ben de tatlı ve içecek getirelim.",
+      timestamp: "17:15",
       isOwn: false,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '6',
-      image: 'https://picsum.photos/300/300?random=103',
-      timestamp: '17:20',
+      id: "6",
+      image: "https://picsum.photos/300/300?random=103",
+      timestamp: "17:20",
       isOwn: false,
       read: true,
-      type: 'image',
+      type: "image",
     },
     {
-      id: '7',
-      text: 'Çok güzel görünüyor! Saat 10da buluşuruz o zaman.',
-      timestamp: '17:25',
+      id: "7",
+      text: "Çok güzel görünüyor! Saat 10da buluşuruz o zaman.",
+      timestamp: "17:25",
       isOwn: true,
       read: true,
-      type: 'text',
+      type: "text",
+    },
+    {
+      id: "8",
+      text: "Hava güzel olacakmış, çok keyifli olacak.",
+      timestamp: "17:30",
+      isOwn: false,
+      read: true,
+      type: "text",
+    },
+    {
+      id: "9",
+      text: "Sabırsızlıkla bekliyorum!",
+      timestamp: "17:35",
+      isOwn: true,
+      read: false,
+      type: "text",
     },
   ],
-  '4': [
+  "4": [
     {
-      id: '0',
-      text: 'Sohbet başlatıldı',
-      timestamp: '14:00',
+      id: "0",
+      text: "Sohbet başlatıldı",
+      timestamp: "14:00",
       isOwn: false,
       read: true,
-      type: 'system',
-      date: '5 Mart, Çarşamba',
+      type: "system",
+      date: "5 Mart, Çarşamba",
     },
     {
-      id: '1',
-      text: 'Merhaba, elektrik çalışmaları yapacaksın mı?',
-      timestamp: '14:20',
+      id: "1",
+      text: "Merhaba Mehmet, elektrik çalışmaları yapacak mısın?",
+      timestamp: "14:20",
       isOwn: false,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '2',
-      text: 'Evet, devreden bazı sorunlar var.',
-      timestamp: '14:25',
+      id: "2",
+      text: "Evet, devreden bazı sorunlar var. Bunu düzeltmek lazım.",
+      timestamp: "14:25",
       isOwn: true,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '3',
-      text: 'Elektrik ustası önerebilir misiniz?',
-      timestamp: '14:30',
+      id: "3",
+      text: "Elektrik ustası önerebilir misiniz? Kimin sayısını verebilirsin?",
+      timestamp: "14:30",
       isOwn: false,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '4',
-      text: 'Evet, Hasan usta çok iyi bir elektronikçi. İletişim bilgisi istersen verebilirim.',
-      timestamp: '14:35',
+      id: "4",
+      text: "Evet, Hasan usta çok iyi bir elektrikçi. İletişim bilgisi istersen verebilirim.",
+      timestamp: "14:35",
       isOwn: true,
       read: true,
-      type: 'text',
+      type: "text",
+    },
+    {
+      id: "5",
+      text: "Lütfen verebilir misin? Pazartesi ona ulaşmayı düşünüyorum.",
+      timestamp: "14:40",
+      isOwn: false,
+      read: true,
+      type: "text",
+    },
+    {
+      id: "6",
+      text: "Tabii, sayısını 05XX XXX XXXX. Maliyet tahmini nedir peki?",
+      timestamp: "14:45",
+      isOwn: true,
+      read: true,
+      type: "text",
+    },
+    {
+      id: "7",
+      text: "Çok teşekkürler! Ona haber veririm.",
+      timestamp: "14:50",
+      isOwn: false,
+      read: true,
+      type: "text",
     },
   ],
-  '5': [
+  "5": [
     {
-      id: '0',
-      text: 'Sohbet başlatıldı',
-      timestamp: '12:00',
+      id: "0",
+      text: "Sohbet başlatıldı",
+      timestamp: "12:00",
       isOwn: false,
       read: true,
-      type: 'system',
-      date: '2 Mart, Pazar',
+      type: "system",
+      date: "2 Mart, Pazar",
     },
     {
-      id: '1',
-      text: 'Zeynep, pazardaki bisikleti alma fırsatı buldum.',
-      timestamp: '12:00',
+      id: "1",
+      text: "Zeynep, pazardaki bisikleti alma fırsatı buldum.",
+      timestamp: "12:00",
       isOwn: true,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '2',
-      image: 'https://picsum.photos/300/300?random=104',
-      timestamp: '12:05',
+      id: "2",
+      image: "https://picsum.photos/300/300?random=104",
+      timestamp: "12:05",
       isOwn: true,
       read: true,
-      type: 'image',
+      type: "image",
     },
     {
-      id: '3',
-      text: 'Harika! Çok güzel görünüyor!',
-      timestamp: '12:10',
+      id: "3",
+      text: "Harika! Çok güzel görünüyor!",
+      timestamp: "12:10",
       isOwn: false,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '4',
-      text: 'Teşekkürler! Çocuklarla parklarda bisiklet yapacağız.',
-      timestamp: '12:15',
+      id: "4",
+      text: "Teşekkürler! Çocuklarla parklarda bisiklet yapacağız.",
+      timestamp: "12:15",
       isOwn: true,
       read: true,
-      type: 'text',
+      type: "text",
     },
     {
-      id: '5',
-      text: 'Çok iyi fikir! Eğlenmelerini dilerim 😊',
-      timestamp: '12:20',
+      id: "5",
+      text: "Çok iyi fikir! Eğlenmelerini dilerim çok mutlu olacaklar.",
+      timestamp: "12:20",
       isOwn: false,
       read: true,
-      type: 'text',
+      type: "text",
+    },
+    {
+      id: "6",
+      text: "Kesinlikle! Sağ olasınız. Güzel tavsiye için teşekkürler.",
+      timestamp: "12:25",
+      isOwn: true,
+      read: true,
+      type: "text",
     },
   ],
 };
@@ -431,9 +524,18 @@ const mockMessages: Record<string, Message[]> = {
 // Typing Indicator Component
 const TypingIndicator = () => (
   <div className="flex items-center gap-1">
-    <div className="w-2 h-2 bg-[#8f8f8f] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-    <div className="w-2 h-2 bg-[#8f8f8f] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-    <div className="w-2 h-2 bg-[#8f8f8f] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+    <div
+      className="w-2 h-2 bg-[#8f8f8f] rounded-full animate-bounce"
+      style={{ animationDelay: "0ms" }}
+    ></div>
+    <div
+      className="w-2 h-2 bg-[#8f8f8f] rounded-full animate-bounce"
+      style={{ animationDelay: "150ms" }}
+    ></div>
+    <div
+      className="w-2 h-2 bg-[#8f8f8f] rounded-full animate-bounce"
+      style={{ animationDelay: "300ms" }}
+    ></div>
   </div>
 );
 
@@ -482,7 +584,7 @@ export default function ChatPage() {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   const [messages, setMessages] = useState<Message[]>(mockMessages[conversationId] || []);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
@@ -492,7 +594,7 @@ export default function ChatPage() {
 
   // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -515,25 +617,25 @@ export default function ChatPage() {
     const newMessage: Message = {
       id: String(messages.length + 1),
       text: text.trim(),
-      timestamp: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }),
+      timestamp: new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }),
       isOwn: true,
       read: false,
-      type: 'text',
+      type: "text",
     };
 
     setMessages([...messages, newMessage]);
-    setInputValue('');
+    setInputValue("");
 
     // Simulate typing indicator and response
     setIsTyping(true);
     setTimeout(() => {
       const responseMessage: Message = {
         id: String(messages.length + 2),
-        text: 'Bu çok iyi! 👍',
-        timestamp: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }),
+        text: "Anladım, çok iyi! İyi haberler bekliyorum.",
+        timestamp: new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }),
         isOwn: false,
         read: true,
-        type: 'text',
+        type: "text",
       };
       setMessages((prev) => [...prev, responseMessage]);
       setIsTyping(false);
@@ -543,7 +645,10 @@ export default function ChatPage() {
   if (!conversation) {
     return (
       <div className="flex items-center justify-center h-screen bg-white">
-        <p className="text-[#00833e]">Sohbet bulunamadı</p>
+        <div className="text-center">
+          <MessageSquare size={48} className="mx-auto text-[#e0e0e0] mb-3" />
+          <p className="text-[#00833e] font-medium">Sohbet bulunamadı</p>
+        </div>
       </div>
     );
   }
@@ -562,13 +667,10 @@ export default function ChatPage() {
           </button>
 
           <div className="relative flex-shrink-0">
-            <Image
+            <img
               src={conversation.avatar}
               alt={conversation.name}
-              width={48}
-              height={48}
               className="w-12 h-12 rounded-full object-cover shadow-sm"
-              unoptimized
             />
             {conversation.online && (
               <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#00833e] rounded-full border-2 border-white" />
@@ -578,25 +680,19 @@ export default function ChatPage() {
           <div className="flex-1 min-w-0">
             <h2 className="font-semibold text-[#333] truncate">{conversation.name}</h2>
             <div className="flex items-center gap-1">
-              <div className={`w-2 h-2 rounded-full flex-shrink-0 ${conversation.online ? 'bg-[#00833e]' : 'bg-[#8f8f8f]'}`}></div>
+              <div className={`w-2 h-2 rounded-full flex-shrink-0 ${conversation.online ? "bg-[#00833e]" : "bg-[#8f8f8f]"}`}></div>
               <p className="text-xs text-[#8f8f8f] truncate">
-                {conversation.online ? 'Çevrimiçi' : 'Son görülme: 5 dk önce'}
+                {conversation.online ? "Çevrimiçi" : "Son görülme: 5 dk önce"}
               </p>
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-1 relative flex-shrink-0">
-          <button
-            className="p-2 hover:bg-[#f0f2f5] rounded-lg transition-colors"
-            title="Telefon ara"
-          >
+          <button className="p-2 hover:bg-[#f0f2f5] rounded-lg transition-colors" title="Telefon ara">
             <Phone size={20} className="text-[#00833e]" />
           </button>
-          <button
-            className="p-2 hover:bg-[#f0f2f5] rounded-lg transition-colors"
-            title="Video ara"
-          >
+          <button className="p-2 hover:bg-[#f0f2f5] rounded-lg transition-colors" title="Video ara">
             <Video size={20} className="text-[#00833e]" />
           </button>
           <div className="relative">
@@ -614,11 +710,7 @@ export default function ChatPage() {
       </div>
 
       {/* Messages Container */}
-      <div
-        ref={messagesContainerRef}
-        onScroll={handleScroll}
-        className="flex-1 overflow-y-auto p-4 space-y-2 scroll-smooth"
-      >
+      <div ref={messagesContainerRef} onScroll={handleScroll} className="flex-1 overflow-y-auto p-4 space-y-2 scroll-smooth">
         {messages.map((message, index) => {
           // Date separator
           if (message.date) {
@@ -632,7 +724,7 @@ export default function ChatPage() {
           }
 
           // System message
-          if (message.type === 'system') {
+          if (message.type === "system") {
             return (
               <div key={message.id} className="flex justify-center my-4">
                 <span className="bg-white text-[#8f8f8f] text-xs px-3 py-1.5 rounded-full border border-[#e0e0e0] shadow-sm">
@@ -644,43 +736,27 @@ export default function ChatPage() {
 
           // Text and Image messages
           return (
-            <div
-              key={message.id}
-              className={`flex ${message.isOwn ? 'justify-end' : 'justify-start'} gap-2`}
-            >
+            <div key={message.id} className={`flex ${message.isOwn ? "justify-end" : "justify-start"} gap-2`}>
               <div
                 className={`max-w-xs lg:max-w-md rounded-2xl overflow-hidden ${
-                  message.isOwn
-                    ? 'bg-[#00833e] text-white rounded-br-none shadow-sm'
-                    : 'bg-white text-[#333] rounded-bl-none border border-[#e0e0e0] shadow-sm'
+                  message.isOwn ? "bg-[#00833e] text-white rounded-br-none shadow-sm" : "bg-white text-[#333] rounded-bl-none border border-[#e0e0e0] shadow-sm"
                 }`}
               >
-                {message.type === 'image' && message.image && (
-                  <Image
-                    src={message.image}
-                    alt="Message image"
-                    width={250}
-                    height={250}
-                    className="rounded-lg block max-w-full h-auto"
-                    unoptimized
-                  />
+                {message.type === "image" && message.image && (
+                  <img src={message.image} alt="Message image" className="rounded-lg block max-w-full h-auto" />
                 )}
 
                 {message.text && (
-                  <p className={`text-sm break-words px-4 ${message.type === 'image' ? 'pt-2 pb-3' : 'py-2.5 px-4'}`}>
+                  <p className={`text-sm break-words ${message.type === "image" ? "pt-2 pb-3 px-4" : "py-2.5 px-4"}`}>
                     {message.text}
                   </p>
                 )}
 
-                <div className={`flex items-center justify-end gap-1 px-4 pb-2 text-xs ${message.isOwn ? 'text-white/70' : 'text-[#8f8f8f]'}`}>
+                <div className={`flex items-center justify-end gap-1 px-4 pb-2 text-xs ${message.isOwn ? "text-white/70" : "text-[#8f8f8f]"}`}>
                   <span>{message.timestamp}</span>
                   {message.isOwn && (
                     <span className="ml-1 flex-shrink-0">
-                      {message.read ? (
-                        <span className="font-bold">✓✓</span>
-                      ) : (
-                        <span>✓</span>
-                      )}
+                      {message.read ? <span className="font-bold">✓✓</span> : <span>✓</span>}
                     </span>
                   )}
                 </div>
@@ -704,13 +780,10 @@ export default function ChatPage() {
       <ScrollToBottomButton show={showScrollButton} onClick={scrollToBottom} />
 
       {/* Message Input */}
-      <div className={`bg-white border-t border-[#e0e0e0] transition-all duration-200 ${inputFocused ? 'shadow-lg' : ''}`}>
+      <div className={`bg-white border-t border-[#e0e0e0] transition-all duration-200 ${inputFocused ? "shadow-lg" : ""}`}>
         <div className="p-4">
-          <div className={`flex items-${inputFocused ? 'start' : 'center'} gap-2 transition-all duration-200`}>
-            <button
-              className="p-2.5 hover:bg-[#f0f2f5] rounded-lg transition-colors text-[#00833e] flex-shrink-0 mt-1"
-              title="Fotoğraf ekle"
-            >
+          <div className={`flex gap-2 transition-all duration-200 ${inputFocused ? "items-start" : "items-center"}`}>
+            <button className="p-2.5 hover:bg-[#f0f2f5] rounded-lg transition-colors text-[#00833e] flex-shrink-0 mt-1" title="Fotoğraf ekle">
               <Paperclip size={20} />
             </button>
 
@@ -720,7 +793,7 @@ export default function ChatPage() {
               onFocus={() => setInputFocused(true)}
               onBlur={() => setInputFocused(false)}
               onKeyPress={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
+                if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
                   handleSendMessage(inputValue);
                 }
@@ -731,10 +804,7 @@ export default function ChatPage() {
             />
 
             <div className="flex flex-col gap-1 flex-shrink-0">
-              <button
-                className="p-2.5 hover:bg-[#f0f2f5] rounded-lg transition-colors text-[#00833e]"
-                title="İmoji ekle"
-              >
+              <button className="p-2.5 hover:bg-[#f0f2f5] rounded-lg transition-colors text-[#00833e]" title="İmoji ekle">
                 <Smile size={20} />
               </button>
 

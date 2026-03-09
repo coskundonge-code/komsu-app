@@ -1,17 +1,26 @@
 'use client';
 
-import { Search, ChevronDown, MessageCircle, FileText, Shield, Users, Settings, HelpCircle, Lightbulb, AlertCircle } from 'lucide-react';
+import { Search, ChevronDown, MessageCircle, FileText, Shield, Users, Settings, HelpCircle, Lightbulb, AlertCircle, Lock, Home, Book } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
 const categories = [
-  { icon: Users, title: 'Hesap ve Profil', count: 12 },
-  { icon: Shield, title: 'Güvenlik ve Gizlilik', count: 8 },
-  { icon: MessageCircle, title: 'Mesajlaşma', count: 6 },
-  { icon: FileText, title: 'Gönderi ve İçerik', count: 10 },
-  { icon: Settings, title: 'Bildirim Ayarları', count: 5 },
-  { icon: HelpCircle, title: 'Genel Sorular', count: 15 },
+  { icon: Users, title: "Hesap ve Profil", slug: "hesap-profil", count: 12 },
+  { icon: FileText, title: "Gönderi ve İçerik", slug: "gonderi-icerik", count: 10 },
+  { icon: Home, title: "Pazar Yeri", slug: "pazar-yeri", count: 8 },
+  { icon: Lock, title: "Güvenlik ve Gizlilik", slug: "guvenlik-gizlilik", count: 8 },
+  { icon: AlertCircle, title: "Teknik Sorunlar", slug: "teknik-sorunlar", count: 7 },
+  { icon: Book, title: "Topluluk Kuralları", slug: "topluluk-kurallari", count: 6 },
+];
+
+const popularArticles = [
+  { title: "Profilimi Nasıl Düzenlerim?", category: "Hesap ve Profil", views: 2400 },
+  { title: "Mahallemi Nasıl Değiştiririm?", category: "Hesap ve Profil", views: 1800 },
+  { title: "İki Faktörlü Kimlik Doğrulama Nasıl Etkinleştirilir?", category: "Güvenlik ve Gizlilik", views: 1600 },
+  { title: "Gönderi Nasıl Yayınlanır?", category: "Gönderi ve İçerik", views: 1400 },
+  { title: "Uygunsuz İçeriği Nasıl Bildiririm?", category: "Güvenlik ve Gizlilik", views: 1200 },
+  { title: "Pazar Yerinde Satış Nasıl Yapılır?", category: "Pazar Yeri", views: 1100 },
 ];
 
 const faqs = {
@@ -58,8 +67,8 @@ const faqs = {
 };
 
 export default function HelpPage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [expandedCategory, setExpandedCategory] = useState<string | null>('Genel Sorular');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
 
   const filteredFaqs = expandedCategory ? faqs[expandedCategory as keyof typeof faqs] || [] : [];
   const searchResults = searchQuery.length > 2
@@ -73,40 +82,43 @@ export default function HelpPage() {
 
   return (
     <div className="min-h-screen bg-[#f0f2f5]">
-      {/* Header */}
-      <div className="bg-gradient-to-br from-[#00833e] to-[#006b32] text-white py-12 relative overflow-hidden">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-br from-[#00833e] to-[#006b32] text-white py-20 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -mr-20 -mt-20"></div>
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full -ml-16 -mb-16"></div>
+        <div className="absolute top-1/2 right-1/4 w-24 h-24 bg-white/3 rounded-full"></div>
 
-        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-          <HelpCircle className="w-12 h-12 mx-auto mb-3" />
-          <h1 className="text-4xl font-bold mb-2">Yardım Merkezi</h1>
-          <p className="text-green-100 mb-8 text-lg">Size nasıl yardımcı olabiliriz?</p>
+        <div className="max-w-5xl mx-auto px-4 text-center relative z-10">
+          <HelpCircle className="w-16 h-16 mx-auto mb-4" />
+          <h1 className="text-5xl font-bold mb-3">Yardım Merkezi</h1>
+          <p className="text-green-100 mb-10 text-lg max-w-2xl mx-auto">Soruların cevapını bul, mahallenizle iletişim kur ve her zaman yardım al</p>
 
-          <div className="relative max-w-md mx-auto">
+          {/* Search Bar */}
+          <div className="relative max-w-xl mx-auto mb-2">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
               placeholder="Sorunuzu arayın..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-white text-[#333] rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 shadow-sm"
+              className="w-full pl-12 pr-4 py-4 bg-white text-[#333] rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg"
             />
           </div>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-5xl mx-auto px-4 py-12">
+        {/* Search Results */}
         {searchQuery.length > 2 && searchResults.length > 0 && (
-          <div className="mb-8">
-            <h2 className="text-xl font-bold text-[#333] mb-4 flex items-center gap-2">
-              <Lightbulb className="w-5 h-5 text-[#00833e]" />
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold text-[#333] mb-6 flex items-center gap-2">
+              <Lightbulb className="w-6 h-6 text-[#00833e]" />
               Arama Sonuçları ({searchResults.length})
             </h2>
             <div className="space-y-3">
               {searchResults.map((result, i) => (
-                <div key={i} className="bg-white border border-[#e0e0e0] rounded-lg p-4 hover:shadow-sm transition-shadow">
-                  <p className="text-xs text-[#00833e] font-semibold mb-1">{result.category}</p>
+                <div key={i} className="bg-white border border-[#e0e0e0] rounded-lg p-5 hover:shadow-md transition-shadow">
+                  <p className="text-xs text-[#00833e] font-semibold mb-2 uppercase">{result.category}</p>
                   <h3 className="font-bold text-[#333] mb-2">{result.q}</h3>
                   <p className="text-sm text-[#8f8f8f] line-clamp-2">{result.a}</p>
                 </div>
@@ -117,79 +129,85 @@ export default function HelpPage() {
 
         {searchQuery.length <= 2 && (
           <>
-            {/* Categories */}
-            <h2 className="text-xl font-bold text-[#333] mb-4 flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-[#00833e]" />
-              Kategoriler
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8">
-              {categories.map((cat) => {
-                const Icon = cat.icon;
-                return (
-                  <button
-                    key={cat.title}
-                    onClick={() => setExpandedCategory(cat.title)}
-                    className={cn(
-                      'flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all duration-200',
-                      expandedCategory === cat.title
-                        ? 'bg-[#00833e] border-[#00833e] text-white'
-                        : 'bg-white border-[#e0e0e0] text-[#333] hover:border-[#00833e]'
-                    )}
-                  >
-                    <Icon className={cn('w-6 h-6 mb-2', expandedCategory === cat.title ? 'text-white' : 'text-[#00833e]')} />
-                    <span className="text-xs font-bold text-center leading-tight">{cat.title}</span>
-                    <span className={cn('text-xs mt-1', expandedCategory === cat.title ? 'text-green-100' : 'text-[#8f8f8f]')}>{cat.count} soru</span>
-                  </button>
-                );
-              })}
+            {/* Category Cards */}
+            <div className="mb-12">
+              <h2 className="text-2xl font-bold text-[#333] mb-6">Yardım Kategorileri</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {categories.map((cat) => {
+                  const Icon = cat.icon;
+                  return (
+                    <Link
+                      key={cat.slug}
+                      href={`/yardim/kategori/${cat.slug}`}
+                      className="group bg-white border-2 border-[#e0e0e0] rounded-lg p-5 hover:border-[#00833e] hover:shadow-lg transition-all duration-200"
+                    >
+                      <div className="flex flex-col items-center justify-center">
+                        <Icon className="w-8 h-8 text-[#00833e] mb-3 group-hover:scale-110 transition-transform" />
+                        <span className="text-sm font-bold text-center text-[#333] leading-tight mb-2">{cat.title}</span>
+                        <span className="text-xs text-[#8f8f8f]">{cat.count} makale</span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
 
-            {/* FAQ Accordion */}
-            <h2 className="text-xl font-bold text-[#333] mb-4">
-              {expandedCategory ? `${expandedCategory} SSS` : 'Sık Sorulan Sorular'}
-            </h2>
-            <div className="space-y-3 mb-8">
-              {filteredFaqs.map((faq, i) => (
-                <details
-                  key={i}
-                  className="group bg-white border border-[#e0e0e0] rounded-lg overflow-hidden hover:border-[#00833e] transition-all"
-                >
-                  <summary className="flex items-center justify-between px-5 py-4 cursor-pointer select-none">
-                    <h3 className="font-bold text-[#333] text-sm pr-4">{faq.q}</h3>
-                    <ChevronDown className="w-5 h-5 text-[#8f8f8f] group-open:rotate-180 transition-transform flex-shrink-0" />
-                  </summary>
-                  <div className="px-5 pb-4 text-sm text-[#404040] border-t border-[#e0e0e0] bg-[#f0f2f5]">
-                    {faq.a}
+            {/* Popular Articles Section */}
+            <div className="mb-12">
+              <h2 className="text-2xl font-bold text-[#333] mb-6">Sık Aranan Makaleler</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {popularArticles.map((article, idx) => (
+                  <div key={idx} className="bg-white border border-[#e0e0e0] rounded-lg p-5 hover:shadow-md transition-shadow">
+                    <p className="text-xs text-[#00833e] font-semibold mb-2 uppercase">{article.category}</p>
+                    <h3 className="font-bold text-[#333] mb-3 line-clamp-2">{article.title}</h3>
+                    <p className="text-xs text-[#8f8f8f]">👁 {article.views.toLocaleString("tr-TR")} kişi bunu okudu</p>
                   </div>
-                </details>
-              ))}
+                ))}
+              </div>
+            </div>
+
+            {/* Stats Section */}
+            <div className="grid grid-cols-3 gap-4 mb-12">
+              <div className="bg-white border border-[#e0e0e0] rounded-lg p-6 text-center">
+                <div className="text-3xl font-bold text-[#00833e] mb-2">5,000+</div>
+                <p className="text-sm text-[#8f8f8f]">Çözülen Sorun</p>
+              </div>
+              <div className="bg-white border border-[#e0e0e0] rounded-lg p-6 text-center">
+                <div className="text-3xl font-bold text-[#00833e] mb-2">7/24</div>
+                <p className="text-sm text-[#8f8f8f]">Destek Hizmeti</p>
+              </div>
+              <div className="bg-white border border-[#e0e0e0] rounded-lg p-6 text-center">
+                <div className="text-3xl font-bold text-[#00833e] mb-2">2 dk</div>
+                <p className="text-sm text-[#8f8f8f]">Ortalama Yanıt</p>
+              </div>
             </div>
           </>
         )}
 
+        {/* No Results */}
         {searchQuery.length > 2 && searchResults.length === 0 && (
-          <div className="text-center py-12">
-            <AlertCircle className="w-12 h-12 text-[#8f8f8f] mx-auto mb-3" />
+          <div className="text-center py-16">
+            <AlertCircle className="w-16 h-16 text-[#8f8f8f] mx-auto mb-4" />
             <h3 className="text-lg font-bold text-[#333] mb-2">Sonuç bulunamadı</h3>
-            <p className="text-[#8f8f8f] mb-6">"<span className="font-semibold">{searchQuery}</span>" için bir sonuç bulamadık.</p>
+            <p className="text-[#8f8f8f] mb-8">"{searchQuery}" için bir sonuç bulamadık.</p>
             <button
-              onClick={() => setSearchQuery('')}
-              className="px-4 py-2 bg-[#00833e] text-white rounded-lg font-medium hover:bg-[#006b32] transition-colors"
+              onClick={() => setSearchQuery("")}
+              className="px-6 py-3 bg-[#00833e] text-white rounded-lg font-medium hover:bg-[#006b32] transition-colors"
             >
               Aramayı Temizle
             </button>
           </div>
         )}
 
-        {/* Contact Section */}
+        {/* Contact Support Section */}
         {!searchQuery && (
-          <div className="mt-12 p-6 bg-gradient-to-br from-[#00833e]/10 to-[#006b32]/10 border border-[#00833e]/20 rounded-lg text-center">
-            <MessageCircle className="w-10 h-10 text-[#00833e] mx-auto mb-3" />
-            <h3 className="text-lg font-bold text-[#333] mb-2">Hâlâ yardıma mı ihtiyacınız var?</h3>
-            <p className="text-sm text-[#8f8f8f] mb-6">Sorunuzu bulamadıysanız destek ekibimize doğrudan ulaşabilirsiniz.</p>
+          <div className="bg-gradient-to-br from-[#00833e] to-[#006b32] border-0 rounded-lg p-8 md:p-12 text-center text-white">
+            <MessageCircle className="w-12 h-12 mx-auto mb-4" />
+            <h3 className="text-2xl font-bold mb-3">Hâlâ Yardıma İhtiyacınız Var mı?</h3>
+            <p className="text-green-100 mb-8 max-w-lg mx-auto">Sorunuzu bulamadıysanız, destek ekibimiz size 2 dakika içinde yanıt vermeye hazırdır.</p>
             <Link
               href="/mesajlar"
-              className="inline-block px-6 py-3 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-colors shadow-sm"
+              className="inline-block px-8 py-4 bg-white text-[#00833e] font-bold rounded-lg hover:bg-gray-100 transition-colors shadow-lg"
             >
               Destek ile İletişime Geç
             </Link>
