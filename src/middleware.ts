@@ -10,6 +10,18 @@ const publicRoutes = [
   '/sifre-sifirla',
   '/auth/callback',
   '/api/auth',
+  '/pazar',
+  '/kesfet',
+  '/uyarilar',
+  '/gruplar',
+  '/etkinlikler',
+  '/bildirimler',
+  '/mesajlar',
+  '/profil',
+  '/ayarlar',
+  '/isletmeler',
+  '/isletme-ekle',
+  '/yardim',
 ]
 
 export async function middleware(request: NextRequest) {
