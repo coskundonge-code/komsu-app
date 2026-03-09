@@ -36,15 +36,15 @@ const mockListingsDB: Record<string, any> = {
     description:
       'Lenovo IdeaPad 5 15.6" Full HD IPS ekran, Intel Core i5-1135G7, 8GB DDR4 RAM, 512GB SSD. Çok az kullanılmıştır. Orijinal kutusu ve tüm aksesuarları mevcuttur. Garantisi 1 yıl kalmıştır. İyi bir laptop arayan kişiler için ideal.',
     images: [
-      'https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&h=600&fit=crop',
+      'https://picsum.photos/800/600?random=1',
+      'https://picsum.photos/800/600?random=2',
+      'https://picsum.photos/800/600?random=3',
+      'https://picsum.photos/800/600?random=4',
     ],
     seller: {
       id: 'seller1',
       name: 'Mehmet Yılmaz',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop',
+      avatar: 'https://picsum.photos/200/200?random=5',
       rating: 4.8,
       reviewCount: 23,
       responseTime: '< 1 saat',
@@ -74,14 +74,14 @@ const mockListingsDB: Record<string, any> = {
     description:
       'IKEA Ektorp serisi 3 kişilik kanepe. Açık gri renk, harika durumda. Temiz, hiç hasarı yok. Çok konforlu oturuş. Kanepenin boyutları: Genişlik 242cm, Derinlik 88cm, Yükseklik 88cm.',
     images: [
-      'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1493898882746-9a3ee4e5db46?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800&h=600&fit=crop',
+      'https://picsum.photos/800/600?random=6',
+      'https://picsum.photos/800/600?random=7',
+      'https://picsum.photos/800/600?random=8',
     ],
     seller: {
       id: 'seller2',
       name: 'Ayşe Kaya',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop',
+      avatar: 'https://picsum.photos/200/200?random=9',
       rating: 4.9,
       reviewCount: 18,
       responseTime: '< 30 dakika',
@@ -111,14 +111,14 @@ const mockListingsDB: Record<string, any> = {
     description:
       'PlayStation 5, orjinal kutusunda, hiç kullanılmamış, vinil sealiyle paketli. Satış belgesi ve garantisi mevcuttur. Çok nadir bulunur bu koşulda. Acil para ihtiyacı nedeniyle satılıyor.',
     images: [
-      'https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1535868183149-34d405b1ef01?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1486978314051-57cf56abc739?w=800&h=600&fit=crop',
+      'https://picsum.photos/800/600?random=10',
+      'https://picsum.photos/800/600?random=11',
+      'https://picsum.photos/800/600?random=12',
     ],
     seller: {
       id: 'seller3',
       name: 'Mert Demir',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop',
+      avatar: 'https://picsum.photos/200/200?random=13',
       rating: 4.7,
       reviewCount: 12,
       responseTime: '< 2 saat',
@@ -177,7 +177,7 @@ export default function ListingDetailPage({
       title: 'Dell Inspiron 15 - Yeni Model',
       price: 7200,
       image:
-        'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&h=500&fit=crop',
+        'https://picsum.photos/500/500?random=14',
       location: 'Şişli',
       timeAgo: '3 saat',
       isFree: false,
@@ -187,7 +187,7 @@ export default function ListingDetailPage({
       title: 'HP Pavilion - 13 inç Ultrabook',
       price: 6800,
       image:
-        'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&h=500&fit=crop',
+        'https://picsum.photos/500/500?random=15',
       location: 'Taksim',
       timeAgo: '5 saat',
       isFree: false,
@@ -197,7 +197,7 @@ export default function ListingDetailPage({
       title: 'Asus VivoBook 15 - İi Fiyat',
       price: 5900,
       image:
-        'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&h=500&fit=crop',
+        'https://picsum.photos/500/500?random=16',
       location: 'Beşiktaş',
       timeAgo: '6 saat',
       isFree: false,
@@ -207,7 +207,7 @@ export default function ListingDetailPage({
       title: 'MacBook Air M1 - 2023',
       price: 12500,
       image:
-        'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&h=500&fit=crop',
+        'https://picsum.photos/500/500?random=17',
       location: 'Nişantaşı',
       timeAgo: '1 gün',
       isFree: false,

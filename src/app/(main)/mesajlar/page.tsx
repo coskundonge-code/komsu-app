@@ -19,7 +19,7 @@ const mockConversations: Conversation[] = [
   {
     id: '1',
     name: 'Ahmet Yılmaz',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop',
+    avatar: 'https://picsum.photos/96/96?random=61',
     lastMessage: 'Temizlik malzemeleri hakkında bilgi alabilir miyim?',
     time: '2 sa',
     unread: 2,
@@ -28,7 +28,7 @@ const mockConversations: Conversation[] = [
   {
     id: '2',
     name: 'Fatma Şahin',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=96&h=96&fit=crop',
+    avatar: 'https://picsum.photos/96/96?random=62',
     lastMessage: 'Tükenmez kalem ve defter bölüştürebiliriz',
     time: '5 sa',
     unread: 1,
@@ -37,7 +37,7 @@ const mockConversations: Conversation[] = [
   {
     id: '3',
     name: 'Mehmet Demir',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=96&h=96&fit=crop',
+    avatar: 'https://picsum.photos/96/96?random=63',
     lastMessage: 'Elektrik ustası önerebilir misiniz?',
     time: '1 gün',
     unread: 0,
@@ -46,7 +46,7 @@ const mockConversations: Conversation[] = [
   {
     id: '4',
     name: 'Zeynep Kaya',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=96&h=96&fit=crop',
+    avatar: 'https://picsum.photos/96/96?random=64',
     lastMessage: 'Bisiklet çok güzel olmuş, teşekkürler!',
     time: '3 gün',
     unread: 0,
@@ -55,7 +55,7 @@ const mockConversations: Conversation[] = [
   {
     id: '5',
     name: 'Komşu Yardım Grubu',
-    avatar: 'https://images.unsplash.com/photo-1517457373614-b7152f800fd1?w=96&h=96&fit=crop',
+    avatar: 'https://picsum.photos/96/96?random=65',
     lastMessage: 'Herkese iyi akşamlar, yarın piknik var mı?',
     time: '1 hafta',
     unread: 0,

@@ -24,7 +24,7 @@ const mockNews: NewsItem[] = [
     time: '2 saat önce',
     category: 'İşletmeler',
     categoryId: 'business',
-    thumbnail: 'https://images.unsplash.com/photo-1521017713117-d52e7b7e8c5d?w=200&h=150&fit=crop',
+    thumbnail: 'https://picsum.photos/200/150?random=71',
   },
   {
     id: '2',
@@ -34,7 +34,7 @@ const mockNews: NewsItem[] = [
     time: '4 saat önce',
     category: 'Belediye',
     categoryId: 'municipality',
-    thumbnail: 'https://images.unsplash.com/photo-1535678057203-ef71b8f8b21e?w=200&h=150&fit=crop',
+    thumbnail: 'https://picsum.photos/200/150?random=72',
   },
   {
     id: '3',
@@ -44,7 +44,7 @@ const mockNews: NewsItem[] = [
     time: '6 saat önce',
     category: 'Gayrimenkul',
     categoryId: 'realestate',
-    thumbnail: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=200&h=150&fit=crop',
+    thumbnail: 'https://picsum.photos/200/150?random=73',
   },
   {
     id: '4',
@@ -54,7 +54,7 @@ const mockNews: NewsItem[] = [
     time: '8 saat önce',
     category: 'Haberler',
     categoryId: 'news',
-    thumbnail: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=200&h=150&fit=crop',
+    thumbnail: 'https://picsum.photos/200/150?random=74',
   },
   {
     id: '5',
@@ -64,7 +64,7 @@ const mockNews: NewsItem[] = [
     time: '1 gün önce',
     category: 'İşletmeler',
     categoryId: 'business',
-    thumbnail: 'https://images.unsplash.com/photo-1581092916550-e323be2ae537?w=200&h=150&fit=crop',
+    thumbnail: 'https://picsum.photos/200/150?random=75',
   },
 ];
 

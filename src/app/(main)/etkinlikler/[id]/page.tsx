@@ -30,7 +30,7 @@ Aileleriniz, dostlarınız ve komşularınız ile gelmeniz çok hoş olacak. Mah
   location: 'Mahalle Parkı, Açık Alanı',
   neighborhood: 'Fatih Mahallesi, İstanbul',
   coordinates: { lat: 41.0082, lng: 28.9784 },
-  coverImage: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&h=600&fit=crop',
+  coverImage: 'https://picsum.photos/1200/600?random=41',
   organizer: {
     id: '1',
     name: 'Ayşe Yılmaz',
@@ -84,7 +84,7 @@ const similarEvents = [
     date: '2026-03-22',
     time: '14:00',
     location: 'Spor Alanı',
-    coverImage: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=500&h=300&fit=crop',
+    coverImage: 'https://picsum.photos/500/300?random=42',
     attendeeCount: 32,
   },
   {
@@ -93,7 +93,7 @@ const similarEvents = [
     date: '2026-03-25',
     time: '19:00',
     location: 'Toplantı Salonu',
-    coverImage: 'https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=500&h=300&fit=crop',
+    coverImage: 'https://picsum.photos/500/300?random=43',
     attendeeCount: 18,
   },
   {
@@ -102,7 +102,7 @@ const similarEvents = [
     date: '2026-04-02',
     time: '07:00',
     location: 'Mahalle Parkı',
-    coverImage: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=300&fit=crop',
+    coverImage: 'https://picsum.photos/500/300?random=44',
     attendeeCount: 24,
   },
 ];

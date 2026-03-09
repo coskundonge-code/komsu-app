@@ -43,7 +43,7 @@ const mockGroupDetail = {
   id: 'komsu-kahvaltilari',
   name: 'Kadıköy Spor Kulübü',
   slug: 'kadikoy-spor-kulubu',
-  coverImage: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1200&h=600&fit=crop',
+  coverImage: 'https://picsum.photos/1200/600?random=39',
   icon: 'https://api.dicebear.com/7.x/avataaars/svg?seed=sportclub',
   category: 'Spor & Fitness',
   description: 'Kadıköy mahallesi sakinleri için futbol, voleybol, tenis ve genel fitness etkinlikleri.',
@@ -76,7 +76,7 @@ const mockGroupDetail = {
       likes: 23,
       comments: 8,
       liked: false,
-      image: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=400&h=300&fit=crop',
+      image: 'https://picsum.photos/400/300?random=40',
     },
     {
       id: '2',

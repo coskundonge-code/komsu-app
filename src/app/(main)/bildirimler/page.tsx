@@ -36,7 +36,7 @@ const mockNotifications: Notification[] = [
     action: 'Mahalle Temizlik Günü gönderinizi beğendi',
     timestamp: '2 dakika',
     read: false,
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop',
+    avatar: 'https://picsum.photos/96/96?random=51',
     href: '/',
   },
   {
@@ -46,7 +46,7 @@ const mockNotifications: Notification[] = [
     action: 'Yeni açılan kafe gönderinize yorum yaptı',
     timestamp: '15 dakika',
     read: false,
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=96&h=96&fit=crop',
+    avatar: 'https://picsum.photos/96/96?random=52',
     href: '/',
   },
   {
@@ -56,7 +56,7 @@ const mockNotifications: Notification[] = [
     action: 'Size mesaj gönderdi',
     timestamp: '1 saat',
     read: false,
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=96&h=96&fit=crop',
+    avatar: 'https://picsum.photos/96/96?random=53',
     href: '/mesajlar',
   },
   {
@@ -66,7 +66,7 @@ const mockNotifications: Notification[] = [
     action: 'Sizi komşu olarak ekledi',
     timestamp: '3 saat',
     read: true,
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=96&h=96&fit=crop',
+    avatar: 'https://picsum.photos/96/96?random=54',
     href: '/profil/4',
   },
   {
@@ -76,7 +76,7 @@ const mockNotifications: Notification[] = [
     action: 'Komşu Kahvaltısı etkinliğine katılımınızı bekliyoruz',
     timestamp: '5 saat',
     read: true,
-    avatar: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=96&h=96&fit=crop',
+    avatar: 'https://picsum.photos/96/96?random=55',
     href: '/etkinlikler/1',
   },
   {
@@ -86,7 +86,7 @@ const mockNotifications: Notification[] = [
     action: 'Sizi komşu olarak ekledi',
     timestamp: '1 gün',
     read: true,
-    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=96&h=96&fit=crop',
+    avatar: 'https://picsum.photos/96/96?random=56',
     href: '/profil/6',
   },
   {
@@ -96,7 +96,7 @@ const mockNotifications: Notification[] = [
     action: 'Bahçe ekim zamanı gönderinizi paylaştı',
     timestamp: '2 gün',
     read: true,
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53a8c7b1e899?w=96&h=96&fit=crop',
+    avatar: 'https://picsum.photos/96/96?random=57',
     href: '/',
   },
   {
@@ -106,7 +106,7 @@ const mockNotifications: Notification[] = [
     action: 'Kayıp kedi gönderinizi beğendi',
     timestamp: '2 gün',
     read: true,
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=96&h=96&fit=crop',
+    avatar: 'https://picsum.photos/96/96?random=54',
     href: '/',
   },
 ];

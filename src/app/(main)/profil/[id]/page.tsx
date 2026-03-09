@@ -37,7 +37,7 @@ interface ProfileData {
 const mockProfile: ProfileData = {
   name: 'Coşkun Dönge',
   initials: 'CD',
-  coverImage: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&h=400&fit=crop',
+  coverImage: 'https://picsum.photos/1200/400?random=78',
   neighborhood: 'Kadıköy, Moda',
   joinDate: '15 Mart 2026',
   bio: 'Mahalle gönüllüsü. Komşu topluluğunu geliştirmede tutkulu. Spor, müzik ve sosyal projeler benim tutkum.',

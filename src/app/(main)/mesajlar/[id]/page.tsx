@@ -11,31 +11,31 @@ const mockConversations = [
   {
     id: '1',
     name: 'Ahmet Yılmaz',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
+    avatar: 'https://picsum.photos/400/400?random=66',
     online: true,
   },
   {
     id: '2',
     name: 'Fatma Şahin',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop',
+    avatar: 'https://picsum.photos/400/400?random=67',
     online: false,
   },
   {
     id: '3',
     name: 'Komşu Yardım Grubu',
-    avatar: 'https://images.unsplash.com/photo-1517457373614-b7152f800fd1?w=400&h=400&fit=crop',
+    avatar: 'https://picsum.photos/400/400?random=68',
     online: true,
   },
   {
     id: '4',
     name: 'Mehmet Demir',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop',
+    avatar: 'https://picsum.photos/400/400?random=69',
     online: false,
   },
   {
     id: '5',
     name: 'Zeynep Kaya',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop',
+    avatar: 'https://picsum.photos/400/400?random=70',
     online: true,
   },
 ];

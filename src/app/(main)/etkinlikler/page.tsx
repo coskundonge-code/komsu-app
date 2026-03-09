@@ -27,7 +27,7 @@ const mockEvents: Event[] = [
     month: 2,
     time: '10:00',
     location: 'Mahalle Parkı',
-    coverImage: 'https://images.unsplash.com/photo-1585518419759-ab60cb0bf33f?w=500&h=350&fit=crop',
+    coverImage: 'https://picsum.photos/500/350?random=45',
     isInterested: false,
   },
   {
@@ -38,7 +38,7 @@ const mockEvents: Event[] = [
     month: 2,
     time: '07:00',
     location: 'Mahalle Spor Salonu',
-    coverImage: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=500&h=350&fit=crop',
+    coverImage: 'https://picsum.photos/500/350?random=46',
     isInterested: true,
   },
   {
@@ -49,7 +49,7 @@ const mockEvents: Event[] = [
     month: 2,
     time: '19:30',
     location: 'Çevrimiçi',
-    coverImage: 'https://images.unsplash.com/photo-1507842217343-583f20270319?w=500&h=350&fit=crop',
+    coverImage: 'https://picsum.photos/500/350?random=47',
     isInterested: false,
   },
   {
@@ -60,7 +60,7 @@ const mockEvents: Event[] = [
     month: 2,
     time: '14:00',
     location: 'Moda Parkı',
-    coverImage: 'https://images.unsplash.com/photo-1552821081-7ffcfbf6ef14?w=500&h=350&fit=crop',
+    coverImage: 'https://picsum.photos/500/350?random=48',
     isInterested: false,
   },
   {
@@ -71,7 +71,7 @@ const mockEvents: Event[] = [
     month: 2,
     time: '15:00',
     location: 'Toplantı Salonu',
-    coverImage: 'https://images.unsplash.com/photo-1585516031632-dfd21dbdc8b3?w=500&h=350&fit=crop',
+    coverImage: 'https://picsum.photos/500/350?random=49',
     isInterested: true,
   },
   {
@@ -82,7 +82,7 @@ const mockEvents: Event[] = [
     month: 3,
     time: '18:00',
     location: 'Spor Alanı',
-    coverImage: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=500&h=350&fit=crop',
+    coverImage: 'https://picsum.photos/500/350?random=50',
     isInterested: false,
   },
 ];
