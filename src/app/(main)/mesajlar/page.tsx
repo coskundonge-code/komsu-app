@@ -1,11 +1,21 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Edit, Search, Send, Image, Smile } from 'lucide-react';
+import { ChevronLeft, Edit, Search, Send, Image, Smile, Plus } from 'lucide-react';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
-// Mock data
-const mockConversations = [
+interface Conversation {
+  id: string;
+  name: string;
+  avatar: string;
+  lastMessage: string;
+  time: string;
+  unread: number;
+  online: boolean;
+}
+
+const mockConversations: Conversation[] = [
   {
     id: '1',
     name: 'Ahmet Yılmaz',
@@ -14,7 +24,6 @@ const mockConversations = [
     time: '2 sa',
     unread: 2,
     online: true,
-    type: 'dm' as const,
   },
   {
     id: '2',
@@ -24,37 +33,33 @@ const mockConversations = [
     time: '5 sa',
     unread: 1,
     online: false,
-    type: 'dm' as const,
   },
   {
     id: '3',
-    name: 'Komşu Yardım Grubu',
-    avatar: 'https://images.unsplash.com/photo-1517457373614-b7152f800fd1?w=96&h=96&fit=crop',
-    lastMessage: 'Herkese iyi akşamlar, yarın piknik var mı?',
-    time: '1 gün',
-    unread: 0,
-    online: false,
-    type: 'group' as const,
-  },
-  {
-    id: '4',
     name: 'Mehmet Demir',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=96&h=96&fit=crop',
     lastMessage: 'Elektrik ustası önerebilir misiniz?',
-    time: '3 gün',
+    time: '1 gün',
     unread: 0,
     online: false,
-    type: 'dm' as const,
+  },
+  {
+    id: '4',
+    name: 'Zeynep Kaya',
+    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=96&h=96&fit=crop',
+    lastMessage: 'Bisiklet çok güzel olmuş, teşekkürler!',
+    time: '3 gün',
+    unread: 0,
+    online: true,
   },
   {
     id: '5',
-    name: 'Zeynep Kaya - Bisiklet',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=96&h=96&fit=crop',
-    lastMessage: 'Bisiklet çok güzel olmuş, teşekkürler!',
+    name: 'Komşu Yardım Grubu',
+    avatar: 'https://images.unsplash.com/photo-1517457373614-b7152f800fd1?w=96&h=96&fit=crop',
+    lastMessage: 'Herkese iyi akşamlar, yarın piknik var mı?',
     time: '1 hafta',
     unread: 0,
-    online: true,
-    type: 'forsale' as const,
+    online: false,
   },
 ];
 
@@ -63,8 +68,7 @@ const mockMessages: Record<string, Array<{ id: string; text: string; time: strin
     { id: '1', text: 'Merhaba! Halı temizleme hakkında bir sorum vardı.', time: '10:30', isOwn: true },
     { id: '2', text: 'Merhaba! Elbette, yardımcı olabilirim. Ne tür halı temizliği arıyorsunuz?', time: '10:35', isOwn: false },
     { id: '3', text: 'Oturma odasındaki halı için uygun bir yöntem önerebilir misiniz?', time: '10:40', isOwn: true },
-    { id: '4', text: 'Taze lekeler için buz ve limonlu su denemekten başlayabilirsiniz. Daha kalıcı lekeler için profesyonel temizlik önerilir.', time: '10:45', isOwn: false },
-    { id: '5', text: 'Çok faydalı bilgi, teşekkürler! Temizlik malzemeleri hakkında bilgi alabilir miyim?', time: '11:00', isOwn: true },
+    { id: '4', text: 'Taze lekeler için buz ve limonlu su denemekten başlayabilirsiniz.', time: '10:45', isOwn: false },
   ],
   '2': [
     { id: '1', text: 'Merhabalar, çocuklara kalem ve defter satın aldım ama çok fazla.', time: '08:20', isOwn: false },
@@ -73,16 +77,9 @@ const mockMessages: Record<string, Array<{ id: string; text: string; time: strin
   ],
 };
 
-const tabs = [
-  { id: 'all', label: 'Tümü' },
-  { id: 'dm', label: 'DM' },
-  { id: 'forsale', label: 'Satılık' },
-];
-
 export default function MessagesPage() {
   const [selectedId, setSelectedId] = useState('1');
   const [isMobile, setIsMobile] = useState(false);
-  const [activeTab, setActiveTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [messageText, setMessageText] = useState('');
 
@@ -97,120 +94,119 @@ export default function MessagesPage() {
   }, []);
 
   const filteredConversations = mockConversations.filter((c) => {
-    if (activeTab !== 'all' && c.type !== activeTab) return false;
     if (searchQuery && !c.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     return true;
   });
 
-  // Conversation list component
-  const ConvoList = () => (
-    <div className="flex flex-col h-full">
+  const unreadCount = mockConversations.reduce((sum, c) => sum + c.unread, 0);
+
+  // Conversation List Component
+  const ConversationList = () => (
+    <div className="flex flex-col h-full bg-white border-r border-[#e0e0e0]">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200">
-        <div className="flex items-center justify-between mb-3">
-          <h1 className="text-lg font-bold text-gray-900">Mesajlar</h1>
-          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-            <Edit className="w-5 h-5 text-gray-600" />
-          </button>
+      <div className="p-4 border-b border-[#e0e0e0]">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-bold text-[#333]">Mesajlar</h1>
+          <Link
+            href="/mesajlar/new"
+            className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors"
+          >
+            <Plus size={20} className="text-[#00833e]" />
+          </Link>
         </div>
+
         {/* Search */}
-        <div className="relative mb-3">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8f8f8f]" />
           <input
             type="text"
-            placeholder="Sohbet ara..."
+            placeholder="Mesajlarda ara..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-[#f0f2f5] border border-[#e0e0e0] rounded-full text-sm text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e]"
+            className="w-full pl-10 pr-4 py-2.5 bg-[#f0f2f5] border border-[#e0e0e0] rounded-full text-sm text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e]"
           />
-        </div>
-        {/* Tabs */}
-        <div className="flex gap-1">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={cn(
-                'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
-                activeTab === tab.id
-                  ? 'bg-[#00833e] text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              )}
-            >
-              {tab.label}
-            </button>
-          ))}
         </div>
       </div>
 
-      {/* Conversation list */}
-      <div className="flex-1 overflow-y-auto">
-        {filteredConversations.map((convo) => (
-          <button
-            key={convo.id}
-            onClick={() => setSelectedId(convo.id)}
-            className={cn(
-              'w-full flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors text-left',
-              selectedId === convo.id && 'bg-[#e6f4ec]'
-            )}
-          >
-            <div className="relative flex-shrink-0">
-              <img src={convo.avatar} alt={convo.name} className="w-12 h-12 rounded-full object-cover" />
-              {convo.online && (
-                <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
+      {/* Conversation List */}
+      <div className="flex-1 overflow-y-auto divide-y divide-[#e0e0e0]">
+        {filteredConversations.length === 0 ? (
+          <div className="p-8 text-center">
+            <p className="text-[#8f8f8f] text-sm">Sohbet bulunamadı</p>
+          </div>
+        ) : (
+          filteredConversations.map((convo) => (
+            <button
+              key={convo.id}
+              onClick={() => setSelectedId(convo.id)}
+              className={cn(
+                'w-full flex items-center gap-3 p-3 hover:bg-[#f0f2f5] transition-colors text-left',
+                selectedId === convo.id && 'bg-[#e6f4ec]'
               )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between">
-                <p className={cn('text-sm truncate', convo.unread > 0 ? 'font-bold text-gray-900' : 'font-medium text-gray-700')}>
-                  {convo.name}
-                </p>
-                <span className="text-xs text-gray-400 flex-shrink-0">{convo.time}</span>
+            >
+              {/* Avatar */}
+              <div className="relative flex-shrink-0">
+                <img src={convo.avatar} alt={convo.name} className="w-12 h-12 rounded-full object-cover" />
+                {convo.online && (
+                  <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
+                )}
               </div>
-              <p className={cn('text-xs truncate mt-0.5', convo.unread > 0 ? 'text-gray-900 font-medium' : 'text-gray-500')}>
-                {convo.lastMessage}
-              </p>
-            </div>
-            {convo.unread > 0 && (
-              <span className="w-5 h-5 bg-[#00833e] text-white text-xs rounded-full flex items-center justify-center flex-shrink-0">
-                {convo.unread}
-              </span>
-            )}
-          </button>
-        ))}
+
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2 mb-1">
+                  <p className={cn('text-sm truncate', convo.unread > 0 ? 'font-bold text-[#333]' : 'font-medium text-[#333]')}>
+                    {convo.name}
+                  </p>
+                  <span className="text-xs text-[#8f8f8f] flex-shrink-0">{convo.time}</span>
+                </div>
+                <p className={cn('text-xs truncate', convo.unread > 0 ? 'text-[#333] font-medium' : 'text-[#8f8f8f]')}>
+                  {convo.lastMessage}
+                </p>
+              </div>
+
+              {/* Unread Badge */}
+              {convo.unread > 0 && (
+                <span className="w-5 h-5 bg-[#00833e] text-white text-xs font-bold rounded-full flex items-center justify-center flex-shrink-0">
+                  {convo.unread}
+                </span>
+              )}
+            </button>
+          ))
+        )}
       </div>
     </div>
   );
 
-  // Chat view component
+  // Chat View Component
   const ChatView = () => (
-    <div className="flex flex-col h-full">
-      {/* Chat header */}
-      <div className="flex items-center gap-3 p-4 border-b border-gray-200 bg-white">
+    <div className="flex flex-col h-full bg-white">
+      {/* Chat Header */}
+      <div className="flex items-center gap-3 p-4 border-b border-[#e0e0e0] bg-white">
         {isMobile && (
-          <button onClick={() => setSelectedId('')} className="p-1 hover:bg-gray-100 rounded-full">
-            <ChevronLeft className="w-5 h-5 text-gray-600" />
+          <button onClick={() => setSelectedId('')} className="p-1 hover:bg-[#f0f2f5] rounded-full">
+            <ChevronLeft size={20} className="text-[#333]" />
           </button>
         )}
-        <img src={selected?.avatar} alt={selected?.name} className="w-10 h-10 rounded-full object-cover" />
+        <img src={selected?.avatar} alt={selected?.name} className="w-12 h-12 rounded-full object-cover" />
         <div className="flex-1">
-          <p className="text-sm font-semibold text-gray-900">{selected?.name}</p>
-          <p className="text-xs text-gray-500">{selected?.online ? 'Çevrimiçi' : 'Çevrimdışı'}</p>
+          <p className="text-sm font-bold text-[#333]">{selected?.name}</p>
+          <p className="text-xs text-[#8f8f8f]">{selected?.online ? 'Çevrimiçi' : 'Çevrimdışı'}</p>
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 bg-gray-50 space-y-3">
+      <div className="flex-1 overflow-y-auto p-4 bg-[#f0f2f5] space-y-3">
         {messages.map((msg) => (
           <div key={msg.id} className={cn('flex', msg.isOwn ? 'justify-end' : 'justify-start')}>
             <div className={cn(
-              'max-w-[70%] px-4 py-2.5 rounded-2xl text-sm',
+              'max-w-[65%] px-4 py-2.5 rounded-2xl text-sm break-words',
               msg.isOwn
-                ? 'bg-[#00833e] text-white rounded-br-md'
-                : 'bg-white text-gray-800 border border-gray-200 rounded-bl-md'
+                ? 'bg-[#00833e] text-white rounded-br-none'
+                : 'bg-white text-[#333] border border-[#e0e0e0] rounded-bl-none'
             )}>
               <p>{msg.text}</p>
-              <p className={cn('text-[10px] mt-1', msg.isOwn ? 'text-[#a7dbb8]' : 'text-gray-400')}>
+              <p className={cn('text-[10px] mt-1.5', msg.isOwn ? 'text-[#a7dbb8]' : 'text-[#8f8f8f]')}>
                 {msg.time}
               </p>
             </div>
@@ -218,51 +214,55 @@ export default function MessagesPage() {
         ))}
       </div>
 
-      {/* Input */}
-      <div className="p-3 border-t border-gray-200 bg-white">
+      {/* Message Input */}
+      <div className="p-3 border-t border-[#e0e0e0] bg-white">
         <div className="flex items-center gap-2">
-          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-            <Image className="w-5 h-5 text-gray-500" />
+          <button className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors">
+            <Image size={20} className="text-[#8f8f8f]" />
           </button>
           <input
             type="text"
             value={messageText}
             onChange={(e) => setMessageText(e.target.value)}
             placeholder="Mesajınızı yazın..."
-            className="flex-1 px-4 py-2 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+            className="flex-1 px-4 py-2 bg-[#f0f2f5] border border-[#e0e0e0] rounded-full text-sm text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e]"
           />
-          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-            <Smile className="w-5 h-5 text-gray-500" />
+          <button className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors">
+            <Smile size={20} className="text-[#8f8f8f]" />
           </button>
           <button className="p-2 bg-[#00833e] hover:bg-[#006b32] rounded-full transition-colors">
-            <Send className="w-4 h-4 text-white" />
+            <Send size={18} className="text-white" />
           </button>
         </div>
       </div>
     </div>
   );
 
-  // Mobile
+  // Mobile View
   if (isMobile) {
     return (
       <div className="h-[calc(100vh-56px)] bg-white">
-        {selectedId ? <ChatView /> : <ConvoList />}
+        {selectedId ? <ChatView /> : <ConversationList />}
       </div>
     );
   }
 
-  // Desktop - split view like Nextdoor
+  // Desktop Split View
   return (
-    <div className="flex h-[calc(100vh-56px)] bg-white">
-      <div className="w-[340px] border-r border-gray-200 flex-shrink-0">
-        <ConvoList />
+    <div className="flex h-[calc(100vh-56px)] bg-[#f0f2f5]">
+      <div className="w-80 flex-shrink-0 h-full">
+        <ConversationList />
       </div>
       <div className="flex-1">
         {selected ? (
           <ChatView />
         ) : (
-          <div className="flex items-center justify-center h-full text-gray-400">
-            <p>Sohbet seçin</p>
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <Search size={48} className="mx-auto text-[#8f8f8f] mb-3" />
+              <p className="text-[#333] font-medium">Sohbet seçin</p>
+              <p className="text-[#8f8f8f] text-sm mt-1">Mesajı açmak için bir sohbet seçiniz</p>
+            </div>
           </div>
         )}
       </div>
