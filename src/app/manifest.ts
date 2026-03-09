@@ -2,15 +2,15 @@ import { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "KomşuApp",
+    name: "KomşuApp - Mahalle Sosyal Ağı",
     short_name: "Komşu",
-    description: "Mahallenizdeki komşularla bağlantı kurun",
+    description: "Türkiye'nin mahalle sosyal ağı. Komşularınızla tanışın, etkinliklere katılın, pazar yerde alışveriş yapın.",
     start_url: "/",
     scope: "/",
     display: "standalone",
     orientation: "portrait-primary",
     theme_color: "#00833e",
-    background_color: "#ffffff",
+    background_color: "#f0f2f5",
     lang: "tr",
     dir: "ltr",
     icons: [
