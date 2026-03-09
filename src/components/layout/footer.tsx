@@ -1,104 +1,122 @@
-import * as React from "react";
+import Link from "next/link";
+import { Twitter, Instagram, Facebook } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface FooterProps extends React.HTMLAttributes<HTMLElement> {}
 
-const Footer = React.forwardRef<HTMLElement, FooterProps>(
-  ({ className, ...props }, ref) => {
-    const currentYear = new Date().getFullYear();
+export function Footer({ className, ...props }: FooterProps) {
+  const currentYear = new Date().getFullYear();
 
-    const footerLinks = [
-      {
-        title: "Hakkında",
-        links: ["Hakkımızda", "Kariyer", "Blog", "Basın"],
-      },
-      {
-        title: "Destek",
-        links: ["Yardım Merkezi", "İletişim", "Canlı Sohbet", "Bildir"],
-      },
-      {
-        title: "Yasal",
-        links: ["Gizlilik Politikası", "Hizmet Şartları", "Çerezler", "KVKK"],
-      },
-      {
-        title: "Bağlantılar",
-        links: ["Twitter", "Facebook", "Instagram", "LinkedIn"],
-      },
-    ];
+  const footerSections = [
+    {
+      title: "KomşuApp",
+      links: [
+        { label: "Hakkında", href: "/hakkinda" },
+        { label: "Nasıl Çalışır", href: "/nasil-calisir" },
+        { label: "Blog", href: "/blog" },
+        { label: "Kariyer", href: "/kariyer" },
+      ],
+    },
+    {
+      title: "Destek",
+      links: [
+        { label: "Yardım Merkezi", href: "/yardim" },
+        { label: "Güvenlik", href: "/guvenlik" },
+        { label: "Topluluk Kuralları", href: "/topluluk-kurallari" },
+        { label: "İletişim", href: "/iletisim" },
+      ],
+    },
+    {
+      title: "Yasal",
+      links: [
+        { label: "Kullanım Koşulları", href: "/kosullar" },
+        { label: "Gizlilik Politikası", href: "/gizlilik" },
+        { label: "Çerez Politikası", href: "/cerez-politikasi" },
+        { label: "KVKK", href: "/kvkk" },
+      ],
+    },
+    {
+      title: "İndir",
+      links: [
+        { label: "App Store", href: "https://apps.apple.com/komsuapp" },
+        { label: "Google Play", href: "https://play.google.com/store/apps/komsuapp" },
+      ],
+    },
+  ];
 
-    return (
-      <footer
-        ref={ref}
-        className={cn("border-t border-gray-200 bg-gray-50", className)}
-        {...props}
-      >
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          {/* Links Grid */}
-          <div className="mb-8 grid grid-cols-2 gap-8 md:grid-cols-4">
-            {footerLinks.map((section) => (
-              <div key={section.title}>
-                <h3 className="text-sm font-semibold text-gray-900">
-                  {section.title}
-                </h3>
-                <ul className="mt-4 flex flex-col gap-3">
-                  {section.links.map((link) => (
-                    <li key={link}>
-                      <a
-                        href="#"
-                        className="text-sm text-gray-600 hover:text-[#00833e] transition-colors"
-                      >
-                        {link}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
+  const socialLinks = [
+    { icon: Twitter, href: "https://twitter.com/komsuapp", label: "Twitter" },
+    {
+      icon: Instagram,
+      href: "https://instagram.com/komsuapp",
+      label: "Instagram",
+    },
+    {
+      icon: Facebook,
+      href: "https://facebook.com/komsuapp",
+      label: "Facebook",
+    },
+  ];
 
-          {/* Divider */}
-          <div className="border-t border-gray-200 py-8">
-            {/* Logo and Description */}
-            <div className="mb-8">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#00833e] text-white font-bold">
-                  K
-                </div>
-                <span className="font-bold text-gray-900">KomşuApp</span>
-              </div>
-              <p className="text-sm text-gray-600 max-w-xs">
-                Komşularla bağlanın, mahallede birlikte gelişin. KomşuApp ile
-                mahallenizdeki insanlarla etkileşim kurun.
-              </p>
+  return (
+    <footer
+      className={cn("border-t border-[#e0e0e0] bg-[#f0f2f5]", className)}
+      {...props}
+    >
+      <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        {/* Links Grid */}
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-4 mb-12">
+          {footerSections.map((section) => (
+            <div key={section.title}>
+              <h3 className="text-sm font-semibold text-[#333] mb-4">
+                {section.title}
+              </h3>
+              <ul className="flex flex-col gap-3">
+                {section.links.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-[#404040] hover:text-[#00833e] transition-colors duration-200"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
+          ))}
+        </div>
 
-            {/* Bottom Section */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-xs text-gray-500">
-                © {currentYear} KomşuApp. Tüm hakları saklıdır.
-              </p>
-              <div className="flex gap-4">
-                <a
-                  href="#"
-                  className="text-xs text-gray-600 hover:text-[#00833e] transition-colors"
-                >
-                  Tercih Merkezi
-                </a>
-                <a
-                  href="#"
-                  className="text-xs text-gray-600 hover:text-[#00833e] transition-colors"
-                >
-                  Erişilebilirlik
-                </a>
-              </div>
+        {/* Divider */}
+        <div className="border-t border-[#e0e0e0] pt-8">
+          {/* Bottom Bar */}
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            {/* Copyright */}
+            <p className="text-xs text-[#8f8f8f]">
+              © {currentYear} KomşuApp. Tüm hakları saklıdır.
+            </p>
+
+            {/* Social Links */}
+            <div className="flex gap-4">
+              {socialLinks.map((social) => {
+                const IconComponent = social.icon;
+                return (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                    className="text-[#404040] hover:text-[#00833e] transition-colors duration-200"
+                  >
+                    <IconComponent size={18} />
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>
-      </footer>
-    );
-  }
-);
-
-Footer.displayName = "Footer";
-
-export { Footer };
+      </div>
+    </footer>
+  );
+}

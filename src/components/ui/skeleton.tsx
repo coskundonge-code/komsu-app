@@ -1,11 +1,21 @@
 'use client';
 
+import { cn } from '@/lib/utils';
+
 /**
  * Base Skeleton Component
- * Uses the .skeleton class from globals.css for shimmer animation
+ * Simple reusable skeleton with animated pulse effect using Tailwind's animate-pulse
+ * Accepts className prop for customization
  */
 export function Skeleton({ className }: { className?: string }) {
-  return <div className={`skeleton ${className || ''}`} />;
+  return (
+    <div
+      className={cn(
+        'bg-[#e0e0e0] rounded animate-pulse',
+        className
+      )}
+    />
+  );
 }
 
 /**

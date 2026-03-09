@@ -1,0 +1,280 @@
+'use client';
+
+import { useState } from 'react';
+import { Lock, Eye, MessageSquare, MapPin, Users, Search, Trash2, AlertCircle } from 'lucide-react';
+import Link from 'next/link';
+import { ChevronLeft } from 'lucide-react';
+
+interface BlockedUser {
+  id: string;
+  name: string;
+  avatar: string;
+}
+
+type VisibilityOption = 'everyone' | 'neighborhood' | 'private';
+type MessageOption = 'everyone' | 'neighborhood' | 'nobody';
+
+export default function GizlilikPage() {
+  const [profileVisibility, setProfileVisibility] = useState<VisibilityOption>('neighborhood');
+  const [messagePermission, setMessagePermission] = useState<MessageOption>('neighborhood');
+  const [showLocationOnMap, setShowLocationOnMap] = useState(true);
+  const [showInMembersList, setShowInMembersList] = useState(true);
+  const [showInSearch, setShowInSearch] = useState(true);
+  const [saved, setSaved] = useState(false);
+
+  const [blockedUsers, setBlockedUsers] = useState<BlockedUser[]>([
+    { id: '1', name: 'Ahmet K.', avatar: '👤' },
+    { id: '2', name: 'Fatma D.', avatar: '👤' },
+    { id: '3', name: 'Mehmet Y.', avatar: '👤' },
+  ]);
+
+  const unblockUser = (id: string) => {
+    setBlockedUsers(blockedUsers.filter((user) => user.id !== id));
+  };
+
+  const handleSave = () => {
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  const visibilityOptions = [
+    { value: 'everyone' as VisibilityOption, label: 'Herkes' },
+    { value: 'neighborhood' as VisibilityOption, label: 'Sadece Mahalle' },
+    { value: 'private' as VisibilityOption, label: 'Gizli' },
+  ];
+
+  const messageOptions = [
+    { value: 'everyone' as MessageOption, label: 'Herkes' },
+    { value: 'neighborhood' as MessageOption, label: 'Sadece Mahalle' },
+    { value: 'nobody' as MessageOption, label: 'Hiçkimse' },
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#f0f2f5]">
+      {/* Header */}
+      <div className="bg-white border-b border-[#e0e0e0] sticky top-0 z-10">
+        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-3">
+          <Link
+            href="/ayarlar"
+            className="p-2 hover:bg-[#f0f2f5] rounded-lg transition-colors"
+          >
+            <ChevronLeft className="w-6 h-6 text-[#333]" />
+          </Link>
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-[#f0f2f5] rounded-lg">
+              <Lock className="w-6 h-6 text-[#00833e]" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-[#333]">Gizlilik Ayarları</h1>
+              <p className="text-sm text-[#8f8f8f]">Profilinizi ve verilerinizi kontrol edin</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-2xl mx-auto px-4 py-6">
+        {/* Profile Visibility */}
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-[#f0f2f5] rounded-lg">
+              <Eye className="w-5 h-5 text-[#00833e]" />
+            </div>
+            <h2 className="text-lg font-semibold text-[#333]">Profil Görünürlüğü</h2>
+          </div>
+          <p className="text-sm text-[#8f8f8f] mb-4">
+            Profilinizi kimler görebileceğini seçin
+          </p>
+          <div className="space-y-3">
+            {visibilityOptions.map((option) => (
+              <label
+                key={option.value}
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#f0f2f5] cursor-pointer transition-colors"
+              >
+                <input
+                  type="radio"
+                  name="profileVisibility"
+                  value={option.value}
+                  checked={profileVisibility === option.value}
+                  onChange={(e) => setProfileVisibility(e.target.value as VisibilityOption)}
+                  className="w-4 h-4 accent-[#00833e]"
+                />
+                <span className="text-[#404040]">{option.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Message Permissions */}
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-[#f0f2f5] rounded-lg">
+              <MessageSquare className="w-5 h-5 text-[#00833e]" />
+            </div>
+            <h2 className="text-lg font-semibold text-[#333]">Bana Mesaj Gönderebilecekler</h2>
+          </div>
+          <p className="text-sm text-[#8f8f8f] mb-4">
+            Kime mesaj yazmasına izin vereceğinizi seçin
+          </p>
+          <div className="space-y-3">
+            {messageOptions.map((option) => (
+              <label
+                key={option.value}
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#f0f2f5] cursor-pointer transition-colors"
+              >
+                <input
+                  type="radio"
+                  name="messagePermission"
+                  value={option.value}
+                  checked={messagePermission === option.value}
+                  onChange={(e) => setMessagePermission(e.target.value as MessageOption)}
+                  className="w-4 h-4 accent-[#00833e]"
+                />
+                <span className="text-[#404040]">{option.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Toggle Options */}
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-6 space-y-4">
+          {/* Location on Map */}
+          <div className="flex items-center justify-between pb-4 border-b border-[#e0e0e0]">
+            <div className="flex items-center gap-3">
+              <MapPin className="w-5 h-5 text-[#00833e]" />
+              <div>
+                <h3 className="font-semibold text-[#333]">Haritada Konumumu Göster</h3>
+                <p className="text-sm text-[#8f8f8f]">Komşularınız sizi haritada görebilir</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowLocationOnMap(!showLocationOnMap)}
+              className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+                showLocationOnMap ? 'bg-[#00833e]' : 'bg-[#e0e0e0]'
+              }`}
+            >
+              <span
+                className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                  showLocationOnMap ? 'translate-x-7' : 'translate-x-1'
+                }`}
+              />
+            </button>
+          </div>
+
+          {/* Members List */}
+          <div className="flex items-center justify-between pb-4 border-b border-[#e0e0e0]">
+            <div className="flex items-center gap-3">
+              <Users className="w-5 h-5 text-[#00833e]" />
+              <div>
+                <h3 className="font-semibold text-[#333]">Mahalle Üyeleri Listesinde Görün</h3>
+                <p className="text-sm text-[#8f8f8f]">Diğer üyelerin görebileceği listede yer al</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowInMembersList(!showInMembersList)}
+              className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+                showInMembersList ? 'bg-[#00833e]' : 'bg-[#e0e0e0]'
+              }`}
+            >
+              <span
+                className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                  showInMembersList ? 'translate-x-7' : 'translate-x-1'
+                }`}
+              />
+            </button>
+          </div>
+
+          {/* Search Results */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Search className="w-5 h-5 text-[#00833e]" />
+              <div>
+                <h3 className="font-semibold text-[#333]">Arama Sonuçlarında Görün</h3>
+                <p className="text-sm text-[#8f8f8f]">Profil aramalarında görünür ol</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowInSearch(!showInSearch)}
+              className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+                showInSearch ? 'bg-[#00833e]' : 'bg-[#e0e0e0]'
+              }`}
+            >
+              <span
+                className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                  showInSearch ? 'translate-x-7' : 'translate-x-1'
+                }`}
+              />
+            </button>
+          </div>
+        </div>
+
+        {/* Block List */}
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-6">
+          <h2 className="text-lg font-semibold text-[#333] mb-4">Engellenen Kullanıcılar</h2>
+          {blockedUsers.length > 0 ? (
+            <div className="space-y-3">
+              {blockedUsers.map((user) => (
+                <div
+                  key={user.id}
+                  className="flex items-center justify-between p-3 rounded-lg bg-[#f0f2f5]"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center">
+                      {user.avatar}
+                    </div>
+                    <span className="text-[#404040] font-medium">{user.name}</span>
+                  </div>
+                  <button
+                    onClick={() => unblockUser(user.id)}
+                    className="px-4 py-2 text-sm font-semibold text-[#00833e] hover:bg-white rounded-lg transition-colors"
+                  >
+                    Engeli Kaldır
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-[#8f8f8f]">Herhangi bir engellenen kullanıcı yok</p>
+          )}
+        </div>
+
+        {/* Danger Zone - Account Deletion */}
+        <div className="bg-white rounded-lg border border-red-300 p-6 mb-6">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-6 h-6 text-red-500 flex-shrink-0 mt-1" />
+            <div className="flex-1">
+              <h2 className="text-lg font-semibold text-red-700 mb-2">Tehlikeli Alan</h2>
+              <p className="text-sm text-[#8f8f8f] mb-4">
+                Bu işlemler geri alınamaz. Lütfen dikkatli olun.
+              </p>
+              <button className="w-full py-3 px-4 bg-red-50 border border-red-300 text-red-700 font-semibold rounded-lg hover:bg-red-100 transition-colors flex items-center justify-center gap-2">
+                <Trash2 className="w-5 h-5" />
+                Hesabımı Sil
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Save Button */}
+        <div className="flex gap-3 mb-12">
+          <button
+            onClick={handleSave}
+            className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all ${
+              saved
+                ? 'bg-[#00833e] text-white'
+                : 'bg-[#00833e] text-white hover:bg-[#006b32]'
+            }`}
+          >
+            {saved ? '✓ Kaydedildi' : 'Kaydet'}
+          </button>
+          <Link
+            href="/ayarlar"
+            className="py-3 px-4 rounded-lg font-semibold bg-white border border-[#e0e0e0] text-[#333] hover:bg-[#f0f2f5] transition-colors"
+          >
+            İptal
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
