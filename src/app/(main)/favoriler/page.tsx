@@ -1,183 +1,222 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Image from 'next/image';
-import { Search, Star, Heart, MessageCircle, MapPin, TrendingUp } from 'lucide-react';
+import { useState } from "react";
+import {
+  Search,
+  Star,
+  Heart,
+  MapPin,
+  TrendingUp,
+  ThumbsUp,
+  Filter,
+  ArrowUpDown,
+} from "lucide-react";
 
 interface Business {
   id: string;
   name: string;
   category: string;
   rating: number;
-  reviews: number;
+  recommendations: number;
   distance: string;
   coverImage: string;
   logo: string;
   isFavorite?: boolean;
-  isTopRecommended?: boolean;
+  isPopular?: boolean;
 }
 
-const CATEGORIES = ['Tümü', 'Restoran', 'Market', 'Kuaför', 'Tamirci', 'Veteriner', 'Kafe', 'Berber', 'Pizza', 'Bakkal'];
+const CATEGORIES = [
+  "Tümü",
+  "Restoranlar",
+  "Tamirciler",
+  "Temizlik",
+  "Sağlık",
+  "Eğitim",
+];
+
+const SORT_OPTIONS = [
+  { id: "recommendations", label: "En Çok Tavsiye" },
+  { id: "distance", label: "En Yakın" },
+  { id: "newest", label: "En Yeni" },
+];
 
 const BUSINESSES: Business[] = [
   {
-    id: '1',
-    name: 'Anadolu Tandır Evi',
-    category: 'Restoran',
+    id: "1",
+    name: "Anadolu Tandır Evi",
+    category: "Restoranlar",
     rating: 4.8,
-    reviews: 342,
-    distance: '0.5 km',
-    coverImage: 'https://picsum.photos/400/250?random=1',
-    logo: 'https://picsum.photos/80/80?random=11',
+    recommendations: 243,
+    distance: "0.5 km",
+    coverImage: "https://picsum.photos/400/250?random=1",
+    logo: "https://picsum.photos/80/80?random=11",
     isFavorite: true,
-    isTopRecommended: true,
+    isPopular: true,
   },
   {
-    id: '2',
-    name: 'Yeşil Market Süpermarket',
-    category: 'Market',
+    id: "2",
+    name: "Yeşil Market Süpermarket",
+    category: "Restoranlar",
     rating: 4.6,
-    reviews: 287,
-    distance: '0.3 km',
-    coverImage: 'https://picsum.photos/400/250?random=2',
-    logo: 'https://picsum.photos/80/80?random=12',
+    recommendations: 187,
+    distance: "0.3 km",
+    coverImage: "https://picsum.photos/400/250?random=2",
+    logo: "https://picsum.photos/80/80?random=12",
     isFavorite: true,
-    isTopRecommended: true,
+    isPopular: true,
   },
   {
-    id: '3',
-    name: 'Sultan Berber & Kuaför',
-    category: 'Kuaför',
+    id: "3",
+    name: "Sultan Berber & Kuaför",
+    category: "Temizlik",
     rating: 4.7,
-    reviews: 156,
-    distance: '0.8 km',
-    coverImage: 'https://picsum.photos/400/250?random=3',
-    logo: 'https://picsum.photos/80/80?random=13',
+    recommendations: 156,
+    distance: "0.8 km",
+    coverImage: "https://picsum.photos/400/250?random=3",
+    logo: "https://picsum.photos/80/80?random=13",
     isFavorite: true,
-    isTopRecommended: true,
+    isPopular: true,
   },
   {
-    id: '4',
-    name: 'Hızlı Elektrik Tamirciliği',
-    category: 'Tamirci',
+    id: "4",
+    name: "Hızlı Elektrik Tamirciliği",
+    category: "Tamirciler",
     rating: 4.5,
-    reviews: 89,
-    distance: '1.2 km',
-    coverImage: 'https://picsum.photos/400/250?random=4',
-    logo: 'https://picsum.photos/80/80?random=14',
+    recommendations: 89,
+    distance: "1.2 km",
+    coverImage: "https://picsum.photos/400/250?random=4",
+    logo: "https://picsum.photos/80/80?random=14",
     isFavorite: false,
   },
   {
-    id: '5',
-    name: 'Işık Veteriner Kliniği',
-    category: 'Veteriner',
+    id: "5",
+    name: "Işık Veteriner Kliniği",
+    category: "Sağlık",
     rating: 4.9,
-    reviews: 124,
-    distance: '1.5 km',
-    coverImage: 'https://picsum.photos/400/250?random=5',
-    logo: 'https://picsum.photos/80/80?random=15',
+    recommendations: 124,
+    distance: "1.5 km",
+    coverImage: "https://picsum.photos/400/250?random=5",
+    logo: "https://picsum.photos/80/80?random=15",
     isFavorite: true,
   },
   {
-    id: '6',
-    name: 'Kahve Dünyası Kafe',
-    category: 'Kafe',
+    id: "6",
+    name: "Kahve Dünyası Kafe",
+    category: "Restoranlar",
     rating: 4.4,
-    reviews: 198,
-    distance: '0.6 km',
-    coverImage: 'https://picsum.photos/400/250?random=6',
-    logo: 'https://picsum.photos/80/80?random=16',
+    recommendations: 198,
+    distance: "0.6 km",
+    coverImage: "https://picsum.photos/400/250?random=6",
+    logo: "https://picsum.photos/80/80?random=16",
     isFavorite: false,
   },
   {
-    id: '7',
-    name: 'Aslan Pizza & Pasta',
-    category: 'Pizza',
+    id: "7",
+    name: "Aslan Pizza & Pasta",
+    category: "Restoranlar",
     rating: 4.7,
-    reviews: 412,
-    distance: '0.9 km',
-    coverImage: 'https://picsum.photos/400/250?random=7',
-    logo: 'https://picsum.photos/80/80?random=17',
+    recommendations: 412,
+    distance: "0.9 km",
+    coverImage: "https://picsum.photos/400/250?random=7",
+    logo: "https://picsum.photos/80/80?random=17",
     isFavorite: true,
+    isPopular: true,
   },
   {
-    id: '8',
-    name: 'Köşe Bakkal',
-    category: 'Bakkal',
-    rating: 4.3,
-    reviews: 67,
-    distance: '0.4 km',
-    coverImage: 'https://picsum.photos/400/250?random=8',
-    logo: 'https://picsum.photos/80/80?random=18',
-    isFavorite: false,
-  },
-  {
-    id: '9',
-    name: 'Çankırı Temizlik Hizmetleri',
-    category: 'Hizmet',
-    rating: 4.6,
-    reviews: 92,
-    distance: '2.0 km',
-    coverImage: 'https://picsum.photos/400/250?random=9',
-    logo: 'https://picsum.photos/80/80?random=19',
-    isFavorite: false,
-  },
-  {
-    id: '10',
-    name: 'Modern Kuaför Salonu',
-    category: 'Kuaför',
-    rating: 4.5,
-    reviews: 203,
-    distance: '1.1 km',
-    coverImage: 'https://picsum.photos/400/250?random=10',
-    logo: 'https://picsum.photos/80/80?random=20',
-    isFavorite: true,
-  },
-  {
-    id: '11',
-    name: 'Özdemir Gıda Pazarı',
-    category: 'Market',
-    rating: 4.4,
-    reviews: 145,
-    distance: '0.7 km',
-    coverImage: 'https://picsum.photos/400/250?random=11',
-    logo: 'https://picsum.photos/80/80?random=21',
-    isFavorite: false,
-  },
-  {
-    id: '12',
-    name: 'Osman Dönerci',
-    category: 'Restoran',
+    id: "8",
+    name: "Yüksek Eğitim Merkezi",
+    category: "Eğitim",
     rating: 4.8,
-    reviews: 567,
-    distance: '1.3 km',
-    coverImage: 'https://picsum.photos/400/250?random=12',
-    logo: 'https://picsum.photos/80/80?random=22',
+    recommendations: 267,
+    distance: "0.4 km",
+    coverImage: "https://picsum.photos/400/250?random=8",
+    logo: "https://picsum.photos/80/80?random=18",
     isFavorite: true,
+    isPopular: true,
+  },
+  {
+    id: "9",
+    name: "Çankırı Temizlik Hizmetleri",
+    category: "Temizlik",
+    rating: 4.6,
+    recommendations: 92,
+    distance: "2.0 km",
+    coverImage: "https://picsum.photos/400/250?random=9",
+    logo: "https://picsum.photos/80/80?random=19",
+    isFavorite: false,
+  },
+  {
+    id: "10",
+    name: "Dr. Ahmet Sağlık Merkezi",
+    category: "Sağlık",
+    rating: 4.5,
+    recommendations: 203,
+    distance: "1.1 km",
+    coverImage: "https://picsum.photos/400/250?random=10",
+    logo: "https://picsum.photos/80/80?random=20",
+    isFavorite: true,
+  },
+  {
+    id: "11",
+    name: "Özdemir Gıda Pazarı",
+    category: "Restoranlar",
+    rating: 4.4,
+    recommendations: 145,
+    distance: "0.7 km",
+    coverImage: "https://picsum.photos/400/250?random=11",
+    logo: "https://picsum.photos/80/80?random=21",
+    isFavorite: false,
+  },
+  {
+    id: "12",
+    name: "Osman Dönerci",
+    category: "Restoranlar",
+    rating: 4.8,
+    recommendations: 567,
+    distance: "1.3 km",
+    coverImage: "https://picsum.photos/400/250?random=12",
+    logo: "https://picsum.photos/80/80?random=22",
+    isFavorite: true,
+    isPopular: true,
   },
 ];
 
 export default function FavorilerPage() {
-  const [selectedCategory, setSelectedCategory] = useState('Tümü');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState("Tümü");
+  const [sortBy, setSortBy] = useState("recommendations");
+  const [searchQuery, setSearchQuery] = useState("");
   const [favorites, setFavorites] = useState(
-    BUSINESSES.reduce((acc, business) => {
-      if (business.isFavorite) {
-        acc[business.id] = true;
-      }
-      return acc;
-    }, {} as Record<string, boolean>)
+    BUSINESSES.reduce(
+      (acc, business) => {
+        if (business.isFavorite) {
+          acc[business.id] = true;
+        }
+        return acc;
+      },
+      {} as Record<string, boolean>
+    )
   );
 
   const filteredBusinesses = BUSINESSES.filter((business) => {
-    const categoryMatch = selectedCategory === 'Tümü' || business.category === selectedCategory;
-    const searchMatch = business.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    const categoryMatch =
+      selectedCategory === "Tümü" || business.category === selectedCategory;
+    const searchMatch =
+      business.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       business.category.toLowerCase().includes(searchQuery.toLowerCase());
     return categoryMatch && searchMatch;
   });
 
-  const topRecommendedBusinesses = BUSINESSES.filter((b) => b.isTopRecommended).sort(
-    (a, b) => b.reviews - a.reviews
+  const sortedBusinesses = [...filteredBusinesses].sort((a, b) => {
+    if (sortBy === "recommendations") {
+      return b.recommendations - a.recommendations;
+    } else if (sortBy === "distance") {
+      return parseFloat(a.distance) - parseFloat(b.distance);
+    }
+    return 0;
+  });
+
+  const popularBusinesses = BUSINESSES.filter((b) => b.isPopular).sort(
+    (a, b) => b.recommendations - a.recommendations
   );
 
   const toggleFavorite = (id: string) => {
@@ -209,7 +248,7 @@ export default function FavorilerPage() {
           size={16}
           className="text-yellow-400"
           style={{
-            background: 'linear-gradient(90deg, #facc15 50%, #e5e7eb 50%)',
+            background: "linear-gradient(90deg, #facc15 50%, #e5e7eb 50%)",
           }}
         />
       );
@@ -229,23 +268,32 @@ export default function FavorilerPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#f0f2f5' }}>
-      {/* Header with Gradient */}
+    <div className="min-h-screen" style={{ backgroundColor: "#f0f2f5" }}>
+      {/* Hero Section with Gradient */}
       <div
         style={{
           background: `linear-gradient(135deg, #00833e 0%, #006b32 100%)`,
         }}
-        className="text-white py-6 px-4 sm:px-6 lg:px-8"
+        className="text-white py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
       >
-        <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-2">Mahalle Favorileri</h1>
-          <p className="text-green-100">En çok sevilen işletmeleri keşfet</p>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -mr-48 -mt-48"></div>
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-white/5 rounded-full -ml-36 -mb-36"></div>
+
+        <div className="max-w-6xl mx-auto relative z-10">
+          <div className="flex items-center gap-3 mb-4">
+            <TrendingUp size={32} />
+            <h1 className="text-5xl font-bold">Mahalle Favorileri</h1>
+          </div>
+          <p className="text-green-100 text-xl max-w-2xl">
+            Komşularınız tarafından en çok tavsiye edilen restoranlar, temizlik hizmetleri, tamirciler ve daha fazlası. Mahallenizdeki en güvenilir işletmeleri keşfedin.
+          </p>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search Bar */}
-        <div className="mb-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Search and Sort Controls */}
+        <div className="mb-12 space-y-4">
+          {/* Search Bar */}
           <div className="relative">
             <Search
               size={20}
@@ -253,86 +301,99 @@ export default function FavorilerPage() {
             />
             <input
               type="text"
-              placeholder="İşletme veya kategori ara..."
+              placeholder="İşletme adı veya kategori ara..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 rounded-lg border"
-              style={{
-                borderColor: '#e0e0e0',
-                backgroundColor: '#ffffff',
-                color: '#333',
-              }}
+              className="w-full pl-12 pr-4 py-4 rounded-xl border border-[#e0e0e0] focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20 bg-white text-[#333] font-medium"
             />
+          </div>
+
+          {/* Sort Options */}
+          <div className="flex items-center gap-3 flex-wrap">
+            <ArrowUpDown size={20} className="text-[#00833e]" />
+            <span className="font-semibold text-[#333]">Sırala:</span>
+            <div className="flex gap-2 flex-wrap">
+              {SORT_OPTIONS.map((option) => (
+                <button
+                  key={option.id}
+                  onClick={() => setSortBy(option.id)}
+                  className={`px-4 py-2 rounded-full font-semibold text-sm transition-all duration-200 ${
+                    sortBy === option.id
+                      ? "bg-[#00833e] text-white border border-[#00833e]"
+                      : "bg-white text-[#404040] border border-[#e0e0e0] hover:border-[#00833e] hover:text-[#00833e]"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Top Recommended Section */}
-        {topRecommendedBusinesses.length > 0 && (
-          <div className="mb-12">
-            <div className="flex items-center gap-2 mb-6">
-              <TrendingUp size={24} style={{ color: '#00833e' }} />
-              <h2 className="text-2xl font-bold" style={{ color: '#333' }}>
-                Bu Ay En Çok Önerilen
+        {/* Popular/Featured Section */}
+        {popularBusinesses.length > 0 && (
+          <section className="mb-16">
+            <div className="flex items-center gap-3 mb-8">
+              <TrendingUp size={28} style={{ color: "#00833e" }} />
+              <h2 className="text-3xl font-bold text-[#333]">
+                En Çok Tavsiye Edilen İşletmeler
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {topRecommendedBusinesses.map((business) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {popularBusinesses.map((business) => (
                 <div
                   key={business.id}
-                  className="rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 bg-white"
-                  style={{ borderColor: '#e0e0e0' }}
+                  className="rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-white hover:border-[#00833e] border border-[#e0e0e0] h-full flex flex-col"
                 >
                   {/* Cover Image */}
-                  <div className="relative h-48 overflow-hidden">
-                    <Image
+                  <div className="relative h-44 overflow-hidden bg-gray-100">
+                    <img
                       src={business.coverImage}
                       alt={business.name}
-                      width={400}
-                      height={250}
-                      unoptimized
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                    <div className="absolute top-3 right-3">
-                      <button
-                        onClick={() => toggleFavorite(business.id)}
-                        className="p-2 rounded-full transition-colors duration-200"
-                        style={{
-                          backgroundColor: favorites[business.id] ? '#00833e' : 'rgba(255, 255, 255, 0.9)',
-                        }}
-                      >
-                        <Heart
-                          size={20}
-                          className={favorites[business.id] ? 'text-white fill-white' : 'text-gray-600'}
-                        />
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => toggleFavorite(business.id)}
+                      className="absolute top-3 right-3 p-2 rounded-full transition-colors duration-200"
+                      style={{
+                        backgroundColor: favorites[business.id]
+                          ? "#00833e"
+                          : "rgba(255, 255, 255, 0.95)",
+                      }}
+                    >
+                      <Heart
+                        size={20}
+                        className={
+                          favorites[business.id]
+                            ? "text-white fill-white"
+                            : "text-gray-600"
+                        }
+                      />
+                    </button>
                     <div className="absolute top-3 left-3 bg-white px-3 py-1 rounded-full flex items-center gap-1">
-                      <TrendingUp size={14} style={{ color: '#00833e' }} />
-                      <span className="text-xs font-semibold" style={{ color: '#00833e' }}>
-                        Öne Çıkan
+                      <TrendingUp size={14} style={{ color: "#00833e" }} />
+                      <span className="text-xs font-bold text-[#00833e]">
+                        Popüler
                       </span>
                     </div>
                   </div>
 
                   {/* Content */}
-                  <div className="p-4">
-                    <div className="flex gap-3 mb-3">
+                  <div className="p-5 flex flex-col flex-grow">
+                    <div className="flex gap-3 mb-4">
                       <div className="flex-shrink-0">
-                        <Image
+                        <img
                           src={business.logo}
                           alt={business.name}
-                          width={64}
-                          height={64}
-                          unoptimized
-                          className="w-16 h-16 rounded-lg object-cover"
+                          className="w-14 h-14 rounded-lg object-cover"
                         />
                       </div>
-                      <div className="flex-grow">
-                        <h3 className="font-bold text-lg" style={{ color: '#333' }}>
+                      <div className="flex-grow min-w-0">
+                        <h3 className="font-bold text-base text-[#333] line-clamp-2">
                           {business.name}
                         </h3>
-                        <p className="text-sm" style={{ color: '#8f8f8f' }}>
+                        <p className="text-xs text-[#8f8f8f]">
                           {business.category}
                         </p>
                       </div>
@@ -340,236 +401,197 @@ export default function FavorilerPage() {
 
                     {/* Rating */}
                     <div className="flex items-center gap-2 mb-3">
-                      <div className="flex gap-1">{renderStars(business.rating)}</div>
-                      <span className="font-semibold text-sm" style={{ color: '#333' }}>
+                      <div className="flex gap-0.5">
+                        {renderStars(business.rating)}
+                      </div>
+                      <span className="font-bold text-sm text-[#333]">
                         {business.rating}
                       </span>
-                      <span className="text-xs" style={{ color: '#8f8f8f' }}>
-                        ({business.reviews})
+                    </div>
+
+                    {/* Recommendations Count */}
+                    <div className="flex items-center gap-2 mb-3">
+                      <ThumbsUp
+                        size={16}
+                        className="text-[#00833e] flex-shrink-0"
+                      />
+                      <span className="text-sm font-semibold text-[#333]">
+                        {business.recommendations} Komşu Tavsiye Etti
                       </span>
                     </div>
 
                     {/* Distance */}
                     <div className="flex items-center gap-1 mb-4">
-                      <MapPin size={16} style={{ color: '#00833e' }} />
-                      <span className="text-sm" style={{ color: '#8f8f8f' }}>
+                      <MapPin size={16} className="text-[#00833e] flex-shrink-0" />
+                      <span className="text-xs text-[#8f8f8f]">
                         {business.distance}
                       </span>
                     </div>
 
-                    {/* Buttons */}
-                    <div className="grid grid-cols-2 gap-2">
-                      <button
-                        style={{
-                          backgroundColor: '#00833e',
-                          color: '#ffffff',
-                        }}
-                        className="py-2 px-3 rounded-lg font-semibold text-sm transition-colors hover:bg-opacity-90"
-                        onMouseEnter={(e) =>
-                          (e.currentTarget.style.backgroundColor = '#006b32')
-                        }
-                        onMouseLeave={(e) =>
-                          (e.currentTarget.style.backgroundColor = '#00833e')
-                        }
-                      >
-                        Öner
-                      </button>
-                      <button
-                        style={{
-                          borderColor: '#00833e',
-                          color: '#00833e',
-                          backgroundColor: '#ffffff',
-                        }}
-                        className="py-2 px-3 rounded-lg font-semibold text-sm border-2 transition-colors"
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#00833e';
-                          e.currentTarget.style.color = '#ffffff';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = '#ffffff';
-                          e.currentTarget.style.color = '#00833e';
-                        }}
-                      >
-                        <MessageCircle size={16} className="inline mr-1" />
-                        Mesaj
-                      </button>
-                    </div>
+                    {/* Button */}
+                    <button
+                      style={{
+                        backgroundColor: "#00833e",
+                        color: "#ffffff",
+                      }}
+                      className="w-full py-2 px-3 rounded-lg font-bold text-sm transition-all hover:bg-[#006b32]"
+                    >
+                      Tavsiye Et
+                    </button>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
+          </section>
         )}
 
-        {/* Category Filter Tabs */}
-        <div className="mb-8 overflow-x-auto pb-2">
-          <div className="flex gap-2 min-w-max">
+        {/* Category Filter */}
+        <section className="mb-12">
+          <div className="flex items-center gap-3 mb-6">
+            <Filter size={24} className="text-[#00833e]" />
+            <h3 className="text-xl font-bold text-[#333]">Kategorilere Göre Filtrele</h3>
+          </div>
+          <div className="flex flex-wrap gap-3">
             {CATEGORIES.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className="px-4 py-2 rounded-full font-semibold text-sm transition-all duration-200 whitespace-nowrap"
-                style={{
-                  backgroundColor: selectedCategory === category ? '#00833e' : '#ffffff',
-                  color: selectedCategory === category ? '#ffffff' : '#404040',
-                  borderColor: selectedCategory === category ? '#00833e' : '#e0e0e0',
-                  border: '1px solid',
-                }}
-                onMouseEnter={(e) => {
-                  if (selectedCategory !== category) {
-                    e.currentTarget.style.borderColor = '#00833e';
-                    e.currentTarget.style.color = '#00833e';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (selectedCategory !== category) {
-                    e.currentTarget.style.borderColor = '#e0e0e0';
-                    e.currentTarget.style.color = '#404040';
-                  }
-                }}
+                className={`px-5 py-2 rounded-full font-semibold text-sm transition-all duration-200 border ${
+                  selectedCategory === category
+                    ? "bg-[#00833e] text-white border-[#00833e]"
+                    : "bg-white text-[#404040] border-[#e0e0e0] hover:border-[#00833e] hover:text-[#00833e]"
+                }`}
               >
                 {category}
               </button>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* Business Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredBusinesses.map((business) => (
-            <div
-              key={business.id}
-              className="rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 bg-white"
-              style={{ borderColor: '#e0e0e0' }}
-            >
-              {/* Cover Image */}
-              <div className="relative h-48 overflow-hidden">
-                <Image
-                  src={business.coverImage}
-                  alt={business.name}
-                  width={400}
-                  height={250}
-                  unoptimized
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-3 right-3">
-                  <button
-                    onClick={() => toggleFavorite(business.id)}
-                    className="p-2 rounded-full transition-colors duration-200"
-                    style={{
-                      backgroundColor: favorites[business.id] ? '#00833e' : 'rgba(255, 255, 255, 0.9)',
-                    }}
-                  >
-                    <Heart
-                      size={20}
-                      className={favorites[business.id] ? 'text-white fill-white' : 'text-gray-600'}
-                    />
-                  </button>
-                </div>
-                {favorites[business.id] && (
-                  <div className="absolute top-3 left-3 bg-white px-3 py-1 rounded-full">
-                    <span className="text-xs font-bold" style={{ color: '#00833e' }}>
-                      Favori
-                    </span>
-                  </div>
-                )}
-              </div>
+        {/* Business Grid - 8+ Items */}
+        <section>
+          <h2 className="text-3xl font-bold text-[#333] mb-8 flex items-center gap-3">
+            <span className="w-1 h-10 bg-[#00833e] rounded-full"></span>
+            {selectedCategory === "Tümü"
+              ? "Tüm Mahalle Favorileri"
+              : `${selectedCategory} İşletmeleri`}
+          </h2>
 
-              {/* Content */}
-              <div className="p-4">
-                <div className="flex gap-3 mb-3">
-                  <div className="flex-shrink-0">
-                    <Image
-                      src={business.logo}
+          {sortedBusinesses.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {sortedBusinesses.map((business) => (
+                <div
+                  key={business.id}
+                  className="rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-white hover:border-[#00833e] border border-[#e0e0e0] h-full flex flex-col"
+                >
+                  {/* Cover Image */}
+                  <div className="relative h-44 overflow-hidden bg-gray-100">
+                    <img
+                      src={business.coverImage}
                       alt={business.name}
-                      width={64}
-                      height={64}
-                      unoptimized
-                      className="w-16 h-16 rounded-lg object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
+                    <button
+                      onClick={() => toggleFavorite(business.id)}
+                      className="absolute top-3 right-3 p-2 rounded-full transition-colors duration-200"
+                      style={{
+                        backgroundColor: favorites[business.id]
+                          ? "#00833e"
+                          : "rgba(255, 255, 255, 0.95)",
+                      }}
+                    >
+                      <Heart
+                        size={20}
+                        className={
+                          favorites[business.id]
+                            ? "text-white fill-white"
+                            : "text-gray-600"
+                        }
+                      />
+                    </button>
+                    {favorites[business.id] && (
+                      <div className="absolute top-3 left-3 bg-white px-3 py-1 rounded-full">
+                        <span className="text-xs font-bold text-[#00833e]">
+                          Favori
+                        </span>
+                      </div>
+                    )}
                   </div>
-                  <div className="flex-grow">
-                    <h3 className="font-bold text-lg" style={{ color: '#333' }}>
-                      {business.name}
-                    </h3>
-                    <p className="text-sm" style={{ color: '#8f8f8f' }}>
-                      {business.category}
-                    </p>
+
+                  {/* Content */}
+                  <div className="p-5 flex flex-col flex-grow">
+                    <div className="flex gap-3 mb-4">
+                      <div className="flex-shrink-0">
+                        <img
+                          src={business.logo}
+                          alt={business.name}
+                          className="w-14 h-14 rounded-lg object-cover"
+                        />
+                      </div>
+                      <div className="flex-grow min-w-0">
+                        <h3 className="font-bold text-base text-[#333] line-clamp-2">
+                          {business.name}
+                        </h3>
+                        <p className="text-xs text-[#8f8f8f]">
+                          {business.category}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Rating */}
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="flex gap-0.5">
+                        {renderStars(business.rating)}
+                      </div>
+                      <span className="font-bold text-sm text-[#333]">
+                        {business.rating}
+                      </span>
+                    </div>
+
+                    {/* Recommendations Count */}
+                    <div className="flex items-center gap-2 mb-3">
+                      <ThumbsUp
+                        size={16}
+                        className="text-[#00833e] flex-shrink-0"
+                      />
+                      <span className="text-sm font-semibold text-[#333]">
+                        {business.recommendations} Komşu Tavsiye Etti
+                      </span>
+                    </div>
+
+                    {/* Distance */}
+                    <div className="flex items-center gap-1 mb-4">
+                      <MapPin size={16} className="text-[#00833e] flex-shrink-0" />
+                      <span className="text-xs text-[#8f8f8f]">
+                        {business.distance}
+                      </span>
+                    </div>
+
+                    {/* Button */}
+                    <button
+                      style={{
+                        backgroundColor: "#00833e",
+                        color: "#ffffff",
+                      }}
+                      className="w-full py-2 px-3 rounded-lg font-bold text-sm transition-all hover:bg-[#006b32]"
+                    >
+                      Tavsiye Et
+                    </button>
                   </div>
                 </div>
-
-                {/* Rating */}
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="flex gap-1">{renderStars(business.rating)}</div>
-                  <span className="font-semibold text-sm" style={{ color: '#333' }}>
-                    {business.rating}
-                  </span>
-                  <span className="text-xs" style={{ color: '#8f8f8f' }}>
-                    ({business.reviews})
-                  </span>
-                </div>
-
-                {/* Distance */}
-                <div className="flex items-center gap-1 mb-4">
-                  <MapPin size={16} style={{ color: '#00833e' }} />
-                  <span className="text-sm" style={{ color: '#8f8f8f' }}>
-                    {business.distance}
-                  </span>
-                </div>
-
-                {/* Buttons */}
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    style={{
-                      backgroundColor: '#00833e',
-                      color: '#ffffff',
-                    }}
-                    className="py-2 px-3 rounded-lg font-semibold text-sm transition-colors hover:bg-opacity-90"
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.backgroundColor = '#006b32')
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.backgroundColor = '#00833e')
-                    }
-                  >
-                    Öner
-                  </button>
-                  <button
-                    style={{
-                      borderColor: '#00833e',
-                      color: '#00833e',
-                      backgroundColor: '#ffffff',
-                    }}
-                    className="py-2 px-3 rounded-lg font-semibold text-sm border-2 transition-colors"
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#00833e';
-                      e.currentTarget.style.color = '#ffffff';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = '#ffffff';
-                      e.currentTarget.style.color = '#00833e';
-                    }}
-                  >
-                    <MessageCircle size={16} className="inline mr-1" />
-                    Mesaj
-                  </button>
-                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 bg-white rounded-xl border border-[#e0e0e0]">
+              <div className="text-[#8f8f8f] text-lg font-semibold mb-2">
+                Sonuç bulunamadı
+              </div>
+              <div className="text-[#b0b0b0] text-sm">
+                Lütfen kategori veya arama terimini değiştirerek deneyiniz.
               </div>
             </div>
-          ))}
-        </div>
-
-        {/* Empty State */}
-        {filteredBusinesses.length === 0 && (
-          <div className="text-center py-16">
-            <div style={{ color: '#8f8f8f' }} className="text-lg mb-2">
-              Sonuç bulunamadı
-            </div>
-            <div style={{ color: '#b0b0b0' }} className="text-sm">
-              Lütfen kategori veya arama terimini değiştirerek deneyiniz.
-            </div>
-          </div>
-        )}
+          )}
+        </section>
       </div>
     </div>
   );
