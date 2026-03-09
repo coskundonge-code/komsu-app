@@ -3,10 +3,14 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Bell, MessageSquare, Search, ChevronDown } from 'lucide-react'
+import { useState } from 'react'
 import { cn } from '@/lib/utils'
+import { SearchDropdown } from './search-dropdown'
 
 export function Navbar() {
   const pathname = usePathname()
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   return (
     <nav className="sticky top-0 z-50 bg-white border-b border-[#e0e0e0] shadow-sm">
@@ -28,7 +32,15 @@ export function Navbar() {
             <input
               type="text"
               placeholder="Mahallende ara..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setIsSearchOpen(true)}
               className="w-full pl-10 pr-4 py-2 bg-[#f0f2f5] border border-[#e0e0e0] rounded-full text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e] transition"
+            />
+            <SearchDropdown
+              isOpen={isSearchOpen}
+              onClose={() => setIsSearchOpen(false)}
+              searchQuery={searchQuery}
             />
           </div>
         </div>
