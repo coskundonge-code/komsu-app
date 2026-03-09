@@ -14,12 +14,19 @@ import {
   UserCheck,
   ChevronLeft,
   ChevronRight,
+  Eye,
+  Edit,
+  Trash2,
+  X,
+  Lock,
+  Unlock,
 } from 'lucide-react';
 
 interface User {
   id: string;
   name: string;
   email: string;
+  neighborhood: string;
   joinDate: string;
   status: 'active' | 'inactive' | 'suspended';
   posts: number;
@@ -34,6 +41,7 @@ const MOCK_USERS: User[] = [
     id: '1',
     name: 'Ahmet K.',
     email: 'ahmet@example.com',
+    neighborhood: 'Beşiktaş',
     joinDate: '2024-01-15',
     status: 'active',
     posts: 34,
@@ -46,6 +54,7 @@ const MOCK_USERS: User[] = [
     id: '2',
     name: 'Fatma D.',
     email: 'fatma@example.com',
+    neighborhood: 'Kadıköy',
     joinDate: '2023-11-20',
     status: 'active',
     posts: 28,
@@ -58,6 +67,7 @@ const MOCK_USERS: User[] = [
     id: '3',
     name: 'Mustafa T.',
     email: 'mustafa@example.com',
+    neighborhood: 'Şişli',
     joinDate: '2023-09-10',
     status: 'active',
     posts: 56,
@@ -70,6 +80,7 @@ const MOCK_USERS: User[] = [
     id: '4',
     name: 'Elif Y.',
     email: 'elif@example.com',
+    neighborhood: 'Cihangir',
     joinDate: '2023-08-05',
     status: 'suspended',
     posts: 12,
@@ -82,6 +93,7 @@ const MOCK_USERS: User[] = [
     id: '5',
     name: 'Hasan B.',
     email: 'hasan@example.com',
+    neighborhood: 'Levent',
     joinDate: '2024-02-01',
     status: 'inactive',
     posts: 5,
@@ -94,6 +106,7 @@ const MOCK_USERS: User[] = [
     id: '6',
     name: 'Ayşe S.',
     email: 'ayse@example.com',
+    neighborhood: 'Fatih',
     joinDate: '2023-12-12',
     status: 'active',
     posts: 42,
@@ -106,6 +119,7 @@ const MOCK_USERS: User[] = [
     id: '7',
     name: 'İbrahim M.',
     email: 'ibrahim@example.com',
+    neighborhood: 'Moda',
     joinDate: '2024-01-20',
     status: 'active',
     posts: 19,
@@ -118,6 +132,7 @@ const MOCK_USERS: User[] = [
     id: '8',
     name: 'Zeynep A.',
     email: 'zeynep@example.com',
+    neighborhood: 'Caferağa',
     joinDate: '2023-10-30',
     status: 'suspended',
     posts: 8,
@@ -152,19 +167,33 @@ const STATUS_CONFIG = {
   },
 };
 
+interface ConfirmModal {
+  isOpen: boolean;
+  action: string;
+  userId?: string;
+  userName?: string;
+}
+
 export default function KullanicilarPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive' | 'suspended'>('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [confirmModal, setConfirmModal] = useState<ConfirmModal>({
+    isOpen: false,
+    action: '',
+  });
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [detailsModal, setDetailsModal] = useState(false);
+
   const itemsPerPage = 8;
 
   const filteredUsers = useMemo(() => {
     return MOCK_USERS.filter((user) => {
       const matchesSearch =
         user.name.toLowerCase().includes(search.toLowerCase()) ||
-        user.email.toLowerCase().includes(search.toLowerCase());
-      const matchesStatus =
-        statusFilter === 'all' || user.status === statusFilter;
+        user.email.toLowerCase().includes(search.toLowerCase()) ||
+        user.neighborhood.toLowerCase().includes(search.toLowerCase());
+      const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
   }, [search, statusFilter]);
@@ -182,6 +211,25 @@ export default function KullanicilarPage() {
     suspended: MOCK_USERS.filter((u) => u.status === 'suspended').length,
   };
 
+  const handleAction = (action: string, user: User) => {
+    setConfirmModal({
+      isOpen: true,
+      action,
+      userId: user.id,
+      userName: user.name,
+    });
+  };
+
+  const confirmAction = () => {
+    console.log(`Confirmed: ${confirmModal.action} for user ${confirmModal.userId}`);
+    setConfirmModal({ isOpen: false, action: '' });
+  };
+
+  const viewDetails = (user: User) => {
+    setSelectedUser(user);
+    setDetailsModal(true);
+  };
+
   return (
     <div>
       <div className="mb-8">
@@ -193,7 +241,7 @@ export default function KullanicilarPage() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-xs font-medium">Toplam</p>
@@ -202,7 +250,7 @@ export default function KullanicilarPage() {
             <Users className="text-[#00833e]" size={28} />
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-xs font-medium">Aktif</p>
@@ -211,7 +259,7 @@ export default function KullanicilarPage() {
             <UserCheck className="text-green-600" size={28} />
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-xs font-medium">Pasif</p>
@@ -220,7 +268,7 @@ export default function KullanicilarPage() {
             <AlertCircle className="text-gray-600" size={28} />
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-xs font-medium">Askıya</p>
@@ -238,7 +286,7 @@ export default function KullanicilarPage() {
             <Search size={20} className="absolute left-3 top-3 text-gray-400" />
             <input
               type="text"
-              placeholder="Ad veya e-posta ile ara..."
+              placeholder="Ad, e-posta veya mahalle ile ara..."
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -286,6 +334,9 @@ export default function KullanicilarPage() {
                   Kullanıcı
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  Mahalle
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                   Katılım Tarihi
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
@@ -296,9 +347,6 @@ export default function KullanicilarPage() {
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                   Paylaşım / Yorum
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                  Son Görülme
                 </th>
                 <th className="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                   İşlem
@@ -332,6 +380,9 @@ export default function KullanicilarPage() {
                           <p className="text-xs text-gray-500">{user.email}</p>
                         </div>
                       </div>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-700">
+                      {user.neighborhood}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-700">
                       {new Date(user.joinDate).toLocaleDateString('tr-TR')}
@@ -369,13 +420,37 @@ export default function KullanicilarPage() {
                         </p>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {user.lastSeen}
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <button className="inline-flex items-center justify-center p-2 hover:bg-[#f0f2f5] rounded transition-colors">
-                        <MoreVertical size={18} className="text-gray-600" />
-                      </button>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-center gap-1">
+                        <button
+                          onClick={() => viewDetails(user)}
+                          className="p-2 hover:bg-blue-50 rounded transition-colors text-blue-600"
+                          title="Detayları Görüntüle"
+                        >
+                          <Eye size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleAction('edit', user)}
+                          className="p-2 hover:bg-amber-50 rounded transition-colors text-amber-600"
+                          title="Düzenle"
+                        >
+                          <Edit size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleAction(user.status === 'suspended' ? 'unsuspend' : 'suspend', user)}
+                          className="p-2 hover:bg-orange-50 rounded transition-colors text-orange-600"
+                          title={user.status === 'suspended' ? 'Askıyı Kaldır' : 'Askıya Al'}
+                        >
+                          {user.status === 'suspended' ? <Unlock size={16} /> : <Lock size={16} />}
+                        </button>
+                        <button
+                          onClick={() => handleAction('delete', user)}
+                          className="p-2 hover:bg-red-50 rounded transition-colors text-red-600"
+                          title="Sil"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -411,6 +486,118 @@ export default function KullanicilarPage() {
           </button>
         </div>
       </div>
+
+      {/* Details Modal */}
+      {detailsModal && selectedUser && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-[#e0e0e0] px-6 py-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-gray-900">Kullanıcı Detayları</h2>
+              <button
+                onClick={() => setDetailsModal(false)}
+                className="p-1 hover:bg-gray-100 rounded transition-colors"
+              >
+                <X size={20} className="text-gray-600" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="flex items-center gap-4 pb-4 border-b border-[#e0e0e0]">
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center font-bold text-white text-xl"
+                  style={{ backgroundColor: '#00833e' }}
+                >
+                  {selectedUser.avatar}
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-gray-900">{selectedUser.name}</p>
+                  <p className="text-sm text-gray-600">{selectedUser.email}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-xs font-medium text-gray-600 uppercase">Mahalle</p>
+                  <p className="text-sm font-semibold text-gray-900">{selectedUser.neighborhood}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-gray-600 uppercase">Durum</p>
+                  <p className={`text-sm font-semibold ${STATUS_CONFIG[selectedUser.status].color}`}>
+                    {STATUS_CONFIG[selectedUser.status].label}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-gray-600 uppercase">Katılım Tarihi</p>
+                  <p className="text-sm font-semibold text-gray-900">
+                    {new Date(selectedUser.joinDate).toLocaleDateString('tr-TR')}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-gray-600 uppercase">Son Görülme</p>
+                  <p className="text-sm font-semibold text-gray-900">{selectedUser.lastSeen}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-gray-600 uppercase">Paylaşımlar</p>
+                  <p className="text-sm font-semibold text-gray-900">{selectedUser.posts}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-gray-600 uppercase">Yorumlar</p>
+                  <p className="text-sm font-semibold text-gray-900">{selectedUser.reviews}</p>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-xs font-medium text-gray-600 uppercase mb-2">Katılım Oranı</p>
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 bg-gray-200 rounded-full h-3">
+                    <div
+                      className="bg-[#00833e] h-3 rounded-full"
+                      style={{ width: `${selectedUser.engagement}%` }}
+                    />
+                  </div>
+                  <span className="text-sm font-semibold text-gray-900">{selectedUser.engagement}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {confirmModal.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full">
+            <h2 className="text-lg font-bold text-gray-900 mb-2">İşlemi Onayla</h2>
+            <p className="text-gray-600 mb-6">
+              {confirmModal.action === 'delete'
+                ? `${confirmModal.userName} kullanıcısını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`
+                : confirmModal.action === 'suspend'
+                ? `${confirmModal.userName} kullanıcısını askıya almak istediğinizden emin misiniz?`
+                : confirmModal.action === 'unsuspend'
+                ? `${confirmModal.userName} kullanıcısının askısını kaldırmak istediğinizden emin misiniz?`
+                : `${confirmModal.action} işlemini gerçekleştirmek istediğinizden emin misiniz?`}
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setConfirmModal({ isOpen: false, action: '' })}
+                className="flex-1 px-4 py-2 border border-[#e0e0e0] rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors"
+              >
+                İptal
+              </button>
+              <button
+                onClick={confirmAction}
+                className={`flex-1 px-4 py-2 rounded-lg text-white font-medium transition-colors ${
+                  confirmModal.action === 'delete'
+                    ? 'bg-red-600 hover:bg-red-700'
+                    : 'bg-[#00833e] hover:bg-[#006b32]'
+                }`}
+              >
+                Onayla
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

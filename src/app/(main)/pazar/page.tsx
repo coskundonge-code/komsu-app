@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Plus, Heart, MapPin, ChevronDown, MessageCircle, X } from 'lucide-react';
+import { Search, Plus, Heart, MapPin, ChevronDown, MessageCircle, X, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -20,6 +20,8 @@ const categories = [
   'Kitaplar',
   'Bahçe',
   'Oyuncak',
+  'Ev & Yaşam',
+  'Spor Malzemeleri',
   'Diğer',
 ];
 
@@ -38,6 +40,22 @@ const sortOptions = [
   { label: 'En Yakın', value: 'nearest' },
 ];
 
+const priceRanges = [
+  { label: 'Tümü', value: null },
+  { label: '0 - 500 ₺', value: { min: 0, max: 500 } },
+  { label: '500 - 2,000 ₺', value: { min: 500, max: 2000 } },
+  { label: '2,000 - 5,000 ₺', value: { min: 2000, max: 5000 } },
+  { label: '5,000+ ₺', value: { min: 5000, max: null } },
+];
+
+const conditions = [
+  { label: 'Tümü', value: null },
+  { label: 'Sıfır', value: 'new' },
+  { label: 'Az Kullanılmış', value: 'barely-used' },
+  { label: 'İyi', value: 'good' },
+  { label: 'Orta', value: 'fair' },
+];
+
 const mockListings = [
   {
     id: '1',
@@ -49,7 +67,11 @@ const mockListings = [
     timeAgo: '2 saat',
     distance: '2 km',
     isFree: false,
+    featured: true,
     category: 'Elektronik',
+    condition: 'barely-used',
+    rating: 4.8,
+    reviewCount: 12,
   },
   {
     id: '2',
@@ -61,7 +83,11 @@ const mockListings = [
     timeAgo: '4 saat',
     distance: '1 km',
     isFree: false,
+    featured: true,
     category: 'Mobilya',
+    condition: 'good',
+    rating: 5,
+    reviewCount: 8,
   },
   {
     id: '3',
@@ -73,7 +99,11 @@ const mockListings = [
     timeAgo: '5 saat',
     distance: '3 km',
     isFree: false,
+    featured: false,
     category: 'Giyim',
+    condition: 'barely-used',
+    rating: 4.6,
+    reviewCount: 5,
   },
   {
     id: '4',
@@ -85,7 +115,11 @@ const mockListings = [
     timeAgo: '6 saat',
     distance: '4 km',
     isFree: true,
+    featured: false,
     category: 'Kitaplar',
+    condition: 'good',
+    rating: 4.9,
+    reviewCount: 15,
   },
   {
     id: '5',
@@ -97,7 +131,11 @@ const mockListings = [
     timeAgo: '1 gün',
     distance: '1 km',
     isFree: false,
-    category: 'Spor',
+    featured: false,
+    category: 'Spor Malzemeleri',
+    condition: 'new',
+    rating: 5,
+    reviewCount: 3,
   },
   {
     id: '6',
@@ -109,7 +147,11 @@ const mockListings = [
     timeAgo: '1 gün',
     distance: '2 km',
     isFree: false,
-    category: 'Oyun Konsolleri',
+    featured: true,
+    category: 'Elektronik',
+    condition: 'new',
+    rating: 4.7,
+    reviewCount: 9,
   },
   {
     id: '7',
@@ -121,7 +163,11 @@ const mockListings = [
     timeAgo: '1 gün',
     distance: '5 km',
     isFree: false,
+    featured: false,
     category: 'Mobilya',
+    condition: 'good',
+    rating: 4.5,
+    reviewCount: 6,
   },
   {
     id: '8',
@@ -133,7 +179,11 @@ const mockListings = [
     timeAgo: '2 gün',
     distance: '1 km',
     isFree: true,
-    category: 'Bebek Ürünleri',
+    featured: false,
+    category: 'Ev & Yaşam',
+    condition: 'good',
+    rating: 4.8,
+    reviewCount: 11,
   },
   {
     id: '9',
@@ -145,11 +195,15 @@ const mockListings = [
     timeAgo: '2 gün',
     distance: '3 km',
     isFree: false,
-    category: 'Tablet',
+    featured: false,
+    category: 'Elektronik',
+    condition: 'barely-used',
+    rating: 4.7,
+    reviewCount: 7,
   },
   {
     id: '10',
-    title: 'Eski Kütüphaneler - Antika, Dekoratif',
+    title: 'Ahşap Kitaplık - Antika, Dekoratif',
     price: 800,
     image: 'https://picsum.photos/500/500?random=27',
     location: 'Kadıköy',
@@ -157,7 +211,11 @@ const mockListings = [
     timeAgo: '3 saat',
     distance: '2 km',
     isFree: false,
-    category: 'Antikalar',
+    featured: false,
+    category: 'Mobilya',
+    condition: 'fair',
+    rating: 4.3,
+    reviewCount: 4,
   },
   {
     id: '11',
@@ -169,7 +227,11 @@ const mockListings = [
     timeAgo: '5 saat',
     distance: '1 km',
     isFree: false,
-    category: 'Spor',
+    featured: false,
+    category: 'Spor Malzemeleri',
+    condition: 'good',
+    rating: 4.8,
+    reviewCount: 10,
   },
   {
     id: '12',
@@ -181,7 +243,11 @@ const mockListings = [
     timeAgo: '6 saat',
     distance: '5 km',
     isFree: false,
-    category: 'Ev Eşyaları',
+    featured: false,
+    category: 'Ev & Yaşam',
+    condition: 'good',
+    rating: 4.6,
+    reviewCount: 5,
   },
   {
     id: '13',
@@ -193,7 +259,11 @@ const mockListings = [
     timeAgo: '1 gün',
     distance: '3 km',
     isFree: false,
-    category: 'Fotoğrafçılık',
+    featured: false,
+    category: 'Elektronik',
+    condition: 'barely-used',
+    rating: 4.9,
+    reviewCount: 8,
   },
   {
     id: '14',
@@ -205,7 +275,43 @@ const mockListings = [
     timeAgo: '2 gün',
     distance: '2 km',
     isFree: true,
+    featured: false,
     category: 'Elektronik',
+    condition: 'good',
+    rating: 4.7,
+    reviewCount: 6,
+  },
+  {
+    id: '15',
+    title: 'Golf Topu Seti - 50 Adet, Yeni',
+    price: 650,
+    image: 'https://picsum.photos/500/500?random=32',
+    location: 'Şişli',
+    neighborhood: 'Teşvikiye',
+    timeAgo: '3 saat',
+    distance: '4 km',
+    isFree: false,
+    featured: false,
+    category: 'Spor Malzemeleri',
+    condition: 'new',
+    rating: 5,
+    reviewCount: 2,
+  },
+  {
+    id: '16',
+    title: 'Vintage Türk Halısı - 2x3m',
+    price: 5200,
+    image: 'https://picsum.photos/500/500?random=33',
+    location: 'Moda',
+    neighborhood: 'Moda',
+    timeAgo: '4 saat',
+    distance: '1 km',
+    isFree: false,
+    featured: false,
+    category: 'Ev & Yaşam',
+    condition: 'fair',
+    rating: 4.4,
+    reviewCount: 7,
   },
 ];
 
@@ -218,6 +324,8 @@ export default function MarketplacePage() {
   // Filter state
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedDistance, setSelectedDistance] = useState<number | null>(null);
+  const [selectedPriceRange, setSelectedPriceRange] = useState<{ min: number; max: number | null } | null>(null);
+  const [selectedCondition, setSelectedCondition] = useState<string | null>(null);
   const [selectedSort, setSelectedSort] = useState('newest');
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
@@ -234,6 +342,12 @@ export default function MarketplacePage() {
     if (activeTab === 'saved' && !favorites.has(l.id)) return false;
     if (selectedCategory && l.category !== selectedCategory) return false;
     if (selectedDistance && parseFloat(l.distance) > selectedDistance) return false;
+    if (selectedCondition && l.condition !== selectedCondition) return false;
+    if (selectedPriceRange) {
+      const price = l.price;
+      if (price < selectedPriceRange.min) return false;
+      if (selectedPriceRange.max !== null && price > selectedPriceRange.max) return false;
+    }
     return true;
   });
 
@@ -255,11 +369,60 @@ export default function MarketplacePage() {
   const filtered = allFiltered.slice(0, visibleCount);
   const hasMore = visibleCount < allFiltered.length;
 
+  const featuredListings = mockListings.filter((l) => l.featured);
+
   return (
     <div className="min-h-screen bg-[#f0f2f5]">
-      <div className="max-w-7xl mx-auto py-6 px-4">
+      <div className="max-w-7xl mx-auto py-6 px-4 space-y-6">
+        {/* Featured Carousel */}
+        {featuredListings.length > 0 && (
+          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
+            <div className="p-4">
+              <h2 className="text-lg font-bold text-[#333] mb-4 flex items-center gap-2">
+                <Zap className="w-5 h-5 text-[#00833e]" />
+                Öne Çıkanlar
+              </h2>
+              <div className="overflow-x-auto pb-2 -mx-4 px-4">
+                <div className="flex gap-4">
+                  {featuredListings.map((listing) => (
+                    <Link
+                      key={listing.id}
+                      href={`/pazar/ilan/${listing.id}`}
+                      className="flex-shrink-0 w-56 bg-white border border-[#e0e0e0] rounded-lg overflow-hidden hover:shadow-md transition-shadow group"
+                    >
+                      <div className="relative aspect-video overflow-hidden bg-[#f0f2f5]">
+                        <Image
+                          src={listing.image}
+                          alt={listing.title}
+                          fill
+                          unoptimized
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                        />
+                        <span className="absolute top-2 left-2 bg-[#00833e] text-white text-xs font-bold px-2 py-1 rounded">
+                          ÖNE ÇIKAN
+                        </span>
+                      </div>
+                      <div className="p-3">
+                        <p className="text-sm font-semibold text-[#333] line-clamp-2 mb-1">
+                          {listing.title}
+                        </p>
+                        <p className="text-lg font-bold text-[#00833e] mb-1">
+                          {listing.isFree ? "Ücretsiz" : `₺${listing.price.toLocaleString("tr-TR")}`}
+                        </p>
+                        <p className="text-xs text-[#8f8f8f]">
+                          {listing.neighborhood} • {listing.timeAgo}
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Header Section */}
-        <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden mb-6">
+        <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
           <div className="p-6">
             {/* Title and Action Button */}
             <div className="flex items-center justify-between mb-6">
@@ -390,6 +553,80 @@ export default function MarketplacePage() {
             )}
           </div>
 
+          {/* Price Range Filter */}
+          <div className="relative">
+            <button
+              onClick={() => setOpenDropdown(openDropdown === 'price' ? null : 'price')}
+              className={cn(
+                'flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap shadow-sm transition-colors',
+                selectedPriceRange
+                  ? 'bg-[#00833e] text-white border border-[#00833e]'
+                  : 'bg-white border border-[#e0e0e0] text-[#404040] hover:bg-[#f0f2f5]'
+              )}
+            >
+              {selectedPriceRange ? 'Fiyat Aralığı' : 'Fiyat'}
+              <ChevronDown className={cn('w-4 h-4', openDropdown === 'price' && 'rotate-180')} />
+            </button>
+            {openDropdown === 'price' && (
+              <div className="absolute top-full left-0 mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50 min-w-48">
+                {priceRanges.map((range) => (
+                  <button
+                    key={range.label}
+                    onClick={() => {
+                      setSelectedPriceRange(range.value);
+                      setOpenDropdown(null);
+                    }}
+                    className={cn(
+                      'w-full text-left px-4 py-3 text-sm transition-colors',
+                      selectedPriceRange === range.value
+                        ? 'bg-[#00833e] text-white font-medium'
+                        : 'text-[#404040] hover:bg-[#f0f2f5]'
+                    )}
+                  >
+                    {range.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Condition Filter */}
+          <div className="relative">
+            <button
+              onClick={() => setOpenDropdown(openDropdown === 'condition' ? null : 'condition')}
+              className={cn(
+                'flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap shadow-sm transition-colors',
+                selectedCondition
+                  ? 'bg-[#00833e] text-white border border-[#00833e]'
+                  : 'bg-white border border-[#e0e0e0] text-[#404040] hover:bg-[#f0f2f5]'
+              )}
+            >
+              Durum
+              <ChevronDown className={cn('w-4 h-4', openDropdown === 'condition' && 'rotate-180')} />
+            </button>
+            {openDropdown === 'condition' && (
+              <div className="absolute top-full left-0 mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50 min-w-48">
+                {conditions.map((cond) => (
+                  <button
+                    key={cond.label}
+                    onClick={() => {
+                      setSelectedCondition(cond.value);
+                      setOpenDropdown(null);
+                    }}
+                    className={cn(
+                      'w-full text-left px-4 py-3 text-sm transition-colors',
+                      selectedCondition === cond.value
+                        ? 'bg-[#00833e] text-white font-medium'
+                        : 'text-[#404040] hover:bg-[#f0f2f5]'
+                    )}
+                  >
+                    {cond.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* Sort Filter */}
           <div className="relative">
             <button
@@ -423,11 +660,13 @@ export default function MarketplacePage() {
           </div>
 
           {/* Active Filters Display */}
-          {(selectedCategory || selectedDistance) && (
+          {(selectedCategory || selectedDistance || selectedPriceRange || selectedCondition) && (
             <button
               onClick={() => {
                 setSelectedCategory(null);
                 setSelectedDistance(null);
+                setSelectedPriceRange(null);
+                setSelectedCondition(null);
               }}
               className="flex items-center gap-2 px-4 py-2.5 bg-red-50 border border-red-200 rounded-full text-sm font-medium text-red-700 hover:bg-red-100 transition-colors"
               title="Filtreleri temizle"
@@ -505,14 +744,20 @@ export default function MarketplacePage() {
                     </p>
 
                     {/* Meta Info */}
-                    <div className="flex items-center gap-1.5 text-xs text-[#8f8f8f]">
+                    <div className="flex items-center gap-1.5 text-xs text-[#8f8f8f] mb-1">
                       <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
                       <span className="truncate">
                         {listing.timeAgo} • {listing.distance}
                       </span>
                     </div>
-                    <div className="text-xs text-[#8f8f8f] mt-1">
+                    <div className="text-xs text-[#8f8f8f] mb-2">
                       {listing.neighborhood}
+                    </div>
+
+                    {/* Rating */}
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs font-semibold text-[#00833e]">★ {listing.rating}</span>
+                      <span className="text-xs text-[#8f8f8f]">({listing.reviewCount})</span>
                     </div>
                   </div>
                 </Link>

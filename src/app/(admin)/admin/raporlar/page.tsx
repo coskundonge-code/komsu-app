@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { BarChart3, TrendingUp, Users, UserCheck, MessageSquare, UserPlus, Download, ChevronDown } from 'lucide-react';
+import { BarChart3, TrendingUp, Users, UserCheck, MessageSquare, UserPlus, Download, ChevronDown, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const timeRanges = [
@@ -85,27 +85,46 @@ const HOURLY_ACTIVITY = [
 export default function AdminReportsPage() {
   const [selectedRange, setSelectedRange] = useState('month');
   const [openDropdown, setOpenDropdown] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const selectedLabel = timeRanges.find((r) => r.id === selectedRange)?.label || 'Bu Ay';
 
   const handleExport = () => {
-    // Simulate report download
+    setIsExporting(true);
     console.log('Rapor indiriliyor...');
+    setTimeout(() => setIsExporting(false), 1500);
+  };
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    console.log('Veriler yenileniyor...');
+    setTimeout(() => setIsRefreshing(false), 1000);
   };
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
-      <div className="max-w-7xl mx-auto py-6 px-4">
+    <div className="min-h-screen">
+      <div>
         {/* Header Section */}
         <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden mb-6 p-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-[#333]">Raporlar ve Analizler</h1>
               <p className="text-[#8f8f8f] text-sm mt-1">Platform performansı ve kullanıcı aktiviteleri</p>
             </div>
 
-            {/* Time Range Selector */}
-            <div className="flex items-center gap-3">
+            {/* Time Range Selector and Actions */}
+            <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
+              <button
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className="flex items-center gap-2 px-4 py-2.5 bg-[#f0f2f5] border border-[#e0e0e0] rounded-lg text-[#333] font-medium text-sm hover:bg-[#e0e0e0] disabled:opacity-50 transition-colors"
+                title="Verileri Yenile"
+              >
+                <RefreshCw className={cn('w-4 h-4', isRefreshing && 'animate-spin')} />
+                Yenile
+              </button>
+
               <div className="relative">
                 <button
                   onClick={() => setOpenDropdown(!openDropdown)}
@@ -140,10 +159,11 @@ export default function AdminReportsPage() {
 
               <button
                 onClick={handleExport}
-                className="flex items-center gap-2 px-4 py-2.5 bg-[#00833e] text-white rounded-lg hover:bg-[#006b32] transition-colors font-medium text-sm shadow-sm"
+                disabled={isExporting}
+                className="flex items-center gap-2 px-4 py-2.5 bg-[#00833e] text-white rounded-lg hover:bg-[#006b32] disabled:opacity-50 transition-colors font-medium text-sm shadow-sm"
               >
                 <Download className="w-4 h-4" />
-                Rapor İndir
+                {isExporting ? 'İndiriliyor...' : 'Rapor İndir'}
               </button>
             </div>
           </div>
@@ -196,11 +216,11 @@ export default function AdminReportsPage() {
                   <div key={data.week}>
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-sm font-medium text-[#333]">{data.week}</span>
-                      <span className="text-xs text-[#8f8f8f]">{data.users} kullanıcı</span>
+                      <span className="text-xs text-[#8f8f8f] font-medium">{data.users.toLocaleString('tr-TR')} kullanıcı</span>
                     </div>
-                    <div className="w-full bg-[#e0e0e0] rounded-full h-2">
+                    <div className="w-full bg-[#e0e0e0] rounded-full h-2.5">
                       <div
-                        className="bg-[#00833e] h-2 rounded-full transition-all"
+                        className="bg-[#00833e] h-2.5 rounded-full transition-all"
                         style={{ width: `${percentage}%` }}
                       />
                     </div>
@@ -209,8 +229,8 @@ export default function AdminReportsPage() {
               })}
             </div>
 
-            <p className="text-xs text-[#8f8f8f] mt-6">
-              Ortalama: {Math.round(GROWTH_DATA.reduce((a, b) => a + b.users, 0) / GROWTH_DATA.length)} kullanıcı/hafta
+            <p className="text-xs text-[#8f8f8f] mt-6 bg-[#f0f2f5] p-3 rounded">
+              <span className="font-medium">Ortalama:</span> {Math.round(GROWTH_DATA.reduce((a, b) => a + b.users, 0) / GROWTH_DATA.length).toLocaleString('tr-TR')} kullanıcı/hafta
             </p>
           </div>
 
@@ -234,14 +254,26 @@ export default function AdminReportsPage() {
                       <span className="text-xs text-[#8f8f8f]">({item.count.toLocaleString('tr-TR')})</span>
                     </div>
                   </div>
-                  <div className="w-full bg-[#e0e0e0] rounded-full h-2">
+                  <div className="w-full bg-[#e0e0e0] rounded-full h-2.5">
                     <div
-                      className={`h-2 rounded-full transition-all ${item.color}`}
+                      className={`h-2.5 rounded-full transition-all ${item.color}`}
                       style={{ width: `${item.percentage}%` }}
                     />
                   </div>
                 </div>
               ))}
+            </div>
+
+            {/* Legend */}
+            <div className="mt-6 pt-4 border-t border-[#e0e0e0]">
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {CONTENT_BREAKDOWN.map((item) => (
+                  <div key={item.name} className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${item.color}`} />
+                    <span className="text-[#404040]">{item.name}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -252,32 +284,32 @@ export default function AdminReportsPage() {
           <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
             <h2 className="text-lg font-bold text-[#333] mb-6">Saatlik Aktivite Haritası</h2>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {HOURLY_ACTIVITY.map((data) => {
                 const maxActivity = 1200;
                 const percentage = (data.activity / maxActivity) * 100;
 
                 return (
                   <div key={data.hour}>
-                    <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-3">
                       <span className="text-sm font-medium text-[#333] w-12">{data.hour}</span>
-                      <div className="flex-1 ml-4">
-                        <div className="w-full bg-[#e0e0e0] rounded-full h-2">
+                      <div className="flex-1">
+                        <div className="w-full bg-[#e0e0e0] rounded-full h-2.5">
                           <div
-                            className="bg-[#00833e] h-2 rounded-full transition-all"
+                            className="bg-[#00833e] h-2.5 rounded-full transition-all"
                             style={{ width: `${percentage}%` }}
                           />
                         </div>
                       </div>
-                      <span className="text-xs text-[#8f8f8f] ml-4 w-16 text-right">{data.activity} etkinlik</span>
+                      <span className="text-xs text-[#8f8f8f] font-medium w-16 text-right">{data.activity} etkinlik</span>
                     </div>
                   </div>
                 );
               })}
             </div>
 
-            <p className="text-xs text-[#8f8f8f] mt-6">
-              En yüksek aktivite: 16:00 ile 20:00 saatleri arasında
+            <p className="text-xs text-[#8f8f8f] mt-6 bg-[#f0f2f5] p-3 rounded">
+              <span className="font-medium">En yüksek aktivite:</span> 16:00 ile 20:00 saatleri arasında
             </p>
           </div>
 
@@ -289,11 +321,11 @@ export default function AdminReportsPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-[#e0e0e0]">
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[#8f8f8f] text-uppercase">Sıra</th>
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[#8f8f8f] text-uppercase">Mahalle</th>
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[#8f8f8f] text-uppercase">Kullanıcı</th>
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[#8f8f8f] text-uppercase">Gönderi</th>
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[#8f8f8f] text-uppercase">Katılım</th>
+                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[#8f8f8f] uppercase">Sıra</th>
+                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[#8f8f8f] uppercase">Mahalle</th>
+                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[#8f8f8f] uppercase">Kullanıcı</th>
+                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[#8f8f8f] uppercase">Gönderi</th>
+                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[#8f8f8f] uppercase">Katılım</th>
                   </tr>
                 </thead>
                 <tbody>

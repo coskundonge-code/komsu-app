@@ -249,23 +249,37 @@ export default function CreateListingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white py-8">
+    <div className="min-h-screen bg-[#f0f2f5] py-8">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-[#333] mb-2">
             Yeni İlan Oluştur
           </h1>
-          <p className="text-gray-600">
-            Ürününüzü komşularınızla paylaşın ve satın alabilecek kişiler bulun.
+          <p className="text-[#8f8f8f]">
+            Ürününüzü komşularınızla paylaşın ve satın alabilecek kişiler bulun. Fotoğraf eklemek ilanınıza daha fazla ilgi çeker.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Progress Bar */}
+          <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
+            <div className="flex justify-between text-xs font-medium text-[#8f8f8f] mb-2">
+              <span>Adım 1/3 - Fotoğraflar</span>
+              <span>{Math.round((100 / 3) * (formData.photos.length > 0 ? 1 : 0) + (100 / 3) * (formData.title ? 1 : 0) + (100 / 3) * (formData.category ? 1 : 0))}%</span>
+            </div>
+            <div className="w-full bg-[#e0e0e0] rounded-full h-2 overflow-hidden">
+              <div
+                className="bg-[#00833e] h-full transition-all duration-300"
+                style={{ width: `${Math.round((100 / 3) * (formData.photos.length > 0 ? 1 : 0) + (100 / 3) * (formData.title ? 1 : 0) + (100 / 3) * (formData.category ? 1 : 0))}%` }}
+              ></div>
+            </div>
+          </div>
+
           {/* Photo Upload Section */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <label className="block text-sm font-semibold text-gray-900 mb-4">
-              Fotoğraflar
+          <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+            <label className="block text-sm font-semibold text-[#333] mb-4">
+              Fotoğraflar <span className="text-red-500">*</span>
             </label>
 
             {/* Upload Area */}
@@ -277,7 +291,7 @@ export default function CreateListingPage() {
               className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
                 dragActive
                   ? 'border-[#00833e] bg-green-50'
-                  : 'border-gray-300 bg-gray-50'
+                  : 'border-[#e0e0e0] bg-[#f0f2f5]'
               } ${errors.photos ? 'border-red-500 bg-red-50' : ''}`}
             >
               <input
@@ -293,13 +307,13 @@ export default function CreateListingPage() {
                   className={`mx-auto h-12 w-12 mb-3 ${
                     dragActive || errors.photos
                       ? 'text-[#00833e]'
-                      : 'text-gray-400'
+                      : 'text-[#8f8f8f]'
                   }`}
                 />
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-semibold text-[#333]">
                   Fotoğraf ekleyin
                 </p>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-[#8f8f8f] mt-1">
                   Sürükle ve bırak ya da tıkla (max 10 fotoğraf)
                 </p>
               </label>
@@ -315,7 +329,7 @@ export default function CreateListingPage() {
                 {formData.photos.map((photo) => (
                   <div
                     key={photo.id}
-                    className="relative aspect-square rounded-lg overflow-hidden border border-gray-200"
+                    className="relative aspect-square rounded-lg overflow-hidden border border-[#e0e0e0] hover:border-[#00833e] transition-colors"
                   >
                     <img
                       src={photo.preview}
@@ -325,7 +339,7 @@ export default function CreateListingPage() {
                     <button
                       type="button"
                       onClick={() => removePhoto(photo.id)}
-                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors shadow-md"
                     >
                       <X className="h-4 w-4" />
                     </button>
@@ -334,36 +348,45 @@ export default function CreateListingPage() {
               </div>
             )}
 
-            <p className="text-xs text-gray-500 mt-4">
-              {formData.photos.length}/10 fotoğraf yüklendi
-            </p>
+            <div className="flex justify-between items-center mt-4">
+              <p className="text-xs text-[#8f8f8f]">
+                {formData.photos.length > 0 ? (
+                  <>İlk fotoğraf ilan resminde gösterilecek</>
+                ) : (
+                  <>Daha fazla fotoğraf = daha fazla ilgi</>
+                )}
+              </p>
+              <p className="text-xs font-medium text-[#8f8f8f]">
+                {formData.photos.length}/10
+              </p>
+            </div>
           </div>
 
           {/* Title Input */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
-              İlan Başlığı
+          <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+            <label className="block text-sm font-semibold text-[#333] mb-2">
+              İlan Başlığı <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               value={formData.title}
               onChange={handleTitleChange}
               placeholder="Satılık ürünü tanımlayan başlık yazın"
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
                 errors.title
                   ? 'border-red-500 focus:ring-red-500'
-                  : 'border-gray-300 focus:ring-[#00833e]'
+                  : 'border-[#e0e0e0] focus:ring-[#00833e]'
               }`}
             />
             <div className="flex justify-between items-center mt-2">
               <p
                 className={`text-xs ${
-                  errors.title ? 'text-red-600' : 'text-gray-500'
+                  errors.title ? 'text-red-600' : 'text-[#8f8f8f]'
                 }`}
               >
-                {errors.title || ''}
+                {errors.title || 'Ürünü açıklayan net bir başlık yazın'}
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs font-medium text-[#8f8f8f]">
                 {formData.title.length}/100
               </p>
             </div>
@@ -372,43 +395,43 @@ export default function CreateListingPage() {
           {/* Category and Condition Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Category */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Kategori
+            <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+              <label className="block text-sm font-semibold text-[#333] mb-2">
+                Kategori <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <button
                   type="button"
                   onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
-                  className={`w-full px-4 py-2 border rounded-lg text-left flex justify-between items-center focus:outline-none focus:ring-2 transition-colors ${
+                  className={`w-full px-4 py-3 border rounded-lg text-left flex justify-between items-center focus:outline-none focus:ring-2 transition-colors ${
                     errors.category
                       ? 'border-red-500 focus:ring-red-500'
-                      : 'border-gray-300 focus:ring-[#00833e]'
+                      : 'border-[#e0e0e0] focus:ring-[#00833e]'
                   }`}
                 >
                   <span
                     className={
                       formData.category
-                        ? 'text-gray-900'
-                        : 'text-gray-500'
+                        ? 'text-[#333]'
+                        : 'text-[#8f8f8f]'
                     }
                   >
                     {formData.category || 'Kategori seçin'}
                   </span>
-                  <ChevronDown className="h-4 w-4 text-gray-500" />
+                  <ChevronDown className="h-4 w-4 text-[#8f8f8f]" />
                 </button>
 
                 {showCategoryDropdown && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-10">
                     {CATEGORIES.map((category) => (
                       <button
                         key={category}
                         type="button"
                         onClick={() => handleCategorySelect(category)}
-                        className={`w-full px-4 py-2 text-left hover:bg-green-50 transition-colors ${
+                        className={`w-full px-4 py-3 text-left hover:bg-[#f0f2f5] transition-colors ${
                           formData.category === category
-                            ? 'bg-green-100 text-[#00833e] font-medium'
-                            : 'text-gray-700'
+                            ? 'bg-[#e6f4ec] text-[#00833e] font-medium'
+                            : 'text-[#404040]'
                         }`}
                       >
                         {category}
@@ -423,9 +446,9 @@ export default function CreateListingPage() {
             </div>
 
             {/* Condition */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <label className="block text-sm font-semibold text-gray-900 mb-3">
-                Durum
+            <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+              <label className="block text-sm font-semibold text-[#333] mb-3">
+                Durum <span className="text-red-500">*</span>
               </label>
               <div className="space-y-2">
                 {CONDITIONS.map((condition) => (
@@ -441,7 +464,7 @@ export default function CreateListingPage() {
                       onChange={() => handleConditionChange(condition.value)}
                       className="w-4 h-4 text-[#00833e] focus:ring-[#00833e]"
                     />
-                    <span className="ml-3 text-gray-700">
+                    <span className="ml-3 text-[#404040]">
                       {condition.label}
                     </span>
                   </label>
@@ -454,13 +477,13 @@ export default function CreateListingPage() {
           </div>
 
           {/* Price Section */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <label className="block text-sm font-semibold text-gray-900 mb-3">
-              Fiyat
+          <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+            <label className="block text-sm font-semibold text-[#333] mb-3">
+              Fiyat <span className="text-red-500">*</span>
             </label>
 
             {/* Free Toggle */}
-            <div className="mb-4">
+            <div className="mb-4 p-3 bg-[#f0f2f5] rounded-lg">
               <label className="flex items-center cursor-pointer">
                 <input
                   type="checkbox"
@@ -468,14 +491,14 @@ export default function CreateListingPage() {
                   onChange={handleFreeToggle}
                   className="w-4 h-4 text-[#00833e] focus:ring-[#00833e] rounded"
                 />
-                <span className="ml-2 text-gray-700">Ücretsiz</span>
+                <span className="ml-2 text-[#333] font-medium">Ücretsiz olarak veriyorum</span>
               </label>
             </div>
 
             {/* Price Input */}
             {!formData.isFree && (
               <div className="relative">
-                <span className="absolute left-4 top-2.5 text-gray-500 font-medium">
+                <span className="absolute left-4 top-3.5 text-[#8f8f8f] font-semibold">
                   ₺
                 </span>
                 <input
@@ -485,10 +508,10 @@ export default function CreateListingPage() {
                   placeholder="Fiyat girin"
                   min="0"
                   step="0.01"
-                  className={`w-full pl-8 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+                  className={`w-full pl-8 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
                     errors.price
                       ? 'border-red-500 focus:ring-red-500'
-                      : 'border-gray-300 focus:ring-[#00833e]'
+                      : 'border-[#e0e0e0] focus:ring-[#00833e]'
                   }`}
                 />
               </div>
@@ -500,43 +523,43 @@ export default function CreateListingPage() {
           </div>
 
           {/* Description */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
-              Açıklama
+          <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+            <label className="block text-sm font-semibold text-[#333] mb-2">
+              Açıklama <span className="text-red-500">*</span>
             </label>
             <textarea
               value={formData.description}
               onChange={handleDescriptionChange}
               placeholder="Ürünün durumu, özellikleri ve neden satıyor olduğunuz hakkında detay bilgi verin. Çeşitli açıklamalar daha fazla ilgi çeker."
               rows={5}
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors resize-none ${
+              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors resize-none ${
                 errors.description
                   ? 'border-red-500 focus:ring-red-500'
-                  : 'border-gray-300 focus:ring-[#00833e]'
+                  : 'border-[#e0e0e0] focus:ring-[#00833e]'
               }`}
             />
             <div className="flex justify-between items-center mt-2">
               <p
                 className={`text-xs ${
-                  errors.description ? 'text-red-600' : 'text-gray-500'
+                  errors.description ? 'text-red-600' : 'text-[#8f8f8f]'
                 }`}
               >
-                {errors.description || ''}
+                {errors.description || 'Ürün hakkında detaylı bilgi sağlayanlar daha fazla satış yapar'}
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs font-medium text-[#8f8f8f]">
                 {formData.description.length}/1000
               </p>
             </div>
           </div>
 
           {/* Location */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <label className="block text-sm font-semibold text-gray-900 mb-3">
+          <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+            <label className="block text-sm font-semibold text-[#333] mb-3">
               Konum
             </label>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 bg-[#f0f2f5] p-3 rounded-lg">
               <MapPin className="h-5 w-5 text-[#00833e] flex-shrink-0" />
-              <span className="text-gray-700 flex-grow">
+              <span className="text-[#333] font-medium flex-grow">
                 {formData.location}
               </span>
               <button
@@ -546,7 +569,7 @@ export default function CreateListingPage() {
                     'Konum değiştirme özelliği henüz uygulanmadı.'
                   )
                 }
-                className="px-4 py-2 text-[#00833e] hover:bg-green-50 rounded-lg transition-colors text-sm font-medium"
+                className="px-3 py-1.5 text-[#00833e] hover:bg-[#e6f4ec] rounded-lg transition-colors text-sm font-medium border border-[#e0e0e0]"
               >
                 Değiştir
               </button>
@@ -554,9 +577,9 @@ export default function CreateListingPage() {
           </div>
 
           {/* Delivery Options */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <label className="block text-sm font-semibold text-gray-900 mb-3">
-              Teslimat Seçenekleri
+          <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+            <label className="block text-sm font-semibold text-[#333] mb-3">
+              Teslimat Seçenekleri <span className="text-red-500">*</span>
             </label>
             <div className="space-y-3">
               <label className="flex items-center cursor-pointer">
@@ -568,7 +591,7 @@ export default function CreateListingPage() {
                   }
                   className="w-4 h-4 text-[#00833e] focus:ring-[#00833e] rounded"
                 />
-                <span className="ml-3 text-gray-700">Elden Teslim</span>
+                <span className="ml-3 text-[#404040]">Elden Teslim (Yüz Yüze)</span>
               </label>
               <label className="flex items-center cursor-pointer">
                 <input
@@ -579,7 +602,7 @@ export default function CreateListingPage() {
                   }
                   className="w-4 h-4 text-[#00833e] focus:ring-[#00833e] rounded"
                 />
-                <span className="ml-3 text-gray-700">Kargo ile Gönderim</span>
+                <span className="ml-3 text-[#404040]">Kargo ile Gönderim</span>
               </label>
             </div>
             {errors.delivery && (
@@ -588,16 +611,16 @@ export default function CreateListingPage() {
           </div>
 
           {/* Preview Section */}
-          <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-lg border border-green-200 p-6">
-            <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <div className="bg-gradient-to-br from-[#f0f2f5] to-[#e6f4ec] rounded-lg border border-[#00833e] border-dashed p-6">
+            <h3 className="text-sm font-semibold text-[#333] mb-4 flex items-center gap-2">
               <Check className="h-5 w-5 text-[#00833e]" />
               İlan Önizlemesi
             </h3>
 
-            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
               {/* Preview Image */}
               {formData.photos.length > 0 && (
-                <div className="h-48 bg-gray-200 overflow-hidden">
+                <div className="h-48 bg-[#f0f2f5] overflow-hidden">
                   <img
                     src={formData.photos[0].preview}
                     alt="Preview"
@@ -605,23 +628,28 @@ export default function CreateListingPage() {
                   />
                 </div>
               )}
+              {formData.photos.length === 0 && (
+                <div className="h-48 bg-[#f0f2f5] flex items-center justify-center">
+                  <p className="text-[#8f8f8f]">Fotoğraf henüz eklenmedi</p>
+                </div>
+              )}
 
               {/* Preview Content */}
               <div className="p-4">
-                <h4 className="font-semibold text-gray-900 text-lg mb-2">
+                <h4 className="font-semibold text-[#333] text-lg mb-2 line-clamp-2">
                   {formData.title || 'İlan Başlığı'}
                 </h4>
 
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <p className="text-2xl font-bold text-[#00833e]">
-                      {formData.isFree ? 'Ücretsiz' : formData.price ? `₺${formData.price}` : '₺0'}
+                    <p className="text-2xl font-bold text-[#00833e] mb-0.5">
+                      {formData.isFree ? 'Ücretsiz' : formData.price ? `₺${Number(formData.price).toLocaleString('tr-TR')}` : '₺0'}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-[#8f8f8f]">
                       {formData.category || 'Kategori'}
                     </p>
                   </div>
-                  <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                  <span className="text-xs bg-[#f0f2f5] text-[#333] px-2 py-1 rounded border border-[#e0e0e0]">
                     {formData.condition
                       ? CONDITIONS.find((c) => c.value === formData.condition)
                         ?.label
@@ -629,11 +657,11 @@ export default function CreateListingPage() {
                   </span>
                 </div>
 
-                <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+                <p className="text-sm text-[#404040] line-clamp-2 mb-3">
                   {formData.description || 'Açıklama yazın...'}
                 </p>
 
-                <div className="flex items-center gap-2 text-xs text-gray-500">
+                <div className="flex items-center gap-2 text-xs text-[#8f8f8f]">
                   <MapPin className="h-4 w-4" />
                   {formData.location}
                 </div>
@@ -642,21 +670,21 @@ export default function CreateListingPage() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-3">
+          <div className="flex gap-3 sticky bottom-0 bg-white py-4 px-4 -mx-4 sm:-mx-6 lg:-mx-8 border-t border-[#e0e0e0] shadow-lg">
             <button
               type="button"
               onClick={handleCancel}
-              className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+              className="flex-1 px-4 py-3 border border-[#e0e0e0] text-[#404040] rounded-lg font-medium hover:bg-[#f0f2f5] transition-colors"
             >
               İptal
             </button>
             <button
               type="submit"
               disabled={!canSubmit()}
-              className={`flex-1 px-4 py-3 rounded-lg font-medium transition-colors ${
+              className={`flex-1 px-4 py-3 rounded-lg font-semibold transition-colors ${
                 canSubmit()
-                  ? 'bg-[#00833e] text-white hover:bg-[#006b32]'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  ? 'bg-[#00833e] text-white hover:bg-[#006b32] shadow-md'
+                  : 'bg-[#e0e0e0] text-[#8f8f8f] cursor-not-allowed'
               }`}
             >
               İlanı Yayınla
@@ -666,9 +694,17 @@ export default function CreateListingPage() {
           {/* Form Validation Info */}
           {Object.keys(errors).length > 0 && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <p className="text-sm font-medium text-red-800">
-                Lütfen hataları düzeltedikten sonra yayınlayın.
+              <p className="text-sm font-medium text-red-800 mb-2">
+                Lütfen aşağıdaki hataları düzeltin:
               </p>
+              <ul className="text-sm text-red-700 space-y-1">
+                {Object.entries(errors).map(([key, message]) => (
+                  <li key={key} className="flex items-start gap-2">
+                    <span className="text-red-500 font-bold">•</span>
+                    <span>{message}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </form>

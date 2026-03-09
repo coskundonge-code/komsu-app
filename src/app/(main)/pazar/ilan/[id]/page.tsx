@@ -26,16 +26,17 @@ const mockListingsDB: Record<string, any> = {
     id: '1',
     title: 'Laptop Lenovo IdeaPad 5 - 15.6 inç Full HD',
     price: 8500,
-    condition: 'Çok İyi Durumda' as const,
+    condition: 'Az Kullanılmış',
     conditionBadgeColor: 'bg-green-100 text-green-800',
     category: 'Elektronik',
     categoryColor: 'bg-blue-100 text-blue-800',
-    neighborhood: 'Şişli',
-    location: 'Şişli, İstanbul',
+    neighborhood: 'Moda',
+    location: 'Moda, Kadıköy',
     timeAgo: '2 saat önce',
     views: 324,
+    favorites: 45,
     description:
-      'Lenovo IdeaPad 5 15.6" Full HD IPS ekran, Intel Core i5-1135G7, 8GB DDR4 RAM, 512GB SSD. Çok az kullanılmıştır. Orijinal kutusu ve tüm aksesuarları mevcuttur. Garantisi 1 yıl kalmıştır. İyi bir laptop arayan kişiler için ideal.',
+      'Lenovo IdeaPad 5 15.6" Full HD IPS ekran, Intel Core i5-1135G7, 8GB DDR4 RAM, 512GB SSD. Çok az kullanılmıştır. Orijinal kutusu ve tüm aksesuarları mevcuttur. Garantisi 1 yıl kalmıştır. İyi bir laptop arayan kişiler için ideal. Sadece kişisel kullanım için alınmıştı.',
     images: [
       'https://picsum.photos/800/600?random=1',
       'https://picsum.photos/800/600?random=2',
@@ -52,12 +53,15 @@ const mockListingsDB: Record<string, any> = {
       joinDate: '2 yıl önce',
       listings: 45,
       verified: true,
+      soldCount: 42,
     },
     specs: [
       { label: 'İşlemci', value: 'Intel Core i5-1135G7' },
       { label: 'RAM', value: '8GB DDR4' },
       { label: 'Depolama', value: '512GB SSD' },
       { label: 'Ekran', value: '15.6" Full HD IPS' },
+      { label: 'Batarya', value: '10 saat' },
+      { label: 'Ağırlık', value: '1.6 kg' },
     ],
   },
   '2': {
@@ -72,8 +76,9 @@ const mockListingsDB: Record<string, any> = {
     location: 'Moda, Kadıköy',
     timeAgo: '4 saat önce',
     views: 156,
+    favorites: 28,
     description:
-      'IKEA Ektorp serisi 3 kişilik kanepe. Açık gri renk, harika durumda. Temiz, hiç hasarı yok. Çok konforlu oturuş. Kanepenin boyutları: Genişlik 242cm, Derinlik 88cm, Yükseklik 88cm.',
+      'IKEA Ektorp serisi 3 kişilik kanepe. Açık gri renk, harika durumda. Temiz, hiç hasarı yok. Çok konforlu oturuş. Kanepenin boyutları: Genişlik 242cm, Derinlik 88cm, Yükseklik 88cm. Kapı altından kolaylıkla geçebilir. Kılıfı çıkarılabilir ve yıkanabilir.',
     images: [
       'https://picsum.photos/800/600?random=6',
       'https://picsum.photos/800/600?random=7',
@@ -89,28 +94,32 @@ const mockListingsDB: Record<string, any> = {
       joinDate: '1 yıl önce',
       listings: 32,
       verified: true,
+      soldCount: 30,
     },
     specs: [
       { label: 'Genişlik', value: '242 cm' },
       { label: 'Derinlik', value: '88 cm' },
       { label: 'Yükseklik', value: '88 cm' },
       { label: 'Renk', value: 'Açık Gri' },
+      { label: 'Model', value: 'Ektorp Serisi' },
+      { label: 'Kılıf', value: 'Çıkarılabilir' },
     ],
   },
   '3': {
     id: '3',
     title: 'PlayStation 5 - Orjinal Kutu ile Satılıyor',
     price: 6500,
-    condition: 'Gibi Yeni',
+    condition: 'Sıfır',
     conditionBadgeColor: 'bg-green-100 text-green-800',
-    category: 'Oyun Konsolleri',
-    categoryColor: 'bg-red-100 text-red-800',
+    category: 'Elektronik',
+    categoryColor: 'bg-blue-100 text-blue-800',
     neighborhood: 'Fenerbahçe',
     location: 'Fenerbahçe, Kadıköy',
     timeAgo: '1 gün önce',
     views: 892,
+    favorites: 156,
     description:
-      'PlayStation 5, orjinal kutusunda, hiç kullanılmamış, vinil sealiyle paketli. Satış belgesi ve garantisi mevcuttur. Çok nadir bulunur bu koşulda. Acil para ihtiyacı nedeniyle satılıyor.',
+      'PlayStation 5, orjinal kutusunda, hiç kullanılmamış, vinil sealiyle paketli. Satış belgesi ve 2 yılık garantisi mevcuttur. Çok nadir bulunur bu koşulda. Tüm kontroller yapılmıştır. Acil para ihtiyacı nedeniyle satılıyor. Elden teslim tercih edilir. Testini yüz yüze yapabilirsiniz.',
     images: [
       'https://picsum.photos/800/600?random=10',
       'https://picsum.photos/800/600?random=11',
@@ -126,12 +135,14 @@ const mockListingsDB: Record<string, any> = {
       joinDate: '6 ay önce',
       listings: 8,
       verified: false,
+      soldCount: 7,
     },
     specs: [
       { label: 'Model', value: 'PS5 Standard Edition' },
-      { label: 'Durum', value: 'Gibi Yeni' },
-      { label: 'Aksesuar', value: 'Tüm orijinal aksesuar' },
+      { label: 'Durum', value: 'Sıfır - Açılmamış' },
+      { label: 'Aksesuar', value: 'Tüm orijinal aksesuar ve oyun + kol' },
       { label: 'Garantisi', value: '2 yıl kalan' },
+      { label: 'Satış Belgesi', value: 'Mevcuttur' },
     ],
   },
 };
@@ -459,9 +470,24 @@ export default function ListingDetailPage({
             </div>
           </div>
 
+          {/* Stats Section */}
+          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
+            <h2 className="text-lg font-bold text-[#333] mb-4">İlan İstatistikleri</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-[#f0f2f5] rounded-lg p-4">
+                <p className="text-xs text-[#8f8f8f] mb-1">Görüntüleme</p>
+                <p className="text-2xl font-bold text-[#333]">{mockListing.views}</p>
+              </div>
+              <div className="bg-[#f0f2f5] rounded-lg p-4">
+                <p className="text-xs text-[#8f8f8f] mb-1">Kaydedilme</p>
+                <p className="text-2xl font-bold text-[#00833e]">{mockListing.favorites}</p>
+              </div>
+            </div>
+          </div>
+
           {/* Similar Listings */}
           <div>
-            <h2 className="text-xl font-bold text-[#333] mb-4">Benzer İlanlar</h2>
+            <h2 className="text-lg font-bold text-[#333] mb-4">Benzer İlanlar</h2>
             <div className="overflow-x-auto pb-2">
               <div className="flex gap-4">
                 {similarListings.map((listing) => (
@@ -572,6 +598,13 @@ export default function ListingDetailPage({
                   <p className="text-xs text-[#8f8f8f] mb-1">İlan Sayısı</p>
                   <p className="font-semibold text-[#333]">
                     {mockListing.seller.listings} aktif ilan
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs text-[#8f8f8f] mb-1">Satılan Ürün</p>
+                  <p className="font-semibold text-[#333]">
+                    {mockListing.seller.soldCount} başarılı satış
                   </p>
                 </div>
               </div>
