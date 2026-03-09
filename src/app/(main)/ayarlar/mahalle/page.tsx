@@ -1,9 +1,17 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { MapPin, Map, ChevronRight, Filter } from 'lucide-react';
-import Link from 'next/link';
-import { ChevronLeft } from 'lucide-react';
+import { useState } from "react";
+import Link from "next/link";
+import {
+  MapPin,
+  Map,
+  ChevronLeft,
+  Filter,
+  Check,
+  AlertCircle,
+  Ruler,
+  Bell,
+} from "lucide-react";
 
 interface NearbyNeighborhood {
   id: string;
@@ -15,25 +23,97 @@ interface NearbyNeighborhood {
 interface PostCategory {
   id: string;
   name: string;
+  description: string;
+  enabled: boolean;
+  icon: React.ReactNode;
+}
+
+interface NotificationPreference {
+  id: string;
+  label: string;
+  description: string;
   enabled: boolean;
 }
 
 export default function MahallePage() {
-  const [nearbyNeighborhoods, setNearbyNeighborhoods] = useState<NearbyNeighborhood[]>([
-    { id: '1', name: 'Teşvikiye', distance: '2 km uzakta', enabled: true },
-    { id: '2', name: 'Nişantaşı', distance: '3 km uzakta', enabled: false },
-    { id: '3', name: 'Maçka', distance: '4 km uzakta', enabled: true },
-    { id: '4', name: 'Kurtuluş', distance: '5 km uzakta', enabled: false },
-  ]);
+  const [nearbyNeighborhoods, setNearbyNeighborhoods] =
+    useState<NearbyNeighborhood[]>([
+      { id: "1", name: "Teşvikiye", distance: "2 km uzakta", enabled: true },
+      { id: "2", name: "Nişantaşı", distance: "3 km uzakta", enabled: false },
+      { id: "3", name: "Maçka", distance: "4 km uzakta", enabled: true },
+      { id: "4", name: "Kurtuluş", distance: "5 km uzakta", enabled: false },
+      { id: "5", name: "Cihangir", distance: "6 km uzakta", enabled: true },
+    ]);
 
   const [postCategories, setPostCategories] = useState<PostCategory[]>([
-    { id: 'announcements', name: 'Duyurular', enabled: true },
-    { id: 'events', name: 'Etkinlikler', enabled: true },
-    { id: 'marketplace', name: 'Pazar Yeri', enabled: true },
-    { id: 'recommendations', name: 'Tavsiyeler', enabled: true },
-    { id: 'discussions', name: 'Tartışmalar', enabled: true },
-    { id: 'help', name: 'Yardım / İhtiyaçlar', enabled: false },
+    {
+      id: "announcements",
+      name: "Duyurular",
+      description: "Mahalle haberleri ve önemli duyurular",
+      enabled: true,
+      icon: "📢",
+    },
+    {
+      id: "events",
+      name: "Etkinlikler",
+      description: "Mahallede yapılacak etkinlikler",
+      enabled: true,
+      icon: "🎉",
+    },
+    {
+      id: "marketplace",
+      name: "Pazar Yeri",
+      description: "Ürün satışı, alımı ve takas",
+      enabled: true,
+      icon: "🛒",
+    },
+    {
+      id: "recommendations",
+      name: "Tavsiyeler",
+      description: "Mekan ve hizmet tavsiyeleri",
+      enabled: true,
+      icon: "⭐",
+    },
+    {
+      id: "discussions",
+      name: "Tartışmalar",
+      description: "Genel konu tartışmaları",
+      enabled: true,
+      icon: "💬",
+    },
+    {
+      id: "help",
+      name: "Yardım / İhtiyaçlar",
+      description: "Yardım talepleri ve ihtiyaçlar",
+      enabled: false,
+      icon: "🤝",
+    },
   ]);
+
+  const [notificationPrefs, setNotificationPrefs] =
+    useState<NotificationPreference[]>([
+      {
+        id: "new_posts",
+        label: "Yeni Gönderiler",
+        description: "Mahallede yeni gönderi yayınlandığında bildir",
+        enabled: true,
+      },
+      {
+        id: "nearby_neighborhoods",
+        label: "Yakındaki Mahalleler",
+        description: "Yakındaki mahallelerde yeni gönderiler",
+        enabled: true,
+      },
+      {
+        id: "trending",
+        label: "Popüler Gönderiler",
+        description: "Haftanın en popüler gönderilerinin özeti",
+        enabled: false,
+      },
+    ]);
+
+  const [distancePreference, setDistancePreference] = useState("5");
+  const [saved, setSaved] = useState(false);
 
   const toggleNeighborhood = (id: string) => {
     setNearbyNeighborhoods(
@@ -50,6 +130,22 @@ export default function MahallePage() {
       )
     );
   };
+
+  const toggleNotification = (id: string) => {
+    setNotificationPrefs(
+      notificationPrefs.map((n) =>
+        n.id === id ? { ...n, enabled: !n.enabled } : n
+      )
+    );
+  };
+
+  const handleSave = () => {
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  const enabledCount = nearbyNeighborhoods.filter((n) => n.enabled).length;
+  const categoryCount = postCategories.filter((c) => c.enabled).length;
 
   return (
     <div className="min-h-screen bg-[#f0f2f5]">
@@ -68,7 +164,9 @@ export default function MahallePage() {
             </div>
             <div>
               <h1 className="text-xl font-bold text-[#333]">Mahalle Ayarları</h1>
-              <p className="text-sm text-[#8f8f8f]">Mahalle ve ilgi alanlarını yönetin</p>
+              <p className="text-sm text-[#8f8f8f]">
+                Mahalle ve ilgi alanlarını yönetin
+              </p>
             </div>
           </div>
         </div>
@@ -78,23 +176,36 @@ export default function MahallePage() {
       <div className="max-w-2xl mx-auto px-4 py-6">
         {/* Current Neighborhood */}
         <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-6">
-          <h2 className="text-lg font-semibold text-[#333] mb-4">Mevcut Mahalle</h2>
+          <h2 className="text-lg font-semibold text-[#333] mb-6">
+            Mevcut Mahalle
+          </h2>
 
           {/* Map Placeholder */}
-          <div className="w-full h-40 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0] flex items-center justify-center mb-4">
+          <div className="w-full h-48 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0] flex items-center justify-center mb-6">
             <div className="text-center">
-              <Map className="w-12 h-12 text-[#8f8f8f] mx-auto mb-2" />
-              <p className="text-sm text-[#8f8f8f]">Harita Yer Tutucu</p>
+              <Map className="w-16 h-16 text-[#8f8f8f] mx-auto mb-3" />
+              <p className="text-sm text-[#8f8f8f]">
+                Mahalle haritası burada gösterilecek
+              </p>
             </div>
           </div>
 
           {/* Current Neighborhood Display */}
-          <div className="p-4 bg-[#f0f2f5] rounded-lg mb-4">
-            <div className="flex items-center gap-3">
-              <MapPin className="w-6 h-6 text-[#00833e]" />
+          <div className="p-4 bg-gradient-to-br from-[#00833e]/10 to-[#00833e]/5 rounded-lg border border-[#00833e]/20 mb-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-lg bg-[#00833e]/20 flex items-center justify-center">
+                <MapPin className="w-6 h-6 text-[#00833e]" />
+              </div>
               <div>
-                <p className="text-sm text-[#8f8f8f]">Konumunuz</p>
-                <h3 className="text-lg font-bold text-[#333]">Beşiktaş, İstanbul</h3>
+                <p className="text-sm text-[#8f8f8f] font-medium">
+                  Konumunuz
+                </p>
+                <h3 className="text-lg font-bold text-[#333]">
+                  Beşiktaş, İstanbul
+                </h3>
+                <p className="text-xs text-[#8f8f8f] mt-1">
+                  Sıfır Taş Mahallesi
+                </p>
               </div>
             </div>
           </div>
@@ -106,32 +217,76 @@ export default function MahallePage() {
           </button>
         </div>
 
+        {/* Distance Preference */}
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-[#f0f2f5] rounded-lg">
+              <Ruler className="w-5 h-5 text-[#00833e]" />
+            </div>
+            <h2 className="text-lg font-semibold text-[#333]">
+              Yakındaki Mahalleler Mesafesi
+            </h2>
+          </div>
+          <p className="text-sm text-[#8f8f8f] mb-4">
+            Gönderilerini görmek istediğiniz mahalleler ne kadar uzak olabilir?
+          </p>
+          <div className="space-y-3">
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-sm font-medium text-[#333]">
+                  Mesafe: {distancePreference} km
+                </label>
+              </div>
+              <input
+                type="range"
+                min="1"
+                max="15"
+                value={distancePreference}
+                onChange={(e) => setDistancePreference(e.target.value)}
+                className="w-full h-2 bg-[#e0e0e0] rounded-lg appearance-none cursor-pointer accent-[#00833e]"
+              />
+              <div className="flex justify-between text-xs text-[#8f8f8f] mt-2">
+                <span>1 km</span>
+                <span>15 km</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Nearby Neighborhoods */}
         <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-6">
-          <h2 className="text-lg font-semibold text-[#333] mb-4">Yakındaki Mahalleler</h2>
-          <p className="text-sm text-[#8f8f8f] mb-4">
-            Bu mahallelerin gönderilerini görmek istiyorsanız açın
-          </p>
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold text-[#333] mb-2">
+              Yakındaki Mahalleler
+            </h2>
+            <p className="text-sm text-[#8f8f8f]">
+              {enabledCount} mahalle takip ediliyor
+            </p>
+          </div>
 
-          <div className="space-y-2">
+          <div className="space-y-3">
             {nearbyNeighborhoods.map((neighborhood) => (
               <div
                 key={neighborhood.id}
                 className="flex items-center justify-between p-4 rounded-lg bg-[#f0f2f5] hover:bg-[#e8eaed] transition-colors"
               >
                 <div className="flex-1">
-                  <h3 className="font-semibold text-[#333]">{neighborhood.name}</h3>
-                  <p className="text-sm text-[#8f8f8f]">{neighborhood.distance}</p>
+                  <h3 className="font-semibold text-[#333]">
+                    {neighborhood.name}
+                  </h3>
+                  <p className="text-sm text-[#8f8f8f]">
+                    {neighborhood.distance}
+                  </p>
                 </div>
                 <button
                   onClick={() => toggleNeighborhood(neighborhood.id)}
-                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors flex-shrink-0 ${
-                    neighborhood.enabled ? 'bg-[#00833e]' : 'bg-[#e0e0e0]'
+                  className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors flex-shrink-0 ${
+                    neighborhood.enabled ? "bg-[#00833e]" : "bg-[#e0e0e0]"
                   }`}
                 >
                   <span
-                    className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
-                      neighborhood.enabled ? 'translate-x-7' : 'translate-x-1'
+                    className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                      neighborhood.enabled ? "translate-x-6" : "translate-x-1"
                     }`}
                   />
                 </button>
@@ -140,21 +295,25 @@ export default function MahallePage() {
           </div>
         </div>
 
-        {/* Neighborhood Preferences - Post Categories */}
+        {/* Neighborhood Feed Preferences */}
         <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-6">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-6">
             <Filter className="w-6 h-6 text-[#00833e]" />
-            <h2 className="text-lg font-semibold text-[#333]">Mahalle Tercihleri</h2>
+            <div>
+              <h2 className="text-lg font-semibold text-[#333]">
+                Mahalle Tercihleri
+              </h2>
+              <p className="text-sm text-[#8f8f8f]">
+                {categoryCount} kategori aktif
+              </p>
+            </div>
           </div>
-          <p className="text-sm text-[#8f8f8f] mb-4">
-            Takip etmek istediğiniz gönderi kategorilerini seçin
-          </p>
 
           <div className="space-y-3">
             {postCategories.map((category) => (
               <label
                 key={category.id}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#f0f2f5] cursor-pointer transition-colors"
+                className="flex items-center gap-3 p-4 rounded-lg hover:bg-[#f0f2f5] cursor-pointer transition-colors border border-transparent hover:border-[#e0e0e0]"
               >
                 <input
                   type="checkbox"
@@ -162,19 +321,97 @@ export default function MahallePage() {
                   onChange={() => toggleCategory(category.id)}
                   className="w-4 h-4 accent-[#00833e] cursor-pointer"
                 />
-                <span className="text-[#404040] font-medium">{category.name}</span>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{category.icon}</span>
+                    <span className="text-[#404040] font-medium">
+                      {category.name}
+                    </span>
+                  </div>
+                  <p className="text-sm text-[#8f8f8f] mt-1">
+                    {category.description}
+                  </p>
+                </div>
               </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Feed Notifications */}
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 bg-[#f0f2f5] rounded-lg">
+              <Bell className="w-5 h-5 text-[#00833e]" />
+            </div>
+            <h2 className="text-lg font-semibold text-[#333]">
+              Mahalle Feed Bildirimleri
+            </h2>
+          </div>
+
+          <div className="space-y-4">
+            {notificationPrefs.map((pref) => (
+              <div
+                key={pref.id}
+                className="flex items-center justify-between p-3 rounded-lg bg-[#f0f2f5]"
+              >
+                <div className="flex-1">
+                  <p className="font-medium text-[#333]">{pref.label}</p>
+                  <p className="text-sm text-[#8f8f8f]">{pref.description}</p>
+                </div>
+                <button
+                  onClick={() => toggleNotification(pref.id)}
+                  className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors flex-shrink-0 ${
+                    pref.enabled ? "bg-[#00833e]" : "bg-[#e0e0e0]"
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                      pref.enabled ? "translate-x-6" : "translate-x-1"
+                    }`}
+                  />
+                </button>
+              </div>
             ))}
           </div>
         </div>
 
         {/* Info Box */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-12">
-          <p className="text-sm text-blue-800">
-            <span className="font-semibold">İpucu:</span> Mahalle ayarlarınız ne zaman değişse
-            hiç anlık olarak uygulanır. Mahalle gönderilerini hemen görmek için feed'i
-            yenileyin.
-          </p>
+          <div className="flex gap-3">
+            <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm text-blue-900">
+                <span className="font-semibold">İpucu:</span> Mahalle ayarlarınız
+                hemen uygulanır. Değişiklikleri görmek için feed'inizi yenileyin.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Save Button */}
+        <div className="flex gap-3 mb-12">
+          <button
+            onClick={handleSave}
+            className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all ${
+              saved
+                ? "bg-[#00833e] text-white"
+                : "bg-[#00833e] text-white hover:bg-[#006b32]"
+            }`}
+          >
+            {saved ? (
+              <span className="flex items-center justify-center gap-2">
+                <Check className="w-5 h-5" /> Kaydedildi
+              </span>
+            ) : (
+              "Kaydet"
+            )}
+          </button>
+          <Link
+            href="/ayarlar"
+            className="py-3 px-4 rounded-lg font-semibold bg-white border border-[#e0e0e0] text-[#333] hover:bg-[#f0f2f5] transition-colors"
+          >
+            İptal
+          </Link>
         </div>
       </div>
     </div>

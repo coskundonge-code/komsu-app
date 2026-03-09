@@ -152,31 +152,29 @@ function SifreSifirlaContent() {
           {step === 'request' && (
             <div className="animate-fadeIn space-y-6">
               <div className="text-center space-y-2">
-                <h1 className="text-3xl font-bold text-gray-900">Şifre Sıfırla</h1>
-                <p className="text-gray-600">
-                  Şifrenizi sıfırlamak için e-mail adresinizi girin
+                <h1 className="text-3xl font-bold text-[#333]">Şifre Sıfırla</h1>
+                <p className="text-[#8f8f8f]">
+                  Şifrenizi sıfırlamak için e-posta adresinizi girin
                 </p>
               </div>
 
               {/* Error Message */}
               {error && (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm flex items-start gap-3 animate-slideDown">
-                  <div className="flex-shrink-0 mt-0.5">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                    </svg>
-                  </div>
+                <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-start gap-3 animate-slideDown">
+                  <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
                   <span>{error}</span>
                 </div>
               )}
 
               <form onSubmit={handleRequestReset} className="space-y-5">
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                    E-mail Adresi
+                  <label htmlFor="email" className="block text-sm font-semibold text-[#333] mb-2.5">
+                    E-posta Adresi
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8f8f8f]" />
                     <input
                       id="email"
                       type="email"
@@ -185,29 +183,29 @@ function SifreSifirlaContent() {
                       placeholder="ornek@email.com"
                       required
                       disabled={isLoading}
-                      className="w-full pl-12 pr-4 py-3 border border-[#e0e0e0] rounded-lg bg-white focus:ring-2 focus:ring-[#00833e] focus:border-transparent outline-none transition disabled:bg-gray-50 disabled:cursor-not-allowed"
+                      className="w-full pl-12 pr-4 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20 transition disabled:bg-[#f0f2f5] disabled:cursor-not-allowed"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-2">
-                    E-mail adresinize şifre sıfırlama bağlantısı göndereceğiz.
+                  <p className="text-xs text-[#8f8f8f] mt-2">
+                    E-posta adresinize şifre sıfırlama bağlantısı göndereceğiz.
                   </p>
                 </div>
 
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-[#00833e] to-[#006b32] hover:from-[#006b32] hover:to-[#005a28] text-white font-medium py-3 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed duration-300 shadow-sm hover:shadow-md"
+                  className="w-full bg-[#00833e] hover:bg-[#006b32] text-white font-semibold py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md active:shadow-sm"
                 >
                   {isLoading ? (
                     <span className="flex items-center justify-center gap-2">
                       <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
-                      Gönderiliyor...
+                      <span>Gönderiliyor...</span>
                     </span>
                   ) : (
-                    'Şifre Sıfırlama Bağlantısı Gönder'
+                    "Şifre Sıfırlama Bağlantısı Gönder"
                   )}
                 </button>
               </form>
@@ -216,7 +214,7 @@ function SifreSifirlaContent() {
               <div className="text-center">
                 <Link
                   href="/giris"
-                  className="inline-flex items-center gap-2 text-[#00833e] hover:text-[#006b32] font-medium transition"
+                  className="inline-flex items-center gap-2 text-[#00833e] hover:text-[#006b32] font-semibold transition"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Giriş Sayfasına Dön
@@ -229,31 +227,29 @@ function SifreSifirlaContent() {
           {step === 'reset' && (
             <div className="animate-fadeIn space-y-6">
               <div className="text-center space-y-2">
-                <h1 className="text-3xl font-bold text-gray-900">Yeni Şifre Belirle</h1>
-                <p className="text-gray-600">
+                <h1 className="text-3xl font-bold text-[#333]">Yeni Şifre Belirle</h1>
+                <p className="text-[#8f8f8f]">
                   Lütfen güçlü bir şifre oluşturun
                 </p>
               </div>
 
               {/* Error Message */}
               {error && (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm flex items-start gap-3 animate-slideDown">
-                  <div className="flex-shrink-0 mt-0.5">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                    </svg>
-                  </div>
+                <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-start gap-3 animate-slideDown">
+                  <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
                   <span>{error}</span>
                 </div>
               )}
 
               <form onSubmit={handleResetPassword} className="space-y-4">
                 <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="password" className="block text-sm font-semibold text-[#333] mb-2.5">
                     Yeni Şifre
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8f8f8f]" />
                     <input
                       id="password"
                       type={showPassword ? 'text' : 'password'}
@@ -262,13 +258,13 @@ function SifreSifirlaContent() {
                       placeholder="••••••••"
                       required
                       disabled={isLoading}
-                      className="w-full pl-12 pr-12 py-3 border border-[#e0e0e0] rounded-lg bg-white focus:ring-2 focus:ring-[#00833e] focus:border-transparent outline-none transition disabled:bg-gray-50 disabled:cursor-not-allowed"
+                      className="w-full pl-12 pr-12 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20 transition disabled:bg-[#f0f2f5] disabled:cursor-not-allowed"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       disabled={isLoading}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8f8f8f] hover:text-[#404040] transition disabled:cursor-not-allowed"
                     >
                       {showPassword ? (
                         <EyeOff className="w-5 h-5" />
@@ -277,15 +273,15 @@ function SifreSifirlaContent() {
                       )}
                     </button>
                   </div>
-                  <p className="text-xs text-gray-500 mt-2">En az 8 karakter olmalıdır</p>
+                  <p className="text-xs text-[#8f8f8f] mt-2">En az 8 karakter olmalıdır</p>
                 </div>
 
                 <div>
-                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="confirmPassword" className="block text-sm font-semibold text-[#333] mb-2.5">
                     Şifre Tekrar
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8f8f8f]" />
                     <input
                       id="confirmPassword"
                       type={showConfirmPassword ? 'text' : 'password'}
@@ -294,13 +290,13 @@ function SifreSifirlaContent() {
                       placeholder="••••••••"
                       required
                       disabled={isLoading}
-                      className="w-full pl-12 pr-12 py-3 border border-[#e0e0e0] rounded-lg bg-white focus:ring-2 focus:ring-[#00833e] focus:border-transparent outline-none transition disabled:bg-gray-50 disabled:cursor-not-allowed"
+                      className="w-full pl-12 pr-12 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20 transition disabled:bg-[#f0f2f5] disabled:cursor-not-allowed"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       disabled={isLoading}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8f8f8f] hover:text-[#404040] transition disabled:cursor-not-allowed"
                     >
                       {showConfirmPassword ? (
                         <EyeOff className="w-5 h-5" />
@@ -314,18 +310,18 @@ function SifreSifirlaContent() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-[#00833e] to-[#006b32] hover:from-[#006b32] hover:to-[#005a28] text-white font-medium py-3 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed duration-300 shadow-sm hover:shadow-md mt-6"
+                  className="w-full bg-[#00833e] hover:bg-[#006b32] text-white font-semibold py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md active:shadow-sm mt-6"
                 >
                   {isLoading ? (
                     <span className="flex items-center justify-center gap-2">
                       <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
-                      Güncelleniyor...
+                      <span>Güncelleniyor...</span>
                     </span>
                   ) : (
-                    'Şifre Güncelle'
+                    "Şifre Güncelle"
                   )}
                 </button>
               </form>
@@ -334,7 +330,7 @@ function SifreSifirlaContent() {
               <div className="text-center">
                 <Link
                   href="/giris"
-                  className="inline-flex items-center gap-2 text-[#00833e] hover:text-[#006b32] font-medium transition"
+                  className="inline-flex items-center gap-2 text-[#00833e] hover:text-[#006b32] font-semibold transition"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Giriş Sayfasına Dön
@@ -356,11 +352,11 @@ function SifreSifirlaContent() {
               </div>
 
               <div className="text-center space-y-3">
-                <h1 className="text-3xl font-bold text-gray-900">E-posta Gönderildi!</h1>
-                <p className="text-gray-600 text-base">
+                <h1 className="text-3xl font-bold text-[#333]">E-posta Gönderildi!</h1>
+                <p className="text-[#8f8f8f] text-base">
                   Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.
                 </p>
-                <p className="text-gray-500 text-sm">
+                <p className="text-[#8f8f8f] text-sm">
                   Lütfen e-postanızı kontrol edin ve bağlantıyı tıklayın.
                 </p>
               </div>
@@ -370,21 +366,31 @@ function SifreSifirlaContent() {
                 <button
                   onClick={handleResendEmail}
                   disabled={isLoading}
-                  className="w-full px-4 py-3 border-2 border-[#00833e] text-[#00833e] font-medium rounded-lg hover:bg-[#e6f4ec] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-3 border-2 border-[#00833e] text-[#00833e] font-semibold rounded-xl hover:bg-[#e6f4ec] transition disabled:opacity-50 disabled:cursor-not-allowed active:bg-[#e0ece7]"
                 >
-                  {isLoading ? 'Gönderiliyor...' : 'Tekrar Gönder'}
+                  {isLoading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      <span>Gönderiliyor...</span>
+                    </span>
+                  ) : (
+                    "Tekrar Gönder"
+                  )}
                 </button>
 
                 <Link
                   href="/giris"
-                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#00833e] to-[#006b32] hover:from-[#006b32] hover:to-[#005a28] text-white font-medium py-3 rounded-lg transition duration-300 shadow-sm hover:shadow-md"
+                  className="w-full flex items-center justify-center gap-2 bg-[#00833e] hover:bg-[#006b32] text-white font-semibold py-3 rounded-xl transition shadow-sm hover:shadow-md active:shadow-sm"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Giriş Sayfasına Dön
                 </Link>
               </div>
 
-              <p className="text-xs text-gray-500 text-center pt-4 border-t border-[#e0e0e0]">
+              <p className="text-xs text-[#8f8f8f] text-center pt-4 border-t border-[#e0e0e0]">
                 Bağlantı 24 saat geçerliliğine sahiptir.
               </p>
             </div>
