@@ -7,20 +7,19 @@ import {
   Heart,
   MessageCircle,
   UserPlus,
-  AlertTriangle,
-  Share2,
   ShoppingBag,
   Calendar,
-  Users,
+  CheckCircle,
 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
-type NotificationType = 'like' | 'comment' | 'message' | 'follow' | 'alert' | 'share' | 'event' | 'group' | 'marketplace';
+type NotificationType = 'like' | 'comment' | 'follow' | 'system' | 'marketplace' | 'event';
 
 interface Notification {
   id: string;
   type: NotificationType;
+  category: 'likes' | 'comments' | 'follows' | 'system' | 'marketplace' | 'events';
   userName: string;
   action: string;
   timestamp: string;
@@ -33,56 +32,73 @@ const mockNotifications: Notification[] = [
   {
     id: '1',
     type: 'like',
+    category: 'likes',
     userName: 'Ahmet Yılmaz',
     action: 'Mahalle Temizlik Günü gönderinizi beğendi',
     timestamp: '2 dakika',
     read: false,
     avatar: 'https://picsum.photos/96/96?random=51',
-    href: '/',
+    href: '/post/1',
   },
   {
     id: '2',
     type: 'comment',
+    category: 'comments',
     userName: 'Fatma Şahin',
-    action: 'Yeni açılan kafe gönderinize yorum yaptı',
-    timestamp: '15 dakika',
+    action: 'Yeni açılan kafe gönderinize yorum yaptı: "Harika yer!"',
+    timestamp: '5 dakika',
     read: false,
     avatar: 'https://picsum.photos/96/96?random=52',
-    href: '/',
+    href: '/post/2',
   },
   {
     id: '3',
-    type: 'message',
+    type: 'like',
+    category: 'likes',
     userName: 'Mehmet Demir',
-    action: 'Size mesaj gönderdi',
-    timestamp: '1 saat',
+    action: 'Komşu Kahvaltısı etkinliği gönderinizi beğendi',
+    timestamp: '25 dakika',
     read: false,
     avatar: 'https://picsum.photos/96/96?random=53',
-    href: '/mesajlar',
+    href: '/post/3',
   },
   {
     id: '4',
     type: 'follow',
+    category: 'follows',
     userName: 'Zeynep Kaya',
     action: 'Sizi komşu olarak ekledi',
-    timestamp: '3 saat',
-    read: true,
+    timestamp: '1 saat',
+    read: false,
     avatar: 'https://picsum.photos/96/96?random=54',
     href: '/profil/4',
   },
   {
     id: '5',
     type: 'event',
+    category: 'events',
     userName: 'Komşu Derneği',
     action: 'Komşu Kahvaltısı etkinliğine katılımınızı bekliyoruz',
-    timestamp: '5 saat',
-    read: true,
+    timestamp: '3 saat',
+    read: false,
     avatar: 'https://picsum.photos/96/96?random=55',
     href: '/etkinlikler/1',
   },
   {
     id: '6',
+    type: 'comment',
+    category: 'comments',
+    userName: 'Seyit Bayram',
+    action: 'Yardım talepleri gönderinize yorum yaptı: "Bana da lazım"',
+    timestamp: '5 saat',
+    read: false,
+    avatar: 'https://picsum.photos/96/96?random=58',
+    href: '/post/4',
+  },
+  {
+    id: '7',
     type: 'follow',
+    category: 'follows',
     userName: 'Osman Arslan',
     action: 'Sizi komşu olarak ekledi',
     timestamp: '1 gün',
@@ -91,53 +107,132 @@ const mockNotifications: Notification[] = [
     href: '/profil/6',
   },
   {
-    id: '7',
-    type: 'share',
-    userName: 'Elif Demir',
-    action: 'Bahçe ekim zamanı gönderinizi paylaştı',
-    timestamp: '2 gün',
-    read: true,
-    avatar: 'https://picsum.photos/96/96?random=57',
-    href: '/',
-  },
-  {
     id: '8',
     type: 'like',
-    userName: 'Sinem Yıldız',
-    action: 'Kayıp kedi gönderinizi beğendi',
+    category: 'likes',
+    userName: 'Elif Demir',
+    action: 'Bahçe ekim zamanı gönderinizi beğendi',
+    timestamp: '1 gün',
+    read: true,
+    avatar: 'https://picsum.photos/96/96?random=57',
+    href: '/post/5',
+  },
+  {
+    id: '9',
+    type: 'marketplace',
+    category: 'marketplace',
+    userName: 'Ayşe Kılıç',
+    action: 'Satış için koyduğunuz bisikleti satın almak istiyor',
+    timestamp: '1 gün',
+    read: true,
+    avatar: 'https://picsum.photos/96/96?random=59',
+    href: '/market/1',
+  },
+  {
+    id: '10',
+    type: 'system',
+    category: 'system',
+    userName: 'KomşuApp',
+    action: 'Mahallede yeni güvenlik alanında paylaşım yapıldı',
     timestamp: '2 gün',
     read: true,
-    avatar: 'https://picsum.photos/96/96?random=54',
-    href: '/',
+    avatar: 'https://picsum.photos/96/96?random=60',
+    href: '/bildirimler',
+  },
+  {
+    id: '11',
+    type: 'comment',
+    category: 'comments',
+    userName: 'Hasan Köse',
+    action: 'Komşu Kahvaltısı etkinliğinin gönderiyle ilgili yorum yaptı',
+    timestamp: '2 gün',
+    read: true,
+    avatar: 'https://picsum.photos/96/96?random=61',
+    href: '/post/6',
+  },
+  {
+    id: '12',
+    type: 'follow',
+    category: 'follows',
+    userName: 'Meryem Tuğrul',
+    action: 'Sizi komşu olarak ekledi',
+    timestamp: '3 gün',
+    read: true,
+    avatar: 'https://picsum.photos/96/96?random=62',
+    href: '/profil/12',
+  },
+  {
+    id: '13',
+    type: 'event',
+    category: 'events',
+    userName: 'Mahalle Spor Kulübü',
+    action: 'Futsal turnuvası etkinliği - Cumartesi saat 15:00',
+    timestamp: '4 gün',
+    read: true,
+    avatar: 'https://picsum.photos/96/96?random=63',
+    href: '/etkinlikler/2',
+  },
+  {
+    id: '14',
+    type: 'marketplace',
+    category: 'marketplace',
+    userName: 'İbrahim Yurdu',
+    action: 'Bulduğunuz ürün benzerine sahip - ilgi gösterebilir',
+    timestamp: '5 gün',
+    read: true,
+    avatar: 'https://picsum.photos/96/96?random=64',
+    href: '/market/2',
+  },
+  {
+    id: '15',
+    type: 'system',
+    category: 'system',
+    userName: 'KomşuApp',
+    action: 'Haftalık mahalle özeti: 12 yeni gönderi, 45 yorumlar',
+    timestamp: '6 gün',
+    read: true,
+    avatar: 'https://picsum.photos/96/96?random=65',
+    href: '/bildirimler',
+  },
+  {
+    id: '16',
+    type: 'like',
+    category: 'likes',
+    userName: 'Cemile Aydın',
+    action: 'Yerel restaurant tavsiye gönderinizi beğendi',
+    timestamp: '1 hafta',
+    read: true,
+    avatar: 'https://picsum.photos/96/96?random=66',
+    href: '/post/7',
   },
 ];
 
 const getNotificationIcon = (type: NotificationType) => {
   switch (type) {
     case 'like':
-      return <Heart className="w-5 h-5 text-red-500" />;
+      return <Heart className="w-5 h-5 text-red-500 fill-current" />;
     case 'comment':
       return <MessageCircle className="w-5 h-5 text-blue-500" />;
-    case 'message':
-      return <MessageCircle className="w-5 h-5 text-[#00833e]" />;
     case 'follow':
       return <UserPlus className="w-5 h-5 text-purple-500" />;
-    case 'alert':
-      return <AlertTriangle className="w-5 h-5 text-red-600" />;
-    case 'share':
-      return <Share2 className="w-5 h-5 text-blue-500" />;
-    case 'event':
-      return <Calendar className="w-5 h-5 text-orange-500" />;
-    case 'group':
-      return <Users className="w-5 h-5 text-[#00833e]" />;
+    case 'system':
+      return <Bell className="w-5 h-5 text-orange-500" />;
     case 'marketplace':
       return <ShoppingBag className="w-5 h-5 text-[#00833e]" />;
+    case 'event':
+      return <Calendar className="w-5 h-5 text-amber-600" />;
+    default:
+      return <Bell className="w-5 h-5 text-[#00833e]" />;
   }
 };
 
 const tabs = [
   { id: 'all', label: 'Tümü' },
   { id: 'unread', label: 'Okunmamış' },
+  { id: 'likes', label: 'Beğeniler' },
+  { id: 'comments', label: 'Yorumlar' },
+  { id: 'follows', label: 'Takip' },
+  { id: 'system', label: 'Sistem' },
 ];
 
 export default function NotificationsPage() {
@@ -146,26 +241,52 @@ export default function NotificationsPage() {
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const filteredNotifications =
-    activeTab === 'unread'
-      ? notifications.filter((n) => !n.read)
-      : notifications;
+  const filteredNotifications = useMemo(() => {
+    if (activeTab === 'all') {
+      return notifications;
+    } else if (activeTab === 'unread') {
+      return notifications.filter((n) => !n.read);
+    } else {
+      return notifications.filter((n) => n.category === activeTab);
+    }
+  }, [notifications, activeTab]);
 
   const grouped = useMemo(() => {
     const groups: Record<string, Notification[]> = {};
+    const dateOrder = ['Bugün', 'Dün', 'Bu Hafta', 'Daha Eski'];
+
     filteredNotifications.forEach((n) => {
       let key: string;
+
       if (n.timestamp.includes('dakika') || n.timestamp.includes('saat')) {
         key = 'Bugün';
       } else if (n.timestamp === '1 gün') {
         key = 'Dün';
-      } else {
+      } else if (
+        n.timestamp === '2 gün' ||
+        n.timestamp === '3 gün' ||
+        n.timestamp === '4 gün' ||
+        n.timestamp === '5 gün' ||
+        n.timestamp === '6 gün'
+      ) {
         key = 'Bu Hafta';
+      } else {
+        key = 'Daha Eski';
       }
+
       if (!groups[key]) groups[key] = [];
       groups[key].push(n);
     });
-    return groups;
+
+    // Sort groups by dateOrder
+    const sortedGroups: Record<string, Notification[]> = {};
+    dateOrder.forEach((date) => {
+      if (groups[date]) {
+        sortedGroups[date] = groups[date];
+      }
+    });
+
+    return sortedGroups;
   }, [filteredNotifications]);
 
   const markAsRead = (id: string) => {
@@ -182,13 +303,18 @@ export default function NotificationsPage() {
     <div className="min-h-screen bg-[#f0f2f5]">
       <div className="max-w-2xl mx-auto px-4 py-4">
         {/* Header */}
-        <div className="bg-white border-b border-[#e0e0e0] sticky top-0 z-10 mb-4">
-          <div className="py-4">
+        <div className="bg-white border-b border-[#e0e0e0] sticky top-0 z-10 mb-4 rounded-lg">
+          <div className="py-4 px-4">
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-[#333]">Bildirimler</h1>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-[#e6f4ec] flex items-center justify-center">
+                  <Bell size={20} className="text-[#00833e]" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-[#333]">Bildirimler</h1>
+                </div>
                 {unreadCount > 0 && (
-                  <span className="px-2.5 py-1 bg-red-500 text-white text-xs font-bold rounded-full">
+                  <span className="px-2.5 py-1 bg-red-500 text-white text-xs font-bold rounded-full ml-2">
                     {unreadCount}
                   </span>
                 )}
@@ -196,21 +322,23 @@ export default function NotificationsPage() {
               {unreadCount > 0 && (
                 <button
                   onClick={markAllAsRead}
-                  className="text-sm font-medium text-[#00833e] hover:text-[#006b32] transition-colors"
+                  className="text-sm font-medium text-[#00833e] hover:text-[#006b32] transition-colors flex items-center gap-1.5"
                 >
-                  Tümünü Okundu İşaretle
+                  <CheckCircle size={16} />
+                  <span className="hidden sm:inline">Tümünü Okundu İşaretle</span>
+                  <span className="sm:hidden">Tümü Okundu</span>
                 </button>
               )}
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-4 border-b border-[#e0e0e0] -mx-4 px-4">
+            <div className="flex gap-0 border-b border-[#e0e0e0] -mx-4 px-4 overflow-x-auto scrollbar-hide">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    'px-0 py-3 text-sm font-medium border-b-2 transition-colors',
+                    'px-3 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap',
                     activeTab === tab.id
                       ? 'border-[#00833e] text-[#00833e]'
                       : 'border-transparent text-[#8f8f8f] hover:text-[#333]'
@@ -222,6 +350,26 @@ export default function NotificationsPage() {
                       ({unreadCount})
                     </span>
                   )}
+                  {tab.id === 'likes' && (
+                    <span className="ml-1.5 text-xs font-medium text-[#8f8f8f]">
+                      ({notifications.filter((n) => n.category === 'likes').length})
+                    </span>
+                  )}
+                  {tab.id === 'comments' && (
+                    <span className="ml-1.5 text-xs font-medium text-[#8f8f8f]">
+                      ({notifications.filter((n) => n.category === 'comments').length})
+                    </span>
+                  )}
+                  {tab.id === 'follows' && (
+                    <span className="ml-1.5 text-xs font-medium text-[#8f8f8f]">
+                      ({notifications.filter((n) => n.category === 'follows').length})
+                    </span>
+                  )}
+                  {tab.id === 'system' && (
+                    <span className="ml-1.5 text-xs font-medium text-[#8f8f8f]">
+                      ({notifications.filter((n) => n.category === 'system').length})
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
@@ -231,49 +379,69 @@ export default function NotificationsPage() {
         {/* Notification List */}
         {Object.entries(grouped).length === 0 ? (
           <div className="bg-white rounded-lg border border-[#e0e0e0] p-12 text-center">
-            <Bell size={48} className="mx-auto text-[#8f8f8f] mb-3" />
-            <p className="text-[#333] font-medium">Bildirim yok</p>
-            <p className="text-[#8f8f8f] text-sm mt-1">Yeni bildirimleriniz burada görünecek</p>
+            <div className="w-16 h-16 rounded-full bg-[#f0f2f5] flex items-center justify-center mx-auto mb-4">
+              <Bell size={32} className="text-[#8f8f8f]" />
+            </div>
+            <p className="text-[#333] font-medium text-lg">Bildirim yok</p>
+            <p className="text-[#8f8f8f] text-sm mt-2">
+              {activeTab === 'unread'
+                ? 'Okunmamış bildiriminiz bulunmuyor'
+                : activeTab === 'likes'
+                ? 'Beğeni bildirimleri görünecek'
+                : activeTab === 'comments'
+                ? 'Yorum bildirimleri görünecek'
+                : activeTab === 'follows'
+                ? 'Takip bildirimleri görünecek'
+                : activeTab === 'system'
+                ? 'Sistem bildirimleri görünecek'
+                : 'Yeni bildirimleriniz burada görünecek'}
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
             {Object.entries(grouped).map(([dateKey, items]) => (
               <div key={dateKey}>
-                <h2 className="text-xs font-semibold text-[#8f8f8f] uppercase tracking-wider px-2 mb-2">
+                <h2 className="text-xs font-semibold text-[#8f8f8f] uppercase tracking-wider px-3 py-2 sticky top-20 bg-[#f0f2f5] rounded-lg">
                   {dateKey}
                 </h2>
-                <div className="space-y-1">
+                <div className="space-y-2">
                   {items.map((notification) => (
                     <Link
                       key={notification.id}
                       href={notification.href}
                       onClick={() => markAsRead(notification.id)}
                       className={cn(
-                        'flex items-center gap-3 p-3 rounded-lg transition-colors border border-transparent hover:border-[#e0e0e0]',
+                        'flex items-start gap-3 p-3 rounded-lg transition-all border-l-4 group relative',
                         !notification.read
-                          ? 'bg-[#e6f4ec] hover:bg-[#d1fae5]'
-                          : 'bg-white hover:bg-[#f0f2f5]'
+                          ? 'bg-[#e6f4ec] border-l-[#00833e] hover:bg-[#d1fae5] shadow-sm'
+                          : 'bg-white border-l-transparent hover:bg-[#f9f9f9] border border-[#e0e0e0]'
                       )}
                     >
+                      {/* Swipe indicator background */}
+                      <div className={cn(
+                        'absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity',
+                        !notification.read && 'bg-gradient-to-r from-[#00833e]/5 to-transparent'
+                      )} />
+
                       {/* Avatar */}
-                      <div className="relative flex-shrink-0">
+                      <div className="relative flex-shrink-0 z-10">
                         <Image
                           src={notification.avatar}
                           alt={notification.userName}
                           width={48}
                           height={48}
-                          className="w-12 h-12 rounded-full object-cover"
+                          className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm"
                           unoptimized
                         />
                         {/* Icon Badge */}
-                        <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full border border-[#e0e0e0] flex items-center justify-center">
+                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-white rounded-full border-2 border-[#00833e] flex items-center justify-center shadow-sm">
                           {getNotificationIcon(notification.type)}
                         </div>
                       </div>
 
                       {/* Content */}
-                      <div className="flex-1 min-w-0 text-left">
-                        <p className="text-sm">
+                      <div className="flex-1 min-w-0 text-left pt-0.5 z-10">
+                        <p className="text-sm leading-snug">
                           <span className={cn(
                             'font-bold',
                             !notification.read ? 'text-[#333]' : 'text-[#404040]'
@@ -286,12 +454,17 @@ export default function NotificationsPage() {
                             {' '}{notification.action}
                           </span>
                         </p>
-                        <p className="text-xs text-[#8f8f8f] mt-0.5">{notification.timestamp}</p>
+                        <p className="text-xs text-[#8f8f8f] mt-1">{notification.timestamp}</p>
                       </div>
 
-                      {/* Unread Indicator */}
+                      {/* Unread Indicator Dot */}
                       {!notification.read && (
-                        <span className="w-2 h-2 bg-[#00833e] rounded-full flex-shrink-0" />
+                        <div className="flex-shrink-0 z-10 flex flex-col items-center gap-2">
+                          <span className="w-2.5 h-2.5 bg-[#00833e] rounded-full block shadow-sm" />
+                          <div className="text-xs font-semibold text-[#00833e] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                            Okundu
+                          </div>
+                        </div>
                       )}
                     </Link>
                   ))}
