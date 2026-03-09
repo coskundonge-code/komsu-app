@@ -2,20 +2,11 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import {
-  ChevronRight,
-  Edit3,
-  ChevronUp,
-  Building2,
-  Sun,
-  Cloud,
-  Droplets,
-  Wind,
-  TrendingUp,
-  Calendar,
-  Shield,
-  AlertCircle,
-} from 'lucide-react'
+import { ChevronRight, Edit3, ChevronUp, Building2, Shield, AlertCircle } from 'lucide-react'
+import { WeatherWidget } from '@/components/widgets/weather-widget'
+import { TrendingWidget } from '@/components/widgets/trending-widget'
+import { UpcomingEventsWidget } from '@/components/widgets/upcoming-events-widget'
+import { NeighborhoodStatsWidget } from '@/components/widgets/neighborhood-stats-widget'
 
 export function RightSidebar() {
   return (
@@ -41,110 +32,16 @@ export function RightSidebar() {
       </div>
 
       {/* Weather Widget */}
-      <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
-        <div className="p-4">
-          <p className="text-sm font-semibold text-[#333] mb-4 flex items-center gap-2">
-            <Sun className="w-4 h-4 text-[#00833e]" />
-            Mahalle Hava Durumu
-          </p>
-          <div className="space-y-3">
-            {/* Location & Temp */}
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[13px] font-medium text-[#333]">İstanbul, Kadıköy</p>
-                <p className="text-[12px] text-[#8f8f8f]">Kısmen Bulutlu</p>
-              </div>
-              <div className="flex items-center">
-                <Cloud className="w-8 h-8 text-[#404040]" />
-                <p className="text-xl font-bold text-[#333] ml-1">18°</p>
-              </div>
-            </div>
+      <WeatherWidget />
 
-            {/* Weather Details */}
-            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#e0e0e0]">
-              <div className="flex items-center gap-2">
-                <Droplets className="w-4 h-4 text-[#8f8f8f]" />
-                <div>
-                  <p className="text-[10px] text-[#8f8f8f]">Nem</p>
-                  <p className="text-xs font-medium text-[#333]">65%</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Wind className="w-4 h-4 text-[#8f8f8f]" />
-                <div>
-                  <p className="text-[10px] text-[#8f8f8f]">Rüzgar</p>
-                  <p className="text-xs font-medium text-[#333]">12 km/h</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Trending Topics Widget */}
+      <TrendingWidget />
 
-      {/* Trending Topics */}
-      <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
-        <div className="p-4 border-b border-[#e0e0e0]">
-          <p className="text-sm font-semibold text-[#333] flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-[#00833e]" />
-            Gündem Konuları
-          </p>
-        </div>
-        <div className="divide-y divide-[#e0e0e0]">
-          {[
-            { title: 'Park Yenileme Projesi', posts: 24 },
-            { title: 'Hafta Sonu Pazarı', posts: 18 },
-            { title: 'Yeni Kafe Açılışı', posts: 12 },
-            { title: 'Komşu Sosyal Etkinliği', posts: 9 },
-            { title: 'Kat Sahipleri Toplantısı', posts: 7 },
-            { title: 'Trafik Sorunu Çözümü', posts: 5 },
-          ].map((topic, idx) => (
-            <Link
-              key={idx}
-              href={`/konu/${topic.title.toLowerCase().replace(/\s+/g, '-')}`}
-              className="px-4 py-3 hover:bg-[#f9f9f9] transition-colors flex justify-between items-center"
-            >
-              <span className="text-sm text-[#333]">{topic.title}</span>
-              <span className="text-xs text-[#8f8f8f] bg-[#f0f2f5] px-2 py-1 rounded">
-                {topic.posts}
-              </span>
-            </Link>
-          ))}
-        </div>
-      </div>
+      {/* Upcoming Events Widget */}
+      <UpcomingEventsWidget />
 
-      {/* Upcoming Events */}
-      <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
-        <div className="p-4 border-b border-[#e0e0e0]">
-          <p className="text-sm font-semibold text-[#333] flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-[#00833e]" />
-            Yaklaşan Etkinlikler
-          </p>
-        </div>
-        <div className="space-y-3 p-4">
-          {[
-            { date: '14 Mar', title: 'Mahalle Piknik', attendees: 24 },
-            { date: '18 Mar', title: 'Yoga Sınıfı', attendees: 12 },
-            { date: '21 Mar', title: 'Sosyal Buluşma', attendees: 18 },
-          ].map((event, idx) => (
-            <Link
-              key={idx}
-              href={`/etkinlikler`}
-              className="flex gap-3 p-2 rounded-lg hover:bg-[#f0f2f5] transition-colors"
-            >
-              <div className="flex flex-col items-center justify-center w-10 h-10 bg-[#f0f2f5] rounded-lg flex-shrink-0">
-                <p className="text-xs text-[#8f8f8f]">{event.date.split(' ')[0]}</p>
-                <p className="text-sm font-semibold text-[#00833e]">
-                  {event.date.split(' ')[1]}
-                </p>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-[#333] truncate">{event.title}</p>
-                <p className="text-xs text-[#8f8f8f]">{event.attendees} katılımcı</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
+      {/* Neighborhood Stats Widget */}
+      <NeighborhoodStatsWidget />
 
       {/* Safety Status */}
       <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
