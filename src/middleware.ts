@@ -1,29 +1,32 @@
 import { type NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
 // Routes that don't require authentication
 const publicRoutes = [
+  '/',
   '/giris',
   '/kayit',
   '/sifre-sifirla',
+  '/auth/callback',
   '/api/auth',
 ]
 
 export async function middleware(request: NextRequest) {
+  const { response, user } = await updateSession(request)
   const path = request.nextUrl.pathname
 
-  // Allow public routes
-  if (publicRoutes.some(route => path.startsWith(route))) {
-    return await updateSession(request)
+  // Allow public routes without auth check
+  if (publicRoutes.some(route => path === route || path.startsWith(route + '/'))) {
+    return response
   }
 
-  const { response, user } = await updateSession(request)
-
   // Redirect to login if not authenticated on protected routes
-  if (!user && !publicRoutes.some(route => path.startsWith(route))) {
+  if (!user) {
     const loginUrl = request.nextUrl.clone()
     loginUrl.pathname = '/giris'
-    return response
+    loginUrl.searchParams.set('next', path)
+    return NextResponse.redirect(loginUrl)
   }
 
   return response
