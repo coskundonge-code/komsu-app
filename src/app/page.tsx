@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
   Shield,
@@ -23,260 +23,347 @@ import {
   Dog,
   Wrench,
   TreePine,
+  ChevronRight,
+  CheckCircle2,
+  Sparkles,
+  Globe,
+  Lock,
+  ThumbsUp,
+  MessageCircle,
+  Share2,
+  MoreHorizontal,
+  Image,
+  Send,
+  UserPlus,
+  Zap,
+  TrendingUp,
+  Award,
 } from 'lucide-react'
 
-const features = [
-  {
-    icon: Shield,
-    title: 'Güvenlik Uyarıları',
-    description: 'Mahallenizdeki güvenlik olaylarından anında haberdar olun.',
-    color: 'bg-red-100 text-red-600',
-  },
-  {
-    icon: ShoppingBag,
-    title: 'Pazar Yeri',
-    description: 'Komşularınızla güvenle alışveriş yapın, ilan verin.',
-    color: 'bg-blue-100 text-blue-600',
-  },
-  {
-    icon: Calendar,
-    title: 'Etkinlikler',
-    description: 'Mahallenizdeki etkinlikleri keşfedin ve düzenleyin.',
-    color: 'bg-purple-100 text-purple-600',
-  },
-  {
-    icon: Users,
-    title: 'Gruplar',
-    description: 'Ortak ilgi alanlarınıza göre gruplara katılın.',
-    color: 'bg-amber-100 text-amber-600',
-  },
-  {
-    icon: Building2,
-    title: 'Yerel İşletmeler',
-    description: 'Mahallenizdeki güvenilir işletmeleri bulun ve değerlendirin.',
-    color: 'bg-emerald-100 text-emerald-600',
-  },
-  {
-    icon: MessageSquare,
-    title: 'Özel Mesajlaşma',
-    description: 'Komşularınızla güvenli bir şekilde mesajlaşın.',
-    color: 'bg-cyan-100 text-cyan-600',
-  },
-]
-
-const categories = [
-  { icon: Megaphone, label: 'Duyurular', count: '2.4K' },
-  { icon: Shield, label: 'Güvenlik', count: '890' },
-  { icon: HandHeart, label: 'Yardımlaşma', count: '1.2K' },
-  { icon: Dog, label: 'Kayıp & Buluntu', count: '456' },
-  { icon: Wrench, label: 'Tavsiyeler', count: '3.1K' },
-  { icon: TreePine, label: 'Çevre', count: '678' },
-]
-
-const testimonials = [
-  {
-    name: 'Ayşe K.',
-    neighborhood: 'Kadıköy, İstanbul',
-    text: 'Kayıp kedimi KomşuApp sayesinde 2 saat içinde buldum! Komşularım hemen paylaştı.',
-    avatar: 'AK',
-  },
-  {
-    name: 'Mehmet Y.',
-    neighborhood: 'Çankaya, Ankara',
-    text: 'Mahallemizdeki güvenlik sorunlarını hep birlikte çözüyoruz. Muhtar bile kullanıyor!',
-    avatar: 'MY',
-  },
-  {
-    name: 'Zeynep D.',
-    neighborhood: 'Bornova, İzmir',
-    text: 'Pazar yerinden harika fırsatlar buluyorum. Komşularla alışveriş yapmak çok güvenli.',
-    avatar: 'ZD',
-  },
-]
-
-const stats = [
-  { label: 'Aktif Mahalle', value: '12,500+' },
-  { label: 'Kayıtlı Komşu', value: '2.1M+' },
-  { label: 'Aylık Paylaşım', value: '850K+' },
-  { label: 'Yerel İşletme', value: '45K+' },
-]
-
 export default function LandingPage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [mobileMenu, setMobileMenu] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const [activeTab, setActiveTab] = useState(0)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveTab((prev) => (prev + 1) % 3)
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+      {/* NAVBAR */}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100'
+            : 'bg-transparent'
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-sm">
-                <span className="text-white text-lg font-bold">K</span>
+            <div className="flex items-center gap-2">
+              <div className="w-9 h-9 bg-[#00965b] rounded-xl flex items-center justify-center shadow-md shadow-emerald-200/50">
+                <Home className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">
-                Komşu<span className="text-emerald-600">App</span>
+              <span className="text-xl font-bold tracking-tight">
+                <span className="text-gray-900">Komşu</span>
+                <span className="text-[#00965b]">App</span>
               </span>
             </div>
 
-            <div className="hidden md:flex items-center gap-8">
-              <a href="#ozellikler" className="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">Özellikler</a>
-              <a href="#nasil-calisir" className="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">Nasıl Çalışır</a>
-              <a href="#yorumlar" className="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">Yorumlar</a>
-              <Link href="/giris" className="text-sm font-medium text-gray-700 hover:text-emerald-600 transition-colors">Giriş Yap</Link>
-              <Link href="/kayit" className="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-semibold rounded-full hover:from-emerald-600 hover:to-teal-700 transition-all shadow-md shadow-emerald-500/25">
+            <div className="hidden md:flex items-center gap-1">
+              {['Özellikler', 'Nasıl Çalışır', 'Güvenlik', 'Hakkında'].map((item) => (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase().replace(/\s/g, '-').replace(/ö/g,'o').replace(/ı/g,'i').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ç/g,'c')}`}
+                  className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  {item}
+                </a>
+              ))}
+            </div>
+
+            <div className="hidden md:flex items-center gap-3">
+              <Link href="/giris" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
+                Giriş Yap
+              </Link>
+              <Link
+                href="/kayit"
+                className="px-5 py-2.5 text-sm font-semibold text-white bg-[#00965b] hover:bg-[#007a4a] rounded-full transition-all shadow-md shadow-emerald-200/50 hover:shadow-lg"
+              >
                 Ücretsiz Kaydol
               </Link>
             </div>
 
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100">
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            <button
+              onClick={() => setMobileMenu(!mobileMenu)}
+              className="md:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
+            >
+              {mobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-t border-gray-100 py-4 px-4 space-y-3">
-            <a href="#ozellikler" className="block py-2 text-gray-700 font-medium">Özellikler</a>
-            <a href="#nasil-calisir" className="block py-2 text-gray-700 font-medium">Nasıl Çalışır</a>
-            <a href="#yorumlar" className="block py-2 text-gray-700 font-medium">Yorumlar</a>
-            <div className="pt-3 space-y-2 border-t border-gray-100">
-              <Link href="/giris" className="block w-full text-center py-2.5 border border-gray-300 rounded-full font-medium text-gray-700">Giriş Yap</Link>
-              <Link href="/kayit" className="block w-full text-center py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-full font-semibold">Ücretsiz Kaydol</Link>
+        {mobileMenu && (
+          <div className="md:hidden bg-white border-t border-gray-100 shadow-lg">
+            <div className="px-4 py-3 space-y-1">
+              {['Özellikler', 'Nasıl Çalışır', 'Güvenlik', 'Hakkında'].map((item) => (
+                <a
+                  key={item}
+                  href="#"
+                  className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg"
+                  onClick={() => setMobileMenu(false)}
+                >
+                  {item}
+                </a>
+              ))}
+              <div className="pt-3 border-t border-gray-100 space-y-2">
+                <Link href="/giris" className="block w-full text-center px-4 py-2.5 text-sm font-medium text-gray-700 border border-gray-200 rounded-full">
+                  Giriş Yap
+                </Link>
+                <Link href="/kayit" className="block w-full text-center px-4 py-2.5 text-sm font-semibold text-white bg-[#00965b] rounded-full">
+                  Ücretsiz Kaydol
+                </Link>
+              </div>
             </div>
           </div>
         )}
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-teal-50" />
-        <div className="absolute top-20 right-0 w-96 h-96 bg-emerald-200/30 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-72 h-72 bg-teal-200/20 rounded-full blur-3xl" />
+      {/* HERO */}
+      <section className="relative pt-24 pb-16 lg:pt-32 lg:pb-24 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/60" />
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-emerald-100/40 to-transparent rounded-full -translate-y-1/2 translate-x-1/4" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-teal-100/30 to-transparent rounded-full translate-y-1/2 -translate-x-1/4" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24 lg:pt-24 lg:pb-32">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div className="space-y-8">
-              <div className="inline-flex items-center gap-2 bg-emerald-100/80 text-emerald-700 px-4 py-2 rounded-full text-sm font-medium">
-                <MapPin size={16} />
-                <span>Türkiye&apos;nin en büyük mahalle ağı</span>
+            <div className="max-w-xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full text-sm font-medium text-[#00965b] mb-6">
+                <Sparkles className="w-4 h-4" />
+                Türkiye&apos;nin mahalle ağı
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                Mahallende{' '}
-                <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">birlikte</span>{' '}
-                daha güzel
+              <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-extrabold text-gray-900 leading-[1.1] tracking-tight mb-6">
+                Mahallenizle
+                <br />
+                <span className="text-[#00965b]">bağlantı kurun</span>
               </h1>
 
-              <p className="text-lg sm:text-xl text-gray-600 max-w-lg leading-relaxed">
-                KomşuApp ile komşularınızı tanıyın, haberleşin, alışveriş yapın ve mahallenizdeki etkinliklere katılın. Güvenli ve sıcak bir topluluk sizi bekliyor.
+              <p className="text-lg text-gray-500 leading-relaxed mb-8 max-w-md">
+                Komşularınızla tanışın, güvenlik uyarılarını takip edin, yerel etkinliklere katılın ve mahalle pazarında alışveriş yapın.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/kayit" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-lg font-semibold rounded-full hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:-translate-y-0.5">
-                  Hemen Başla <ArrowRight size={20} />
+              <div className="flex flex-col sm:flex-row gap-3 mb-10">
+                <Link
+                  href="/kayit"
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 text-base font-semibold text-white bg-[#00965b] hover:bg-[#007a4a] rounded-full transition-all shadow-lg shadow-emerald-200/50 hover:shadow-xl hover:-translate-y-0.5"
+                >
+                  Hemen Başla
+                  <ArrowRight className="w-5 h-5" />
                 </Link>
-                <a href="#ozellikler" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-gray-700 text-lg font-semibold rounded-full border-2 border-gray-200 hover:border-emerald-300 hover:text-emerald-600 transition-all">
-                  Daha Fazla Bilgi
+                <a
+                  href="#nasil-calisir"
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 text-base font-semibold text-gray-700 bg-white hover:bg-gray-50 border border-gray-200 rounded-full transition-all hover:-translate-y-0.5"
+                >
+                  Nasıl Çalışır?
                 </a>
               </div>
 
-              <div className="flex flex-wrap gap-8 pt-4">
-                {stats.map((stat) => (
+              <div className="flex items-center gap-8">
+                {[
+                  { value: '12.5K+', label: 'Mahalle' },
+                  { value: '2.1M+', label: 'Komşu' },
+                  { value: '850K+', label: 'Aylık Paylaşım' },
+                ].map((stat) => (
                   <div key={stat.label}>
-                    <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                    <p className="text-sm text-gray-500">{stat.label}</p>
+                    <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
+                    <div className="text-sm text-gray-400">{stat.label}</div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* App Preview */}
-            <div className="relative">
-              <div className="relative bg-white rounded-2xl shadow-2xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
-                <div className="bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">K</span>
-                    </div>
-                    <span className="font-semibold text-sm text-gray-900">KomşuApp</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 bg-gray-100 rounded-full flex items-center justify-center"><Search size={14} className="text-gray-500" /></div>
-                    <div className="w-7 h-7 bg-gray-100 rounded-full flex items-center justify-center"><Bell size={14} className="text-gray-500" /></div>
-                    <div className="w-7 h-7 bg-emerald-100 rounded-full flex items-center justify-center"><span className="text-emerald-700 text-xs font-bold">A</span></div>
-                  </div>
-                </div>
+            {/* Phone Preview */}
+            <div className="relative lg:pl-8">
+              <div className="relative mx-auto w-[320px] sm:w-[360px]">
+                <div className="absolute inset-0 bg-gradient-to-b from-emerald-200/30 to-teal-200/20 rounded-[40px] blur-3xl scale-110" />
 
-                <div className="p-4 space-y-3 bg-gray-50">
-                  <div className="bg-white rounded-xl p-4 border border-gray-100">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-9 h-9 bg-amber-100 rounded-full flex items-center justify-center"><span className="text-amber-700 text-sm font-bold">AK</span></div>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-900">Ayşe Kaya</p>
-                        <p className="text-xs text-gray-500">Nişantaşı • 2 saat önce</p>
+                <div className="relative bg-white rounded-[32px] shadow-2xl shadow-gray-300/50 border border-gray-200/60 overflow-hidden">
+                  {/* Status bar */}
+                  <div className="bg-white px-6 pt-3 pb-2 flex items-center justify-between">
+                    <span className="text-xs font-semibold text-gray-900">09:41</span>
+                    <div className="flex items-center gap-1">
+                      <div className="w-4 h-2 bg-gray-900 rounded-sm" />
+                    </div>
+                  </div>
+
+                  {/* App Header */}
+                  <div className="bg-white px-4 pb-3 border-b border-gray-100">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 bg-[#00965b] rounded-lg flex items-center justify-center">
+                          <Home className="w-4 h-4 text-white" />
+                        </div>
+                        <span className="font-bold text-gray-900 text-sm">KomşuApp</span>
                       </div>
-                      <span className="ml-auto px-2.5 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full">Güvenlik</span>
-                    </div>
-                    <p className="text-sm text-gray-700 mb-3">Mahallede yeni güvenlik kameraları kuruldu. Emeği geçen herkese teşekkürler!</p>
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
-                      <span className="flex items-center gap-1"><Heart size={14} className="text-red-500" /> 24</span>
-                      <span className="flex items-center gap-1"><MessageSquare size={14} /> 8 yorum</span>
-                    </div>
-                  </div>
-
-                  <div className="bg-white rounded-xl p-4 border border-gray-100">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center"><span className="text-blue-700 text-sm font-bold">MY</span></div>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-900">Mehmet Yıldız</p>
-                        <p className="text-xs text-gray-500">Nişantaşı • 4 saat önce</p>
+                      <div className="flex items-center gap-3">
+                        <Search className="w-4 h-4 text-gray-400" />
+                        <div className="relative">
+                          <Bell className="w-4 h-4 text-gray-400" />
+                          <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
+                        </div>
+                        <div className="w-6 h-6 bg-emerald-100 rounded-full flex items-center justify-center">
+                          <span className="text-[10px] font-bold text-[#00965b]">AK</span>
+                        </div>
                       </div>
-                      <span className="ml-auto px-2.5 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">Etkinlik</span>
                     </div>
-                    <p className="text-sm text-gray-700 mb-3">Cumartesi mahalle temizlik günü! Katılmak isteyen komşularımız buluşma noktasına gelsin.</p>
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
-                      <span className="flex items-center gap-1"><Heart size={14} className="text-red-500" /> 18</span>
-                      <span className="flex items-center gap-1"><MessageSquare size={14} /> 12 yorum</span>
+                    <div className="flex gap-1">
+                      {['Sizin İçin', 'Güncel', 'Yakın'].map((tab, i) => (
+                        <button
+                          key={tab}
+                          onClick={() => setActiveTab(i)}
+                          className={`px-3 py-1.5 text-xs font-medium rounded-full transition-all ${
+                            activeTab === i ? 'bg-[#00965b] text-white' : 'bg-gray-100 text-gray-500'
+                          }`}
+                        >
+                          {tab}
+                        </button>
+                      ))}
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-xl p-4 border border-gray-100">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-9 h-9 bg-purple-100 rounded-full flex items-center justify-center"><span className="text-purple-700 text-sm font-bold">ZD</span></div>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-900">Zeynep Demir</p>
-                        <p className="text-xs text-gray-500">Nişantaşı • 6 saat önce</p>
+                  {/* Feed */}
+                  <div className="bg-gray-50 p-3 space-y-3">
+                    <div className="bg-white rounded-xl p-3 shadow-sm">
+                      <div className="flex items-start gap-2.5 mb-2">
+                        <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-xs font-bold text-orange-600">AK</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-xs font-semibold text-gray-900">Ayşe Kaya</span>
+                            <span className="text-[10px] text-gray-400">• 2 sa</span>
+                          </div>
+                          <span className="text-[10px] text-gray-400">Kadıköy, Moda</span>
+                        </div>
+                        <span className="px-2 py-0.5 bg-red-50 text-red-600 text-[10px] font-medium rounded-full">Güvenlik</span>
                       </div>
-                      <span className="ml-auto px-2.5 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">Pazar</span>
+                      <p className="text-xs text-gray-700 leading-relaxed mb-2">
+                        Mahallede yeni güvenlik kameraları kuruldu. Emeği geçen herkese teşekkürler! 🎉
+                      </p>
+                      <div className="flex items-center gap-4 pt-2 border-t border-gray-50">
+                        <span className="flex items-center gap-1 text-[10px] text-gray-400">
+                          <ThumbsUp className="w-3 h-3" /> <span className="text-gray-600 font-medium">24</span>
+                        </span>
+                        <span className="flex items-center gap-1 text-[10px] text-gray-400">
+                          <MessageCircle className="w-3 h-3" /> <span className="text-gray-600 font-medium">8</span>
+                        </span>
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-700">Satılık bisiklet - az kullanılmış, uygun fiyat. İlgilenen komşular mesaj atabilir.</p>
-                  </div>
-                </div>
 
-                <div className="bg-white border-t border-gray-100 px-6 py-3 flex items-center justify-around">
-                  <div className="flex flex-col items-center gap-1"><Home size={18} className="text-emerald-600" /><span className="text-[10px] text-emerald-600 font-medium">Ana Sayfa</span></div>
-                  <div className="flex flex-col items-center gap-1"><Search size={18} className="text-gray-400" /><span className="text-[10px] text-gray-400">Keşfet</span></div>
-                  <div className="flex flex-col items-center gap-1"><ShoppingBag size={18} className="text-gray-400" /><span className="text-[10px] text-gray-400">Pazar</span></div>
-                  <div className="flex flex-col items-center gap-1"><MessageSquare size={18} className="text-gray-400" /><span className="text-[10px] text-gray-400">Mesajlar</span></div>
+                    <div className="bg-white rounded-xl p-3 shadow-sm">
+                      <div className="flex items-start gap-2.5 mb-2">
+                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-xs font-bold text-blue-600">MY</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-xs font-semibold text-gray-900">Mehmet Yıldız</span>
+                            <span className="text-[10px] text-gray-400">• 4 sa</span>
+                          </div>
+                          <span className="text-[10px] text-gray-400">Kadıköy, Moda</span>
+                        </div>
+                        <span className="px-2 py-0.5 bg-purple-50 text-purple-600 text-[10px] font-medium rounded-full">Etkinlik</span>
+                      </div>
+                      <p className="text-xs text-gray-700 leading-relaxed mb-2">
+                        Cumartesi mahalle temizlik günü! Katılmak isteyen komşular buluşma noktasına gelsin 🌿
+                      </p>
+                      <div className="bg-emerald-50 rounded-lg p-2 mb-2">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-3.5 h-3.5 text-[#00965b]" />
+                          <div>
+                            <div className="text-[10px] font-semibold text-gray-900">Cumartesi, 15 Mart</div>
+                            <div className="text-[10px] text-gray-500">10:00 • Mahalle Parkı</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4 pt-2 border-t border-gray-50">
+                        <span className="flex items-center gap-1 text-[10px] text-gray-400">
+                          <ThumbsUp className="w-3 h-3" /> <span className="text-gray-600 font-medium">18</span>
+                        </span>
+                        <span className="flex items-center gap-1 text-[10px] text-gray-400">
+                          <MessageCircle className="w-3 h-3" /> <span className="text-gray-600 font-medium">12</span>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="bg-white rounded-xl p-3 shadow-sm">
+                      <div className="flex items-start gap-2.5 mb-2">
+                        <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-xs font-bold text-teal-600">ZD</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-xs font-semibold text-gray-900">Zeynep Demir</span>
+                            <span className="text-[10px] text-gray-400">• 6 sa</span>
+                          </div>
+                          <span className="text-[10px] text-gray-400">Kadıköy, Moda</span>
+                        </div>
+                        <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[10px] font-medium rounded-full">Pazar</span>
+                      </div>
+                      <p className="text-xs text-gray-700 leading-relaxed">
+                        Satılık bisiklet - az kullanılmış, uygun fiyat. İlgilenen komşular mesaj atabilir 🚲
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Bottom Nav */}
+                  <div className="bg-white border-t border-gray-100 px-2 py-2 flex items-center justify-around">
+                    {[
+                      { icon: Home, label: 'Ana Sayfa', active: true },
+                      { icon: Search, label: 'Keşfet', active: false },
+                      { icon: ShoppingBag, label: 'Pazar', active: false },
+                      { icon: MessageSquare, label: 'Mesajlar', active: false },
+                    ].map((item) => (
+                      <div key={item.label} className="flex flex-col items-center gap-0.5">
+                        <item.icon className={`w-4 h-4 ${item.active ? 'text-[#00965b]' : 'text-gray-400'}`} />
+                        <span className={`text-[9px] font-medium ${item.active ? 'text-[#00965b]' : 'text-gray-400'}`}>
+                          {item.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              <div className="absolute -left-4 top-24 bg-white rounded-xl shadow-lg border border-gray-100 p-3 flex items-center gap-3 animate-pulse">
-                <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0"><Bell size={16} className="text-emerald-600" /></div>
+              {/* Floating badges */}
+              <div className="absolute top-8 -left-4 bg-white rounded-2xl shadow-xl shadow-gray-200/50 p-3 flex items-center gap-2" style={{animation: 'floatSlow 4s ease-in-out infinite'}}>
+                <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+                  <Shield className="w-4 h-4 text-[#00965b]" />
+                </div>
                 <div>
-                  <p className="text-xs font-semibold text-gray-900">Yeni bildirim</p>
-                  <p className="text-[10px] text-gray-500">3 komşu sizi etiketledi</p>
+                  <div className="text-[11px] font-semibold text-gray-900">Güvenli Mahalle</div>
+                  <div className="text-[10px] text-gray-400">Anlık uyarılar</div>
                 </div>
               </div>
 
-              <div className="absolute -right-4 bottom-24 bg-white rounded-xl shadow-lg border border-gray-100 p-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0"><Star size={16} className="text-amber-600" /></div>
-                  <div>
-                    <p className="text-xs font-semibold text-gray-900">4.9 / 5.0</p>
-                    <p className="text-[10px] text-gray-500">2.1M kullanıcı</p>
-                  </div>
+              <div className="absolute bottom-16 -right-2 bg-white rounded-2xl shadow-xl shadow-gray-200/50 p-3 flex items-center gap-2" style={{animation: 'floatSlow 4s ease-in-out infinite 1s'}}>
+                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                  <Users className="w-4 h-4 text-orange-600" />
+                </div>
+                <div>
+                  <div className="text-[11px] font-semibold text-gray-900">2.1M+ Komşu</div>
+                  <div className="text-[10px] text-gray-400">Aktif topluluk</div>
                 </div>
               </div>
             </div>
@@ -284,98 +371,189 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="py-16 bg-white border-t border-gray-100">
+      {/* TRUSTED BY */}
+      <section className="py-12 border-y border-gray-100 bg-gray-50/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900">Mahallende neler oluyor?</h2>
-            <p className="text-gray-600 mt-3">Her gün binlerce paylaşım, yüzlerce farklı konu</p>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {categories.map((cat) => {
-              const Icon = cat.icon
-              return (
-                <div key={cat.label} className="flex flex-col items-center gap-3 p-5 rounded-2xl bg-gray-50 hover:bg-emerald-50 border border-gray-100 hover:border-emerald-200 transition-all cursor-pointer group">
-                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
-                    <Icon size={24} className="text-gray-600 group-hover:text-emerald-600 transition-colors" />
-                  </div>
-                  <span className="text-sm font-medium text-gray-700 group-hover:text-emerald-700">{cat.label}</span>
-                  <span className="text-xs text-gray-400">{cat.count} paylaşım</span>
-                </div>
-              )
-            })}
+          <p className="text-center text-sm text-gray-400 mb-6 font-medium uppercase tracking-wider">Medyada KomşuApp</p>
+          <div className="flex items-center justify-center gap-8 sm:gap-16 opacity-40 grayscale">
+            {['Hürriyet', 'NTV', 'Sabah', 'TRT', 'CNN Türk'].map((name) => (
+              <span key={name} className="text-lg sm:text-xl font-bold text-gray-600">{name}</span>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section id="ozellikler" className="py-20 bg-gradient-to-b from-gray-50 to-white">
+      {/* FEATURES */}
+      <section id="ozellikler" className="py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 bg-emerald-100 text-emerald-700 text-sm font-medium rounded-full mb-4">Özellikler</span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">Mahalle yaşamı için her şey bir arada</h2>
-            <p className="text-gray-600 mt-4 max-w-2xl mx-auto text-lg">Komşularınızla bağlantı kurun, güvenliği artırın ve mahallenizi daha yaşanılır hale getirin.</p>
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full text-sm font-medium text-[#00965b] mb-4">
+              Özellikler
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-4">
+              Mahalleniz için her şey tek yerde
+            </h2>
+            <p className="text-lg text-gray-500">
+              Güvenlik, alışveriş, etkinlikler ve daha fazlası — hepsi KomşuApp&apos;ta.
+            </p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature) => {
-              const Icon = feature.icon
-              return (
-                <div key={feature.title} className="group p-6 bg-white rounded-2xl border border-gray-100 hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-100/50 transition-all duration-300">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${feature.color}`}><Icon size={24} /></div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
 
-      {/* How it Works */}
-      <section id="nasil-calisir" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 bg-teal-100 text-teal-700 text-sm font-medium rounded-full mb-4">Nasıl Çalışır</span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">3 adımda mahallene bağlan</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { step: '01', title: 'Kaydol', description: 'E-mail adresinle ücretsiz kaydol ve mahalleni seç.', icon: '📝' },
-              { step: '02', title: 'Komşularını Bul', description: 'Mahallendeki komşuları keşfet ve bağlantı kur.', icon: '🏘️' },
-              { step: '03', title: 'Paylaş & Etkileşim', description: 'Gönderiler paylaş, etkinliklere katıl, pazar yerini kullan.', icon: '🎉' },
-            ].map((item) => (
-              <div key={item.step} className="text-center">
-                <div className="w-16 h-16 mx-auto bg-gradient-to-br from-emerald-100 to-teal-100 rounded-2xl flex items-center justify-center text-3xl mb-5">{item.icon}</div>
-                <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">Adım {item.step}</span>
-                <h3 className="text-xl font-bold text-gray-900 mt-2 mb-3">{item.title}</h3>
-                <p className="text-gray-600 text-sm">{item.description}</p>
+              { icon: Shield, title: 'Güvenlik Uyarıları', desc: 'Mahallenizdeki güvenlik olaylarından anında haberdar olun. Şüpheli durumları raporlayın.', color: 'bg-red-50 text-red-600', border: 'hover:border-red-200' },
+              { icon: ShoppingBag, title: 'Mahalle Pazarı', desc: 'Komşularınızla güvenle alışveriş yapın, ilan verin. Yakındaki fırsatları keşfedin.', color: 'bg-emerald-50 text-emerald-600', border: 'hover:border-emerald-200' },
+              { icon: Calendar, title: 'Etkinlikler', desc: 'Mahallenizdeki etkinlikleri keşfedin, organize edin ve komşularınızla buluşun.', color: 'bg-purple-50 text-purple-600', border: 'hover:border-purple-200' },
+              { icon: Users, title: 'Gruplar', desc: 'Ortak ilgi alanlarına göre gruplara katılın. Evcil hayvan, spor, bahçe ve daha fazlası.', color: 'bg-blue-50 text-blue-600', border: 'hover:border-blue-200' },
+              { icon: Building2, title: 'Yerel İşletmeler', desc: 'Mahallenizdeki esnaf ve işletmeleri keşfedin. Komşu tavsiyelerini okuyun.', color: 'bg-amber-50 text-amber-600', border: 'hover:border-amber-200' },
+              { icon: MessageSquare, title: 'Özel Mesajlaşma', desc: 'Komşularınızla güvenli şekilde birebir veya grup mesajlaşması yapın.', color: 'bg-teal-50 text-teal-600', border: 'hover:border-teal-200' },
+            ].map((f) => (
+              <div key={f.title} className={`group p-6 bg-white border border-gray-100 rounded-2xl transition-all duration-300 hover:shadow-lg hover:shadow-gray-100/50 hover:-translate-y-1 ${f.border}`}>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${f.color}`}>
+                  <f.icon className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{f.title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section id="yorumlar" className="py-20 bg-gradient-to-b from-gray-50 to-white">
+      {/* HOW IT WORKS */}
+      <section id="nasil-calisir" className="py-20 lg:py-28 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 bg-amber-100 text-amber-700 text-sm font-medium rounded-full mb-4">Kullanıcı Yorumları</span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">Komşuların ne diyor?</h2>
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full text-sm font-medium text-[#00965b] mb-4">
+              Nasıl Çalışır
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-4">
+              3 adımda mahallenize katılın
+            </h2>
           </div>
+
           <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((t) => (
-              <div key={t.name} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (<Star key={i} size={16} className="text-amber-400 fill-amber-400" />))}
+            {[
+              { step: '01', icon: UserPlus, title: 'Kaydolun', desc: 'E-mail adresinizle ücretsiz kaydolun ve mahalle adresinizi doğrulayın.', color: 'from-emerald-500 to-teal-500' },
+              { step: '02', icon: MapPin, title: 'Mahallenizi Bulun', desc: 'Adresinize göre mahalleniz otomatik belirlenir. Komşularınızı görün.', color: 'from-blue-500 to-indigo-500' },
+              { step: '03', icon: Zap, title: 'Bağlantı Kurun', desc: 'Paylaşımlar yapın, etkinliklere katılın, mahalle pazarını keşfedin.', color: 'from-orange-500 to-red-500' },
+            ].map((item) => (
+              <div key={item.step} className="relative text-center">
+                <div className="mx-auto mb-6 relative">
+                  <div className={`w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center shadow-lg`}>
+                    <item.icon className="w-9 h-9 text-white" />
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center">
+                    <span className="text-xs font-bold text-gray-900">{item.step}</span>
+                  </div>
                 </div>
-                <p className="text-gray-700 text-sm leading-relaxed mb-6">&ldquo;{t.text}&rdquo;</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-sm font-bold">{t.avatar}</span>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed max-w-xs mx-auto">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SECURITY */}
+      <section id="guvenlik" className="py-20 lg:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full text-sm font-medium text-[#00965b] mb-4">
+                <Lock className="w-4 h-4" />
+                Güvenlik
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-6">
+                Güvenliğiniz bizim önceliğimiz
+              </h2>
+              <p className="text-lg text-gray-500 mb-8 leading-relaxed">
+                KomşuApp, mahalle güvenliğini artırmak için tasarlanmıştır. Adres doğrulama sistemi sayesinde sadece gerçek komşularınızla etkileşimde bulunursunuz.
+              </p>
+
+              <div className="space-y-4">
+                {[
+                  { title: 'Adres Doğrulama', desc: 'Her kullanıcının mahalle adresi doğrulanır' },
+                  { title: 'Uçtan Uca Şifreleme', desc: 'Mesajlarınız güvenle şifrelenir' },
+                  { title: 'Anonim Raporlama', desc: 'Güvenlik olaylarını anonim bildirebilirsiniz' },
+                  { title: 'Kişisel Veri Koruması', desc: 'KVKK uyumlu veri işleme politikası' },
+                ].map((item) => (
+                  <div key={item.title} className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <CheckCircle2 className="w-4 h-4 text-[#00965b]" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-900">{item.title}</div>
+                      <div className="text-sm text-gray-500">{item.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl p-8 lg:p-12">
+                <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4">
+                  <div className="flex items-center gap-3 pb-4 border-b border-gray-100">
+                    <div className="w-10 h-10 bg-[#00965b] rounded-xl flex items-center justify-center">
+                      <Shield className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <div className="font-bold text-gray-900">Güvenlik Merkezi</div>
+                      <div className="text-xs text-gray-400">Moda Mahallesi, Kadıköy</div>
+                    </div>
+                  </div>
+                  {[
+                    { text: 'Adresiniz doğrulandı', time: 'Bugün' },
+                    { text: 'Yeni güvenlik güncellemesi', time: '2 sa önce' },
+                    { text: 'Mahalle toplantısı hatırlatması', time: 'Yarın 19:00' },
+                  ].map((item) => (
+                    <div key={item.text} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                      <CheckCircle2 className="w-5 h-5 text-[#00965b] flex-shrink-0" />
+                      <div className="flex-1">
+                        <div className="text-sm font-medium text-gray-900">{item.text}</div>
+                        <div className="text-xs text-gray-400">{item.time}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="py-20 lg:py-28 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full text-sm font-medium text-[#00965b] mb-4">
+              Yorumlar
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-4">
+              Komşularımız ne diyor?
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { name: 'Ayşe Kaya', loc: 'Kadıköy, Moda', text: 'Kayıp kedimi KomşuApp sayesinde 2 saat içinde buldum! Komşularım hemen paylaşımı görüp yardım etti. Harika bir topluluk.', avatar: 'AK', bg: 'bg-orange-100', tc: 'text-orange-600' },
+              { name: 'Mehmet Yıldız', loc: 'Beşiktaş, Etiler', text: 'Mahalledeki güvenlik sorunlarını birlikte çözüyoruz. Muhtar bile kullanıyor artık. Güvenlik uyarıları çok işe yarıyor.', avatar: 'MY', bg: 'bg-blue-100', tc: 'text-blue-600' },
+              { name: 'Zeynep Demir', loc: 'Bakırköy, Ataköy', text: 'Pazar yerinden harika fırsatlar buluyorum. Komşularla alışveriş yapınca güven oluyor. İkinci el eşyalar için birebir.', avatar: 'ZD', bg: 'bg-teal-100', tc: 'text-teal-600' },
+            ].map((t) => (
+              <div key={t.name} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all">
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                  ))}
+                </div>
+                <p className="text-sm text-gray-600 leading-relaxed mb-6">&ldquo;{t.text}&rdquo;</p>
+                <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
+                  <div className={`w-10 h-10 ${t.bg} rounded-full flex items-center justify-center`}>
+                    <span className={`text-xs font-bold ${t.tc}`}>{t.avatar}</span>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-gray-900">{t.name}</p>
-                    <p className="text-xs text-gray-500">{t.neighborhood}</p>
+                    <div className="text-sm font-semibold text-gray-900">{t.name}</div>
+                    <div className="text-xs text-gray-400">{t.loc}</div>
                   </div>
                 </div>
               </div>
@@ -385,73 +563,78 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-600" />
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">Mahalleni keşfetmeye hazır mısın?</h2>
-          <p className="text-emerald-100 text-lg mb-10 max-w-2xl mx-auto">Binlerce komşu seni bekliyor. Hemen ücretsiz kaydol ve mahalle yaşamına katıl.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/kayit" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-emerald-600 text-lg font-semibold rounded-full hover:bg-gray-50 transition-all shadow-lg">
-              Ücretsiz Kaydol <ArrowRight size={20} />
-            </Link>
-            <Link href="/giris" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-transparent text-white text-lg font-semibold rounded-full border-2 border-white/30 hover:border-white/60 transition-all">
-              Giriş Yap
-            </Link>
+      <section className="py-20 lg:py-28">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative bg-gradient-to-br from-[#00965b] to-[#006b40] rounded-3xl p-10 sm:p-16 text-center overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
+            <div className="relative">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
+                Mahallenizi keşfetmeye hazır mısınız?
+              </h2>
+              <p className="text-emerald-100 text-lg mb-8 max-w-xl mx-auto">
+                Binlerce komşu sizi bekliyor. Hemen ücretsiz kaydolun ve mahalle yaşamına katılın.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link href="/kayit" className="inline-flex items-center gap-2 px-8 py-3.5 text-base font-semibold text-[#00965b] bg-white hover:bg-gray-50 rounded-full transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                  Ücretsiz Kaydol <ArrowRight className="w-5 h-5" />
+                </Link>
+                <Link href="/giris" className="inline-flex items-center gap-2 px-8 py-3.5 text-base font-semibold text-white border-2 border-white/30 hover:border-white/60 rounded-full transition-all hover:-translate-y-0.5">
+                  Giriş Yap
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-            <div>
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white text-sm font-bold">K</span>
+      {/* FOOTER */}
+      <footer id="hakkinda" className="bg-gray-900 text-gray-400">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div className="sm:col-span-2 lg:col-span-1">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 bg-[#00965b] rounded-lg flex items-center justify-center">
+                  <Home className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-lg font-bold text-white">Komşu<span className="text-emerald-400">App</span></span>
+                <span className="text-lg font-bold text-white">Komşu<span className="text-[#00965b]">App</span></span>
               </div>
-              <p className="text-sm leading-relaxed">Komşularınızla bağlantı kurun, güvenli bir topluluk oluşturun.</p>
+              <p className="text-sm leading-relaxed mb-4">Komşularınızla bağlantı kurun, güvenli bir topluluk oluşturun.</p>
             </div>
-            <div>
-              <h4 className="text-white font-semibold mb-4">Ürün</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Özellikler</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Pazar Yeri</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">İşletmeler</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Etkinlikler</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold mb-4">Şirket</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Hakkımızda</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Kariyer</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">İletişim</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold mb-4">Destek</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Yardım Merkezi</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Gizlilik Politikası</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Kullanım Şartları</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Güvenlik</a></li>
-              </ul>
-            </div>
+
+            {[
+              { title: 'Ürün', links: ['Özellikler', 'Pazar Yeri', 'İşletmeler', 'Etkinlikler'] },
+              { title: 'Şirket', links: ['Hakkımızda', 'Kariyer', 'Blog', 'İletişim'] },
+              { title: 'Destek', links: ['Yardım Merkezi', 'Gizlilik Politikası', 'Kullanım Şartları', 'Güvenlik'] },
+            ].map((g) => (
+              <div key={g.title}>
+                <h4 className="text-sm font-semibold text-white mb-4">{g.title}</h4>
+                <ul className="space-y-2.5">
+                  {g.links.map((link) => (
+                    <li key={link}><a href="#" className="text-sm hover:text-white transition-colors">{link}</a></li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-          <div className="border-t border-gray-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+
+          <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-sm">&copy; 2026 KomşuApp. Tüm hakları saklıdır.</p>
-            <div className="flex items-center gap-4">
-              <a href="#" className="hover:text-emerald-400 transition-colors">Twitter</a>
-              <a href="#" className="hover:text-emerald-400 transition-colors">Instagram</a>
-              <a href="#" className="hover:text-emerald-400 transition-colors">LinkedIn</a>
+            <div className="flex items-center gap-2 text-sm">
+              <Globe className="w-4 h-4" />
+              <span>Türkçe</span>
             </div>
           </div>
         </div>
       </footer>
+
+      {/* Animations */}
+      <style jsx global>{`
+        @keyframes floatSlow {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
+      `}</style>
     </div>
   )
 }
