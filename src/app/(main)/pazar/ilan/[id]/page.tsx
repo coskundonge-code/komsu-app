@@ -36,8 +36,8 @@ const mockListingsDB: Record<string, any> = {
     description:
       'Lenovo IdeaPad 5 15.6" Full HD IPS ekran, Intel Core i5-1135G7, 8GB DDR4 RAM, 512GB SSD. Çok az kullanılmıştır. Orijinal kutusu ve tüm aksesuarları mevcuttur. Garantisi 1 yıl kalmıştır. İyi bir laptop arayan kişiler için ideal.',
     images: [
-      'https://images.unsplash.com/photo-1588405748847-5e9d6f6abc05?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1559056169-641ef0ac8b9b?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=800&h=600&fit=crop',
       'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=600&fit=crop',
       'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&h=600&fit=crop',
     ],
@@ -187,7 +187,7 @@ export default function ListingDetailPage({
       title: 'HP Pavilion - 13 inç Ultrabook',
       price: 6800,
       image:
-        'https://images.unsplash.com/photo-1588405748847-5e9d6f6abc05?w=500&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&h=500&fit=crop',
       location: 'Taksim',
       timeAgo: '5 saat',
       isFree: false,
