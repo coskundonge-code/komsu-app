@@ -4,7 +4,7 @@
   "description": "Türkiye'nin mahalle sosyal ağı. Komşularınızla bağlanın, haberleşin ve birlikte etkinlikler düzenleyin.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#f0f2f5",
   "theme_color": "#00833e",
   "orientation": "portrait-primary",
   "scope": "/",

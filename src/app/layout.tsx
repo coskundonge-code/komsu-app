@@ -1,10 +1,17 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Providers } from "@/lib/providers";
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: "#00833e",
+};
+
 export const metadata: Metadata = {
   title: {
-    default: "KomşuApp - Mahallende Birlikte",
+    default: "KomşuApp - Mahalleni Keşfet",
     template: "%s | KomşuApp",
   },
   description:
@@ -22,30 +29,35 @@ export const metadata: Metadata = {
     "yerel işletmeler",
   ],
   openGraph: {
-    title: "KomşuApp - Mahallende Birlikte",
+    title: "KomşuApp - Mahalleni Keşfet",
     description:
       "KomşuApp ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın ve birlikte etkinlikler düzenleyin.",
     type: "website",
     siteName: "KomşuApp",
     locale: "tr_TR",
+    url: "https://komsuapp.com",
+    images: [
+      {
+        url: "/icon-512.png",
+        width: 512,
+        height: 512,
+        alt: "KomşuApp Logo",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "KomşuApp - Mahallende Birlikte",
+    title: "KomşuApp - Mahalleni Keşfet",
     description:
       "Türkiye'nin mahalle sosyal ağı. Komşularınızla bağlanın.",
+    images: ["/icon-512.png"],
+    creator: "@komsuapp",
   },
   manifest: "/manifest.json",
-  themeColor: "#00833e",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "KomşuApp",
-  },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
   },
 };
 
