@@ -41,8 +41,8 @@ const MOCK_BUSINESS = {
   email: 'info@modafirin.com.tr',
   description: 'Moda Fırın, 1985 yılından beri Beşiktaş\'ta hizmet vermektedir. Taze fırın ürünleri, keke, pastane ve özel siparişleri ile ünlüdür. Her sabah erken saatlerde hazırlanan ekmeklerimiz ve pastalarımız müşterilerimizin favorisidir.',
   isOpen: true,
-  coverImage: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"%3E%3Cdefs%3E%3ClinearGradient id="grad" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%23a7dbb8;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%2334d399;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="1200" height="400" fill="url(%23grad)" /%3E%3Ctext x="50%25" y="50%25" font-size="48" font-weight="bold" text-anchor="middle" dominant-baseline="central" fill="white" opacity="0.8"%3EModa Fırın%3C/text%3E%3C/svg%3E',
-  logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"%3E%3Crect width="128" height="128" fill="%2300833e" /%3E%3Ctext x="64" y="64" font-size="64" font-weight="bold" text-anchor="middle" dominant-baseline="central" fill="white"%3EMF%3C/text%3E%3C/svg%3E',
+  coverImage: 'https://picsum.photos/1200/400?random=201',
+  logo: 'https://picsum.photos/128/128?random=202',
   hours: [
     { day: 'Pazartesi', open: '06:30', close: '21:00' },
     { day: 'Salı', open: '06:30', close: '21:00' },
@@ -63,11 +63,12 @@ const MOCK_BUSINESS = {
     'Baklava Çeşitleri',
   ],
   images: [
-    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect width="400" height="300" fill="%23d4a574" /%3E%3Ctext x="50%25" y="50%25" font-size="24" text-anchor="middle" dominant-baseline="central" fill="white"%3EEkmek Reyonu%3C/text%3E%3C/svg%3E',
-    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect width="400" height="300" fill="%23e8c4a0" /%3E%3Ctext x="50%25" y="50%25" font-size="24" text-anchor="middle" dominant-baseline="central" fill="white"%3EPastane Vitrini%3C/text%3E%3C/svg%3E',
-    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect width="400" height="300" fill="%23c9a96a" /%3E%3Ctext x="50%25" y="50%25" font-size="24" text-anchor="middle" dominant-baseline="central" fill="white"%3ESpesyal Pastalar%3C/text%3E%3C/svg%3E',
-    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect width="400" height="300" fill="%23d99b6d" /%3E%3Ctext x="50%25" y="50%25" font-size="24" text-anchor="middle" dominant-baseline="central" fill="white"%3ESimitler%3C/text%3E%3C/svg%3E',
-    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect width="400" height="300" fill="%23e5b89f" /%3E%3Ctext x="50%25" y="50%25" font-size="24" text-anchor="middle" dominant-baseline="central" fill="white"%3EMağaza İç%3C/text%3E%3C/svg%3E',
+    'https://picsum.photos/400/300?random=203',
+    'https://picsum.photos/400/300?random=204',
+    'https://picsum.photos/400/300?random=205',
+    'https://picsum.photos/400/300?random=206',
+    'https://picsum.photos/400/300?random=207',
+    'https://picsum.photos/400/300?random=208',
   ],
   ratingBreakdown: {
     5: 78,
@@ -144,6 +145,7 @@ const MOCK_RECOMMENDATIONS = [
     category: 'Tatlı & Pasta',
     rating: 4.7,
     reviewCount: 94,
+    coverImage: 'https://picsum.photos/600/300?random=301',
   },
   {
     id: '3',
@@ -151,6 +153,7 @@ const MOCK_RECOMMENDATIONS = [
     category: 'Kahvaltı & Çay',
     rating: 4.6,
     reviewCount: 156,
+    coverImage: 'https://picsum.photos/600/300?random=302',
   },
   {
     id: '5',
@@ -158,6 +161,15 @@ const MOCK_RECOMMENDATIONS = [
     category: 'Pastane',
     rating: 4.8,
     reviewCount: 203,
+    coverImage: 'https://picsum.photos/600/300?random=303',
+  },
+  {
+    id: '6',
+    name: 'Halk Simitçisi',
+    category: 'Simit & Peynir',
+    rating: 4.4,
+    reviewCount: 87,
+    coverImage: 'https://picsum.photos/600/300?random=304',
   },
 ];
 
@@ -665,17 +677,17 @@ export default function BusinessDetailPage({ params }: PageProps) {
                 {activeTab === 'photos' && (
                   <div>
                     <h3 className="text-lg font-bold text-gray-900 mb-4">
-                      Fotoğraflar
+                      Fotoğraf Galerisi
                     </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                       {MOCK_BUSINESS.images.map((image, index) => (
                         <div
                           key={index}
-                          className="aspect-video bg-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group"
+                          className="aspect-square bg-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group relative"
                         >
                           <img
                             src={image}
-                            alt={`Foto ${index + 1}`}
+                            alt={`Fotoğraf ${index + 1}`}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
@@ -687,11 +699,16 @@ export default function BusinessDetailPage({ params }: PageProps) {
                         </div>
                       ))}
                     </div>
-                    <div className="mt-6 p-4 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0]">
-                      <p className="text-sm text-gray-600">
-                        <Camera size={16} className="inline mr-2" />
-                        Fotoğraf yüklemek için profil sayfanıza gidin
-                      </p>
+                    <div className="p-4 bg-[#e6f4ec] border border-[#00833e] rounded-lg flex items-start gap-3">
+                      <Camera size={18} className="text-[#00833e] flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-900 mb-1">
+                          Fotoğraf Ekleyin
+                        </p>
+                        <p className="text-xs text-gray-700">
+                          İşletmeyi ziyaret ettiğinizde fotoğraf ekleyerek diğer komşuları bilgilendirin
+                        </p>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -699,65 +716,77 @@ export default function BusinessDetailPage({ params }: PageProps) {
                 {/* Recommendations Tab */}
                 {activeTab === 'recommendations' && (
                   <div className="space-y-6">
-                    {/* Prompt */}
-                    <div className="bg-[#e6f4ec] border border-[#00833e] rounded-lg p-6 text-center">
-                      <Heart size={32} className="text-[#00833e] mx-auto mb-3" />
-                      <h3 className="text-lg font-bold text-gray-900 mb-2">
-                        Bu işletmeyi öneriyor musunuz?
-                      </h3>
-                      <p className="text-gray-700 mb-4">
-                        Deneyiminizi komşularınızla paylaşın ve diğer
-                        kullanıcılara yardımcı olun.
-                      </p>
-                      <button
-                        onClick={() =>
-                          setRecommendationPrompt(
-                            !recommendationPrompt
-                          )
-                        }
-                        className="bg-[#00833e] hover:bg-[#006b32] text-white font-medium py-2 px-6 rounded-lg transition-colors"
-                      >
-                        Öner
-                      </button>
+                    {/* Write Review Prompt */}
+                    <div className="bg-gradient-to-r from-[#e6f4ec] to-[#f0f2f5] border border-[#00833e] rounded-lg p-6">
+                      <div className="flex items-start gap-4">
+                        <Heart size={32} className="text-[#00833e] flex-shrink-0" />
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold text-gray-900 mb-1">
+                            Yorum Yaz
+                          </h3>
+                          <p className="text-sm text-gray-700 mb-4">
+                            Bu işletmede yaşadığınız deneyimi komşularınızla paylaşın ve diğer kullanıcılara yardımcı olun.
+                          </p>
+                          <button
+                            onClick={() =>
+                              setRecommendationPrompt(
+                                !recommendationPrompt
+                              )
+                            }
+                            className="bg-[#00833e] hover:bg-[#006b32] text-white font-bold py-2 px-6 rounded-lg transition-colors text-sm"
+                          >
+                            Yorum Yaz
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Recommendations List */}
+                    {/* Similar Businesses */}
                     <div>
                       <h3 className="text-lg font-bold text-gray-900 mb-4">
                         Benzer İşletmeler
                       </h3>
-                      <div className="space-y-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {MOCK_RECOMMENDATIONS.map((rec) => (
                           <Link
                             key={rec.id}
                             href={`/isletmeler/${rec.id}`}
-                            className="block p-4 border border-[#e0e0e0] rounded-lg hover:border-[#00833e] hover:bg-[#f0f2f5] transition-all group"
+                            className="bg-white border border-[#e0e0e0] rounded-lg overflow-hidden hover:shadow-lg hover:border-[#00833e] transition-all group"
                           >
-                            <p className="font-medium text-gray-900 group-hover:text-[#00833e] transition-colors">
-                              {rec.name}
-                            </p>
-                            <p className="text-sm text-[#00833e] mb-2">
-                              {rec.category}
-                            </p>
-                            <div className="flex items-center gap-2">
-                              <div className="flex gap-0.5">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star
-                                    key={i}
-                                    size={14}
-                                    className={
-                                      i < Math.floor(rec.rating)
-                                        ? 'fill-yellow-400 text-yellow-400'
-                                        : i < rec.rating
-                                        ? 'fill-yellow-400 text-yellow-400 opacity-40'
-                                        : 'text-gray-300'
-                                    }
-                                  />
-                                ))}
+                            <div className="h-40 overflow-hidden bg-gray-200">
+                              <img
+                                src={rec.coverImage}
+                                alt={rec.name}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              />
+                            </div>
+                            <div className="p-3">
+                              <p className="font-bold text-gray-900 group-hover:text-[#00833e] transition-colors line-clamp-2 mb-1">
+                                {rec.name}
+                              </p>
+                              <p className="text-xs text-[#00833e] font-medium mb-2">
+                                {rec.category}
+                              </p>
+                              <div className="flex items-center gap-1">
+                                <div className="flex gap-0.5">
+                                  {[...Array(5)].map((_, i) => (
+                                    <Star
+                                      key={i}
+                                      size={13}
+                                      className={
+                                        i < Math.floor(rec.rating)
+                                          ? 'fill-yellow-400 text-yellow-400'
+                                          : i < rec.rating
+                                          ? 'fill-yellow-400 text-yellow-400 opacity-40'
+                                          : 'text-gray-300'
+                                      }
+                                    />
+                                  ))}
+                                </div>
+                                <span className="text-xs font-medium text-gray-700">
+                                  {rec.rating} ({rec.reviewCount})
+                                </span>
                               </div>
-                              <span className="text-sm font-medium text-gray-700">
-                                {rec.rating} ({rec.reviewCount})
-                              </span>
                             </div>
                           </Link>
                         ))}
