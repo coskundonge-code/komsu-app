@@ -1,10 +1,23 @@
 'use client';
 
-import { Clock, MapPin, Plus, Search } from 'lucide-react';
+import { Clock, MapPin, Plus, Search, Heart } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
 const MONTH_ABBREVIATIONS = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
+
+type Category = 'all' | 'social' | 'sports' | 'education' | 'culture' | 'music';
+type SortOption = 'date' | 'popularity';
+
+const CATEGORY_LABELS: Record<Category, string> = {
+  all: 'Tümü',
+  social: 'Sosyal',
+  sports: 'Spor',
+  education: 'Eğitim',
+  culture: 'Kültür',
+  music: 'Müzik',
+};
 
 interface Event {
   id: string;
@@ -16,6 +29,8 @@ interface Event {
   location: string;
   coverImage: string;
   isInterested: boolean;
+  category: Category;
+  interestedCount: number;
 }
 
 const mockEvents: Event[] = [
@@ -29,6 +44,8 @@ const mockEvents: Event[] = [
     location: 'Mahalle Parkı',
     coverImage: 'https://picsum.photos/500/350?random=45',
     isInterested: false,
+    category: 'social',
+    interestedCount: 24,
   },
   {
     id: '2',
@@ -40,6 +57,8 @@ const mockEvents: Event[] = [
     location: 'Mahalle Spor Salonu',
     coverImage: 'https://picsum.photos/500/350?random=46',
     isInterested: true,
+    category: 'sports',
+    interestedCount: 42,
   },
   {
     id: '3',
@@ -51,6 +70,8 @@ const mockEvents: Event[] = [
     location: 'Çevrimiçi',
     coverImage: 'https://picsum.photos/500/350?random=47',
     isInterested: false,
+    category: 'culture',
+    interestedCount: 18,
   },
   {
     id: '4',
@@ -62,6 +83,8 @@ const mockEvents: Event[] = [
     location: 'Moda Parkı',
     coverImage: 'https://picsum.photos/500/350?random=48',
     isInterested: false,
+    category: 'social',
+    interestedCount: 35,
   },
   {
     id: '5',
@@ -73,6 +96,8 @@ const mockEvents: Event[] = [
     location: 'Toplantı Salonu',
     coverImage: 'https://picsum.photos/500/350?random=49',
     isInterested: true,
+    category: 'education',
+    interestedCount: 28,
   },
   {
     id: '6',
@@ -84,21 +109,47 @@ const mockEvents: Event[] = [
     location: 'Spor Alanı',
     coverImage: 'https://picsum.photos/500/350?random=50',
     isInterested: false,
+    category: 'sports',
+    interestedCount: 56,
+  },
+  {
+    id: '7',
+    title: 'Mahalle Konser Gecesi',
+    date: '2026-04-10',
+    day: 10,
+    month: 3,
+    time: '20:00',
+    location: 'Toplum Merkezi',
+    coverImage: 'https://picsum.photos/500/350?random=51',
+    isInterested: false,
+    category: 'music',
+    interestedCount: 67,
   },
 ];
 
 export default function EventsPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<Category>('all');
+  const [sortBy, setSortBy] = useState<SortOption>('date');
   const [interested, setInterested] = useState<Record<string, boolean>>(
     mockEvents.reduce((acc, e) => ({ ...acc, [e.id]: e.isInterested }), {})
   );
   const [showMine, setShowMine] = useState(false);
 
-  const filtered = mockEvents.filter((e) => {
-    if (showMine && !interested[e.id]) return false;
-    return e.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      e.location.toLowerCase().includes(searchQuery.toLowerCase());
-  });
+  const filtered = mockEvents
+    .filter((e) => {
+      if (showMine && !interested[e.id]) return false;
+      if (selectedCategory !== 'all' && e.category !== selectedCategory) return false;
+      return e.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        e.location.toLowerCase().includes(searchQuery.toLowerCase());
+    })
+    .sort((a, b) => {
+      if (sortBy === 'date') {
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      } else {
+        return b.interestedCount - a.interestedCount;
+      }
+    });
 
   const handleInterested = (e: React.MouseEvent, eventId: string) => {
     e.preventDefault();
@@ -126,7 +177,7 @@ export default function EventsPage() {
         </div>
 
         {/* Heading */}
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Yakınındaki Etkinlikler</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Yakınındaki Etkinlikler</h2>
 
         {/* Action Buttons */}
         <div className="flex gap-3 mb-8">
@@ -149,6 +200,53 @@ export default function EventsPage() {
           </button>
         </div>
 
+        {/* Category Filter Buttons */}
+        <div className="mb-8">
+          <p className="text-sm font-semibold text-gray-700 mb-3">Kategori</p>
+          <div className="flex flex-wrap gap-2">
+            {(Object.keys(CATEGORY_LABELS) as Category[]).map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  selectedCategory === category
+                    ? 'bg-[#00833e] text-white'
+                    : 'bg-[#f0f2f5] text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                {CATEGORY_LABELS[category]}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Sort Options */}
+        <div className="mb-8 flex items-center gap-4">
+          <p className="text-sm font-semibold text-gray-700">Sırala:</p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setSortBy('date')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                sortBy === 'date'
+                  ? 'bg-[#00833e] text-white'
+                  : 'bg-[#f0f2f5] text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              Tarih
+            </button>
+            <button
+              onClick={() => setSortBy('popularity')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                sortBy === 'popularity'
+                  ? 'bg-[#00833e] text-white'
+                  : 'bg-[#f0f2f5] text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              Popülerlik
+            </button>
+          </div>
+        </div>
+
         {/* Events Grid */}
         {filtered.length === 0 ? (
           <div className="text-center py-16">
@@ -161,13 +259,16 @@ export default function EventsPage() {
               <Link
                 key={event.id}
                 href={`/etkinlikler/${event.id}`}
-                className="group flex flex-col h-full"
+                className="group flex flex-col h-full rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg"
               >
                 <div className="relative overflow-hidden rounded-lg mb-3 flex-shrink-0 h-48 bg-gray-200">
-                  <img
+                  <Image
                     src={event.coverImage}
                     alt={event.title}
-                    className="w-full h-full object-cover group-hover:opacity-90 transition-opacity"
+                    width={500}
+                    height={350}
+                    unoptimized
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   {/* Date Badge */}
                   <div className="absolute bottom-3 left-3 bg-white rounded-lg px-2.5 py-2 shadow-md">
@@ -176,10 +277,16 @@ export default function EventsPage() {
                       <p className="text-xs font-medium text-gray-600">{MONTH_ABBREVIATIONS[event.month]}</p>
                     </div>
                   </div>
+
+                  {/* Interested Count Badge */}
+                  <div className="absolute top-3 right-3 bg-[#00833e] text-white rounded-full px-3 py-1 flex items-center gap-1 shadow-md">
+                    <Heart className="w-3.5 h-3.5 fill-white" />
+                    <span className="text-sm font-medium">{event.interestedCount}</span>
+                  </div>
                 </div>
 
                 {/* Event Info */}
-                <div className="flex flex-col flex-1">
+                <div className="flex flex-col flex-1 bg-white rounded-lg -mt-1 pt-4 px-4 pb-4">
                   <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2">{event.title}</h3>
 
                   {/* Time and Location */}
@@ -200,7 +307,7 @@ export default function EventsPage() {
                     className={`w-full px-4 py-2.5 rounded-lg text-sm font-medium border-2 transition-colors ${
                       interested[event.id]
                         ? 'bg-[#00833e] text-white border-[#00833e]'
-                        : 'border-[#e0e0e0] text-gray-700 hover:border-[#333] hover:text-gray-900'
+                        : 'border-[#e0e0e0] text-gray-700 hover:border-[#00833e] hover:text-[#00833e]'
                     }`}
                   >
                     {interested[event.id] ? '✓ İlgileniyorum' : 'İlgileniyorum?'}
