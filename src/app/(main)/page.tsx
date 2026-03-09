@@ -31,7 +31,7 @@ const onboardingCards = [
   },
 ];
 
-// Mock posts
+// Mock posts with feed category for tab filtering
 const mockPosts = [
   {
     id: '1',
@@ -43,6 +43,7 @@ const mockPosts = [
     image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=400&fit=crop',
     reactions: 24,
     comments: 8,
+    feed: 'foryou',
   },
   {
     id: '2',
@@ -54,6 +55,7 @@ const mockPosts = [
     image: 'https://images.unsplash.com/photo-1574158622147-e121217e33f3?w=800&h=400&fit=crop',
     reactions: 42,
     comments: 15,
+    feed: 'recent',
   },
   {
     id: '3',
@@ -64,6 +66,7 @@ const mockPosts = [
     body: 'Yeni açılan Moda Kafe\'yi denediniz mi? Kahveleri harika ve fiyatlar gayet makul. Bir denemenizi tavsiye ederim! Özellikle çilekli cheesecake mutlaka denmeli.',
     reactions: 18,
     comments: 5,
+    feed: 'foryou',
   },
   {
     id: 'sponsored',
@@ -75,6 +78,7 @@ const mockPosts = [
     image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&h=400&fit=crop',
     reactions: 5,
     comments: 2,
+    feed: 'foryou',
   },
   {
     id: '4',
@@ -85,6 +89,29 @@ const mockPosts = [
     body: 'Dün gece saat 23:00 civarında Moda Caddesi üzerinde uzun süre park halinde bekleyen koyu renkli bir araç dikkatimi çekti. Plakayı not edemedim ama dikkatli olalım komşular.',
     reactions: 67,
     comments: 23,
+    feed: 'trending',
+  },
+  {
+    id: '5',
+    author: { name: 'Ali R.', initial: 'A', neighborhood: 'Üsküdar, Çengelköy', profileId: 'ali-r' },
+    timeAgo: '6 sa',
+    isSponsored: false,
+    title: 'Çengelköy Sahilinde Yeni Yürüyüş Yolu',
+    body: 'Belediye sahil boyunca harika bir yürüyüş yolu yaptı. Akşam saatlerinde çok güzel oluyor, herkese tavsiye ederim.',
+    reactions: 31,
+    comments: 9,
+    feed: 'nearby',
+  },
+  {
+    id: '6',
+    author: { name: 'Selin T.', initial: 'S', neighborhood: 'Beşiktaş, Levent', profileId: 'selin-t' },
+    timeAgo: '8 sa',
+    isSponsored: false,
+    title: '',
+    body: 'Levent\'teki yeni organik pazarı denediniz mi? Her cumartesi kuruluyor, sebzeler çok taze ve uygun fiyatlı.',
+    reactions: 55,
+    comments: 18,
+    feed: 'nearby',
   },
 ];
 
@@ -92,30 +119,102 @@ export default function FeedPage() {
   const [activeTab, setActiveTab] = useState('foryou');
   const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
   const [showOnboarding, setShowOnboarding] = useState(true);
+  const [showPostForm, setShowPostForm] = useState(false);
+  const [postText, setPostText] = useState('');
+  const [postSubmitted, setPostSubmitted] = useState(false);
 
   const toggleLike = (postId: string) => {
     setLikedPosts((prev) => ({ ...prev, [postId]: !prev[postId] }));
   };
 
+  const filteredPosts = mockPosts.filter((post) => {
+    if (activeTab === 'foryou') return true; // Show all for "Senin İçin"
+    return post.feed === activeTab;
+  });
+
+  const handlePostSubmit = () => {
+    if (!postText.trim()) return;
+    setPostText('');
+    setShowPostForm(false);
+    setPostSubmitted(true);
+    setTimeout(() => setPostSubmitted(false), 3000);
+  };
+
   return (
     <div className="max-w-[680px] mx-auto px-4 py-4">
-      {/* Create Post Box - Nextdoor style */}
-      <Link href="/?post=new" className="block bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-4 mb-3 hover:shadow-md transition-shadow">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#404040] rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-            C
-          </div>
-          <div className="flex-1 px-4 py-2.5 bg-[#f0f2f5] text-[#8f8f8f] rounded-full text-[15px]">
-            Neler oluyor, komşu?
-          </div>
-          <div className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors">
-            <Camera className="w-5 h-5 text-[#8f8f8f]" />
-          </div>
-          <div className="px-5 py-2 bg-[#00833e] text-white font-semibold text-sm rounded-full">
-            Paylaş
+      {/* Post submitted confirmation */}
+      {postSubmitted && (
+        <div className="bg-[#e6f4ec] border border-[#00833e] rounded-lg p-3 mb-3 text-sm text-[#00833e] font-medium text-center">
+          Gönderiniz başarıyla paylaşıldı!
+        </div>
+      )}
+
+      {/* Create Post Box */}
+      {!showPostForm ? (
+        <div
+          onClick={() => setShowPostForm(true)}
+          className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-4 mb-3 hover:shadow-md transition-shadow cursor-pointer"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[#404040] rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+              C
+            </div>
+            <div className="flex-1 px-4 py-2.5 bg-[#f0f2f5] text-[#8f8f8f] rounded-full text-[15px]">
+              Neler oluyor, komşu?
+            </div>
+            <div className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors">
+              <Camera className="w-5 h-5 text-[#8f8f8f]" />
+            </div>
+            <div className="px-5 py-2 bg-[#00833e] text-white font-semibold text-sm rounded-full">
+              Paylaş
+            </div>
           </div>
         </div>
-      </Link>
+      ) : (
+        <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-4 mb-3">
+          <div className="flex items-start gap-3 mb-3">
+            <div className="w-10 h-10 bg-[#404040] rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+              C
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-bold text-[#333]">Coşkun Dönge</p>
+              <p className="text-xs text-[#8f8f8f]">Kadıköy, Moda</p>
+            </div>
+          </div>
+          <textarea
+            autoFocus
+            value={postText}
+            onChange={(e) => setPostText(e.target.value)}
+            placeholder="Neler oluyor, komşu?"
+            className="w-full min-h-[120px] p-3 bg-[#f0f2f5] border border-[#e0e0e0] rounded-lg text-[15px] text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e] resize-none"
+          />
+          <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#e0e0e0]">
+            <button className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors">
+              <Camera className="w-5 h-5 text-[#8f8f8f]" />
+            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => { setShowPostForm(false); setPostText(''); }}
+                className="px-4 py-2 text-sm font-medium text-[#8f8f8f] hover:bg-[#f0f2f5] rounded-full transition-colors"
+              >
+                İptal
+              </button>
+              <button
+                onClick={handlePostSubmit}
+                disabled={!postText.trim()}
+                className={cn(
+                  'px-5 py-2 text-sm font-semibold rounded-full transition-colors',
+                  postText.trim()
+                    ? 'bg-[#00833e] text-white hover:bg-[#006b32]'
+                    : 'bg-[#e0e0e0] text-[#8f8f8f] cursor-not-allowed'
+                )}
+              >
+                Paylaş
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Feed Tabs - Nextdoor style pill buttons */}
       <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
@@ -151,18 +250,17 @@ export default function FeedPage() {
             {onboardingCards.map((card, i) => {
               const Icon = card.icon;
               return (
-                <div key={i} className="min-w-[200px] border border-[#e0e0e0] rounded-lg p-4 flex flex-col items-start gap-3">
+                <Link key={i} href={card.href} className="min-w-[200px] border border-[#e0e0e0] rounded-lg p-4 flex flex-col items-start gap-3 hover:border-[#00833e] hover:shadow-md transition-all">
                   <div className="w-10 h-10 bg-[#f0f2f5] rounded-full flex items-center justify-center">
                     <Icon className="w-5 h-5 text-[#404040]" />
                   </div>
                   <p className="text-sm font-medium text-[#333]">{card.title}</p>
-                  <Link
-                    href={card.href}
+                  <span
                     className={cn('px-4 py-2 rounded-full text-sm font-semibold transition-colors', card.ctaColor)}
                   >
                     {card.cta}
-                  </Link>
-                </div>
+                  </span>
+                </Link>
               );
             })}
           </div>
@@ -179,7 +277,13 @@ export default function FeedPage() {
 
       {/* Posts Feed */}
       <div className="space-y-3">
-        {mockPosts.map((post) => (
+        {filteredPosts.length === 0 && (
+          <div className="bg-white rounded-lg border border-[#e0e0e0] p-12 text-center">
+            <p className="text-[#333] font-medium">Bu kategoride gönderi yok</p>
+            <p className="text-[#8f8f8f] text-sm mt-1">Başka bir sekme deneyin</p>
+          </div>
+        )}
+        {filteredPosts.map((post) => (
           <div key={post.id} className="bg-white rounded-lg shadow-sm border border-[#e0e0e0]">
             {/* Post Header */}
             <div className="p-4 pb-0">
