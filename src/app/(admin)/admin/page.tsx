@@ -13,14 +13,23 @@ import {
   AlertCircle,
   BarChart3,
   PieChart as PieChartIcon,
+  UserCheck,
+  Shield,
+  AlertTriangle,
+  FileText,
+  Clock,
+  Zap,
+  ArrowUp,
+  TrendingDown,
 } from 'lucide-react';
 
+// Main stats cards
 const STATS = [
   {
     id: 1,
     label: 'Toplam Kullanıcı',
-    value: '12,847',
-    change: '+5.2%',
+    value: '12,458',
+    change: '+324 bu hafta',
     trend: 'up',
     icon: Users,
     bgColor: '#e6f4ec',
@@ -29,42 +38,20 @@ const STATS = [
   },
   {
     id: 2,
-    label: 'Aktif Kullanıcı',
-    value: '9,234',
-    change: '+8.1%',
+    label: 'Aktif Gönderi',
+    value: '3,847',
+    change: '+156 bugün',
     trend: 'up',
-    icon: Activity,
+    icon: MessageSquare,
     bgColor: '#dbeafe',
     textColor: '#1e40af',
     changeColor: 'text-blue-600',
   },
   {
     id: 3,
-    label: 'Yayınlanmış Paylaşım',
-    value: '48,293',
-    change: '+12.3%',
-    trend: 'up',
-    icon: MessageSquare,
-    bgColor: '#fce7f3',
-    textColor: '#be185d',
-    changeColor: 'text-pink-600',
-  },
-  {
-    id: 4,
-    label: 'İçerik Raporları',
-    value: '234',
-    change: '-3.1%',
-    trend: 'down',
-    icon: Flag,
-    bgColor: '#fee2e2',
-    textColor: '#991b1b',
-    changeColor: 'text-red-600',
-  },
-  {
-    id: 5,
-    label: 'Kayıtlı İşletme',
-    value: '1,234',
-    change: '+8.7%',
+    label: 'İşletme',
+    value: '892',
+    change: '+23 bu ay',
     trend: 'up',
     icon: Briefcase,
     bgColor: '#fef3c7',
@@ -72,77 +59,149 @@ const STATS = [
     changeColor: 'text-amber-600',
   },
   {
-    id: 6,
-    label: 'Sistem Sağlığı',
-    value: '99.8%',
-    change: 'Normal',
-    trend: 'stable',
-    icon: Server,
-    bgColor: '#d1fae5',
-    textColor: '#065f46',
-    changeColor: 'text-emerald-600',
+    id: 4,
+    label: 'Raporlar',
+    value: '47',
+    change: '12 beklemede',
+    trend: 'warning',
+    icon: Flag,
+    bgColor: '#fee2e2',
+    textColor: '#991b1b',
+    changeColor: 'text-red-600',
   },
 ];
 
-const GROWTH_CHART_DATA = [
-  { week: 'Hf1', users: 1200, posts: 2400, reviews: 800 },
-  { week: 'Hf2', users: 1900, posts: 2210, reviews: 1290 },
-  { week: 'Hf3', users: 2000, posts: 2290, reviews: 1000 },
-  { week: 'Hf4', users: 2780, posts: 2000, reviews: 1890 },
-  { week: 'Hf5', users: 1890, posts: 2181, reviews: 1300 },
-  { week: 'Hf6', users: 2390, posts: 2500, reviews: 1800 },
-  { week: 'Hf7', users: 3490, posts: 2100, reviews: 2100 },
+// Daily activity data (last 7 days)
+const DAILY_ACTIVITY_DATA = [
+  { day: 'Pazartesi', posts: 320, max: 500 },
+  { day: 'Salı', posts: 450, max: 500 },
+  { day: 'Çarşamba', posts: 380, max: 500 },
+  { day: 'Perşembe', posts: 420, max: 500 },
+  { day: 'Cuma', posts: 480, max: 500 },
+  { day: 'Cumartesi', posts: 410, max: 500 },
+  { day: 'Pazar', posts: 350, max: 500 },
 ];
 
+// Recent activities (8 items)
 const RECENT_ACTIVITY = [
   {
     id: 1,
     type: 'user_signup',
-    description: 'Ahmet K. yeni hesap açtı',
-    timestamp: '5 dakika önce',
+    description: 'Ayşe M. yeni hesap açtı',
+    timestamp: '2 dakika önce',
     icon: Users,
     badgeColor: 'bg-blue-100 text-blue-700',
   },
   {
     id: 2,
-    type: 'post_reported',
-    description: 'Bir paylaşım uygunsuz içerik olarak bildirildi',
-    timestamp: '12 dakika önce',
-    icon: Flag,
-    badgeColor: 'bg-red-100 text-red-700',
-  },
-  {
-    id: 3,
-    type: 'business_added',
-    description: '"Yeni Kahvehane" işletmesi eklendi',
-    timestamp: '28 dakika önce',
-    icon: Briefcase,
-    badgeColor: 'bg-amber-100 text-amber-700',
-  },
-  {
-    id: 4,
     type: 'post_published',
-    description: 'Fatma D. yeni bir paylaşım yaptı',
-    timestamp: '45 dakika önce',
+    description: 'Mehmet T. yeni bir gönderi yayınladı',
+    timestamp: '8 dakika önce',
     icon: MessageSquare,
     badgeColor: 'bg-purple-100 text-purple-700',
   },
   {
+    id: 3,
+    type: 'post_reported',
+    description: 'Uygunsuz içerik için 1 gönderi bildirildi',
+    timestamp: '15 dakika önce',
+    icon: Flag,
+    badgeColor: 'bg-red-100 text-red-700',
+  },
+  {
+    id: 4,
+    type: 'business_added',
+    description: '"Kafe & Kahve" işletmesi eklendi',
+    timestamp: '32 dakika önce',
+    icon: Briefcase,
+    badgeColor: 'bg-amber-100 text-amber-700',
+  },
+  {
     id: 5,
     type: 'user_verified',
-    description: 'Mustafa T. profilini doğruladı',
-    timestamp: '1 saat önce',
+    description: 'Zeynep K. profili doğrulandı',
+    timestamp: '58 dakika önce',
     icon: CheckCircle,
     badgeColor: 'bg-green-100 text-green-700',
   },
   {
     id: 6,
+    type: 'user_signup',
+    description: 'Ali Ş. yeni hesap açtı',
+    timestamp: '1 saat 12 dakika önce',
+    icon: Users,
+    badgeColor: 'bg-blue-100 text-blue-700',
+  },
+  {
+    id: 7,
+    type: 'post_published',
+    description: 'Fatma D. 3 yeni gönderi yayınladı',
+    timestamp: '1 saat 45 dakika önce',
+    icon: MessageSquare,
+    badgeColor: 'bg-purple-100 text-purple-700',
+  },
+  {
+    id: 8,
     type: 'alert',
     description: 'Sistem yedeklemesi başarıyla tamamlandı',
-    timestamp: '2 saat önce',
+    timestamp: '3 saat önce',
     icon: Server,
     badgeColor: 'bg-emerald-100 text-emerald-700',
   },
+];
+
+// Top neighborhoods
+const TOP_NEIGHBORHOODS = [
+  { id: 1, name: 'Cihangir', members: 1234, posts: 3847, score: 95 },
+  { id: 2, name: 'Galata', members: 1156, posts: 3621, score: 92 },
+  { id: 3, name: 'Beyoğlu', members: 1089, posts: 3456, score: 89 },
+  { id: 4, name: 'Aksaray', members: 987, posts: 3234, score: 86 },
+  { id: 5, name: 'Şişli', members: 934, posts: 3012, score: 84 },
+  { id: 6, name: 'Beşiktaş', members: 876, posts: 2834, score: 81 },
+  { id: 7, name: 'Ortaköy', members: 812, posts: 2621, score: 78 },
+  { id: 8, name: 'Bebek', members: 756, posts: 2445, score: 75 },
+  { id: 9, name: 'Arnavutköy', members: 698, posts: 2234, score: 72 },
+  { id: 10, name: 'Emirgan', members: 634, posts: 2012, score: 69 },
+];
+
+// Quick actions
+const QUICK_ACTIONS = [
+  {
+    id: 1,
+    title: 'Kullanıcı Onayla',
+    description: '12 beklemede',
+    icon: UserCheck,
+    color: 'bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100',
+  },
+  {
+    id: 2,
+    title: 'İçerik Moderasyonu',
+    description: '8 inceleme bekliyor',
+    icon: Shield,
+    color: 'bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100',
+  },
+  {
+    id: 3,
+    title: 'Uyarı Gönder',
+    description: '5 kullanıcı için',
+    icon: AlertTriangle,
+    color: 'bg-amber-50 border-amber-200 text-amber-700 hover:bg-amber-100',
+  },
+  {
+    id: 4,
+    title: 'Raporları İncele',
+    description: '47 aktif rapor',
+    icon: FileText,
+    color: 'bg-red-50 border-red-200 text-red-700 hover:bg-red-100',
+  },
+];
+
+// Platform health metrics
+const PLATFORM_HEALTH = [
+  { metric: 'Sunucu Çalışma Süresi', value: '%99.8', icon: Server, color: 'text-emerald-600' },
+  { metric: 'Yanıt Süresi', value: '142ms', icon: Zap, color: 'text-blue-600' },
+  { metric: 'Hata Oranı', value: '0.02%', icon: AlertCircle, color: 'text-green-600' },
+  { metric: 'Aktif Oturumlar', value: '1,247', icon: Activity, color: 'text-cyan-600' },
 ];
 
 const SYSTEM_STATUS = [
@@ -153,20 +212,37 @@ const SYSTEM_STATUS = [
 ];
 
 export default function AdminDashboard() {
+  const [sortedNeighborhoods, setSortedNeighborhoods] = React.useState(TOP_NEIGHBORHOODS);
+  const [sortKey, setSortKey] = React.useState('score');
+
+  const handleSort = (key: string) => {
+    const isAsc = sortKey === key;
+    const sorted = [...sortedNeighborhoods].sort((a, b) => {
+      const aVal = a[key as keyof typeof a];
+      const bVal = b[key as keyof typeof b];
+      if (typeof aVal === 'number' && typeof bVal === 'number') {
+        return isAsc ? aVal - bVal : bVal - aVal;
+      }
+      return 0;
+    });
+    setSortedNeighborhoods(sorted);
+    setSortKey(isAsc ? '' : key);
+  };
+
   return (
     <div>
+      {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Yönetim Panosu</h1>
         <p className="text-gray-600">
-          Hoş geldiniz! İşte bugünün özet istatistikleri.
+          Platform özeti ve gerçek zamanlı istatistikler
         </p>
       </div>
 
-      {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+      {/* Stats Cards Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {STATS.map((stat) => {
           const Icon = stat.icon;
-          const isNegative = stat.trend === 'down';
 
           return (
             <div
@@ -180,159 +256,101 @@ export default function AdminDashboard() {
                 >
                   <Icon size={24} style={{ color: stat.textColor }} />
                 </div>
-                <span
-                  className={`text-sm font-semibold ${stat.changeColor}`}
-                >
-                  {isNegative ? stat.change : stat.change}
+                <span className={`text-xs font-semibold ${stat.changeColor}`}>
+                  {stat.change}
                 </span>
               </div>
-              <p className="text-gray-600 text-sm mb-1">{stat.label}</p>
-              <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-              <p className="text-xs text-gray-500 mt-2">
-                {stat.trend === 'up'
-                  ? 'Son 30 günde artış'
-                  : stat.trend === 'down'
-                  ? 'Son 30 günde azalış'
-                  : 'Sistem durumu'}
-              </p>
+              <p className="text-gray-600 text-sm mb-2">{stat.label}</p>
+              <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
             </div>
           );
         })}
       </div>
 
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Growth Chart */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+      {/* Activity Chart and Quick Actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {/* Daily Activity Chart */}
+        <div className="lg:col-span-2 bg-white rounded-lg border border-[#e0e0e0] p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-lg font-bold text-gray-900">Haftalık Büyüme</h2>
-              <p className="text-sm text-gray-600">Son 7 haftanın eğilimi</p>
+              <h2 className="text-lg font-bold text-gray-900">Son 7 Gün Aktivite</h2>
+              <p className="text-sm text-gray-600">Günlük gönderi sayısı</p>
             </div>
             <BarChart3 size={24} className="text-[#00833e]" />
           </div>
 
-          {/* Mini Bar Chart */}
-          <div className="space-y-4">
-            {GROWTH_CHART_DATA.map((data) => (
-              <div key={data.week}>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-medium text-gray-700">
-                    {data.week}
-                  </span>
-                  <span className="text-xs text-gray-500">
-                    {data.users + data.posts + data.reviews} toplam
-                  </span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+          {/* CSS Bar Chart */}
+          <div className="flex items-end justify-between h-48 gap-2 p-4 bg-gray-50 rounded-lg">
+            {DAILY_ACTIVITY_DATA.map((data) => {
+              const percentage = (data.posts / data.max) * 100;
+              return (
+                <div
+                  key={data.day}
+                  className="flex-1 flex flex-col items-center gap-2"
+                >
                   <div
-                    className="bg-[#00833e] h-2 rounded-full transition-all"
-                    style={{
-                      width: `${Math.min(
-                        ((data.users + data.posts + data.reviews) / 9000) * 100,
-                        100
-                      )}%`,
-                    }}
+                    className="w-full bg-gradient-to-t from-[#00833e] to-[#00aa52] rounded-t transition-all hover:shadow-lg"
+                    style={{ height: `${percentage}%` }}
+                    title={`${data.posts} gönderi`}
                   />
+                  <span className="text-xs text-gray-600 font-medium text-center">
+                    {data.day.substring(0, 3)}
+                  </span>
+                  <span className="text-xs text-gray-500">{data.posts}</span>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
-          <p className="text-xs text-gray-500 mt-6">
-            Güncellenme: Son 1 saat
+          <p className="text-xs text-gray-500 mt-4">
+            Toplam: 2,811 gönderi | Ortalama: 401/gün
           </p>
         </div>
 
-        {/* Content Distribution */}
+        {/* Quick Actions */}
         <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
           <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-lg font-bold text-gray-900">
-                İçerik Dağılımı
-              </h2>
-              <p className="text-sm text-gray-600">Kategori başına oranlar</p>
-            </div>
-            <PieChartIcon size={24} className="text-[#00833e]" />
+            <h2 className="text-lg font-bold text-gray-900">Hızlı İşlemler</h2>
+            <Zap size={20} className="text-[#00833e]" />
           </div>
 
-          {/* Distribution Stats */}
-          <div className="space-y-4">
-            {[
-              { label: 'Paylaşımlar', percentage: 45, color: 'bg-[#00833e]' },
-              { label: 'Yorumlar', percentage: 28, color: 'bg-blue-500' },
-              { label: 'Raporlar', percentage: 15, color: 'bg-red-500' },
-              { label: 'Diğer', percentage: 12, color: 'bg-gray-400' },
-            ].map((item) => (
-              <div key={item.label}>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-medium text-gray-700">
-                    {item.label}
-                  </span>
-                  <span className="text-sm font-bold text-gray-900">
-                    {item.percentage}%
-                  </span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full transition-all ${item.color}`}
-                    style={{ width: `${item.percentage}%` }}
-                  />
-                </div>
-              </div>
-            ))}
+          <div className="space-y-3">
+            {QUICK_ACTIONS.map((action) => {
+              const Icon = action.icon;
+              return (
+                <button
+                  key={action.id}
+                  className={`w-full p-4 rounded-lg border text-left transition-all ${action.color}`}
+                >
+                  <div className="flex items-start gap-3">
+                    <Icon size={20} className="flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-sm">{action.title}</p>
+                      <p className="text-xs opacity-75 mt-0.5">
+                        {action.description}
+                      </p>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
-
-          <p className="text-xs text-gray-500 mt-6">
-            Toplam 72,520 içerik
-          </p>
         </div>
       </div>
 
-      {/* System Status and Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* System Health */}
-        <div className="lg:col-span-1 bg-white rounded-lg border border-[#e0e0e0] p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <Server size={20} className="text-[#00833e]" />
-            Sistem Durumu
-          </h2>
-
-          <div className="space-y-3">
-            {SYSTEM_STATUS.map((service) => (
-              <div
-                key={service.name}
-                className="flex items-center justify-between p-3 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0]"
-              >
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {service.name}
-                    </p>
-                    <p className="text-xs text-gray-600">{service.latency}</p>
-                  </div>
-                </div>
-                <CheckCircle size={16} className="text-green-600" />
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-xs font-medium text-green-800">
-              ✓ Tüm sistemler normal çalışıyor
-            </p>
-          </div>
-        </div>
-
-        {/* Recent Activity */}
+      {/* Recent Activity Feed and Platform Health */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {/* Recent Activity Feed */}
         <div className="lg:col-span-2 bg-white rounded-lg border border-[#e0e0e0] p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">Son Aktiviteler</h2>
+              <p className="text-sm text-gray-600">Platform etkinlikleri</p>
+            </div>
             <Activity size={20} className="text-[#00833e]" />
-            Son Aktiviteler
-          </h2>
+          </div>
 
-          <div className="space-y-3">
+          <div className="space-y-3 max-h-96 overflow-y-auto">
             {RECENT_ACTIVITY.map((activity) => {
               const Icon = activity.icon;
 
@@ -362,6 +380,190 @@ export default function AdminDashboard() {
           <button className="mt-4 w-full py-2 px-4 text-sm font-medium text-[#00833e] bg-[#e6f4ec] hover:bg-[#d1fae5] rounded-lg transition-colors">
             Tüm Aktiviteleri Görüntüle
           </button>
+        </div>
+
+        {/* Platform Health */}
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-lg font-bold text-gray-900">Platform Sağlığı</h2>
+            <Server size={20} className="text-[#00833e]" />
+          </div>
+
+          <div className="space-y-4">
+            {PLATFORM_HEALTH.map((item, idx) => {
+              const Icon = item.icon;
+              return (
+                <div key={idx} className="border-b border-gray-200 pb-4 last:border-b-0">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Icon size={16} className={item.color} />
+                      <p className="text-sm text-gray-700">{item.metric}</p>
+                    </div>
+                  </div>
+                  <p className="text-2xl font-bold text-gray-900 ml-6">
+                    {item.value}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <p className="text-xs font-medium text-green-800">
+              ✓ Tüm sistemler optimal çalışıyor
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Top Neighborhoods Table */}
+      <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-8">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-lg font-bold text-gray-900">En Aktif Mahalleler</h2>
+            <p className="text-sm text-gray-600">Top 10 mahalle - tıklayarak sırala</p>
+          </div>
+          <TrendingUp size={20} className="text-[#00833e]" />
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-200">
+                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                  Mahalle
+                </th>
+                <th
+                  className="text-left py-3 px-4 text-sm font-semibold text-gray-700 cursor-pointer hover:text-[#00833e]"
+                  onClick={() => handleSort('members')}
+                >
+                  <div className="flex items-center gap-1">
+                    Üye Sayısı
+                    {sortKey === 'members' && (
+                      <TrendingUp size={14} className="text-[#00833e]" />
+                    )}
+                  </div>
+                </th>
+                <th
+                  className="text-left py-3 px-4 text-sm font-semibold text-gray-700 cursor-pointer hover:text-[#00833e]"
+                  onClick={() => handleSort('posts')}
+                >
+                  <div className="flex items-center gap-1">
+                    Gönderi
+                    {sortKey === 'posts' && (
+                      <TrendingUp size={14} className="text-[#00833e]" />
+                    )}
+                  </div>
+                </th>
+                <th
+                  className="text-left py-3 px-4 text-sm font-semibold text-gray-700 cursor-pointer hover:text-[#00833e]"
+                  onClick={() => handleSort('score')}
+                >
+                  <div className="flex items-center gap-1">
+                    Aktiflik Skoru
+                    {sortKey === 'score' && (
+                      <TrendingUp size={14} className="text-[#00833e]" />
+                    )}
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {sortedNeighborhoods.map((neighborhood, idx) => (
+                <tr
+                  key={neighborhood.id}
+                  className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                >
+                  <td className="py-3 px-4 text-sm font-medium text-gray-900">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-[#e6f4ec] flex items-center justify-center text-xs font-bold text-[#00833e]">
+                        {idx + 1}
+                      </span>
+                      {neighborhood.name}
+                    </div>
+                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-700">
+                    {neighborhood.members.toLocaleString('tr-TR')}
+                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-700">
+                    {neighborhood.posts.toLocaleString('tr-TR')}
+                  </td>
+                  <td className="py-3 px-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-20 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-[#00833e] to-[#00aa52] rounded-full"
+                          style={{ width: `${neighborhood.score}%` }}
+                        />
+                      </div>
+                      <span className="font-semibold text-gray-900 w-8 text-right">
+                        {neighborhood.score}
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* System Status */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <Server size={20} className="text-[#00833e]" />
+            Sistem Durumu
+          </h2>
+
+          <div className="space-y-3">
+            {SYSTEM_STATUS.map((service) => (
+              <div
+                key={service.name}
+                className="flex items-center justify-between p-3 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0]"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">
+                      {service.name}
+                    </p>
+                    <p className="text-xs text-gray-600">{service.latency}</p>
+                  </div>
+                </div>
+                <CheckCircle size={16} className="text-green-600" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-[#e6f4ec] to-[#d1fae5] rounded-lg border border-[#00833e] border-opacity-20 p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h2 className="text-lg font-bold text-[#00833e] mb-1">
+                Sistem Özeti
+              </h2>
+              <p className="text-sm text-[#00833e] opacity-75">
+                Tüm hizmetler sorunsuz çalışıyor
+              </p>
+            </div>
+            <CheckCircle size={28} className="text-[#00833e]" />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mt-6">
+            <div>
+              <p className="text-xs text-[#00833e] opacity-75">Güncellenme</p>
+              <p className="text-sm font-semibold text-[#00833e] mt-1">
+                Son 2 dakika
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-[#00833e] opacity-75">Sonraki Kontrol</p>
+              <p className="text-sm font-semibold text-[#00833e] mt-1">
+                30 saniye içinde
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -62,12 +62,12 @@ const mockMessages: Record<string, Message[]> = {
   '1': [
     {
       id: '0',
-      text: 'Sohbet başlatıldı',
+      text: 'Bugün',
       timestamp: '09:00',
       isOwn: false,
       read: true,
       type: 'system',
-      date: '10 Mart, Pazartesi',
+      date: 'Bugün',
     },
     {
       id: '1',
@@ -95,7 +95,7 @@ const mockMessages: Record<string, Message[]> = {
     },
     {
       id: '3',
-      text: 'Oturma odasındaki halı için uygun bir yöntem önerebilir misiniz?',
+      text: 'Oturma odasındaki halı için uygun bir yöntem önerebilir misiniz? Çok eski ve çok katlı.',
       timestamp: '10:40',
       isOwn: true,
       read: true,
@@ -127,7 +127,7 @@ const mockMessages: Record<string, Message[]> = {
     },
     {
       id: '7',
-      text: 'Tabii, hangi malzemelere ihtiyacınız olduğunu söyleyin.',
+      text: 'Tabii, hangi malzemelere ihtiyacınız olduğunu söyleyin. Belki birimizde vardır.',
       timestamp: '11:05',
       isOwn: false,
       read: true,
@@ -135,7 +135,7 @@ const mockMessages: Record<string, Message[]> = {
     },
     {
       id: '8',
-      text: 'Beyaz sirke, limon suyu ve tuz var mı evde?',
+      text: 'Beyaz sirke, limon suyu ve tuz var mı evde? Bunları birleştirince güzel bir karışım çıkıyor.',
       timestamp: '11:08',
       isOwn: true,
       read: true,
@@ -151,7 +151,7 @@ const mockMessages: Record<string, Message[]> = {
     },
     {
       id: '10',
-      text: 'Bir fırça ve temiz bez. İyi çalışmalar!',
+      text: 'Bir fırça ve temiz bez. İyi çalışmalar! Merak etmeyin.',
       timestamp: '11:15',
       isOwn: true,
       read: true,
@@ -159,7 +159,7 @@ const mockMessages: Record<string, Message[]> = {
     },
     {
       id: '11',
-      text: 'Çok teşekkürler! Sonuçlarını sana yazarım.',
+      text: 'Çok teşekkürler! Sonuçlarını sana yazarım. Kesinlikle deneyeceğim.',
       timestamp: '11:18',
       isOwn: false,
       read: true,
@@ -167,7 +167,7 @@ const mockMessages: Record<string, Message[]> = {
     },
     {
       id: '12',
-      text: 'Lütfen! Beklemede olacağım.',
+      text: 'Lütfen! Beklemede olacağım. Başarı dilerim!',
       timestamp: '11:20',
       isOwn: true,
       read: true,
@@ -175,10 +175,18 @@ const mockMessages: Record<string, Message[]> = {
     },
     {
       id: '13',
-      text: 'Harika! Yardımcı olabildiğim için mutluyum 😊',
+      text: 'Harika! Yardımcı olabildiğim için mutluyum. İyi komşuluk bu işte 😊',
       timestamp: '11:22',
       isOwn: false,
       read: false,
+      type: 'text',
+    },
+    {
+      id: '14',
+      text: 'Aynen öyle! Çok sağol Ahmet abi.',
+      timestamp: '11:25',
+      isOwn: true,
+      read: true,
       type: 'text',
     },
   ],
@@ -429,6 +437,28 @@ const TypingIndicator = () => (
   </div>
 );
 
+// Options Menu Component
+const OptionsMenu = ({ isOpen, onToggle }: { isOpen: boolean; onToggle: () => void }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="absolute right-0 mt-2 w-56 bg-white border border-[#e0e0e0] rounded-lg shadow-xl z-50">
+      <button className="block w-full text-left px-4 py-3 text-[#333] hover:bg-[#f0f2f5] transition-colors text-sm">
+        Profili Gör
+      </button>
+      <button className="block w-full text-left px-4 py-3 text-[#333] hover:bg-[#f0f2f5] transition-colors text-sm">
+        Bildirim Kapat
+      </button>
+      <button className="block w-full text-left px-4 py-3 text-[#333] hover:bg-[#f0f2f5] transition-colors text-sm border-t border-[#e0e0e0]">
+        Engelle
+      </button>
+      <button className="block w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 transition-colors text-sm border-t border-[#e0e0e0] font-medium">
+        Sohbeti Sil
+      </button>
+    </div>
+  );
+};
+
 // Scroll to Bottom Button
 const ScrollToBottomButton = ({ show, onClick }: { show: boolean; onClick: () => void }) => {
   if (!show) return null;
@@ -456,6 +486,7 @@ export default function ChatPage() {
   const [isTyping, setIsTyping] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [inputFocused, setInputFocused] = useState(false);
 
   const conversation = mockConversations.find((c) => c.id === conversationId);
 
@@ -521,39 +552,44 @@ export default function ChatPage() {
     <div className="flex flex-col h-screen bg-[#f0f2f5]">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-[#e0e0e0] bg-white shadow-sm">
-        <div className="flex items-center gap-3 flex-1">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
           <button
             onClick={() => router.back()}
-            className="md:hidden p-2 hover:bg-[#f0f2f5] rounded-lg transition-colors"
+            className="md:hidden p-2 hover:bg-[#f0f2f5] rounded-lg transition-colors flex-shrink-0"
             title="Geri git"
           >
-            <ChevronLeft size={24} className="text-[#00833e]" />
+            <ChevronLeft size={24} className="text-[#333]" />
           </button>
 
-          <Image
-            src={conversation.avatar}
-            alt={conversation.name}
-            width={40}
-            height={40}
-            className="w-10 h-10 rounded-full object-cover"
-            unoptimized
-          />
+          <div className="relative flex-shrink-0">
+            <Image
+              src={conversation.avatar}
+              alt={conversation.name}
+              width={48}
+              height={48}
+              className="w-12 h-12 rounded-full object-cover shadow-sm"
+              unoptimized
+            />
+            {conversation.online && (
+              <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#00833e] rounded-full border-2 border-white" />
+            )}
+          </div>
 
-          <div className="flex-1">
-            <h2 className="font-semibold text-[#333]">{conversation.name}</h2>
+          <div className="flex-1 min-w-0">
+            <h2 className="font-semibold text-[#333] truncate">{conversation.name}</h2>
             <div className="flex items-center gap-1">
-              <div className={`w-2 h-2 rounded-full ${conversation.online ? 'bg-[#00833e]' : 'bg-[#8f8f8f]'}`}></div>
-              <p className="text-xs text-[#8f8f8f]">
-                {conversation.online ? 'Çevrimiçi' : 'Çevrimdışı'}
+              <div className={`w-2 h-2 rounded-full flex-shrink-0 ${conversation.online ? 'bg-[#00833e]' : 'bg-[#8f8f8f]'}`}></div>
+              <p className="text-xs text-[#8f8f8f] truncate">
+                {conversation.online ? 'Çevrimiçi' : 'Son görülme: 5 dk önce'}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-1 relative">
+        <div className="flex items-center gap-1 relative flex-shrink-0">
           <button
             className="p-2 hover:bg-[#f0f2f5] rounded-lg transition-colors"
-            title="Ara"
+            title="Telefon ara"
           >
             <Phone size={20} className="text-[#00833e]" />
           </button>
@@ -572,22 +608,7 @@ export default function ChatPage() {
               <MoreVertical size={20} className="text-[#00833e]" />
             </button>
 
-            {showMoreMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50">
-                <button className="block w-full text-left px-4 py-2 text-[#333] hover:bg-[#f0f2f5] transition-colors">
-                  Profili Görüntüle
-                </button>
-                <button className="block w-full text-left px-4 py-2 text-[#333] hover:bg-[#f0f2f5] transition-colors">
-                  Saçla
-                </button>
-                <button className="block w-full text-left px-4 py-2 text-[#333] hover:bg-[#f0f2f5] transition-colors">
-                  Engelle
-                </button>
-                <button className="block w-full text-left px-4 py-2 text-red-600 hover:bg-[#f0f2f5] transition-colors border-t border-[#e0e0e0]">
-                  Sohbeti Sil
-                </button>
-              </div>
-            )}
+            <OptionsMenu isOpen={showMoreMenu} onToggle={() => setShowMoreMenu(!showMoreMenu)} />
           </div>
         </div>
       </div>
@@ -596,14 +617,14 @@ export default function ChatPage() {
       <div
         ref={messagesContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto p-4 space-y-3 scroll-smooth"
+        className="flex-1 overflow-y-auto p-4 space-y-2 scroll-smooth"
       >
-        {messages.map((message) => {
+        {messages.map((message, index) => {
           // Date separator
           if (message.date) {
             return (
               <div key={message.id} className="flex justify-center my-4">
-                <span className="bg-white text-[#8f8f8f] text-xs px-3 py-1 rounded-full border border-[#e0e0e0]">
+                <span className="bg-white text-[#8f8f8f] text-xs px-3 py-1.5 rounded-full border border-[#e0e0e0] font-medium shadow-sm">
                   {message.date}
                 </span>
               </div>
@@ -614,7 +635,7 @@ export default function ChatPage() {
           if (message.type === 'system') {
             return (
               <div key={message.id} className="flex justify-center my-4">
-                <span className="bg-white text-[#8f8f8f] text-xs px-3 py-1 rounded-full border border-[#e0e0e0]">
+                <span className="bg-white text-[#8f8f8f] text-xs px-3 py-1.5 rounded-full border border-[#e0e0e0] shadow-sm">
                   {message.text}
                 </span>
               </div>
@@ -625,13 +646,13 @@ export default function ChatPage() {
           return (
             <div
               key={message.id}
-              className={`flex ${message.isOwn ? 'justify-end' : 'justify-start'} mb-2`}
+              className={`flex ${message.isOwn ? 'justify-end' : 'justify-start'} gap-2`}
             >
               <div
-                className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
+                className={`max-w-xs lg:max-w-md rounded-2xl overflow-hidden ${
                   message.isOwn
-                    ? 'bg-[#00833e] text-white rounded-br-none'
-                    : 'bg-white text-[#333] rounded-bl-none border border-[#e0e0e0]'
+                    ? 'bg-[#00833e] text-white rounded-br-none shadow-sm'
+                    : 'bg-white text-[#333] rounded-bl-none border border-[#e0e0e0] shadow-sm'
                 }`}
               >
                 {message.type === 'image' && message.image && (
@@ -640,19 +661,27 @@ export default function ChatPage() {
                     alt="Message image"
                     width={250}
                     height={250}
-                    className="rounded-lg mb-2 max-w-full h-auto"
+                    className="rounded-lg block max-w-full h-auto"
                     unoptimized
                   />
                 )}
 
                 {message.text && (
-                  <p className="text-sm break-words">{message.text}</p>
+                  <p className={`text-sm break-words px-4 ${message.type === 'image' ? 'pt-2 pb-3' : 'py-2.5 px-4'}`}>
+                    {message.text}
+                  </p>
                 )}
 
-                <div className={`flex items-center justify-end gap-1 mt-1 text-xs ${message.isOwn ? 'text-white/70' : 'text-[#8f8f8f]'}`}>
+                <div className={`flex items-center justify-end gap-1 px-4 pb-2 text-xs ${message.isOwn ? 'text-white/70' : 'text-[#8f8f8f]'}`}>
                   <span>{message.timestamp}</span>
                   {message.isOwn && (
-                    <span>{message.read ? '✓✓' : '✓'}</span>
+                    <span className="ml-1 flex-shrink-0">
+                      {message.read ? (
+                        <span className="font-bold">✓✓</span>
+                      ) : (
+                        <span>✓</span>
+                      )}
+                    </span>
                   )}
                 </div>
               </div>
@@ -662,8 +691,8 @@ export default function ChatPage() {
 
         {/* Typing Indicator */}
         {isTyping && (
-          <div className="flex justify-start mb-2">
-            <div className="bg-white border border-[#e0e0e0] text-[#333] px-4 py-2 rounded-2xl rounded-bl-none">
+          <div className="flex justify-start gap-2">
+            <div className="bg-white border border-[#e0e0e0] text-[#333] px-4 py-2.5 rounded-2xl rounded-bl-none shadow-sm">
               <TypingIndicator />
             </div>
           </div>
@@ -675,44 +704,50 @@ export default function ChatPage() {
       <ScrollToBottomButton show={showScrollButton} onClick={scrollToBottom} />
 
       {/* Message Input */}
-      <div className="bg-white border-t border-[#e0e0e0] p-4">
-        <div className="flex items-center gap-2">
-          <button
-            className="p-2 hover:bg-[#f0f2f5] rounded-lg transition-colors text-[#00833e]"
-            title="Fotoğraf ekle"
-          >
-            <Paperclip size={20} />
-          </button>
+      <div className={`bg-white border-t border-[#e0e0e0] transition-all duration-200 ${inputFocused ? 'shadow-lg' : ''}`}>
+        <div className="p-4">
+          <div className={`flex items-${inputFocused ? 'start' : 'center'} gap-2 transition-all duration-200`}>
+            <button
+              className="p-2.5 hover:bg-[#f0f2f5] rounded-lg transition-colors text-[#00833e] flex-shrink-0 mt-1"
+              title="Fotoğraf ekle"
+            >
+              <Paperclip size={20} />
+            </button>
 
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSendMessage(inputValue);
-              }
-            }}
-            placeholder="Mesaj yaz..."
-            className="flex-1 px-4 py-2 bg-[#f0f2f5] border border-[#e0e0e0] rounded-full focus:outline-none focus:border-[#00833e] text-[#333] placeholder-[#8f8f8f] transition-colors"
-          />
+            <textarea
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onFocus={() => setInputFocused(true)}
+              onBlur={() => setInputFocused(false)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSendMessage(inputValue);
+                }
+              }}
+              placeholder="Mesajınızı yazın..."
+              rows={inputFocused ? 3 : 1}
+              className="flex-1 px-4 py-2.5 bg-[#f0f2f5] border border-[#e0e0e0] rounded-lg focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e] text-[#333] placeholder-[#8f8f8f] transition-all duration-200 resize-none max-h-32 leading-5"
+            />
 
-          <button
-            className="p-2 hover:bg-[#f0f2f5] rounded-lg transition-colors text-[#00833e]"
-            title="İmoji ekle"
-          >
-            <Smile size={20} />
-          </button>
+            <div className="flex flex-col gap-1 flex-shrink-0">
+              <button
+                className="p-2.5 hover:bg-[#f0f2f5] rounded-lg transition-colors text-[#00833e]"
+                title="İmoji ekle"
+              >
+                <Smile size={20} />
+              </button>
 
-          <button
-            onClick={() => handleSendMessage(inputValue)}
-            disabled={!inputValue.trim()}
-            className="p-2 hover:bg-[#f0f2f5] rounded-lg transition-colors text-[#00833e] disabled:opacity-50 disabled:cursor-not-allowed"
-            title="Gönder"
-          >
-            <Send size={20} />
-          </button>
+              <button
+                onClick={() => handleSendMessage(inputValue)}
+                disabled={!inputValue.trim()}
+                className="p-2.5 bg-[#00833e] hover:bg-[#006b32] rounded-lg transition-colors text-white disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[#8f8f8f]"
+                title="Gönder"
+              >
+                <Send size={20} />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

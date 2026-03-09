@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { ChevronLeft, Edit, Search, Send, Image as ImageIcon, Smile, Plus } from 'lucide-react';
+import { ChevronLeft, Edit, Search, Send, Image as ImageIcon, Smile, Plus, MessageCirclePlus, Phone, Video } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
@@ -58,6 +58,42 @@ const mockConversations: Conversation[] = [
     name: 'Komşu Yardım Grubu',
     avatar: 'https://picsum.photos/96/96?random=65',
     lastMessage: 'Herkese iyi akşamlar, yarın piknik var mı?',
+    time: '1 hafta',
+    unread: 0,
+    online: false,
+  },
+  {
+    id: '6',
+    name: 'Ayşe Kılıç',
+    avatar: 'https://picsum.photos/96/96?random=71',
+    lastMessage: 'Balkon bitkileriniz çok güzel!',
+    time: '2 gün',
+    unread: 0,
+    online: true,
+  },
+  {
+    id: '7',
+    name: 'Hasan Demir',
+    avatar: 'https://picsum.photos/96/96?random=72',
+    lastMessage: 'Pazartesi uygun mu sözleşme imzalamak için?',
+    time: '4 saat',
+    unread: 3,
+    online: false,
+  },
+  {
+    id: '8',
+    name: 'Müzeyyen Şen',
+    avatar: 'https://picsum.photos/96/96?random=73',
+    lastMessage: 'Ekmek tarifini bekliyorum sabırsızlıkla!',
+    time: '6 saat',
+    unread: 0,
+    online: true,
+  },
+  {
+    id: '9',
+    name: 'Ömer Kaya',
+    avatar: 'https://picsum.photos/96/96?random=74',
+    lastMessage: 'Oto elektrikçi arkadaşım var lazım olursa haber ver',
     time: '1 hafta',
     unread: 0,
     online: false,
@@ -128,9 +164,11 @@ export default function MessagesPage() {
           <h1 className="text-2xl font-bold text-[#333]">Mesajlar</h1>
           <Link
             href="/mesajlar/new"
-            className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors"
+            className="inline-flex items-center gap-2 px-3 py-2 bg-[#00833e] hover:bg-[#006b32] text-white rounded-full transition-colors text-sm font-medium"
+            title="Yeni mesaj başlat"
           >
-            <Plus size={20} className="text-[#00833e]" />
+            <MessageCirclePlus size={18} />
+            <span className="hidden sm:inline">Yeni Mesaj</span>
           </Link>
         </div>
 
@@ -139,10 +177,10 @@ export default function MessagesPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8f8f8f]" />
           <input
             type="text"
-            placeholder="Mesajlarda ara..."
+            placeholder="Kişi veya mesaj ara..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-[#f0f2f5] border border-[#e0e0e0] rounded-full text-sm text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e]"
+            className="w-full pl-10 pr-4 py-2.5 bg-[#f0f2f5] border border-[#e0e0e0] rounded-full text-sm text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e] transition-colors"
           />
         </div>
       </div>
@@ -150,47 +188,58 @@ export default function MessagesPage() {
       {/* Conversation List */}
       <div className="flex-1 overflow-y-auto divide-y divide-[#e0e0e0]">
         {filteredConversations.length === 0 ? (
-          <div className="p-8 text-center">
-            <p className="text-[#8f8f8f] text-sm">Sohbet bulunamadı</p>
+          <div className="flex flex-col items-center justify-center h-full p-8">
+            <Search size={48} className="text-[#e0e0e0] mb-3" />
+            <p className="text-[#8f8f8f] text-sm font-medium">Sohbet bulunamadı</p>
+            <p className="text-[#8f8f8f] text-xs mt-1">Başka bir arama terimi deneyin</p>
           </div>
         ) : (
           filteredConversations.map((convo) => (
-            <button
+            <Link
               key={convo.id}
-              onClick={() => setSelectedId(convo.id)}
+              href={`/mesajlar/${convo.id}`}
               className={cn(
-                'w-full flex items-center gap-3 p-3 hover:bg-[#f0f2f5] transition-colors text-left',
-                selectedId === convo.id && 'bg-[#e6f4ec]'
+                'w-full flex items-center gap-3 p-3 hover:bg-[#f0f2f5] transition-all duration-150 text-left border-l-4 border-transparent',
+                selectedId === convo.id && 'bg-[#e6f4ec] border-l-4 border-[#00833e]'
               )}
             >
-              {/* Avatar */}
+              {/* Avatar with online indicator */}
               <div className="relative flex-shrink-0">
-                <Image src={convo.avatar} alt={convo.name} width={48} height={48} className="w-12 h-12 rounded-full object-cover" unoptimized />
+                <Image
+                  src={convo.avatar}
+                  alt={convo.name}
+                  width={56}
+                  height={56}
+                  className="w-14 h-14 rounded-full object-cover shadow-sm"
+                  unoptimized
+                />
                 {convo.online && (
-                  <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
+                  <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#00833e] rounded-full border-2 border-white shadow-sm" />
                 )}
               </div>
 
               {/* Content */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2 mb-1">
-                  <p className={cn('text-sm truncate', convo.unread > 0 ? 'font-bold text-[#333]' : 'font-medium text-[#333]')}>
+                  <p className={cn('text-sm truncate', convo.unread > 0 ? 'font-bold text-[#333]' : 'font-semibold text-[#333]')}>
                     {convo.name}
                   </p>
-                  <span className="text-xs text-[#8f8f8f] flex-shrink-0">{convo.time}</span>
+                  <span className="text-xs text-[#8f8f8f] flex-shrink-0 whitespace-nowrap">{convo.time}</span>
                 </div>
-                <p className={cn('text-xs truncate', convo.unread > 0 ? 'text-[#333] font-medium' : 'text-[#8f8f8f]')}>
+                <p className={cn('text-xs truncate', convo.unread > 0 ? 'text-[#333] font-medium text-[#404040]' : 'text-[#8f8f8f]')}>
                   {convo.lastMessage}
                 </p>
               </div>
 
               {/* Unread Badge */}
               {convo.unread > 0 && (
-                <span className="w-5 h-5 bg-[#00833e] text-white text-xs font-bold rounded-full flex items-center justify-center flex-shrink-0">
-                  {convo.unread}
-                </span>
+                <div className="flex flex-col items-center justify-center flex-shrink-0">
+                  <span className="w-6 h-6 bg-[#00833e] text-white text-xs font-bold rounded-full flex items-center justify-center shadow-sm">
+                    {convo.unread > 9 ? '9+' : convo.unread}
+                  </span>
+                </div>
               )}
-            </button>
+            </Link>
           ))
         )}
       </div>
@@ -201,16 +250,40 @@ export default function MessagesPage() {
   const ChatView = () => (
     <div className="flex flex-col h-full bg-white">
       {/* Chat Header */}
-      <div className="flex items-center gap-3 p-4 border-b border-[#e0e0e0] bg-white">
-        {isMobile && (
-          <button onClick={() => setSelectedId('')} className="p-1 hover:bg-[#f0f2f5] rounded-full">
-            <ChevronLeft size={20} className="text-[#333]" />
+      <div className="flex items-center justify-between gap-3 p-4 border-b border-[#e0e0e0] bg-white shadow-sm">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          {isMobile && (
+            <button onClick={() => setSelectedId('')} className="p-1 hover:bg-[#f0f2f5] rounded-full transition-colors flex-shrink-0">
+              <ChevronLeft size={20} className="text-[#333]" />
+            </button>
+          )}
+          <Image
+            src={selected?.avatar || ''}
+            alt={selected?.name || ''}
+            width={48}
+            height={48}
+            className="w-12 h-12 rounded-full object-cover shadow-sm flex-shrink-0"
+            unoptimized
+          />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold text-[#333] truncate">{selected?.name}</p>
+            <div className="flex items-center gap-1">
+              <div className={`w-2 h-2 rounded-full flex-shrink-0 ${selected?.online ? 'bg-[#00833e]' : 'bg-[#8f8f8f]'}`}></div>
+              <p className="text-xs text-[#8f8f8f] truncate">
+                {selected?.online ? 'Çevrimiçi' : 'Son görülme: 5 dk önce'}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Header Actions */}
+        <div className="flex items-center gap-1 flex-shrink-0">
+          <button className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors" title="Telefon ara">
+            <Phone size={20} className="text-[#00833e]" />
           </button>
-        )}
-        <Image src={selected?.avatar || ''} alt={selected?.name || ''} width={48} height={48} className="w-12 h-12 rounded-full object-cover" unoptimized />
-        <div className="flex-1">
-          <p className="text-sm font-bold text-[#333]">{selected?.name}</p>
-          <p className="text-xs text-[#8f8f8f]">{selected?.online ? 'Çevrimiçi' : 'Çevrimdışı'}</p>
+          <button className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors" title="Video ara">
+            <Video size={20} className="text-[#00833e]" />
+          </button>
         </div>
       </div>
 
@@ -221,11 +294,11 @@ export default function MessagesPage() {
             <div className={cn(
               'max-w-[65%] px-4 py-2.5 rounded-2xl text-sm break-words',
               msg.isOwn
-                ? 'bg-[#00833e] text-white rounded-br-none'
+                ? 'bg-[#00833e] text-white rounded-br-none shadow-sm'
                 : 'bg-white text-[#333] border border-[#e0e0e0] rounded-bl-none'
             )}>
               <p>{msg.text}</p>
-              <p className={cn('text-[10px] mt-1.5', msg.isOwn ? 'text-[#a7dbb8]' : 'text-[#8f8f8f]')}>
+              <p className={cn('text-[10px] mt-1.5 flex items-center justify-end gap-1', msg.isOwn ? 'text-[#a7dbb8]' : 'text-[#8f8f8f]')}>
                 {msg.time}
               </p>
             </div>
@@ -234,10 +307,10 @@ export default function MessagesPage() {
       </div>
 
       {/* Message Input */}
-      <div className="p-3 border-t border-[#e0e0e0] bg-white">
+      <div className="p-4 border-t border-[#e0e0e0] bg-white">
         <div className="flex items-center gap-2">
-          <button className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors">
-            <ImageIcon size={20} className="text-[#8f8f8f]" />
+          <button className="p-2.5 hover:bg-[#f0f2f5] rounded-full transition-colors flex-shrink-0" title="Fotoğraf ekle">
+            <ImageIcon size={20} className="text-[#00833e]" />
           </button>
           <input
             type="text"
@@ -245,12 +318,17 @@ export default function MessagesPage() {
             onChange={(e) => setMessageText(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') handleSend(); }}
             placeholder="Mesajınızı yazın..."
-            className="flex-1 px-4 py-2 bg-[#f0f2f5] border border-[#e0e0e0] rounded-full text-sm text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e]"
+            className="flex-1 px-4 py-2.5 bg-[#f0f2f5] border border-[#e0e0e0] rounded-full text-sm text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e] transition-colors"
           />
-          <button className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors">
-            <Smile size={20} className="text-[#8f8f8f]" />
+          <button className="p-2.5 hover:bg-[#f0f2f5] rounded-full transition-colors flex-shrink-0" title="İmoji ekle">
+            <Smile size={20} className="text-[#00833e]" />
           </button>
-          <button onClick={handleSend} className="p-2 bg-[#00833e] hover:bg-[#006b32] rounded-full transition-colors">
+          <button
+            onClick={handleSend}
+            disabled={!messageText.trim()}
+            className="p-2.5 bg-[#00833e] hover:bg-[#006b32] disabled:opacity-50 disabled:cursor-not-allowed rounded-full transition-colors flex-shrink-0"
+            title="Gönder"
+          >
             <Send size={18} className="text-white" />
           </button>
         </div>
