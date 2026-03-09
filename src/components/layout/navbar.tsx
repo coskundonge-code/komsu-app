@@ -8,14 +8,17 @@ import { cn } from '@/lib/utils'
 import { SearchDropdown } from './search-dropdown'
 import { UserDropdown } from './user-dropdown'
 import { MobileDrawer } from './mobile-drawer'
+import { NotificationDropdown } from './notification-dropdown'
 
 export function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] = useState(false)
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false)
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false)
+  const unreadNotificationCount = 2 // Mock data - would come from state/API
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchQuery.trim()) {
@@ -68,16 +71,28 @@ export function Navbar() {
 
         {/* Right: Icons + Avatar */}
         <div className="flex items-center gap-1 min-w-[180px] justify-end">
-          <Link
-            href="/bildirimler"
-            className={cn(
-              "relative p-2.5 rounded-full hover:bg-[#f0f2f5] transition-colors",
-              pathname === '/bildirimler' && "bg-[#f0f2f5]"
-            )}
-          >
-            <Bell className="w-5 h-5 text-[#404040]" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
-          </Link>
+          <div className="relative">
+            <button
+              onClick={() => setIsNotificationDropdownOpen(!isNotificationDropdownOpen)}
+              className={cn(
+                "relative p-2.5 rounded-full hover:bg-[#f0f2f5] transition-colors",
+                isNotificationDropdownOpen && "bg-[#f0f2f5]"
+              )}
+              aria-label="Bildirimler"
+            >
+              <Bell className="w-5 h-5 text-[#404040]" />
+              {unreadNotificationCount > 0 && (
+                <span className="absolute top-1.5 right-1.5 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                  {unreadNotificationCount}
+                </span>
+              )}
+            </button>
+            <NotificationDropdown
+              isOpen={isNotificationDropdownOpen}
+              onClose={() => setIsNotificationDropdownOpen(false)}
+              unreadCount={unreadNotificationCount}
+            />
+          </div>
 
           <Link
             href="/mesajlar"
