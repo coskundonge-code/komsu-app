@@ -31,10 +31,10 @@ const Toast = React.forwardRef<
   ToastProps
 >(({ className, variant = "default", ...props }, ref) => {
   const variants = {
-    default: "border border-gray-200 bg-white",
+    default: "border border-[#e0e0e0] bg-white",
     success: "border border-green-200 bg-green-50",
     error: "border border-red-200 bg-red-50",
-    warning: "border border-yellow-200 bg-yellow-50",
+    warning: "border border-amber-200 bg-amber-50",
     info: "border border-blue-200 bg-blue-50",
   };
 

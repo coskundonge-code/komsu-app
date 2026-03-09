@@ -3,6 +3,7 @@ import "./globals.css";
 import { Providers } from "@/lib/providers";
 import { CookieBanner } from "@/components/shared/cookie-banner";
 import { PWAInstallPrompt } from "@/components/shared/pwa-install-prompt";
+import { BackToTop } from "@/components/shared/back-to-top";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -75,6 +76,7 @@ export default function RootLayout({
           {children}
           <PWAInstallPrompt />
           <CookieBanner />
+          <BackToTop />
         </Providers>
       </body>
     </html>

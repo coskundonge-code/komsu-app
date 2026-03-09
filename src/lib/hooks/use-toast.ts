@@ -11,14 +11,14 @@ export interface Toast {
 
 interface ToastStore {
   toasts: Toast[];
-  addToast: (message: string, type: ToastType) => string;
+  addToast: (message: string, type: ToastType, duration?: number) => string;
   removeToast: (id: string) => void;
   clearToasts: () => void;
 }
 
 export const useToastStore = create<ToastStore>((set) => ({
   toasts: [],
-  addToast: (message: string, type: ToastType) => {
+  addToast: (message: string, type: ToastType, duration = 4000) => {
     const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
     set((state) => ({
       toasts: [...state.toasts, { id, message, type, timestamp: Date.now() }],
@@ -44,10 +44,15 @@ export function useToast() {
     addToast,
     removeToast,
     toasts,
-    toast: (message: string, type: ToastType = "info") => addToast(message, type),
-    success: (message: string) => addToast(message, "success"),
-    error: (message: string) => addToast(message, "error"),
-    warning: (message: string) => addToast(message, "warning"),
-    info: (message: string) => addToast(message, "info"),
+    toast: (message: string, type: ToastType = "info", duration?: number) =>
+      addToast(message, type, duration),
+    success: (message: string, duration?: number) =>
+      addToast(message, "success", duration),
+    error: (message: string, duration?: number) =>
+      addToast(message, "error", duration),
+    warning: (message: string, duration?: number) =>
+      addToast(message, "warning", duration),
+    info: (message: string, duration?: number) =>
+      addToast(message, "info", duration),
   };
 }
