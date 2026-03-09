@@ -5,6 +5,7 @@ import { Camera, MoreHorizontal, Globe, ThumbsUp, MessageCircle, Share2, Chevron
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
+import { PostFormModal } from '@/components/feed/post-form-modal';
 
 // Feed filter tabs - Nextdoor style pill buttons
 const feedTabs = [
@@ -127,6 +128,8 @@ export default function FeedPage() {
   const [expandedCommentPostId, setExpandedCommentPostId] = useState<string | null>(null);
   const [commentText, setCommentText] = useState('');
   const [postsToShow, setPostsToShow] = useState(4);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [posts, setPosts] = useState(mockPosts);
 
   const toggleLike = (postId: string) => {
     setLikedPosts((prev) => ({ ...prev, [postId]: !prev[postId] }));
@@ -143,7 +146,7 @@ export default function FeedPage() {
     setExpandedCommentPostId(null);
   };
 
-  const filteredPosts = mockPosts.filter((post) => {
+  const filteredPosts = posts.filter((post) => {
     let tabMatch = true;
     if (activeTab !== 'foryou') {
       tabMatch = post.feed === activeTab;
@@ -167,11 +170,23 @@ export default function FeedPage() {
     setTimeout(() => setPostSubmitted(false), 3000);
   };
 
+  const handleModalSubmit = (newPost: any) => {
+    setPosts([newPost, ...posts]);
+    setPostSubmitted(true);
+    setTimeout(() => setPostSubmitted(false), 3000);
+  };
+
   const displayedPosts = filteredPosts.slice(0, postsToShow);
   const hasMorePosts = filteredPosts.length > postsToShow;
 
   return (
-    <div className="max-w-[680px] mx-auto px-4 py-4">
+    <>
+      <PostFormModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleModalSubmit}
+      />
+      <div className="max-w-[680px] mx-auto px-4 py-4">
       {/* Search Bar */}
       <div className="mb-4">
         <input
@@ -193,10 +208,10 @@ export default function FeedPage() {
         </div>
       )}
 
-      {/* Create Post Box */}
+      {/* Create Post Box - Opens Modal */}
       {!showPostForm ? (
         <div
-          onClick={() => setShowPostForm(true)}
+          onClick={() => setIsModalOpen(true)}
           className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-4 mb-3 hover:shadow-md transition-shadow cursor-pointer"
         >
           <div className="flex items-center gap-3">
@@ -489,5 +504,6 @@ export default function FeedPage() {
         </div>
       )}
     </div>
+    </>
   );
 }
