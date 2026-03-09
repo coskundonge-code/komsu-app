@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Camera, MoreHorizontal, Globe, ThumbsUp, MessageCircle, Share2, ChevronRight, Download, Building2 } from 'lucide-react';
+import { Camera, MoreHorizontal, Globe, ThumbsUp, MessageCircle, Share2, ChevronRight, Download, Building2, X, Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import Image from 'next/image';
 
 // Feed filter tabs - Nextdoor style pill buttons
 const feedTabs = [
@@ -122,14 +123,40 @@ export default function FeedPage() {
   const [showPostForm, setShowPostForm] = useState(false);
   const [postText, setPostText] = useState('');
   const [postSubmitted, setPostSubmitted] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [expandedCommentPostId, setExpandedCommentPostId] = useState<string | null>(null);
+  const [commentText, setCommentText] = useState('');
+  const [postsToShow, setPostsToShow] = useState(4);
 
   const toggleLike = (postId: string) => {
     setLikedPosts((prev) => ({ ...prev, [postId]: !prev[postId] }));
   };
 
+  const handleCameraClick = () => {
+    alert('Fotoğraf yükleme özelliği yakında kullanılabilir olacak.');
+  };
+
+  const handleCommentSubmit = (postId: string) => {
+    if (!commentText.trim()) return;
+    alert(`Yorum gönderildi: "${commentText}"`);
+    setCommentText('');
+    setExpandedCommentPostId(null);
+  };
+
   const filteredPosts = mockPosts.filter((post) => {
-    if (activeTab === 'foryou') return true; // Show all for "Senin İçin"
-    return post.feed === activeTab;
+    let tabMatch = true;
+    if (activeTab !== 'foryou') {
+      tabMatch = post.feed === activeTab;
+    }
+
+    if (!searchQuery.trim()) return tabMatch;
+
+    const query = searchQuery.toLowerCase();
+    const titleMatch = post.title.toLowerCase().includes(query);
+    const bodyMatch = post.body.toLowerCase().includes(query);
+    const authorMatch = post.author.name.toLowerCase().includes(query);
+
+    return tabMatch && (titleMatch || bodyMatch || authorMatch);
   });
 
   const handlePostSubmit = () => {
@@ -140,8 +167,25 @@ export default function FeedPage() {
     setTimeout(() => setPostSubmitted(false), 3000);
   };
 
+  const displayedPosts = filteredPosts.slice(0, postsToShow);
+  const hasMorePosts = filteredPosts.length > postsToShow;
+
   return (
     <div className="max-w-[680px] mx-auto px-4 py-4">
+      {/* Search Bar */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Gönderilerde ara..."
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setPostsToShow(4); // Reset to initial view when searching
+          }}
+          className="w-full px-4 py-2.5 bg-[#f0f2f5] border border-[#e0e0e0] rounded-full text-[15px] text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e] transition-colors"
+        />
+      </div>
+
       {/* Post submitted confirmation */}
       {postSubmitted && (
         <div className="bg-[#e6f4ec] border border-[#00833e] rounded-lg p-3 mb-3 text-sm text-[#00833e] font-medium text-center">
@@ -162,9 +206,9 @@ export default function FeedPage() {
             <div className="flex-1 px-4 py-2.5 bg-[#f0f2f5] text-[#8f8f8f] rounded-full text-[15px]">
               Neler oluyor, komşu?
             </div>
-            <div className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors">
+            <button onClick={handleCameraClick} className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors">
               <Camera className="w-5 h-5 text-[#8f8f8f]" />
-            </div>
+            </button>
             <div className="px-5 py-2 bg-[#00833e] text-white font-semibold text-sm rounded-full">
               Paylaş
             </div>
@@ -189,7 +233,7 @@ export default function FeedPage() {
             className="w-full min-h-[120px] p-3 bg-[#f0f2f5] border border-[#e0e0e0] rounded-lg text-[15px] text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e] resize-none"
           />
           <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#e0e0e0]">
-            <button className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors">
+            <button onClick={handleCameraClick} className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors">
               <Camera className="w-5 h-5 text-[#8f8f8f]" />
             </button>
             <div className="flex gap-2">
@@ -279,11 +323,11 @@ export default function FeedPage() {
       <div className="space-y-3">
         {filteredPosts.length === 0 && (
           <div className="bg-white rounded-lg border border-[#e0e0e0] p-12 text-center">
-            <p className="text-[#333] font-medium">Bu kategoride gönderi yok</p>
-            <p className="text-[#8f8f8f] text-sm mt-1">Başka bir sekme deneyin</p>
+            <p className="text-[#333] font-medium">{searchQuery.trim() ? 'Arama sonucu bulunamadı' : 'Bu kategoride gönderi yok'}</p>
+            <p className="text-[#8f8f8f] text-sm mt-1">{searchQuery.trim() ? 'Farklı bir arama terimi deneyin' : 'Başka bir sekme deneyin'}</p>
           </div>
         )}
-        {filteredPosts.map((post) => (
+        {displayedPosts.map((post) => (
           <div key={post.id} className="bg-white rounded-lg shadow-sm border border-[#e0e0e0]">
             {/* Post Header */}
             <div className="p-4 pb-0">
@@ -321,11 +365,14 @@ export default function FeedPage() {
 
             {/* Post Image */}
             {post.image && (
-              <div className="mt-1">
-                <img
+              <div className="mt-1 relative w-full max-h-[400px] overflow-hidden">
+                <Image
                   src={post.image}
                   alt={post.title || 'Gönderi görseli'}
-                  className="w-full object-cover max-h-[400px]"
+                  width={800}
+                  height={400}
+                  unoptimized
+                  className="w-full object-cover"
                 />
               </div>
             )}
@@ -367,7 +414,10 @@ export default function FeedPage() {
                       <ThumbsUp className={cn('w-5 h-5', likedPosts[post.id] && 'fill-current')} />
                       {likedPosts[post.id] ? 'Beğendin' : 'Beğen'}
                     </button>
-                    <button className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-[#404040] hover:bg-[#f0f2f5] rounded-lg transition-colors">
+                    <button
+                      onClick={() => setExpandedCommentPostId(expandedCommentPostId === post.id ? null : post.id)}
+                      className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-[#404040] hover:bg-[#f0f2f5] rounded-lg transition-colors"
+                    >
                       <MessageCircle className="w-5 h-5" />
                       Yorum
                     </button>
@@ -377,19 +427,67 @@ export default function FeedPage() {
                     </button>
                   </div>
                 </div>
+
+                {/* Expandable Comment Section */}
+                {expandedCommentPostId === post.id && (
+                  <div className="px-4 py-3 border-t border-[#e0e0e0] bg-[#f0f2f5]">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 bg-[#404040] rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                        C
+                      </div>
+                      <div className="flex-1">
+                        <textarea
+                          value={commentText}
+                          onChange={(e) => setCommentText(e.target.value)}
+                          placeholder="Bir yorum yaz..."
+                          className="w-full p-2 bg-white border border-[#e0e0e0] rounded-lg text-[14px] text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e] resize-none"
+                          rows={2}
+                        />
+                        <div className="flex gap-2 mt-2 justify-end">
+                          <button
+                            onClick={() => {
+                              setExpandedCommentPostId(null);
+                              setCommentText('');
+                            }}
+                            className="px-3 py-1.5 text-sm font-medium text-[#8f8f8f] hover:bg-white rounded-lg transition-colors"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleCommentSubmit(post.id)}
+                            disabled={!commentText.trim()}
+                            className={cn(
+                              'px-4 py-1.5 text-sm font-semibold rounded-lg transition-colors flex items-center gap-2',
+                              commentText.trim()
+                                ? 'bg-[#00833e] text-white hover:bg-[#006b32]'
+                                : 'bg-[#e0e0e0] text-[#8f8f8f] cursor-not-allowed'
+                            )}
+                          >
+                            <Send className="w-4 h-4" />
+                            Gönder
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </>
             )}
           </div>
         ))}
       </div>
 
-      {/* Loading indicator */}
-      <div className="text-center py-8">
-        <div className="inline-flex items-center gap-2 text-[#8f8f8f] text-sm">
-          <div className="w-5 h-5 border-2 border-[#e0e0e0] border-t-[#00833e] rounded-full animate-spin" />
-          Daha fazla yükleniyor...
+      {/* Load More Button */}
+      {hasMorePosts && (
+        <div className="text-center py-8">
+          <button
+            onClick={() => setPostsToShow(postsToShow + 2)}
+            className="px-6 py-2.5 bg-[#00833e] text-white font-semibold rounded-full hover:bg-[#006b32] transition-colors"
+          >
+            Daha Fazla Gönderi Yükle
+          </button>
         </div>
-      </div>
+      )}
     </div>
   );
 }

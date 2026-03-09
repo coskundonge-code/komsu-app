@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Plus, Heart, MapPin, ChevronDown, MessageCircle } from 'lucide-react';
+import { Search, Plus, Heart, MapPin, ChevronDown, MessageCircle, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const tabs = [
   { id: 'all', label: 'Tüm İlanlar' },
@@ -11,12 +12,30 @@ const tabs = [
   { id: 'saved', label: 'Kaydedilenler' },
 ];
 
-const filterButtons = [
-  { id: 'category', label: 'Kategoriler', icon: true },
-  { id: 'free', label: 'Ücretsiz', icon: false },
-  { id: 'distance', label: 'Mesafe', icon: true },
-  { id: 'sort', label: 'Sıralama', icon: true },
-  { id: 'discounted', label: 'İndirimli', icon: false },
+const categories = [
+  'Elektronik',
+  'Mobilya',
+  'Giyim',
+  'Spor',
+  'Kitaplar',
+  'Bahçe',
+  'Oyuncak',
+  'Diğer',
+];
+
+const distanceOptions = [
+  { label: '1 km', value: 1 },
+  { label: '3 km', value: 3 },
+  { label: '5 km', value: 5 },
+  { label: '10 km', value: 10 },
+  { label: 'Tümü', value: null },
+];
+
+const sortOptions = [
+  { label: 'En Yeni', value: 'newest' },
+  { label: 'En Düşük Fiyat', value: 'price-low' },
+  { label: 'En Yüksek Fiyat', value: 'price-high' },
+  { label: 'En Yakın', value: 'nearest' },
 ];
 
 const mockListings = [
@@ -196,6 +215,12 @@ export default function MarketplacePage() {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [visibleCount, setVisibleCount] = useState(6);
 
+  // Filter state
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedDistance, setSelectedDistance] = useState<number | null>(null);
+  const [selectedSort, setSelectedSort] = useState('newest');
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
   const toggleFavorite = (id: string) => {
     const next = new Set(favorites);
     if (next.has(id)) next.delete(id);
@@ -203,11 +228,30 @@ export default function MarketplacePage() {
     setFavorites(next);
   };
 
-  const allFiltered = mockListings.filter((l) => {
+  // Apply filters and sorting
+  let allFiltered = mockListings.filter((l) => {
     if (searchQuery && !l.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     if (activeTab === 'saved' && !favorites.has(l.id)) return false;
+    if (selectedCategory && l.category !== selectedCategory) return false;
+    if (selectedDistance && parseFloat(l.distance) > selectedDistance) return false;
     return true;
   });
+
+  // Apply sorting
+  allFiltered = [...allFiltered].sort((a, b) => {
+    switch (selectedSort) {
+      case 'price-low':
+        return a.price - b.price;
+      case 'price-high':
+        return b.price - a.price;
+      case 'nearest':
+        return parseFloat(a.distance) - parseFloat(b.distance);
+      case 'newest':
+      default:
+        return 0;
+    }
+  });
+
   const filtered = allFiltered.slice(0, visibleCount);
   const hasMore = visibleCount < allFiltered.length;
 
@@ -263,15 +307,135 @@ export default function MarketplacePage() {
 
         {/* Filter Pills */}
         <div className="flex items-center gap-3 mb-6 overflow-x-auto pb-2 -mx-4 px-4">
-          {filterButtons.map((filter) => (
+          {/* Category Filter */}
+          <div className="relative">
             <button
-              key={filter.id}
+              onClick={() => setOpenDropdown(openDropdown === 'category' ? null : 'category')}
+              className={cn(
+                'flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap shadow-sm transition-colors',
+                selectedCategory
+                  ? 'bg-[#00833e] text-white border border-[#00833e]'
+                  : 'bg-white border border-[#e0e0e0] text-[#404040] hover:bg-[#f0f2f5]'
+              )}
+            >
+              {selectedCategory || 'Kategoriler'}
+              <ChevronDown className={cn('w-4 h-4', openDropdown === 'category' && 'rotate-180')} />
+            </button>
+            {openDropdown === 'category' && (
+              <div className="absolute top-full left-0 mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50 min-w-48">
+                <button
+                  onClick={() => {
+                    setSelectedCategory(null);
+                    setOpenDropdown(null);
+                  }}
+                  className="w-full text-left px-4 py-3 text-sm text-[#8f8f8f] hover:bg-[#f0f2f5] border-b border-[#e0e0e0]"
+                >
+                  Tüm Kategoriler
+                </button>
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => {
+                      setSelectedCategory(cat);
+                      setOpenDropdown(null);
+                    }}
+                    className={cn(
+                      'w-full text-left px-4 py-3 text-sm transition-colors',
+                      selectedCategory === cat
+                        ? 'bg-[#00833e] text-white font-medium'
+                        : 'text-[#404040] hover:bg-[#f0f2f5]'
+                    )}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Distance Filter */}
+          <div className="relative">
+            <button
+              onClick={() => setOpenDropdown(openDropdown === 'distance' ? null : 'distance')}
+              className={cn(
+                'flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap shadow-sm transition-colors',
+                selectedDistance
+                  ? 'bg-[#00833e] text-white border border-[#00833e]'
+                  : 'bg-white border border-[#e0e0e0] text-[#404040] hover:bg-[#f0f2f5]'
+              )}
+            >
+              {selectedDistance ? `${selectedDistance} km` : 'Mesafe'}
+              <ChevronDown className={cn('w-4 h-4', openDropdown === 'distance' && 'rotate-180')} />
+            </button>
+            {openDropdown === 'distance' && (
+              <div className="absolute top-full left-0 mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50">
+                {distanceOptions.map((opt) => (
+                  <button
+                    key={opt.label}
+                    onClick={() => {
+                      setSelectedDistance(opt.value);
+                      setOpenDropdown(null);
+                    }}
+                    className={cn(
+                      'w-full text-left px-4 py-3 text-sm transition-colors whitespace-nowrap',
+                      selectedDistance === opt.value
+                        ? 'bg-[#00833e] text-white font-medium'
+                        : 'text-[#404040] hover:bg-[#f0f2f5]'
+                    )}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Sort Filter */}
+          <div className="relative">
+            <button
+              onClick={() => setOpenDropdown(openDropdown === 'sort' ? null : 'sort')}
               className="flex items-center gap-2 px-5 py-2.5 bg-white border border-[#e0e0e0] rounded-full text-sm font-medium text-[#404040] hover:bg-[#f0f2f5] transition-colors whitespace-nowrap shadow-sm"
             >
-              {filter.label}
-              {filter.icon && <ChevronDown className="w-4 h-4 text-[#8f8f8f]" />}
+              Sıralama
+              <ChevronDown className={cn('w-4 h-4 text-[#8f8f8f]', openDropdown === 'sort' && 'rotate-180')} />
             </button>
-          ))}
+            {openDropdown === 'sort' && (
+              <div className="absolute top-full left-0 mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50">
+                {sortOptions.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => {
+                      setSelectedSort(opt.value);
+                      setOpenDropdown(null);
+                    }}
+                    className={cn(
+                      'w-full text-left px-4 py-3 text-sm transition-colors whitespace-nowrap',
+                      selectedSort === opt.value
+                        ? 'bg-[#00833e] text-white font-medium'
+                        : 'text-[#404040] hover:bg-[#f0f2f5]'
+                    )}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Active Filters Display */}
+          {(selectedCategory || selectedDistance) && (
+            <button
+              onClick={() => {
+                setSelectedCategory(null);
+                setSelectedDistance(null);
+              }}
+              className="flex items-center gap-2 px-4 py-2.5 bg-red-50 border border-red-200 rounded-full text-sm font-medium text-red-700 hover:bg-red-100 transition-colors"
+              title="Filtreleri temizle"
+            >
+              <X className="w-4 h-4" />
+              Temizle
+            </button>
+          )}
         </div>
 
         {/* Main Grid Layout */}
@@ -287,9 +451,11 @@ export default function MarketplacePage() {
                 >
                   {/* Image Container */}
                   <div className="relative aspect-square overflow-hidden bg-[#f0f2f5]">
-                    <img
+                    <Image
                       src={listing.image}
                       alt={listing.title}
+                      fill
+                      unoptimized
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                     />
                     {/* Free Badge */}
@@ -321,10 +487,17 @@ export default function MarketplacePage() {
 
                   {/* Content */}
                   <div className="p-4">
-                    {/* Price - Bold */}
-                    <p className="text-lg font-bold text-[#333] mb-1">
-                      {listing.isFree ? 'Ücretsiz' : `₺${listing.price.toLocaleString('tr-TR')}`}
-                    </p>
+                    {/* Price - Bold with improved formatting */}
+                    <div className="mb-1">
+                      {listing.isFree ? (
+                        <span className="text-lg font-bold text-[#00833e]">Ücretsiz</span>
+                      ) : (
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-xl font-bold text-[#333]">₺{listing.price.toLocaleString('tr-TR')}</span>
+                          <span className="text-xs text-[#8f8f8f]">TL</span>
+                        </div>
+                      )}
+                    </div>
 
                     {/* Title */}
                     <p className="text-sm text-[#404040] line-clamp-2 mb-3 leading-snug">
