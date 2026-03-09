@@ -22,6 +22,7 @@ import {
   Map,
   Eye,
   EyeOff,
+  Bell,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -241,6 +242,7 @@ export default function AlertsPage() {
   const [activeFilter, setActiveFilter] = React.useState('all');
   const [showActive, setShowActive] = React.useState(true);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
   const [formData, setFormData] = React.useState({
     title: '',
     description: '',
@@ -277,7 +279,24 @@ export default function AlertsPage() {
     <div className="min-h-screen bg-[#f0f2f5]">
       {/* Header Section */}
       <div className="bg-white border-b border-[#e0e0e0] sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+        <div className="max-w-4xl mx-auto px-4 py-5">
+          {/* Title Row */}
+          <div className="flex items-center justify-between mb-4 gap-3">
+            <h1 className="text-2xl font-bold text-[#333]">Mahalle Uyarıları</h1>
+            {/* Notification Toggle */}
+            <button
+              onClick={() => setNotificationsEnabled(!notificationsEnabled)}
+              className={`p-2 rounded-lg transition-all ${
+                notificationsEnabled
+                  ? 'bg-[#00833e] text-white'
+                  : 'bg-[#f0f2f5] text-[#8f8f8f] border border-[#e0e0e0]'
+              }`}
+              title={notificationsEnabled ? "Bildirimler açık" : "Bildirimler kapalı"}
+            >
+              <Bell size={20} />
+            </button>
+          </div>
+
           {/* Search Bar */}
           <div className="relative mb-4">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8f8f8f]" />
@@ -290,47 +309,44 @@ export default function AlertsPage() {
             />
           </div>
 
-          {/* Title, Button and Toggle */}
-          <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
-            <h1 className="text-2xl font-bold text-[#333]">Mahalle Uyarıları</h1>
-            <div className="flex items-center gap-3">
-              {/* Active/Past Toggle */}
-              <div className="flex items-center gap-2 bg-gray-100 rounded-full p-1">
-                <button
-                  onClick={() => setShowActive(true)}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all flex items-center gap-1 ${
-                    showActive
-                      ? 'bg-[#00833e] text-white'
-                      : 'text-[#8f8f8f] hover:text-[#333]'
-                  }`}
-                >
-                  <Eye size={16} />
-                  Aktif
-                  <span className="bg-white/30 px-2 py-0.5 rounded-full text-xs font-bold">{activeAlertCount}</span>
-                </button>
-                <button
-                  onClick={() => setShowActive(false)}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all flex items-center gap-1 ${
-                    !showActive
-                      ? 'bg-[#00833e] text-white'
-                      : 'text-[#8f8f8f] hover:text-[#333]'
-                  }`}
-                >
-                  <EyeOff size={16} />
-                  Geçmiş
-                  <span className="bg-white/30 px-2 py-0.5 rounded-full text-xs font-bold">{resolvedAlertCount}</span>
-                </button>
-              </div>
-
-              {/* Create Alert Button */}
+          {/* Controls Row */}
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            {/* Active/Past Toggle */}
+            <div className="flex items-center gap-2 bg-[#f0f2f5] rounded-full p-1">
               <button
-                onClick={() => setIsModalOpen(true)}
-                className="px-4 py-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-colors flex items-center gap-2"
+                onClick={() => setShowActive(true)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all flex items-center gap-1 ${
+                  showActive
+                    ? 'bg-[#00833e] text-white'
+                    : 'text-[#8f8f8f] hover:text-[#333]'
+                }`}
               >
-                <Plus size={18} />
-                Uyarı Paylaş
+                <Eye size={16} />
+                Aktif
+                <span className="bg-white/30 px-2 py-0.5 rounded-full text-xs font-bold">{activeAlertCount}</span>
+              </button>
+              <button
+                onClick={() => setShowActive(false)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all flex items-center gap-1 ${
+                  !showActive
+                    ? 'bg-[#00833e] text-white'
+                    : 'text-[#8f8f8f] hover:text-[#333]'
+                }`}
+              >
+                <EyeOff size={16} />
+                Geçmiş
+                <span className="bg-white/30 px-2 py-0.5 rounded-full text-xs font-bold">{resolvedAlertCount}</span>
               </button>
             </div>
+
+            {/* Create Alert Button */}
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="px-4 py-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-colors flex items-center gap-2"
+            >
+              <Plus size={18} />
+              Uyarı Paylaş
+            </button>
           </div>
 
           {/* Filter Pills */}
@@ -368,41 +384,44 @@ export default function AlertsPage() {
               </p>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {filteredAlerts.map((alert) => (
                 <Link
                   key={alert.id}
                   href={`/uyarilar/${alert.id}`}
-                  className={`block ${getSeverityColor(alert.severity)} rounded-lg p-4 border border-[#e0e0e0] hover:shadow-lg transition-all hover:-translate-y-0.5`}
+                  className={`block ${getSeverityColor(alert.severity)} rounded-lg p-5 border-2 border-l-4 hover:shadow-lg transition-all hover:-translate-y-0.5 cursor-pointer`}
                 >
-                  <div className="flex items-start gap-3">
-                    {/* Icon */}
-                    <div className={`flex-shrink-0 mt-0.5 ${getSeverityIconColor(alert.severity)}`}>
+                  <div className="flex items-start gap-4">
+                    {/* Large Severity Icon */}
+                    <div className={`flex-shrink-0 p-2 rounded-lg ${getSeverityIconColor(alert.severity)} bg-white/50`}>
                       {alert.icon}
                     </div>
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-3 mb-1 flex-wrap">
+                      {/* Header with Title and Severity Badge */}
+                      <div className="flex items-start justify-between gap-3 mb-2 flex-wrap">
                         <div className="flex-1">
-                          <h3 className="font-bold text-[#333]">{alert.title}</h3>
-                          <p className="text-xs text-[#8f8f8f] mt-0.5">Kaynak: {alert.source}</p>
+                          <h3 className="font-bold text-lg text-[#333]">{alert.title}</h3>
+                          <p className="text-xs text-[#8f8f8f] mt-0.5 font-medium">Kaynak: {alert.source}</p>
                         </div>
-                        <span className={`text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${getSeverityBadgeColor(alert.severity)}`}>
+                        <span className={`text-xs font-bold px-3 py-1.5 rounded-full flex-shrink-0 uppercase tracking-wide ${getSeverityBadgeColor(alert.severity)}`}>
                           {getSeverityLabel(alert.severity)}
                         </span>
                       </div>
 
-                      <p className="text-sm text-[#404040] mb-3">{alert.description}</p>
+                      {/* Description */}
+                      <p className="text-sm text-[#404040] mb-4 leading-relaxed">{alert.description}</p>
 
-                      <div className="flex items-center gap-4 text-xs text-[#8f8f8f] flex-wrap">
-                        <div className="flex items-center gap-1">
-                          <MapPin size={14} />
+                      {/* Footer: Location and Time */}
+                      <div className="flex items-center gap-4 text-xs text-[#8f8f8f] flex-wrap pt-3 border-t border-white/30">
+                        <div className="flex items-center gap-2 font-medium">
+                          <MapPin size={16} className="text-[#00833e]" />
                           <span>{alert.location}</span>
                         </div>
-                        <span>•</span>
-                        <div className="flex items-center gap-1">
-                          <Clock size={14} />
+                        <span className="hidden sm:inline">•</span>
+                        <div className="flex items-center gap-2 font-medium">
+                          <Clock size={16} className="text-[#00833e]" />
                           <span>{alert.time}</span>
                         </div>
                       </div>
@@ -427,56 +446,65 @@ export default function AlertsPage() {
             </div>
           </div>
 
-          {/* Statistics */}
-          <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
-            <h3 className="font-bold text-[#333] mb-4">İstatistikler</h3>
+          {/* Statistics Card */}
+          <div className="bg-white rounded-lg border border-[#e0e0e0] p-5">
+            <h3 className="font-bold text-[#333] mb-5 flex items-center gap-2">
+              <AlertCircle size={18} className="text-[#00833e]" />
+              Aciliyet İstatistikleri
+            </h3>
             <div className="space-y-3">
-              <div className="flex items-center justify-between pb-3 border-b border-[#e0e0e0]">
+              <div className="flex items-center justify-between pb-3 border-b border-[#e0e0e0] hover:bg-[#f0f2f5] -mx-1 px-1 py-1 rounded transition-colors">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-600"></div>
-                  <span className="text-sm text-[#333]">Kritik</span>
+                  <div className="w-4 h-4 rounded-full bg-red-600 shadow-sm"></div>
+                  <span className="text-sm font-medium text-[#333]">Kritik</span>
                 </div>
-                <span className="font-bold text-[#333]">{mockAlerts.filter(a => a.severity === 'critical' && a.active).length}</span>
+                <span className="font-bold text-lg text-red-600">{mockAlerts.filter(a => a.severity === 'critical' && a.active).length}</span>
               </div>
-              <div className="flex items-center justify-between pb-3 border-b border-[#e0e0e0]">
+              <div className="flex items-center justify-between pb-3 border-b border-[#e0e0e0] hover:bg-[#f0f2f5] -mx-1 px-1 py-1 rounded transition-colors">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                  <span className="text-sm text-[#333]">Yüksek</span>
+                  <div className="w-4 h-4 rounded-full bg-orange-500 shadow-sm"></div>
+                  <span className="text-sm font-medium text-[#333]">Yüksek</span>
                 </div>
-                <span className="font-bold text-[#333]">{mockAlerts.filter(a => a.severity === 'high' && a.active).length}</span>
+                <span className="font-bold text-lg text-orange-500">{mockAlerts.filter(a => a.severity === 'high' && a.active).length}</span>
               </div>
-              <div className="flex items-center justify-between pb-3 border-b border-[#e0e0e0]">
+              <div className="flex items-center justify-between pb-3 border-b border-[#e0e0e0] hover:bg-[#f0f2f5] -mx-1 px-1 py-1 rounded transition-colors">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                  <span className="text-sm text-[#333]">Orta</span>
+                  <div className="w-4 h-4 rounded-full bg-yellow-500 shadow-sm"></div>
+                  <span className="text-sm font-medium text-[#333]">Orta</span>
                 </div>
-                <span className="font-bold text-[#333]">{mockAlerts.filter(a => a.severity === 'medium' && a.active).length}</span>
+                <span className="font-bold text-lg text-yellow-600">{mockAlerts.filter(a => a.severity === 'medium' && a.active).length}</span>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between hover:bg-[#f0f2f5] -mx-1 px-1 py-1 rounded transition-colors">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                  <span className="text-sm text-[#333]">Düşük</span>
+                  <div className="w-4 h-4 rounded-full bg-green-500 shadow-sm"></div>
+                  <span className="text-sm font-medium text-[#333]">Düşük</span>
                 </div>
-                <span className="font-bold text-[#333]">{mockAlerts.filter(a => a.severity === 'low' && a.active).length}</span>
+                <span className="font-bold text-lg text-green-600">{mockAlerts.filter(a => a.severity === 'low' && a.active).length}</span>
               </div>
             </div>
           </div>
 
-          {/* Category Breakdown */}
-          <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
-            <h3 className="font-bold text-[#333] mb-4">Kategoriler</h3>
+          {/* Category Breakdown Card */}
+          <div className="bg-white rounded-lg border border-[#e0e0e0] p-5">
+            <h3 className="font-bold text-[#333] mb-5 flex items-center gap-2">
+              <Zap size={18} className="text-[#00833e]" />
+              Kategori Dağılımı
+            </h3>
             <div className="space-y-2">
-              {filterCategories.filter(c => c.id !== 'all').map((category) => (
-                <div key={category.id} className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-600">{category.icon}</span>
-                    <span className="text-[#333]">{category.label}</span>
+              {filterCategories.filter(c => c.id !== 'all').map((category) => {
+                const count = mockAlerts.filter(a => a.category === category.id && a.active).length;
+                return (
+                  <div key={category.id} className="flex items-center justify-between text-sm hover:bg-[#f0f2f5] -mx-1 px-1 py-1.5 rounded transition-colors">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[#00833e]">{category.icon}</span>
+                      <span className="text-[#333] font-medium">{category.label}</span>
+                    </div>
+                    <span className="font-bold text-[#00833e] bg-[#e6f4ec] px-2.5 py-0.5 rounded-full text-xs">
+                      {count}
+                    </span>
                   </div>
-                  <span className="font-medium text-[#8f8f8f]">
-                    {mockAlerts.filter(a => a.category === category.id && a.active).length}
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

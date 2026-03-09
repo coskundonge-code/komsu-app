@@ -9,7 +9,10 @@ import {
   AlertCircle,
   Eye,
   EyeOff,
+  Plus,
+  ChevronRight,
 } from 'lucide-react';
+import Image from 'next/image';
 
 interface FormData {
   title: string;
@@ -188,29 +191,31 @@ export default function CreateEventPage() {
   )?.label || '';
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#f0f2f5] py-8 px-4 sm:px-6 lg:px-8">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-[#00833e] to-[#006b32] text-white py-12 px-6 rounded-2xl mb-8 max-w-6xl mx-auto">
+        <h1 className="text-4xl font-bold mb-2">
+          Yeni Etkinlik Oluştur
+        </h1>
+        <p className="text-green-50 text-lg">
+          Mahallede bir etkinlik organize etmek istiyorsanız, formu doldurup etkinlik yaratın.
+        </p>
+      </div>
+
       <div className="max-w-6xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">
-            Yeni Etkinlik Oluştur
-          </h1>
-          <p className="text-gray-600 text-lg">
-            Mahallede bir etkinlik organize etmek istiyorsanız, lütfen aşağıdaki formu doldurun.
-          </p>
-        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Form Section */}
           <div className="lg:col-span-2">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Cover Image Upload */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white rounded-xl shadow-md p-6">
                 <label className="block text-sm font-semibold text-gray-900 mb-4">
-                  Kapak Resmi
+                  Kapak Resmi *
                 </label>
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-green-600 transition-colors bg-gradient-to-br from-gray-50 to-gray-100"
+                  className="border-2 border-dashed border-[#e0e0e0] rounded-xl p-8 text-center cursor-pointer hover:border-[#00833e] transition-colors bg-gradient-to-br from-[#f0f2f5] to-gray-100"
                 >
                   <input
                     ref={fileInputRef}
@@ -234,64 +239,74 @@ export default function CreateEventPage() {
                           setFormData((prev) => ({ ...prev, coverImage: null }));
                           if (fileInputRef.current) fileInputRef.current.value = '';
                         }}
-                        className="text-sm text-gray-500 hover:text-gray-700 underline"
+                        className="text-sm text-[#00833e] hover:text-[#006b32] underline font-medium"
                       >
                         Resmi Değiştir
                       </button>
                     </div>
                   ) : (
                     <div className="flex flex-col items-center text-gray-400">
-                      <Camera className="w-12 h-12 mb-3" />
-                      <p className="font-medium text-gray-700">
-                        Kapak resmi seçmek için tıklayınız
+                      <div className="w-16 h-16 bg-[#f0f2f5] rounded-full flex items-center justify-center mb-3">
+                        <Camera className="w-8 h-8 text-[#00833e]" />
+                      </div>
+                      <p className="font-semibold text-gray-700">
+                        Kapak resmi seçiniz
                       </p>
                       <p className="text-sm text-gray-500 mt-1">
-                        veya sürükleyip bırakınız
+                        PNG, JPG - Max 5MB
                       </p>
                     </div>
                   )}
                 </div>
+                <p className="text-xs text-gray-500 mt-3">
+                  İyi bir kapak resmi, etkinliğinize daha fazla ilgi çeker. Açık ve profesyonel resimler tercih edin.
+                </p>
               </div>
 
               {/* Title */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white rounded-xl shadow-md p-6">
                 <label className="block text-sm font-semibold text-gray-900 mb-2">
                   Etkinlik Başlığı *
                 </label>
                 <input
                   type="text"
-                  placeholder="Etkinliğinizin adı"
+                  placeholder="Örn: Mahalle Temizlik Günü, Komşu Kahvaltısı..."
                   value={formData.title}
                   onChange={(e) => handleInputChange('title', e.target.value)}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 transition-all ${
+                  maxLength={80}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] transition-all ${
                     errors.title
                       ? 'border-red-500 bg-red-50'
-                      : 'border-gray-300 bg-white'
+                      : 'border-[#e0e0e0] bg-white'
                   }`}
                 />
-                {errors.title && (
-                  <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
-                    <AlertCircle className="w-4 h-4" />
-                    {errors.title}
-                  </p>
-                )}
+                <div className="flex justify-between items-center mt-2">
+                  {errors.title && (
+                    <p className="text-red-500 text-sm flex items-center gap-1">
+                      <AlertCircle className="w-4 h-4" />
+                      {errors.title}
+                    </p>
+                  )}
+                  <p className="text-xs text-gray-500 ml-auto">{formData.title.length}/80</p>
+                </div>
               </div>
 
               {/* Description */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white rounded-xl shadow-md p-6">
                 <label className="block text-sm font-semibold text-gray-900 mb-2">
                   Açıklama *
                 </label>
                 <div>
                   <textarea
-                    placeholder="Etkinliği açıklayınız..."
+                    placeholder="Etkinlik hakkında detayları yazınız. Maksimum 500 karakter."
                     value={formData.description}
                     onChange={(e) => handleInputChange('description', e.target.value)}
                     rows={5}
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 transition-all resize-none ${
+                    maxLength={500}
+                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] transition-all resize-none ${
                       errors.description
                         ? 'border-red-500 bg-red-50'
-                        : 'border-gray-300 bg-white'
+                        : 'border-[#e0e0e0] bg-white'
                     }`}
                   />
                   <div className="flex justify-between items-center mt-2">
@@ -303,8 +318,8 @@ export default function CreateEventPage() {
                     )}
                     <p
                       className={`text-sm ml-auto ${
-                        formData.description.length > 500
-                          ? 'text-red-500'
+                        formData.description.length > 450
+                          ? 'text-orange-500'
                           : 'text-gray-500'
                       }`}
                     >
@@ -315,7 +330,7 @@ export default function CreateEventPage() {
               </div>
 
               {/* Date and Time */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white rounded-xl shadow-md p-6">
                 <label className="block text-sm font-semibold text-gray-900 mb-4">
                   Tarih ve Saat *
                 </label>
@@ -330,10 +345,10 @@ export default function CreateEventPage() {
                       onChange={(e) =>
                         handleInputChange('startDate', e.target.value)
                       }
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 transition-all ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] transition-all ${
                         errors.startDate
                           ? 'border-red-500 bg-red-50'
-                          : 'border-gray-300 bg-white'
+                          : 'border-[#e0e0e0] bg-white'
                       }`}
                     />
                     {errors.startDate && (
@@ -353,10 +368,10 @@ export default function CreateEventPage() {
                       onChange={(e) =>
                         handleInputChange('startTime', e.target.value)
                       }
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 transition-all ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] transition-all ${
                         errors.startTime
                           ? 'border-red-500 bg-red-50'
-                          : 'border-gray-300 bg-white'
+                          : 'border-[#e0e0e0] bg-white'
                       }`}
                     />
                     {errors.startTime && (
@@ -376,10 +391,10 @@ export default function CreateEventPage() {
                       type="date"
                       value={formData.endDate}
                       onChange={(e) => handleInputChange('endDate', e.target.value)}
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 transition-all ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] transition-all ${
                         errors.endDate
                           ? 'border-red-500 bg-red-50'
-                          : 'border-gray-300 bg-white'
+                          : 'border-[#e0e0e0] bg-white'
                       }`}
                     />
                     {errors.endDate && (
@@ -399,10 +414,10 @@ export default function CreateEventPage() {
                       onChange={(e) =>
                         handleInputChange('endTime', e.target.value)
                       }
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 transition-all ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] transition-all ${
                         errors.endTime
                           ? 'border-red-500 bg-red-50'
-                          : 'border-gray-300 bg-white'
+                          : 'border-[#e0e0e0] bg-white'
                       }`}
                     />
                     {errors.endTime && (
@@ -416,11 +431,11 @@ export default function CreateEventPage() {
               </div>
 
               {/* Location */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white rounded-xl shadow-md p-6">
                 <label className="block text-sm font-semibold text-gray-900 mb-4">
-                  Konum
+                  Konum *
                 </label>
-                <div className="mb-4 flex items-center gap-3">
+                <div className="mb-4 flex items-center gap-3 p-3 bg-[#f0f2f5] rounded-lg">
                   <input
                     type="checkbox"
                     id="onlineEvent"
@@ -428,27 +443,27 @@ export default function CreateEventPage() {
                     onChange={(e) =>
                       handleInputChange('isOnlineEvent', e.target.checked)
                     }
-                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-2 focus:ring-green-600 cursor-pointer"
+                    className="w-4 h-4 text-[#00833e] border-[#e0e0e0] rounded focus:ring-2 focus:ring-[#00833e] cursor-pointer"
                   />
-                  <label htmlFor="onlineEvent" className="text-gray-700 cursor-pointer">
-                    Online Etkinlik
+                  <label htmlFor="onlineEvent" className="text-gray-700 cursor-pointer font-medium">
+                    Bu Çevrimiçi bir Etkinlik
                   </label>
                 </div>
                 {!formData.isOnlineEvent && (
                   <div>
                     <div className="relative">
-                      <MapPin className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+                      <MapPin className="absolute left-3 top-3.5 w-5 h-5 text-[#00833e]" />
                       <input
                         type="text"
-                        placeholder="Etkinlik konumunu giriniz"
+                        placeholder="Örn: Mahalle Parkı, Spor Salonu..."
                         value={formData.location}
                         onChange={(e) =>
                           handleInputChange('location', e.target.value)
                         }
-                        className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 transition-all ${
+                        className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] transition-all ${
                           errors.location
                             ? 'border-red-500 bg-red-50'
-                            : 'border-gray-300 bg-white'
+                            : 'border-[#e0e0e0] bg-white'
                         }`}
                       />
                     </div>
@@ -463,7 +478,7 @@ export default function CreateEventPage() {
               </div>
 
               {/* Category */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white rounded-xl shadow-md p-6">
                 <label className="block text-sm font-semibold text-gray-900 mb-4">
                   Kategori *
                 </label>
@@ -475,8 +490,8 @@ export default function CreateEventPage() {
                       onClick={() => handleInputChange('category', cat.id)}
                       className={`px-4 py-3 rounded-lg font-medium transition-all border-2 ${
                         formData.category === cat.id
-                          ? 'border-green-600 bg-green-50 text-green-700'
-                          : 'border-gray-300 bg-white text-gray-700 hover:border-green-300'
+                          ? 'border-[#00833e] bg-green-50 text-[#00833e]'
+                          : 'border-[#e0e0e0] bg-white text-gray-700 hover:border-[#00833e]'
                       }`}
                     >
                       {cat.label}
@@ -492,24 +507,25 @@ export default function CreateEventPage() {
               </div>
 
               {/* Max Attendees */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white rounded-xl shadow-md p-6">
                 <label className="block text-sm font-semibold text-gray-900 mb-2">
                   Maksimum Katılımcı Sayısı *
                 </label>
                 <div className="relative">
-                  <Users className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+                  <Users className="absolute left-3 top-3.5 w-5 h-5 text-[#00833e]" />
                   <input
                     type="number"
-                    placeholder="10"
+                    placeholder="Örn: 30"
                     min="1"
+                    max="999"
                     value={formData.maxAttendees}
                     onChange={(e) =>
                       handleInputChange('maxAttendees', e.target.value ? parseInt(e.target.value) : '')
                     }
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 transition-all ${
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] transition-all ${
                       errors.maxAttendees
                         ? 'border-red-500 bg-red-50'
-                        : 'border-gray-300 bg-white'
+                        : 'border-[#e0e0e0] bg-white'
                     }`}
                   />
                 </div>
@@ -522,13 +538,13 @@ export default function CreateEventPage() {
               </div>
 
               {/* Visibility */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white rounded-xl shadow-md p-6">
                 <label className="block text-sm font-semibold text-gray-900 mb-4">
                   Görünürlük *
                 </label>
                 <div className="space-y-3">
                   {VISIBILITY_OPTIONS.map((option) => (
-                    <label key={option.id} className="flex items-center gap-3 cursor-pointer">
+                    <label key={option.id} className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-[#f0f2f5] transition-colors">
                       <input
                         type="radio"
                         name="visibility"
@@ -537,26 +553,26 @@ export default function CreateEventPage() {
                         onChange={(e) =>
                           handleInputChange('visibility', e.target.value)
                         }
-                        className="w-4 h-4 text-green-600 border-gray-300 focus:ring-2 focus:ring-green-600 cursor-pointer"
+                        className="w-4 h-4 text-[#00833e] border-[#e0e0e0] focus:ring-2 focus:ring-[#00833e] cursor-pointer"
                       />
-                      <span className="text-gray-700">{option.label}</span>
+                      <span className="text-gray-700 font-medium">{option.label}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               {/* Submit Button */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white rounded-xl shadow-md p-6">
                 <button
                   type="submit"
                   disabled={!isFormValid(formData)}
                   className={`w-full py-3 px-4 rounded-lg font-semibold text-white transition-all flex items-center justify-center gap-2 ${
                     isFormValid(formData)
-                      ? 'bg-green-600 hover:bg-green-700 cursor-pointer shadow-md hover:shadow-lg'
+                      ? 'bg-[#00833e] hover:bg-[#006b32] cursor-pointer shadow-md hover:shadow-lg'
                       : 'bg-gray-400 cursor-not-allowed opacity-60'
                   }`}
                 >
-                  <Clock className="w-5 h-5" />
+                  <Plus className="w-5 h-5" />
                   Etkinlik Oluştur
                 </button>
               </div>
@@ -567,9 +583,9 @@ export default function CreateEventPage() {
           <div className="lg:col-span-1">
             <div className="sticky top-8">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                Önizleme
+                Ön İzleme
               </h2>
-              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-[#e0e0e0]">
                 {imagePreview ? (
                   <div className="relative">
                     <img
@@ -577,33 +593,36 @@ export default function CreateEventPage() {
                       alt="Event preview"
                       className="w-full h-48 object-cover"
                     />
-                    <div className="absolute top-2 right-2 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                      {categoryName || 'Kategori'}
+                    <div className="absolute top-3 right-3 bg-[#00833e] text-white px-3 py-1.5 rounded-full text-xs font-semibold">
+                      {categoryName || "Kategori"}
                     </div>
                   </div>
                 ) : (
-                  <div className="w-full h-48 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                    <p className="text-gray-500 text-sm">Resim seçiniz</p>
+                  <div className="w-full h-48 bg-gradient-to-br from-[#f0f2f5] to-gray-200 flex items-center justify-center">
+                    <div className="text-center">
+                      <Camera className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                      <p className="text-gray-500 text-sm">Resim seçiniz</p>
+                    </div>
                   </div>
                 )}
 
-                <div className="p-4 space-y-4">
+                <div className="p-5 space-y-4">
                   <div>
-                    <h3 className="font-bold text-gray-900 line-clamp-2">
-                      {formData.title || 'Etkinlik Başlığı'}
+                    <h3 className="font-bold text-gray-900 line-clamp-2 text-base">
+                      {formData.title || "Etkinlik Başlığı"}
                     </h3>
                   </div>
 
                   {formData.startDate && formData.startTime && (
                     <div className="flex items-start gap-3">
-                      <Clock className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
+                      <Clock className="w-5 h-5 text-[#00833e] flex-shrink-0 mt-0.5" />
                       <div className="text-sm text-gray-600">
-                        <p>{new Date(`${formData.startDate}T${formData.startTime}`).toLocaleDateString('tr-TR', {
-                          weekday: 'short',
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
+                        <p>{new Date(`${formData.startDate}T${formData.startTime}`).toLocaleDateString("tr-TR", {
+                          weekday: "short",
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
                         })}</p>
                       </div>
                     </div>
@@ -611,7 +630,7 @@ export default function CreateEventPage() {
 
                   {!formData.isOnlineEvent && formData.location && (
                     <div className="flex items-start gap-3">
-                      <MapPin className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
+                      <MapPin className="w-5 h-5 text-[#00833e] flex-shrink-0 mt-0.5" />
                       <p className="text-sm text-gray-600 line-clamp-2">
                         {formData.location}
                       </p>
@@ -620,26 +639,32 @@ export default function CreateEventPage() {
 
                   {formData.isOnlineEvent && (
                     <div className="flex items-start gap-3">
-                      <Eye className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
-                      <p className="text-sm text-gray-600">Online Etkinlik</p>
+                      <Eye className="w-5 h-5 text-[#00833e] flex-shrink-0 mt-0.5" />
+                      <p className="text-sm text-gray-600">Çevrimiçi Etkinlik</p>
                     </div>
                   )}
 
                   {formData.maxAttendees && (
                     <div className="flex items-start gap-3">
-                      <Users className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
+                      <Users className="w-5 h-5 text-[#00833e] flex-shrink-0 mt-0.5" />
                       <p className="text-sm text-gray-600">
-                        {formData.maxAttendees} Kişi
+                        Max {formData.maxAttendees} Kişi
                       </p>
                     </div>
                   )}
 
-                  <div className="pt-3 border-t border-gray-200">
-                    <p className="text-xs text-gray-500">
-                      Görünürlük: {visibilityName}
+                  <div className="pt-3 border-t border-[#e0e0e0]">
+                    <p className="text-xs text-[#8f8f8f]">
+                      <span className="font-semibold text-[#404040]">Görünürlük:</span> {visibilityName}
                     </p>
                   </div>
                 </div>
+              </div>
+
+              <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-xl">
+                <p className="text-sm text-green-800">
+                  <span className="font-semibold">İpucu:</span> Açık ve çekici bir başlık ile daha fazla kişi etkinliğinizi görebilir.
+                </p>
               </div>
             </div>
           </div>
