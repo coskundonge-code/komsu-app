@@ -2,11 +2,12 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Bell, MessageSquare, Search, ChevronDown } from 'lucide-react'
+import { Bell, MessageSquare, Search, ChevronDown, Menu } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { SearchDropdown } from './search-dropdown'
 import { UserDropdown } from './user-dropdown'
+import { MobileDrawer } from './mobile-drawer'
 
 export function Navbar() {
   const pathname = usePathname()
@@ -14,6 +15,7 @@ export function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false)
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false)
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchQuery.trim()) {
@@ -23,10 +25,18 @@ export function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-[#e0e0e0] shadow-sm">
-      <div className="max-w-[1280px] mx-auto flex items-center justify-between h-[56px] px-4">
-        {/* Left: Logo */}
-        <div className="flex items-center gap-2 min-w-[180px]">
+    <>
+      <nav className="sticky top-0 z-50 bg-white border-b border-[#e0e0e0] shadow-sm">
+        <div className="max-w-[1280px] mx-auto flex items-center justify-between h-[56px] px-4">
+          {/* Left: Hamburger Menu (Mobile) + Logo */}
+          <div className="flex items-center gap-2 min-w-fit lg:min-w-[180px]">
+            <button
+              onClick={() => setIsMobileDrawerOpen(true)}
+              className="lg:hidden p-2 hover:bg-[#f0f2f5] rounded-full transition-colors"
+              aria-label="Menüyü aç"
+            >
+              <Menu className="w-5 h-5 text-[#404040]" />
+            </button>
           <Link href="/" className="flex items-center gap-2">
             <svg viewBox="0 0 24 24" className="w-7 h-7 text-[#00833e]" fill="currentColor">
               <path d="M12 3L4 9v12h5v-7h6v7h5V9l-8-6z" />
@@ -100,5 +110,12 @@ export function Navbar() {
         </div>
       </div>
     </nav>
+
+    {/* Mobile Drawer */}
+    <MobileDrawer
+      isOpen={isMobileDrawerOpen}
+      onClose={() => setIsMobileDrawerOpen(false)}
+    />
+    </>
   )
 }
