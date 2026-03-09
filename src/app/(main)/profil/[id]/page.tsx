@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import {
   MapPin,
   Calendar,
@@ -20,6 +19,7 @@ import {
   ThumbsUp,
   Star,
   Zap,
+  TrendingUp,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -85,9 +85,9 @@ const mockProfile: ProfileData = {
   joinDate: '15 Mart 2026',
   bio: 'Mahalle gönüllüsü. Komşu topluluğunu geliştirmede tutkulu. Spor, müzik ve sosyal projeler benim tutkum.',
   stats: {
-    posts: 24,
-    neighbors: 87,
-    helps: 12,
+    posts: 45,
+    neighbors: 89,
+    helps: 128,
     thankyous: 18,
   },
   badges: [
@@ -215,9 +215,9 @@ const mockProfile: ProfileData = {
 
 const tabs = [
   { id: 'posts', label: 'Gönderiler' },
-  { id: 'comments', label: 'Yorumlar' },
   { id: 'recommendations', label: 'Öneriler' },
-  { id: 'about', label: 'Hakkında' },
+  { id: 'marketplace', label: 'Pazar Yeri İlanları' },
+  { id: 'groups', label: 'Gruplar' },
 ];
 
 export default function ProfilePage({ params }: { params: { id: string } }) {
@@ -228,13 +228,10 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
     <div className="min-h-screen bg-[#f0f2f5]">
       {/* Cover Image with Enhanced Gradient Overlay */}
       <div className="relative h-56 bg-gradient-to-b from-[#00833e] to-[#006b32] overflow-hidden">
-        <Image
+        <img
           src={mockProfile.coverImage}
           alt="Profil Kapağı"
-          width={1200}
-          height={400}
           className="w-full h-full object-cover"
-          unoptimized
         />
         {/* Multi-layer gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40" />
@@ -331,16 +328,16 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                 <p className="text-xs text-[#8f8f8f] mt-1 font-medium">Gönderi</p>
               </div>
               <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 text-center card-hover">
-                <p className="text-2xl font-bold text-[#00833e]">{mockProfile.stats.neighbors}</p>
-                <p className="text-xs text-[#8f8f8f] mt-1 font-medium">Komşu</p>
-              </div>
-              <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 text-center card-hover">
                 <p className="text-2xl font-bold text-[#00833e]">{mockProfile.stats.helps}</p>
                 <p className="text-xs text-[#8f8f8f] mt-1 font-medium">Yardım</p>
               </div>
               <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 text-center card-hover">
-                <p className="text-2xl font-bold text-[#00833e]">{mockProfile.stats.thankyous}</p>
-                <p className="text-xs text-[#8f8f8f] mt-1 font-medium">Teşekkür</p>
+                <p className="text-2xl font-bold text-[#00833e]">{mockProfile.stats.neighbors}</p>
+                <p className="text-xs text-[#8f8f8f] mt-1 font-medium">Komşu</p>
+              </div>
+              <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 text-center card-hover">
+                <p className="text-2xl font-bold text-[#f39c12]">4.9</p>
+                <p className="text-xs text-[#8f8f8f] mt-1 font-medium">Puan</p>
               </div>
             </div>
 
@@ -403,39 +400,23 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                   </div>
                 )}
 
-                {/* Comments Tab */}
-                {activeTab === 'comments' && (
+                {/* Marketplace Tab */}
+                {activeTab === 'marketplace' && (
                   <div className="divide-y divide-[#e0e0e0]">
-                    {mockProfile.comments.length === 0 ? (
-                      <div className="p-8 text-center">
-                        <MessageCircle size={32} className="mx-auto text-[#e0e0e0] mb-2" />
-                        <p className="text-[#8f8f8f]">Henüz yorum yok</p>
-                      </div>
-                    ) : (
-                      mockProfile.comments.map((comment) => (
-                        <div key={comment.id} className="p-5 hover:bg-[#f0f2f5] transition-colors card-hover border-l-4 border-transparent hover:border-[#00833e]">
-                          <div className="flex items-start justify-between mb-2">
-                            <div className="flex-1">
-                              <p className="text-xs font-medium text-[#8f8f8f] mb-1">"{comment.postTitle}"'e yorum yaptı</p>
-                              <p className="text-[#333] text-sm font-medium leading-relaxed">{comment.text}</p>
-                            </div>
-                            <span className="text-xs text-[#8f8f8f] font-medium whitespace-nowrap ml-2">{comment.time}</span>
-                          </div>
+                    <div className="p-8 text-center">
+                      <MessageSquare size={32} className="mx-auto text-[#e0e0e0] mb-2" />
+                      <p className="text-[#8f8f8f]">Henüz pazar yeri ilanı yok</p>
+                    </div>
+                  </div>
+                )}
 
-                          {/* Comment Actions */}
-                          <div className="flex items-center gap-6 text-xs text-[#8f8f8f] pt-3 border-t border-[#e0e0e0]">
-                            <button className="flex items-center gap-1.5 hover:text-[#00833e] transition-colors">
-                              <Heart size={16} className="text-[#e74c3c]" />
-                              <span className="font-medium">{comment.likes}</span>
-                            </button>
-                            <button className="flex items-center gap-1.5 hover:text-[#00833e] transition-colors">
-                              <MessageCircle size={16} />
-                              <span className="font-medium">Yanıtla</span>
-                            </button>
-                          </div>
-                        </div>
-                      ))
-                    )}
+                {/* Groups Tab */}
+                {activeTab === 'groups' && (
+                  <div className="divide-y divide-[#e0e0e0]">
+                    <div className="p-8 text-center">
+                      <Users size={32} className="mx-auto text-[#e0e0e0] mb-2" />
+                      <p className="text-[#8f8f8f]">Henüz grup üyeliği yok</p>
+                    </div>
                   </div>
                 )}
 
@@ -479,106 +460,6 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                   </div>
                 )}
 
-                {/* About Tab */}
-                {activeTab === 'about' && (
-                  <div className="p-6 space-y-6">
-                    {/* User Bio */}
-                    <div>
-                      <h3 className="text-sm font-bold text-[#333] mb-3 flex items-center gap-2">
-                        <MessageSquare size={16} className="text-[#00833e]" />
-                        Hakkında
-                      </h3>
-                      <p className="text-sm text-[#404040] leading-relaxed">{mockProfile.bio}</p>
-                    </div>
-
-                    {/* Location & Join Info */}
-                    <div>
-                      <h3 className="text-sm font-bold text-[#333] mb-3 flex items-center gap-2">
-                        <MapPin size={16} className="text-[#00833e]" />
-                        Bilgiler
-                      </h3>
-                      <div className="space-y-3">
-                        <div className="flex items-start gap-3 p-3 bg-[#f0f2f5] rounded-lg">
-                          <Calendar size={16} className="text-[#00833e] flex-shrink-0 mt-0.5" />
-                          <div>
-                            <p className="text-xs font-medium text-[#8f8f8f] mb-1">Katılım Tarihi</p>
-                            <p className="text-sm text-[#333] font-medium">{mockProfile.joinDate}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-3 p-3 bg-[#f0f2f5] rounded-lg">
-                          <MapPin size={16} className="text-[#00833e] flex-shrink-0 mt-0.5" />
-                          <div>
-                            <p className="text-xs font-medium text-[#8f8f8f] mb-1">Bölge</p>
-                            <p className="text-sm text-[#333] font-medium">{mockProfile.neighborhood}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-3 p-3 bg-[#f0f2f5] rounded-lg">
-                          <Users size={16} className="text-[#00833e] flex-shrink-0 mt-0.5" />
-                          <div>
-                            <p className="text-xs font-medium text-[#8f8f8f] mb-1">Komşu Ağı</p>
-                            <p className="text-sm text-[#333] font-medium">{mockProfile.stats.neighbors} komşu</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Interests */}
-                    <div>
-                      <h3 className="text-sm font-bold text-[#333] mb-3 flex items-center gap-2">
-                        <Lightbulb size={16} className="text-[#00833e]" />
-                        İlgi Alanları
-                      </h3>
-                      <div className="flex flex-wrap gap-2">
-                        {mockProfile.interests.map((interest) => (
-                          <span
-                            key={interest}
-                            className="px-3 py-1.5 bg-gradient-to-r from-[#00833e]/10 to-[#006b32]/10 text-[#006b32] text-xs font-medium rounded-full border border-[#00833e]/30 hover:border-[#00833e] transition-colors card-hover"
-                          >
-                            {interest}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Neighborhood Involvement */}
-                    <div>
-                      <h3 className="text-sm font-bold text-[#333] mb-3 flex items-center gap-2">
-                        <Users size={16} className="text-[#00833e]" />
-                        Mahalle Katılımı
-                      </h3>
-                      <div className="space-y-2">
-                        <p className="text-sm text-[#404040]">Mahallede aktif olarak katılmakta ve dayanışmayı güçlendirmek için çeşitli projeler yürütmektedir.</p>
-                        <ul className="text-sm text-[#404040] space-y-1 list-disc list-inside">
-                          <li>Aylık mahalle toplantılarını organize eder</li>
-                          <li>Gönüllü sosyal proje başlatır ve yönetir</li>
-                          <li>Komşu ağını genişletmek için etkinlikler düzenler</li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    {/* Skills & Expertise */}
-                    <div>
-                      <h3 className="text-sm font-bold text-[#333] mb-3 flex items-center gap-2">
-                        <Zap size={16} className="text-[#00833e]" />
-                        Beceriler & Uzmanlık
-                      </h3>
-                      <div className="flex flex-wrap gap-2">
-                        <span className="px-3 py-1.5 bg-[#f0f2f5] text-[#333] text-xs font-medium rounded-full border border-[#e0e0e0]">
-                          Olay Yönetimi
-                        </span>
-                        <span className="px-3 py-1.5 bg-[#f0f2f5] text-[#333] text-xs font-medium rounded-full border border-[#e0e0e0]">
-                          Sosyal Medya
-                        </span>
-                        <span className="px-3 py-1.5 bg-[#f0f2f5] text-[#333] text-xs font-medium rounded-full border border-[#e0e0e0]">
-                          Proje Yönetimi
-                        </span>
-                        <span className="px-3 py-1.5 bg-[#f0f2f5] text-[#333] text-xs font-medium rounded-full border border-[#e0e0e0]">
-                          Fotoğrafçılık
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>

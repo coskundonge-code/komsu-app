@@ -13,6 +13,8 @@ import {
   AlertCircle,
   X,
   MessageSquare,
+  TrendingUp,
+  Eye,
 } from 'lucide-react';
 
 interface InviteEmailData {
@@ -22,9 +24,11 @@ interface InviteEmailData {
 
 interface SentInvitation {
   id: string;
-  email: string;
+  name: string;
+  phone?: string;
+  email?: string;
   sentDate: string;
-  status: 'pending' | 'accepted';
+  status: 'accepted' | 'pending' | 'opened';
 }
 
 export default function InvitePage() {
@@ -39,18 +43,21 @@ export default function InvitePage() {
   const [sentInvitations, setSentInvitations] = useState<SentInvitation[]>([
     {
       id: '1',
+      name: 'Ayşe Yılmaz',
       email: 'ayse@example.com',
       sentDate: '2 gün önce',
       status: 'accepted',
     },
     {
       id: '2',
+      name: 'Mehmet Kara',
       email: 'mehmet@example.com',
       sentDate: '5 gün önce',
       status: 'pending',
     },
     {
       id: '3',
+      name: 'Zeynep Çelik',
       email: 'zeynep@example.com',
       sentDate: '1 hafta önce',
       status: 'accepted',
@@ -58,6 +65,9 @@ export default function InvitePage() {
   ]);
   const [whatsappPhone, setWhatsappPhone] = useState('');
   const [smsPhone, setSmsPhone] = useState('');
+
+  const invitedCount = sentInvitations.filter(inv => inv.status === 'accepted').length;
+  const totalInvites = 5;
 
   const validateEmail = (email: string): boolean => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -103,10 +113,11 @@ export default function InvitePage() {
     }
 
     // Simulate sending invites
-    const newInvitations = emailData.emails.map((email, index) => ({
+    const newInvitations: SentInvitation[] = emailData.emails.map((email, index) => ({
       id: Date.now().toString() + index,
+      name: email.split('@')[0],
       email,
-      sentDate: 'şimdi',
+      sentDate: "şimdi",
       status: 'pending' as const,
     }));
 
@@ -162,14 +173,82 @@ export default function InvitePage() {
 
   return (
     <div className="min-h-screen bg-[#f0f2f5] py-8">
-      <div className="max-w-4xl mx-auto px-4">
+      <div className="max-w-5xl mx-auto px-4">
+        {/* Hero Section */}
+        <div className="mb-8 bg-gradient-to-r from-[#00833e] to-[#006b32] rounded-xl overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 md:p-12">
+            {/* Left Content */}
+            <div className="flex flex-col justify-center">
+              <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                "Komşularını Davet Et"
+              </h1>
+              <p className="text-lg text-white/90 mb-6">
+                Mahallenizdeki insanları Komşu uygulamasına katılmaya davet edin ve birlikte güçlü bir topluluk kurun.
+              </p>
+              <div className="flex items-center gap-3 text-white/80 text-sm">
+                <TrendingUp size={18} />
+                <span>"Bu hafta 1.247 yeni komşu katıldı"</span>
+              </div>
+            </div>
+            {/* Right Illustration Area */}
+            <div className="hidden md:flex items-center justify-center">
+              <div className="w-32 h-32 bg-white/10 rounded-full flex items-center justify-center border-2 border-white/30">
+                <Users size={64} className="text-white/40" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Referral Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-[#00833e]/10 to-[#006b32]/10 rounded-lg flex items-center justify-center">
+                <Users size={24} className="text-[#00833e]" />
+              </div>
+              <div>
+                <p className="text-sm text-[#8f8f8f]">Davet Ettiklerin</p>
+                <p className="text-2xl font-bold text-[#333]">5 Kişi</p>
+                <p className="text-xs text-[#00833e] mt-1">{invitedCount} Katıldı</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-[#f39c12]/10 to-[#e67e22]/10 rounded-lg flex items-center justify-center">
+                <Zap size={24} className="text-[#f39c12]" />
+              </div>
+              <div>
+                <p className="text-sm text-[#8f8f8f]">Özel Rozet İçin</p>
+                <p className="text-2xl font-bold text-[#333]">7 Daha</p>
+                <p className="text-xs text-[#f39c12] mt-1">"7 daha davet et, özel rozet kazan!"</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-8">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm font-medium text-[#333]">Rozet İlerleme Durumu</p>
+            <p className="text-xs font-medium text-[#8f8f8f]">{totalInvites}/12 Davet</p>
+          </div>
+          <div className="w-full bg-[#e0e0e0] rounded-full h-3 overflow-hidden">
+            <div
+              className="bg-gradient-to-r from-[#00833e] to-[#006b32] h-full transition-all duration-300"
+              style={{ width: `${(totalInvites / 12) * 100}%` }}
+            />
+          </div>
+          <p className="text-xs text-[#8f8f8f] mt-3">Hediye rozeti açmak için 12 komşu davet et</p>
+        </div>
+
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-[#333] mb-3">
-            Komşularınızı Davet Edin
-          </h1>
-          <p className="text-lg text-[#8f8f8f]">
-            Mahallenizdeki insanları Komşu uygulamasına katılmaya davet edin ve birlikte güçlü bir topluluk kurun.
+          <h2 className="text-2xl font-bold text-[#333] mb-3">
+            Davet Gönder
+          </h2>
+          <p className="text-[#8f8f8f]">
+            En uygun yöntemi seçerek komşularını davet et
           </p>
         </div>
 
@@ -352,17 +431,28 @@ export default function InvitePage() {
                 </div>
 
                 {/* Share Options */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-4 gap-3">
                   <button className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-[#1f2937] hover:bg-[#1f2937] text-[#1f2937] hover:text-white font-medium rounded-lg transition-colors">
                     <Share2 size={18} />
-                    <span className="hidden sm:inline">Paylaş</span>
+                    <span className="hidden sm:inline text-sm">"Paylaş"</span>
                   </button>
                   <button
                     onClick={handleWhatsApp}
                     className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-[#25D366] hover:bg-[#25D366] text-[#25D366] hover:text-white font-medium rounded-lg transition-colors"
                   >
                     <MessageCircle size={18} />
-                    <span className="hidden sm:inline">WhatsApp</span>
+                    <span className="hidden sm:inline text-sm">"WhatsApp"</span>
+                  </button>
+                  <button className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-[#3b5998] hover:bg-[#3b5998] text-[#3b5998] hover:text-white font-medium rounded-lg transition-colors">
+                    <MessageSquare size={18} />
+                    <span className="hidden sm:inline text-sm">"SMS"</span>
+                  </button>
+                  <button
+                    onClick={handleCopyLink}
+                    className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-[#00833e] hover:bg-[#00833e] text-[#00833e] hover:text-white font-medium rounded-lg transition-colors"
+                  >
+                    <Copy size={18} />
+                    <span className="hidden sm:inline text-sm">"Kopyala"</span>
                   </button>
                 </div>
 
@@ -455,48 +545,47 @@ export default function InvitePage() {
           <div className="mt-12">
             <h2 className="text-2xl font-bold text-[#333] mb-6">Gönderilen Davetler</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {sentInvitations.map((invitation) => (
-                <div
-                  key={invitation.id}
-                  className="bg-white rounded-lg border border-[#e0e0e0] p-4"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-start gap-3 flex-1">
-                      <div className="w-10 h-10 bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-lg flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
-                        {invitation.email.charAt(0).toUpperCase()}
+            <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden">
+              <div className="divide-y divide-[#e0e0e0]">
+                {sentInvitations.map((invitation) => (
+                  <div
+                    key={invitation.id}
+                    className="p-5 flex items-center justify-between hover:bg-[#f0f2f5] transition-colors"
+                  >
+                    <div className="flex items-center gap-4 flex-1">
+                      <div className="w-12 h-12 bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                        {invitation.name.charAt(0).toUpperCase()}
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium text-[#333] truncate">
-                          {invitation.email}
-                        </p>
-                        <p className="text-xs text-[#8f8f8f]">{invitation.sentDate}</p>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-[#333]">{invitation.name}</p>
+                        <p className="text-xs text-[#8f8f8f]">{invitation.email || invitation.phone} • {invitation.sentDate}</p>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Status Badge */}
-                  <div
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${
-                      invitation.status === 'accepted'
-                        ? 'bg-green-50 text-green-700 border border-green-200'
-                        : 'bg-yellow-50 text-yellow-700 border border-yellow-200'
-                    }`}
-                  >
-                    {invitation.status === 'accepted' ? (
-                      <>
-                        <Check size={12} />
-                        Kabul Etti
-                      </>
-                    ) : (
-                      <>
-                        <AlertCircle size={12} />
-                        Bekleniyor
-                      </>
-                    )}
+                    {/* Status Badge */}
+                    <div className="ml-4 flex-shrink-0">
+                      {invitation.status === 'accepted' && (
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">
+                          <Check size={14} />
+                          "Katıldı"
+                        </div>
+                      )}
+                      {invitation.status === 'opened' && (
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                          <Eye size={14} />
+                          "Link Açıldı"
+                        </div>
+                      )}
+                      {invitation.status === 'pending' && (
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-200">
+                          <AlertCircle size={14} />
+                          "Bekliyor"
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         )}
