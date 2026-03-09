@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { Plus, Search, Users } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -119,10 +120,13 @@ export default function GroupsPage() {
               >
                 {/* Circle Avatar */}
                 <div className="mb-4">
-                  <img
+                  <Image
                     src={group.avatar}
                     alt={group.name}
+                    width={96}
+                    height={96}
                     className="w-24 h-24 rounded-full object-cover border-2 border-[#e0e0e0]"
+                    unoptimized
                   />
                 </div>
 

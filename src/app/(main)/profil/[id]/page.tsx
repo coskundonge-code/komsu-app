@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import {
   MapPin,
   Calendar,
@@ -85,10 +86,13 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
     <div className="min-h-screen bg-[#f0f2f5]">
       {/* Cover Image */}
       <div className="relative h-48 bg-[#00833e] overflow-hidden">
-        <img
+        <Image
           src={mockProfile.coverImage}
           alt="Profil Kapağı"
+          width={1200}
+          height={400}
           className="w-full h-full object-cover"
+          unoptimized
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20" />
       </div>

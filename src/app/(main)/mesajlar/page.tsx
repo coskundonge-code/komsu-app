@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Edit, Search, Send, Image, Smile, Plus } from 'lucide-react';
+import Image from 'next/image';
+import { ChevronLeft, Edit, Search, Send, Image as ImageIcon, Smile, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
@@ -164,7 +165,7 @@ export default function MessagesPage() {
             >
               {/* Avatar */}
               <div className="relative flex-shrink-0">
-                <img src={convo.avatar} alt={convo.name} className="w-12 h-12 rounded-full object-cover" />
+                <Image src={convo.avatar} alt={convo.name} width={48} height={48} className="w-12 h-12 rounded-full object-cover" unoptimized />
                 {convo.online && (
                   <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
                 )}
@@ -206,7 +207,7 @@ export default function MessagesPage() {
             <ChevronLeft size={20} className="text-[#333]" />
           </button>
         )}
-        <img src={selected?.avatar} alt={selected?.name} className="w-12 h-12 rounded-full object-cover" />
+        <Image src={selected?.avatar || ''} alt={selected?.name || ''} width={48} height={48} className="w-12 h-12 rounded-full object-cover" unoptimized />
         <div className="flex-1">
           <p className="text-sm font-bold text-[#333]">{selected?.name}</p>
           <p className="text-xs text-[#8f8f8f]">{selected?.online ? 'Çevrimiçi' : 'Çevrimdışı'}</p>
@@ -236,7 +237,7 @@ export default function MessagesPage() {
       <div className="p-3 border-t border-[#e0e0e0] bg-white">
         <div className="flex items-center gap-2">
           <button className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors">
-            <Image size={20} className="text-[#8f8f8f]" />
+            <ImageIcon size={20} className="text-[#8f8f8f]" />
           </button>
           <input
             type="text"

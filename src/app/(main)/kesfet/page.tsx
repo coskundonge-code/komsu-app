@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { Search, MapPin, Newspaper, Store, Home, Building2, Flame } from 'lucide-react';
 import Link from 'next/link';
 
@@ -146,10 +147,13 @@ export default function KesfetPage() {
                   {/* Thumbnail */}
                   {item.thumbnail && (
                     <div className="flex-shrink-0 w-28 h-28 rounded-lg overflow-hidden bg-gray-300">
-                      <img
+                      <Image
                         src={item.thumbnail}
                         alt={item.title}
+                        width={112}
+                        height={112}
                         className="w-full h-full object-cover"
+                        unoptimized
                       />
                     </div>
                   )}

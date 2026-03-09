@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import Image from 'next/image';
 import {
   Bell,
   Heart,
@@ -256,10 +257,13 @@ export default function NotificationsPage() {
                     >
                       {/* Avatar */}
                       <div className="relative flex-shrink-0">
-                        <img
+                        <Image
                           src={notification.avatar}
                           alt={notification.userName}
+                          width={48}
+                          height={48}
                           className="w-12 h-12 rounded-full object-cover"
+                          unoptimized
                         />
                         {/* Icon Badge */}
                         <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full border border-[#e0e0e0] flex items-center justify-center">

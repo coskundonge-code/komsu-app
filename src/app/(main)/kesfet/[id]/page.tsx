@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { ArrowLeft, Clock, MapPin, Share2, Bookmark, ThumbsUp, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -57,10 +58,13 @@ export default function NewsDetailPage({ params }: { params: { id: string } }) {
         {/* Article Card */}
         <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden">
           {/* Cover Image */}
-          <img
+          <Image
             src={news.thumbnail}
             alt={news.title}
+            width={800}
+            height={400}
             className="w-full h-64 object-cover"
+            unoptimized
           />
 
           {/* Content */}

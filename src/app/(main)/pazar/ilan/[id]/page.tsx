@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import {
   MessageCircle,
   MapPin,
@@ -277,10 +278,12 @@ export default function ListingDetailPage({
           <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
             {/* Main Image */}
             <div className="relative bg-[#f0f2f5] aspect-square overflow-hidden group">
-              <img
+              <Image
                 src={mockListing.images[currentImageIndex]}
                 alt={mockListing.title}
+                fill
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                unoptimized
               />
 
               {/* Image Counter */}
@@ -323,17 +326,19 @@ export default function ListingDetailPage({
                     key={idx}
                     onClick={() => setCurrentImageIndex(idx)}
                     className={cn(
-                      'w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all hover:border-[#00833e]',
+                      'w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all hover:border-[#00833e] relative',
                       currentImageIndex === idx
                         ? 'border-[#00833e] ring-2 ring-[#00833e] ring-offset-1'
                         : 'border-[#e0e0e0]'
                     )}
                     title={`Resim ${idx + 1}`}
                   >
-                    <img
+                    <Image
                       src={image}
                       alt={`Thumbnail ${idx + 1}`}
+                      fill
                       className="w-full h-full object-cover"
+                      unoptimized
                     />
                   </button>
                 ))}
@@ -466,10 +471,12 @@ export default function ListingDetailPage({
                     className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-lg transition-shadow flex-shrink-0 w-48 group"
                   >
                     <div className="relative aspect-square overflow-hidden bg-[#f0f2f5]">
-                      <img
+                      <Image
                         src={listing.image}
                         alt={listing.title}
+                        fill
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                        unoptimized
                       />
                       <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs font-medium px-2 py-1 rounded">
                         {listing.timeAgo}
@@ -502,10 +509,13 @@ export default function ListingDetailPage({
 
               {/* Seller Profile */}
               <div className="flex items-start gap-3 mb-5 pb-5 border-b border-[#e0e0e0]">
-                <img
+                <Image
                   src={mockListing.seller.avatar}
                   alt={mockListing.seller.name}
+                  width={56}
+                  height={56}
                   className="w-14 h-14 rounded-full object-cover flex-shrink-0"
+                  unoptimized
                 />
                 <div className="flex-1">
                   <div className="flex items-center gap-1.5">

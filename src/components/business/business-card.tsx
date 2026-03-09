@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Star, Phone, Globe } from 'lucide-react';
+import { MapPin, Star, Phone, Globe, Clock } from 'lucide-react';
 
 interface BusinessCardProps {
   id: string;
@@ -11,6 +11,7 @@ interface BusinessCardProps {
   logo?: string;
   phone?: string;
   website?: string;
+  isOpen?: boolean;
 }
 
 export function BusinessCard({
@@ -23,9 +24,10 @@ export function BusinessCard({
   logo,
   phone,
   website,
+  isOpen,
 }: BusinessCardProps) {
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden border border-[#d1fae5]">
+    <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-[#d1fae5] hover:border-[#00833e] hover:scale-105">
       {/* Logo Area */}
       <div className="bg-gradient-to-r from-[#e6f4ec] to-green-50 h-32 flex items-center justify-center border-b border-[#d1fae5]">
         {logo ? (
@@ -39,7 +41,19 @@ export function BusinessCard({
 
       {/* Content */}
       <div className="p-4">
-        <h3 className="font-bold text-lg text-gray-900 line-clamp-1">{name}</h3>
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <h3 className="font-bold text-lg text-gray-900 line-clamp-1">{name}</h3>
+          {typeof isOpen === 'boolean' && (
+            <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 ${
+              isOpen
+                ? 'bg-green-100 text-green-700'
+                : 'bg-red-100 text-red-700'
+            }`}>
+              <Clock size={12} />
+              <span>{isOpen ? 'Açık' : 'Kapalı'}</span>
+            </div>
+          )}
+        </div>
 
         {/* Category */}
         <p className="text-sm text-[#00833e] font-medium mb-2">{category}</p>

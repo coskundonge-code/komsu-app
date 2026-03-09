@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { ChevronLeft, Phone, Video, MoreVertical } from 'lucide-react';
 import { ChatBubble, type Message } from '@/components/messaging/chat-bubble';
@@ -237,10 +238,13 @@ export default function ChatPage() {
               {conversation.online ? 'Çevrimiçi' : 'Çevrimdışı'}
             </p>
           </div>
-          <img
+          <Image
             src={conversation.avatar}
             alt={conversation.name}
+            width={40}
+            height={40}
             className="w-10 h-10 rounded-full object-cover ml-2"
+            unoptimized
           />
         </div>
 
