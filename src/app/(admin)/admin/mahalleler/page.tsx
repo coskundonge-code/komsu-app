@@ -1,7 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Plus, MapPin, Users, Edit2, Trash2, MoreVertical } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import {
+  Plus,
+  MapPin,
+  Users,
+  Edit2,
+  Trash2,
+  MoreVertical,
+  Search,
+  MessageSquare,
+  TrendingUp,
+  Layers,
+} from 'lucide-react';
 
 interface Neighborhood {
   id: string;
@@ -65,6 +76,8 @@ const MOCK_NEIGHBORHOODS: Neighborhood[] = [
 
 export default function MahalleleriPage() {
   const [showAddForm, setShowAddForm] = useState(false);
+  const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState<'members' | 'posts' | 'name'>('members');
   const [newNeighborhood, setNewNeighborhood] = useState({
     name: '',
     district: '',
@@ -77,13 +90,39 @@ export default function MahalleleriPage() {
     setShowAddForm(false);
   };
 
+  const filteredAndSorted = useMemo(() => {
+    let filtered = MOCK_NEIGHBORHOODS.filter(
+      (n) =>
+        n.name.toLowerCase().includes(search.toLowerCase()) ||
+        n.district.toLowerCase().includes(search.toLowerCase())
+    );
+
+    if (sortBy === 'members') {
+      filtered.sort((a, b) => b.members - a.members);
+    } else if (sortBy === 'posts') {
+      filtered.sort((a, b) => b.posts - a.posts);
+    } else {
+      filtered.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    return filtered;
+  }, [search, sortBy]);
+
+  const totalMembers = MOCK_NEIGHBORHOODS.reduce((sum, n) => sum + n.members, 0);
+  const totalPosts = MOCK_NEIGHBORHOODS.reduce((sum, n) => sum + n.posts, 0);
+  const avgMembers = Math.round(totalMembers / MOCK_NEIGHBORHOODS.length);
+  const avgPosts = Math.round(totalPosts / MOCK_NEIGHBORHOODS.length);
+
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Mahalleler</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Mahalle Yönetimi
+          </h1>
           <p className="text-gray-600">
-            Toplam {MOCK_NEIGHBORHOODS.length} mahalle yönetiliyor
+            {MOCK_NEIGHBORHOODS.length} mahalle, {totalMembers.toLocaleString()}{' '}
+            üye
           </p>
         </div>
         <button
@@ -95,9 +134,55 @@ export default function MahalleleriPage() {
         </button>
       </div>
 
+      {/* Quick Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-xs font-medium">Toplam Mahalle</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {MOCK_NEIGHBORHOODS.length}
+              </p>
+            </div>
+            <Layers className="text-[#00833e]" size={28} />
+          </div>
+        </div>
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-xs font-medium">Toplam Üye</p>
+              <p className="text-2xl font-bold text-blue-700">
+                {totalMembers.toLocaleString()}
+              </p>
+            </div>
+            <Users className="text-blue-600" size={28} />
+          </div>
+        </div>
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-xs font-medium">Toplam Paylaşım</p>
+              <p className="text-2xl font-bold text-purple-700">
+                {totalPosts.toLocaleString()}
+              </p>
+            </div>
+            <MessageSquare className="text-purple-600" size={28} />
+          </div>
+        </div>
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-xs font-medium">Ortalama Aktiflik</p>
+              <p className="text-2xl font-bold text-green-700">{avgPosts}</p>
+            </div>
+            <TrendingUp className="text-green-600" size={28} />
+          </div>
+        </div>
+      </div>
+
       {/* Add Neighborhood Form */}
       {showAddForm && (
-        <div className="bg-white rounded-lg border border-[#a7dbb8] p-6 mb-6">
+        <div className="bg-white rounded-lg border border-[#00833e] p-6 mb-6">
           <h2 className="text-lg font-bold text-gray-900 mb-4">Yeni Mahalle Ekle</h2>
           <form onSubmit={handleAddNeighborhood} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -115,7 +200,7 @@ export default function MahalleleriPage() {
                     })
                   }
                   placeholder="Örn: Beşiktaş"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                  className="w-full px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
                   required
                 />
               </div>
@@ -133,7 +218,7 @@ export default function MahalleleriPage() {
                     })
                   }
                   placeholder="Örn: İstanbul"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                  className="w-full px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
                   required
                 />
               </div>
@@ -157,91 +242,177 @@ export default function MahalleleriPage() {
         </div>
       )}
 
-      {/* Neighborhoods Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {MOCK_NEIGHBORHOODS.map((neighborhood) => (
-          <div
-            key={neighborhood.id}
-            className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div className="p-3 bg-[#d1fae5] rounded-lg text-[#00833e]">
-                <MapPin size={24} />
-              </div>
-              <button className="p-2 hover:bg-gray-100 rounded transition-colors">
-                <MoreVertical size={18} className="text-gray-600" />
-              </button>
-            </div>
-
-            <h3 className="text-lg font-bold text-gray-900 mb-1">
-              {neighborhood.name}
-            </h3>
-            <p className="text-sm text-gray-600 mb-4">{neighborhood.district}</p>
-
-            {/* Stats */}
-            <div className="space-y-3 py-4 border-t border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-gray-700">
-                  <Users size={16} className="text-[#00833e]" />
-                  <span className="text-sm">Üyeler</span>
-                </div>
-                <span className="font-bold text-gray-900">
-                  {neighborhood.members.toLocaleString()}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-gray-700">
-                  <MapPin size={16} className="text-[#00833e]" />
-                  <span className="text-sm">Paylaşım</span>
-                </div>
-                <span className="font-bold text-gray-900">
-                  {neighborhood.posts.toLocaleString()}
-                </span>
-              </div>
-            </div>
-
-            {/* Created Date */}
-            <p className="text-xs text-gray-500 mt-4">
-              Oluşturuldu: {new Date(neighborhood.createdAt).toLocaleDateString('tr-TR')}
-            </p>
-
-            {/* Actions */}
-            <div className="flex gap-2 mt-4">
-              <button className="flex-1 flex items-center justify-center gap-2 bg-[#e6f4ec] hover:bg-[#d1fae5] text-[#006b32] font-medium py-2 px-3 rounded-lg transition-colors text-sm">
-                <Edit2 size={16} />
-                Düzenle
-              </button>
-              <button className="flex-1 flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-700 font-medium py-2 px-3 rounded-lg transition-colors text-sm">
-                <Trash2 size={16} />
-                Sil
-              </button>
-            </div>
+      {/* Search and Sort */}
+      <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-6">
+        <div className="flex gap-4 flex-col md:flex-row">
+          <div className="flex-1 relative">
+            <Search size={20} className="absolute left-3 top-3 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Mahalle veya ilçe ile ara..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+            />
           </div>
-        ))}
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+            className="px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] bg-white"
+          >
+            <option value="members">En Çok Üye</option>
+            <option value="posts">En Çok Paylaşım</option>
+            <option value="name">Alfabetik</option>
+          </select>
+        </div>
       </div>
 
-      {/* Stats Summary */}
-      <div className="bg-gradient-to-r from-[#00833e] to-green-600 rounded-lg text-white p-6 mt-8">
-        <h2 className="text-lg font-bold mb-4">Genel İstatistikler</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Neighborhoods Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredAndSorted.map((neighborhood) => {
+          const memberPercentage = (neighborhood.members / totalMembers) * 100;
+          const postPercentage = (neighborhood.posts / totalPosts) * 100;
+
+          return (
+            <div
+              key={neighborhood.id}
+              className="bg-white rounded-lg border border-[#e0e0e0] p-6 hover:shadow-lg transition-shadow"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div className="p-3 bg-[#e6f4ec] rounded-lg text-[#00833e]">
+                  <MapPin size={24} />
+                </div>
+                <button className="p-2 hover:bg-[#f0f2f5] rounded transition-colors">
+                  <MoreVertical size={18} className="text-gray-600" />
+                </button>
+              </div>
+
+              <h3 className="text-lg font-bold text-gray-900 mb-1">
+                {neighborhood.name}
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">
+                {neighborhood.district}
+              </p>
+
+              {/* Stats */}
+              <div className="space-y-3 py-4 border-t border-b border-[#e0e0e0]">
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2 text-gray-700">
+                      <Users size={16} className="text-[#00833e]" />
+                      <span className="text-sm font-medium">Üyeler</span>
+                    </div>
+                    <span className="font-bold text-gray-900">
+                      {neighborhood.members.toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      className="bg-[#00833e] h-2 rounded-full"
+                      style={{ width: `${memberPercentage}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Toplam üyenin %{memberPercentage.toFixed(1)}'i
+                  </p>
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2 text-gray-700">
+                      <MessageSquare size={16} className="text-blue-600" />
+                      <span className="text-sm font-medium">Paylaşım</span>
+                    </div>
+                    <span className="font-bold text-gray-900">
+                      {neighborhood.posts.toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      className="bg-blue-600 h-2 rounded-full"
+                      style={{ width: `${postPercentage}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Toplam paylaşımın %{postPercentage.toFixed(1)}'i
+                  </p>
+                </div>
+              </div>
+
+              {/* Created Date */}
+              <p className="text-xs text-gray-500 mt-4">
+                Oluşturuldu:{' '}
+                {new Date(neighborhood.createdAt).toLocaleDateString('tr-TR')}
+              </p>
+
+              {/* Actions */}
+              <div className="flex gap-2 mt-4">
+                <button className="flex-1 flex items-center justify-center gap-2 bg-[#e6f4ec] hover:bg-[#d1fae5] text-[#006b32] font-medium py-2 px-3 rounded-lg transition-colors text-sm border border-[#00833e]/20">
+                  <Edit2 size={16} />
+                  Düzenle
+                </button>
+                <button className="flex-1 flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-700 font-medium py-2 px-3 rounded-lg transition-colors text-sm border border-red-200">
+                  <Trash2 size={16} />
+                  Sil
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Summary Stats */}
+      <div className="bg-gradient-to-r from-[#00833e] to-[#006b32] rounded-lg text-white p-8 mt-8">
+        <h2 className="text-lg font-bold mb-6">Genel İstatistikler</h2>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <div>
-            <p className="text-[#d1fae5] text-sm">Toplam Mahalle</p>
+            <p className="text-[#d1fae5] text-xs font-semibold uppercase mb-2">
+              Toplam Mahalle
+            </p>
             <p className="text-3xl font-bold">{MOCK_NEIGHBORHOODS.length}</p>
           </div>
           <div>
-            <p className="text-[#d1fae5] text-sm">Toplam Üye</p>
+            <p className="text-[#d1fae5] text-xs font-semibold uppercase mb-2">
+              Toplam Üye
+            </p>
             <p className="text-3xl font-bold">
-              {MOCK_NEIGHBORHOODS.reduce((sum, n) => sum + n.members, 0).toLocaleString()}
+              {totalMembers.toLocaleString()}
             </p>
           </div>
           <div>
-            <p className="text-[#d1fae5] text-sm">Toplam Paylaşım</p>
-            <p className="text-3xl font-bold">
-              {MOCK_NEIGHBORHOODS.reduce((sum, n) => sum + n.posts, 0).toLocaleString()}
+            <p className="text-[#d1fae5] text-xs font-semibold uppercase mb-2">
+              Toplam Paylaşım
             </p>
+            <p className="text-3xl font-bold">
+              {totalPosts.toLocaleString()}
+            </p>
+          </div>
+          <div>
+            <p className="text-[#d1fae5] text-xs font-semibold uppercase mb-2">
+              Ort. Üye/Mahalle
+            </p>
+            <p className="text-3xl font-bold">{avgMembers.toLocaleString()}</p>
+          </div>
+          <div>
+            <p className="text-[#d1fae5] text-xs font-semibold uppercase mb-2">
+              Ort. Paylaşım/Mahalle
+            </p>
+            <p className="text-3xl font-bold">{avgPosts.toLocaleString()}</p>
           </div>
         </div>
       </div>
+
+      {/* Empty State */}
+      {filteredAndSorted.length === 0 && (
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-12 text-center mt-8">
+          <MapPin size={48} className="mx-auto mb-4 text-gray-400" />
+          <p className="text-lg font-bold text-gray-900">
+            Mahalle Bulunamadı
+          </p>
+          <p className="text-gray-600 mt-2">
+            Lütfen arama kriterlerinizi kontrol edin
+          </p>
+        </div>
+      )}
     </div>
   );
 }
