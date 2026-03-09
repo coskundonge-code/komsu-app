@@ -129,66 +129,161 @@ export default function IstatistiklerPage() {
 
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Views Over Time */}
+        {/* Monthly Views Bar Chart */}
         <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-bold text-[#333] flex items-center gap-2">
               <BarChart3 size={20} color="#00833e" />
-              Görüntülemeler (Haftalık)
+              Aylık Görüntülemeler
             </h2>
           </div>
           <div className="space-y-3">
             {[
-              { day: 'Pazartesi', views: 320, max: 500 },
-              { day: 'Salı', views: 285, max: 500 },
-              { day: 'Çarşamba', views: 350, max: 500 },
-              { day: 'Perşembe', views: 380, max: 500 },
-              { day: 'Cuma', views: 420, max: 500 },
-              { day: 'Cumartesi', views: 380, max: 500 },
-              { day: 'Pazar', views: 290, max: 500 },
+              { month: 'Ocak', views: 2850, max: 4000 },
+              { month: 'Şubat', views: 3200, max: 4000 },
+              { month: 'Mart', views: 3850, max: 4000 },
             ].map((item) => (
-              <div key={item.day}>
+              <div key={item.month}>
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-medium text-[#333]">{item.day}</span>
-                  <span className="text-xs font-bold text-[#00833e]">{item.views}</span>
+                  <span className="text-sm font-medium text-[#333]">{item.month}</span>
+                  <span className="text-xs font-bold text-[#00833e]">{item.views.toLocaleString()}</span>
                 </div>
-                <div className="w-full bg-[#e0e0e0] rounded-full h-2">
+                <div className="w-full bg-[#e0e0e0] rounded-full h-3">
                   <div
-                    className="bg-[#00833e] h-2 rounded-full transition-all"
+                    className="bg-[#00833e] h-3 rounded-full transition-all"
                     style={{ width: `${(item.views / item.max) * 100}%` }}
                   ></div>
                 </div>
               </div>
             ))}
+            <div className="mt-4 pt-3 border-t border-[#e0e0e0]">
+              <p className="text-xs text-[#8f8f8f]">
+                <strong>Ort. Aylık:</strong> 3,300 görüntüleme
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* Visitor Demographics Placeholder */}
+        {/* Top Referral Sources */}
         <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-bold text-[#333] flex items-center gap-2">
               <Users size={20} color="#00833e" />
-              Ziyaretçi Demografisi
+              En İyi Trafik Kaynakları
             </h2>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {[
-              { demographic: 'Erkek (18-24)', percent: 28 },
-              { demographic: 'Kadın (25-34)', percent: 32 },
-              { demographic: 'Erkek (35-44)', percent: 18 },
-              { demographic: 'Kadın (45+)', percent: 14 },
-              { demographic: 'Diğer', percent: 8 },
+              { source: 'Google Arama', visitors: 1240, percent: 38 },
+              { source: 'Doğrudan', visitors: 850, percent: 26 },
+              { source: 'Instagram', visitors: 620, percent: 19 },
+              { source: 'Facebook', visitors: 320, percent: 10 },
+              { source: 'Diğer', visitors: 217, percent: 7 },
             ].map((item, idx) => (
-              <div key={idx}>
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-medium text-[#333]">{item.demographic}</span>
+              <div key={idx} className="p-3 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0] hover:border-[#00833e] transition-colors">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium text-[#333]">{item.source}</span>
                   <span className="text-xs font-bold text-[#00833e]">{item.percent}%</span>
                 </div>
-                <div className="w-full bg-[#e0e0e0] rounded-full h-2">
+                <div className="w-full bg-[#e0e0e0] rounded-full h-1.5">
                   <div
-                    className="bg-[#00833e] h-2 rounded-full transition-all"
+                    className="bg-[#00833e] h-1.5 rounded-full transition-all"
                     style={{ width: `${item.percent}%` }}
                   ></div>
+                </div>
+                <p className="text-xs text-[#8f8f8f] mt-1">{item.visitors} ziyaretçi</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Peak Hours Heatmap & Comparison */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* Peak Hours Heatmap */}
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+          <h2 className="text-lg font-bold text-[#333] mb-6 flex items-center gap-2">
+            <Calendar size={20} color="#00833e" />
+            Yoğun Saatler Haritası
+          </h2>
+          <div className="space-y-2">
+            <p className="text-xs text-[#8f8f8f] mb-4">Ziyaretçilerin en aktif olduğu saatler</p>
+            <div className="grid grid-cols-6 gap-1">
+              {[
+                { hour: '06:00', activity: 5 },
+                { hour: '08:00', activity: 45 },
+                { hour: '10:00', activity: 72 },
+                { hour: '12:00', activity: 89 },
+                { hour: '14:00', activity: 78 },
+                { hour: '16:00', activity: 56 },
+                { hour: '18:00', activity: 67 },
+                { hour: '20:00', activity: 84 },
+                { hour: '22:00', activity: 45 },
+                { hour: '00:00', activity: 12 },
+                { hour: '02:00', activity: 3 },
+                { hour: '04:00', activity: 2 },
+              ].map((item, idx) => {
+                const intensity = item.activity / 100;
+                const bgColor = intensity > 0.7 ? '#00833e' : intensity > 0.4 ? '#a7dbb8' : '#d1fae5';
+
+                return (
+                  <div key={idx} className="flex flex-col items-center">
+                    <div
+                      className="w-full aspect-square rounded transition-all hover:shadow-md"
+                      style={{ backgroundColor: bgColor }}
+                      title={`${item.hour}: %${item.activity}`}
+                    ></div>
+                    <p className="text-xs text-[#8f8f8f] mt-1">{item.hour}</p>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-4 flex items-center justify-center gap-4 text-xs">
+              <span className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded bg-[#d1fae5]"></div>
+                Düşük
+              </span>
+              <span className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded bg-[#a7dbb8]"></div>
+                Orta
+              </span>
+              <span className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded bg-[#00833e]"></div>
+                Yüksek
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Period Comparison */}
+        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+          <h2 className="text-lg font-bold text-[#333] mb-6 flex items-center gap-2">
+            <TrendingUp size={20} color="#00833e" />
+            Önceki Dönem Karşılaştırması
+          </h2>
+          <div className="space-y-4">
+            {[
+              { metric: 'Toplam Görüntüleme', current: 3850, previous: 3200, change: '+20.3%' },
+              { metric: 'Ortalama Puan', current: 4.7, previous: 4.5, change: '+4.4%' },
+              { metric: 'Yorum Sayısı', current: 32, previous: 24, change: '+33.3%' },
+              { metric: 'Mesaj Sayısı', current: 156, previous: 134, change: '+16.4%' },
+            ].map((item, idx) => (
+              <div key={idx} className="p-4 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0]">
+                <div className="flex justify-between items-start mb-2">
+                  <span className="text-sm font-medium text-[#333]">{item.metric}</span>
+                  <span className="text-xs bg-[#d1fae5] text-[#00833e] px-2 py-1 rounded font-semibold">
+                    {item.change}
+                  </span>
+                </div>
+                <div className="flex gap-6 text-xs">
+                  <div>
+                    <p className="text-[#8f8f8f]">Bu Ay</p>
+                    <p className="text-lg font-bold text-[#333]">{item.current}</p>
+                  </div>
+                  <div>
+                    <p className="text-[#8f8f8f]">Geçen Ay</p>
+                    <p className="text-lg font-bold text-[#8f8f8f]">{item.previous}</p>
+                  </div>
                 </div>
               </div>
             ))}

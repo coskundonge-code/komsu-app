@@ -12,6 +12,9 @@ import {
   Check,
   Clock,
   Bookmark,
+  AlertCircle,
+  CheckCircle,
+  XCircle,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -108,8 +111,7 @@ const similarEvents = [
 ];
 
 export default function EventDetailPage({ params }: { params: { id: string } }) {
-  const [isJoined, setIsJoined] = useState(false);
-  const [isInterested, setIsInterested] = useState(false);
+  const [rsvpStatus, setRsvpStatus] = useState<'joined' | 'interested' | 'none'>('none');
   const [isSaved, setIsSaved] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [comments, setComments] = useState(mockEvent.comments);
@@ -196,6 +198,7 @@ END:VCALENDAR`;
           fill
           className="object-cover"
           priority
+          unoptimized
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30"></div>
 
@@ -295,40 +298,64 @@ END:VCALENDAR`;
           </div>
 
           {/* Action Buttons */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
             <button
-              onClick={() => setIsJoined(!isJoined)}
-              disabled={isFull && !isJoined}
+              onClick={() => setRsvpStatus(rsvpStatus === 'joined' ? 'none' : 'joined')}
+              disabled={isFull && rsvpStatus !== 'joined'}
               className={`py-2 sm:py-3 px-4 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
-                isJoined
+                rsvpStatus === 'joined'
                   ? 'bg-[#d1fae5] text-[#00833e] hover:bg-[#a7dbb8]'
                   : isFull
                   ? 'bg-[#e0e0e0] text-[#8f8f8f] cursor-not-allowed'
                   : 'bg-[#00833e] hover:bg-[#006b32] text-white'
               }`}
             >
-              {isJoined && <Check className="w-4 h-4 sm:w-5 sm:h-5" />}
-              <span className="text-sm sm:text-base">{isJoined ? 'Katılıyorum' : isFull ? 'Dolu' : 'Katılacağım'}</span>
+              {rsvpStatus === 'joined' && <Check className="w-4 h-4 sm:w-5 sm:h-5" />}
+              <span className="text-sm sm:text-base">{rsvpStatus === 'joined' ? 'Katılıyorum' : isFull ? 'Dolu' : 'Katılacağım'}</span>
             </button>
             <button
-              onClick={() => setIsInterested(!isInterested)}
+              onClick={() => setRsvpStatus(rsvpStatus === 'interested' ? 'none' : 'interested')}
               className={`py-2 sm:py-3 px-4 rounded-lg font-semibold transition-all border-2 flex items-center justify-center gap-2 ${
-                isInterested
+                rsvpStatus === 'interested'
                   ? 'border-[#00833e] bg-[#e6f4ec] text-[#00833e] hover:bg-[#d1fae5]'
                   : 'border-[#e0e0e0] text-[#404040] hover:border-[#00833e] bg-white'
               }`}
             >
-              <Heart className="w-4 h-4 sm:w-5 sm:h-5" fill={isInterested ? 'currentColor' : 'none'} />
+              <Heart className="w-4 h-4 sm:w-5 sm:h-5" fill={rsvpStatus === 'interested' ? 'currentColor' : 'none'} />
               <span className="text-sm sm:text-base">İlgileniyorum</span>
             </button>
             <button
-              onClick={handleAddToCalendar}
-              className="py-2 sm:py-3 px-4 rounded-lg font-semibold transition-all border-2 border-[#e0e0e0] text-[#404040] hover:border-[#00833e] bg-white flex items-center justify-center gap-2"
+              onClick={() => setRsvpStatus(rsvpStatus === 'joined' ? 'none' : 'joined')}
+              className={`py-2 sm:py-3 px-4 rounded-lg font-semibold transition-all border-2 flex items-center justify-center gap-2 ${
+                rsvpStatus === 'joined'
+                  ? 'border-red-300 bg-red-50 text-red-600 hover:bg-red-100'
+                  : 'border-[#e0e0e0] text-[#404040] hover:border-red-300 bg-white'
+              }`}
             >
-              <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span className="text-sm sm:text-base">Takvime Ekle</span>
+              <XCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-sm sm:text-base">Katılmayacağım</span>
             </button>
           </div>
+
+          {/* RSVP Status Display */}
+          {rsvpStatus !== 'none' && (
+            <div className={`p-4 rounded-lg mb-6 flex items-center gap-2 ${
+              rsvpStatus === 'joined'
+                ? 'bg-[#d1fae5] text-[#00833e]'
+                : 'bg-[#fef3c7] text-[#d97706]'
+            }`}>
+              {rsvpStatus === 'joined' ? (
+                <CheckCircle className="w-5 h-5 flex-shrink-0" />
+              ) : (
+                <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              )}
+              <span className="text-sm font-semibold">
+                {rsvpStatus === 'joined'
+                  ? 'Bu etkinliğe katılacağınız kaydedildi'
+                  : 'Bu etkinlikle ilgilendiğiniz kaydedildi'}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Description Section */}
@@ -349,6 +376,7 @@ END:VCALENDAR`;
               width={80}
               height={80}
               className="w-20 h-20 rounded-full object-cover flex-shrink-0"
+              unoptimized
             />
             <div className="flex-1 text-center sm:text-left">
               <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
@@ -388,6 +416,7 @@ END:VCALENDAR`;
                     width={60}
                     height={60}
                     className="w-16 h-16 rounded-full object-cover mx-auto group-hover:opacity-80 transition-opacity"
+                    unoptimized
                   />
                 </div>
                 <p className="font-semibold text-[#333] text-sm truncate group-hover:text-[#00833e]">{attendee.name}</p>
@@ -422,6 +451,7 @@ END:VCALENDAR`;
                 width={40}
                 height={40}
                 className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                unoptimized
               />
               <div className="flex-1 min-w-0">
                 <textarea
@@ -459,6 +489,7 @@ END:VCALENDAR`;
                     width={40}
                     height={40}
                     className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                    unoptimized
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2 mb-1">
@@ -479,8 +510,21 @@ END:VCALENDAR`;
           </div>
         </div>
 
+        {/* Location Map Placeholder */}
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm sm:shadow-md p-6 sm:p-8 mb-6 sm:mb-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-[#333] mb-6">Konum</h2>
+          <div className="relative h-64 sm:h-80 bg-gradient-to-br from-[#f0f2f5] to-[#e0e0e0] rounded-lg overflow-hidden border border-[#e0e0e0] flex items-center justify-center">
+            <div className="text-center">
+              <MapPin className="w-12 h-12 text-[#8f8f8f] mx-auto mb-3" />
+              <p className="text-[#404040] font-semibold">{mockEvent.location}</p>
+              <p className="text-sm text-[#8f8f8f] mt-1">{mockEvent.neighborhood}</p>
+              <p className="text-xs text-[#8f8f8f] mt-3">Harita Google Maps entegrasyonu ile</p>
+            </div>
+          </div>
+        </div>
+
         {/* Similar Events Section */}
-        <div>
+        <div className="mb-8">
           <h2 className="text-xl sm:text-2xl font-bold text-[#333] mb-6">Benzer Etkinlikler</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {similarEvents.map((event) => (
@@ -495,6 +539,7 @@ END:VCALENDAR`;
                     alt={event.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform"
+                    unoptimized
                   />
                 </div>
                 <div className="p-4 sm:p-6">

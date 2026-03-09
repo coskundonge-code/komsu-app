@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { RightSidebar } from "@/components/layout/right-sidebar";
 import { BottomBar } from "@/components/layout/bottom-bar";
 import { Footer } from "@/components/layout/footer";
+import { SkipLink } from "@/components/ui/skip-link";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -13,6 +14,9 @@ interface MainLayoutProps {
 export default function MainLayout({ children }: MainLayoutProps) {
   return (
     <div className="flex min-h-screen flex-col bg-[#f0f2f5]">
+      {/* Skip to main content link for accessibility */}
+      <SkipLink />
+
       {/* Navbar */}
       <Navbar />
 
@@ -22,7 +26,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
         <Sidebar className="sticky top-[56px] h-[calc(100vh-56px)]" />
 
         {/* Center Content */}
-        <main className="flex-1 min-w-0 pb-20 lg:pb-4">
+        <main id="main-content" className="flex-1 min-w-0 pb-20 lg:pb-4">
           {children}
         </main>
 

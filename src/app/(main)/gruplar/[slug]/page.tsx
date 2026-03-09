@@ -1,6 +1,5 @@
 'use client';
 
-import { GroupHeader } from '@/components/groups/group-header';
 import {
   Heart,
   MessageCircle,
@@ -13,6 +12,12 @@ import {
   Trash2,
   Flag,
   Users,
+  Settings,
+  UserPlus,
+  LogOut,
+  Lock,
+  Globe,
+  Calendar,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -46,6 +51,7 @@ const mockGroupDetail = {
   coverImage: 'https://picsum.photos/1200/600?random=39',
   icon: 'https://api.dicebear.com/7.x/avataaars/svg?seed=sportclub',
   category: 'Spor & Fitness',
+  privacy: 'public',
   description: 'Kadıköy mahallesi sakinleri için futbol, voleybol, tenis ve genel fitness etkinlikleri.',
   fullDescription: 'Kadıköy Spor Kulübü, mahallede yaşayan spor meraklılarını bir araya getirerek aktif bir yaşam kültürü oluşturmayı amaçlayan bir topluluğudur. Futbol, voleybol, tenis, yüzme ve fitness gibi çeşitli spor branşlarında haftalık etkinlikler düzenleriz. Amacımız sadece spor yapmak değil, aynı zamanda komşularımızla tanışma, sağlıklı bir yaşam tarzı geliştirme ve arkadaşlık kurma fırsatı sağlamaktır.',
   memberCount: 128,
@@ -63,7 +69,6 @@ const mockGroupDetail = {
     { id: '6', name: 'Meral Coşkun', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=6', role: 'Üye', joinedDate: new Date('2023-06-08') },
     { id: '7', name: 'Emre Kardeş', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=7', role: 'Üye', joinedDate: new Date('2024-01-11') },
     { id: '8', name: 'Serap Ersoy', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=8', role: 'Üye', joinedDate: new Date('2024-05-03') },
-    { id: '9', name: 'Deniz Akyol', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=9', role: 'Üye', joinedDate: new Date('2024-07-19') },
   ] as Member[],
   posts: [
     {
@@ -114,11 +119,23 @@ const mockGroupDetail = {
       liked: false,
       image: undefined,
     },
+    {
+      id: '5',
+      author: 'Hakan Şahin',
+      authorId: '5',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=5',
+      content: 'Tenis turnuvası için kaydolmak isteyen varsa lütfen haber versin. 20 kişi sayımız tamamlanırsa başlayabiliriz. Hepinizi bekliyoruz!',
+      timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+      likes: 18,
+      comments: 7,
+      liked: false,
+      image: undefined,
+    },
   ] as Post[],
 };
 
 export default function GroupDetailPage({ params }: { params: { slug: string } }) {
-  const [activeTab, setActiveTab] = useState<'posts' | 'members' | 'about'>('posts');
+  const [activeTab, setActiveTab] = useState<'posts' | 'members' | 'about' | 'media' | 'events'>('posts');
   const [posts, setPosts] = useState(mockGroupDetail.posts);
   const [likedPosts, setLikedPosts] = useState<string[]>(
     mockGroupDetail.posts.filter(p => p.liked).map(p => p.id)
@@ -126,6 +143,8 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
   const [newPostContent, setNewPostContent] = useState('');
   const [showPostMenu, setShowPostMenu] = useState<string | null>(null);
   const [showMemberFilter, setShowMemberFilter] = useState<'all' | 'admin' | 'moderator'>('all');
+  const [isJoined, setIsJoined] = useState(mockGroupDetail.isJoined);
+  const [showAdminMenu, setShowAdminMenu] = useState(false);
 
   const handleLike = (postId: string) => {
     if (likedPosts.includes(postId)) {
@@ -209,19 +228,145 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
         </div>
       </div>
 
-      {/* Group Header Component */}
-      <GroupHeader
-        name={mockGroupDetail.name}
-        coverImage={mockGroupDetail.coverImage}
-        icon={mockGroupDetail.icon}
-        description={mockGroupDetail.description}
-        memberCount={mockGroupDetail.memberCount}
-        postCount={mockGroupDetail.postCount}
-        isJoined={mockGroupDetail.isJoined}
-        isAdmin={mockGroupDetail.isAdmin}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-      />
+      {/* Group Header with Cover and Info */}
+      <div className="relative bg-white border-b border-[#e0e0e0]">
+        {/* Cover Photo */}
+        <div className="relative h-48 sm:h-64 bg-gradient-to-r from-[#00833e] to-[#006b32] overflow-hidden">
+          <Image
+            src={mockGroupDetail.coverImage}
+            alt={mockGroupDetail.name}
+            fill
+            className="object-cover"
+            unoptimized
+            priority
+          />
+          <div className="absolute inset-0 bg-black/10"></div>
+        </div>
+
+        {/* Group Info Card */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 -mt-16 sm:-mt-24 relative z-10 mb-6">
+            {/* Avatar */}
+            <div className="flex-shrink-0">
+              <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-2xl border-4 border-white shadow-lg overflow-hidden bg-white">
+                <Image
+                  src={mockGroupDetail.icon}
+                  alt={mockGroupDetail.name}
+                  width={128}
+                  height={128}
+                  className="w-full h-full object-cover"
+                  unoptimized
+                />
+              </div>
+            </div>
+
+            {/* Group Details */}
+            <div className="flex-1 pt-2">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex-1">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-[#333] mb-2">
+                    {mockGroupDetail.name}
+                  </h1>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#d1fae5] text-[#00833e] rounded-full text-sm font-semibold">
+                      {mockGroupDetail.privacy === 'public' ? (
+                        <>
+                          <Globe className="w-4 h-4" />
+                          Herkese Açık
+                        </>
+                      ) : (
+                        <>
+                          <Lock className="w-4 h-4" />
+                          Özel
+                        </>
+                      )}
+                    </span>
+                    <span className="text-sm text-[#8f8f8f]">
+                      {mockGroupDetail.memberCount} üye
+                    </span>
+                    <span className="text-sm text-[#8f8f8f]">
+                      {mockGroupDetail.postCount} gönderi
+                    </span>
+                  </div>
+                </div>
+
+                {/* Admin Actions */}
+                {mockGroupDetail.isAdmin && (
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowAdminMenu(!showAdminMenu)}
+                      className="p-2 hover:bg-[#f0f2f5] rounded-lg transition-colors"
+                    >
+                      <MoreVertical className="w-5 h-5 text-[#404040]" />
+                    </button>
+                    {showAdminMenu && (
+                      <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-[#e0e0e0] z-20">
+                        <button className="w-full text-left px-4 py-3 hover:bg-[#f0f2f5] flex items-center gap-2 text-[#404040] transition-colors border-b border-[#e0e0e0]">
+                          <Settings className="w-4 h-4" />
+                          Grup Ayarları
+                        </button>
+                        <button className="w-full text-left px-4 py-3 hover:bg-[#f0f2f5] flex items-center gap-2 text-[#404040] transition-colors border-b border-[#e0e0e0]">
+                          <Users className="w-4 h-4" />
+                          Üyeleri Yönet
+                        </button>
+                        <button className="w-full text-left px-4 py-3 hover:bg-[#f0f2f5] flex items-center gap-2 text-[#404040] transition-colors">
+                          <UserPlus className="w-4 h-4" />
+                          Davet Et
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Join/Leave Button */}
+          <div className="flex gap-3">
+            <button
+              onClick={() => setIsJoined(!isJoined)}
+              className={`px-6 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2 ${
+                isJoined
+                  ? 'bg-[#e0e0e0] text-[#404040] hover:bg-[#d0d0d0]'
+                  : 'bg-[#00833e] text-white hover:bg-[#006b32]'
+              }`}
+            >
+              {isJoined ? (
+                <>
+                  <LogOut className="w-4 h-4" />
+                  Ayrıl
+                </>
+              ) : (
+                <>
+                  <UserPlus className="w-4 h-4" />
+                  Gruba Katıl
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* Tabs */}
+          <div className="flex gap-1 mt-6 border-b border-[#e0e0e0] overflow-x-auto">
+            {(['posts', 'about', 'members', 'media', 'events'] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-4 py-3 font-semibold transition-colors border-b-2 whitespace-nowrap ${
+                  activeTab === tab
+                    ? 'text-[#00833e] border-[#00833e]'
+                    : 'text-[#8f8f8f] border-transparent hover:text-[#404040]'
+                }`}
+              >
+                {tab === 'posts' && 'Gönderiler'}
+                {tab === 'about' && 'Hakkında'}
+                {tab === 'members' && 'Üyeler'}
+                {tab === 'media' && 'Medya'}
+                {tab === 'events' && 'Etkinlikler'}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -242,6 +387,7 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
                           width={40}
                           height={40}
                           className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-[#e0e0e0]"
+                          unoptimized
                         />
                         <div className="flex-1">
                           <textarea
@@ -287,6 +433,7 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
                                 width={40}
                                 height={40}
                                 className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-[#e0e0e0]"
+                                unoptimized
                               />
                               <div className="flex-1 min-w-0">
                                 <h4 className="font-bold text-[#333]">{post.author}</h4>
@@ -340,6 +487,7 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
                                 alt="Gönderi resmi"
                                 fill
                                 className="object-cover"
+                                unoptimized
                               />
                             </div>
                           )}
@@ -420,6 +568,7 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
                             width={80}
                             height={80}
                             className="w-20 h-20 rounded-full object-cover mb-3 border-2 border-[#e0e0e0]"
+                            unoptimized
                           />
                           <p className="font-semibold text-[#333] text-center text-sm">{member.name}</p>
                           <div className={`mt-2 px-3 py-1 rounded-full text-xs font-semibold ${getRoleColor(member.role)}`}>
@@ -432,6 +581,124 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
                       </div>
                     </Link>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {/* Media Tab */}
+            {activeTab === 'media' && (
+              <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
+                <h2 className="text-2xl font-bold text-[#333] mb-6">Medya</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                    <div key={i} className="relative h-32 bg-[#e0e0e0] rounded-lg overflow-hidden hover:opacity-80 transition-opacity cursor-pointer">
+                      <Image
+                        src={`https://picsum.photos/200/200?random=${i + 100}`}
+                        alt={`Medya ${i}`}
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Events Tab */}
+            {activeTab === 'events' && (
+              <div className="space-y-4">
+                <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-md transition-shadow">
+                  <div className="flex gap-4 p-4 sm:p-6">
+                    <div className="relative h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0 rounded-lg overflow-hidden bg-[#e0e0e0]">
+                      <Image
+                        src="https://picsum.photos/300/200?random=50"
+                        alt="Etkinlik"
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-[#333] text-sm sm:text-base mb-2">Futbol Maçı</h3>
+                      <div className="space-y-1 text-xs sm:text-sm text-[#8f8f8f]">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4 flex-shrink-0" />
+                          <span>15 Mart 2026, 15:00</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <MapPin className="w-4 h-4 flex-shrink-0" />
+                          <span className="truncate">Mahalle Spor Alanı</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4 flex-shrink-0" />
+                          <span>24 katılımcı</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-md transition-shadow">
+                  <div className="flex gap-4 p-4 sm:p-6">
+                    <div className="relative h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0 rounded-lg overflow-hidden bg-[#e0e0e0]">
+                      <Image
+                        src="https://picsum.photos/300/200?random=51"
+                        alt="Etkinlik"
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-[#333] text-sm sm:text-base mb-2">Yoga Dersi</h3>
+                      <div className="space-y-1 text-xs sm:text-sm text-[#8f8f8f]">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4 flex-shrink-0" />
+                          <span>22 Mart 2026, 09:00</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <MapPin className="w-4 h-4 flex-shrink-0" />
+                          <span className="truncate">Mahalle Parkı</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4 flex-shrink-0" />
+                          <span>18 katılımcı</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-md transition-shadow">
+                  <div className="flex gap-4 p-4 sm:p-6">
+                    <div className="relative h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0 rounded-lg overflow-hidden bg-[#e0e0e0]">
+                      <Image
+                        src="https://picsum.photos/300/200?random=52"
+                        alt="Etkinlik"
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-[#333] text-sm sm:text-base mb-2">Tenis Turnuvası</h3>
+                      <div className="space-y-1 text-xs sm:text-sm text-[#8f8f8f]">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4 flex-shrink-0" />
+                          <span>29 Mart 2026, 14:00</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <MapPin className="w-4 h-4 flex-shrink-0" />
+                          <span className="truncate">Tenis Kortları</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4 flex-shrink-0" />
+                          <span>32 katılımcı</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -518,6 +785,7 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
                           width={48}
                           height={48}
                           className="w-12 h-12 rounded-full object-cover border border-[#e0e0e0]"
+                          unoptimized
                         />
                         <div className="flex-1">
                           <p className="font-bold text-[#333]">{admin.name}</p>

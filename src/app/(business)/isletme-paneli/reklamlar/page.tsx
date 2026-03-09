@@ -36,7 +36,7 @@ const MOCK_CAMPAIGNS: AdCampaign[] = [
     id: '1',
     name: 'Yaz Promosyonu',
     status: 'active',
-    startDate: '2024-03-01',
+    startDate: '2026-03-01',
     budget: 5000,
     spent: 3240,
     views: 12500,
@@ -48,7 +48,7 @@ const MOCK_CAMPAIGNS: AdCampaign[] = [
     id: '2',
     name: 'Yeni Ürün Lansman',
     status: 'active',
-    startDate: '2024-02-15',
+    startDate: '2026-02-15',
     budget: 3000,
     spent: 2890,
     views: 8900,
@@ -60,25 +60,13 @@ const MOCK_CAMPAIGNS: AdCampaign[] = [
     id: '3',
     name: 'Fidelite Programı',
     status: 'paused',
-    startDate: '2024-02-01',
+    startDate: '2026-02-01',
     budget: 2000,
     spent: 1956,
     views: 5600,
     clicks: 145,
     conversions: 15,
     ctr: 2.6,
-  },
-  {
-    id: '4',
-    name: 'Bahar İndirimleri',
-    status: 'ended',
-    startDate: '2024-01-20',
-    budget: 2500,
-    spent: 2500,
-    views: 7200,
-    clicks: 198,
-    conversions: 22,
-    ctr: 2.7,
   },
 ];
 
@@ -106,50 +94,52 @@ export default function ReklamlarPage() {
       {/* Header Section */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-[#333] mb-2">Reklam Kampanyaları</h1>
+          <h1 className="text-4xl font-bold text-[#333] mb-2">Reklam Kampanyaları Yönetimi</h1>
           <p className="text-[#8f8f8f]">
-            Tüm kampanyalarınızı yönetin ve performansınızı takip edin
+            Aktif kampanyalarınızı yönetin, performansı izleyin ve bütçe kullanımını kontrol edin
           </p>
         </div>
         <button
           onClick={() => setShowAddForm(true)}
-          className="flex items-center gap-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium py-2 px-4 rounded-lg transition-colors shadow-md"
+          className="flex items-center gap-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium py-2 px-6 rounded-lg transition-colors shadow-md"
         >
           <Plus size={20} />
-          Kampanya Oluştur
+          Yeni Kampanya
         </button>
       </div>
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+        <div className="bg-gradient-to-br from-[#e6f4ec] to-[#d1fae5] rounded-lg border border-[#a7dbb8] p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[#8f8f8f] text-sm mb-1">Aktif Kampanyalar</p>
-              <p className="text-3xl font-bold text-[#333]">{activeCampaigns}</p>
+              <p className="text-[#004d24] text-sm font-medium mb-1">Aktif Kampanyalar</p>
+              <p className="text-3xl font-bold text-[#00833e]">{activeCampaigns}</p>
+              <p className="text-xs text-[#004d24] mt-2">Canlı çalışıyor</p>
             </div>
-            <Megaphone size={32} color="#00833e" className="opacity-20" />
+            <Megaphone size={40} color="#00833e" className="opacity-15" />
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+        <div className="bg-gradient-to-br from-[#fef3c7] to-[#fde68a] rounded-lg border border-[#fcd34d] p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[#8f8f8f] text-sm mb-1">Toplam Bütçe</p>
-              <p className="text-3xl font-bold text-[#333]">₺{totalBudget.toLocaleString()}</p>
+              <p className="text-[#92400e] text-sm font-medium mb-1">Toplam Bütçe</p>
+              <p className="text-3xl font-bold text-[#b45309]">₺{totalBudget.toLocaleString()}</p>
+              <p className="text-xs text-[#92400e] mt-2">Tüm kampanyalar</p>
             </div>
-            <DollarSign size={32} color="#00833e" className="opacity-20" />
+            <DollarSign size={40} color="#b45309" className="opacity-15" />
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+        <div className="bg-gradient-to-br from-[#dbeafe] to-[#bfdbfe] rounded-lg border border-[#93c5fd] p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[#8f8f8f] text-sm mb-1">Harcanan</p>
-              <p className="text-3xl font-bold text-[#333]">₺{totalSpent.toLocaleString()}</p>
-              <p className="text-xs text-[#8f8f8f] mt-1">
+              <p className="text-[#1e40af] text-sm font-medium mb-1">Harcanan</p>
+              <p className="text-3xl font-bold text-[#1e40af]">₺{totalSpent.toLocaleString()}</p>
+              <p className="text-xs text-[#1e40af] mt-2">
                 {Math.round((totalSpent / totalBudget) * 100)}% kullanıldı
               </p>
             </div>
-            <TrendingUp size={32} color="#00833e" className="opacity-20" />
+            <TrendingUp size={40} color="#1e40af" className="opacity-15" />
           </div>
         </div>
       </div>

@@ -12,13 +12,16 @@ import {
   BarChart3,
   Calendar,
   ArrowUpRight,
+  DollarSign,
+  Plus,
+  MoreVertical,
 } from 'lucide-react';
 
 const STATS = [
   {
     id: 1,
     label: 'Görüntülemeler',
-    value: '2,847',
+    value: '3,247',
     change: '+12.5%',
     icon: Eye,
     bgColor: '#e6f4ec',
@@ -26,8 +29,8 @@ const STATS = [
   },
   {
     id: 2,
-    label: 'Değerlendirmeler',
-    value: '4.8 ⭐',
+    label: 'Ortalama Değerlendirme',
+    value: '4.7 ⭐',
     change: '+0.2',
     icon: Star,
     bgColor: '#fef3c7',
@@ -44,12 +47,12 @@ const STATS = [
   },
   {
     id: 4,
-    label: 'Favorilere Eklenenler',
-    value: '189',
-    change: '+28',
-    icon: Heart,
-    bgColor: '#fce7f3',
-    iconColor: '#ec4899',
+    label: 'Gelir (Bu Ay)',
+    value: '₺12,450',
+    change: '+18.3%',
+    icon: DollarSign,
+    bgColor: '#d1fae5',
+    iconColor: '#00833e',
   },
 ];
 
@@ -144,6 +147,32 @@ export default function IsletmePaneliPage() {
         })}
       </div>
 
+      {/* Revenue Overview Card */}
+      <div className="bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-lg text-white p-8 mb-8 shadow-lg">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-[#d1fae5] text-sm font-medium mb-2">Bu Ayın Toplam Geliri</p>
+            <h2 className="text-4xl font-bold mb-4">₺12,450</h2>
+            <p className="text-[#d1fae5] text-sm flex items-center gap-1">
+              <TrendingUp size={16} />
+              Geçen aya göre %18.3 artış
+            </p>
+          </div>
+          <div className="hidden md:block text-right">
+            <p className="text-[#d1fae5] text-sm mb-2">Aylık Hedef</p>
+            <p className="text-3xl font-bold">₺15,000</p>
+            <p className="text-xs text-[#d1fae5] mt-2">%83 hedefi tamamladı</p>
+          </div>
+        </div>
+        {/* Progress Bar */}
+        <div className="mt-6 bg-[#005a2b] rounded-full h-2">
+          <div
+            className="bg-[#d1fae5] h-2 rounded-full transition-all"
+            style={{ width: '83%' }}
+          ></div>
+        </div>
+      </div>
+
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
         {/* Reviews Section - 2 cols */}
@@ -151,11 +180,11 @@ export default function IsletmePaneliPage() {
           <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-[#333]">Son Yorumlar</h2>
+                <h2 className="text-xl font-bold text-[#333]">Son Müşteri Yorumları</h2>
                 <p className="text-sm text-[#8f8f8f] mt-1">En yakın 3 yorum</p>
               </div>
               <Link
-                href="#"
+                href="/isletme-paneli/yorumlar"
                 className="text-[#00833e] hover:text-[#006b32] font-medium text-sm flex items-center gap-1"
               >
                 Tümünü Gör
@@ -209,63 +238,71 @@ export default function IsletmePaneliPage() {
 
         {/* Sidebar - Quick Actions */}
         <div className="lg:col-span-1">
-          <div className="bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-lg text-white p-6 shadow-md">
-            <h3 className="text-lg font-bold mb-4">Hızlı İşlemler</h3>
+          <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 h-full">
+            <h3 className="text-lg font-bold text-[#333] mb-4">Hızlı İşlemler</h3>
             <div className="space-y-2">
               <Link
-                href="/isletme-paneli/istatistikler"
-                className="block w-full bg-[#006b32] hover:bg-[#005a2b] font-medium py-3 px-4 rounded-lg transition-colors text-center text-sm"
+                href="/isletme-paneli/reklamlar"
+                className="flex items-center gap-2 w-full bg-[#e6f4ec] hover:bg-[#d1fae5] text-[#00833e] font-medium py-3 px-4 rounded-lg transition-colors text-center text-sm justify-center"
               >
-                İstatistikleri Görüntüle
+                <Plus size={16} />
+                Reklam Oluştur
               </Link>
               <Link
-                href="/isletme-paneli/reklamlar"
-                className="block w-full bg-[#006b32] hover:bg-[#005a2b] font-medium py-3 px-4 rounded-lg transition-colors text-center text-sm"
+                href="/isletme-paneli/yorumlar"
+                className="flex items-center gap-2 w-full bg-[#fef3c7] hover:bg-[#fde68a] text-[#92400e] font-medium py-3 px-4 rounded-lg transition-colors text-center text-sm justify-center"
               >
-                Reklam Yönet
+                <MessageCircle size={16} />
+                Yorum Yanıtla
               </Link>
-              <button className="w-full bg-[#006b32] hover:bg-[#005a2b] font-medium py-3 px-4 rounded-lg transition-colors text-sm">
-                Profili Düzenle
+              <button className="flex items-center gap-2 w-full bg-[#dbeafe] hover:bg-[#bfdbfe] text-[#1e40af] font-medium py-3 px-4 rounded-lg transition-colors text-sm justify-center">
+                <Plus size={16} />
+                Ürün Ekle
               </button>
-              <button className="w-full bg-[#006b32] hover:bg-[#005a2b] font-medium py-3 px-4 rounded-lg transition-colors text-sm">
-                Mesajlar
-              </button>
+              <Link
+                href="/isletme-paneli/istatistikler"
+                className="flex items-center gap-2 w-full bg-[#f0f2f5] hover:bg-[#e0e0e0] text-[#333] font-medium py-3 px-4 rounded-lg transition-colors text-sm justify-center"
+              >
+                <BarChart3 size={16} />
+                İstatistikler
+              </Link>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Performance Chart & Events Grid */}
+      {/* This Week's Activity Timeline */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        {/* Performance Chart */}
+        {/* Weekly Activity Timeline */}
         <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
           <h2 className="text-xl font-bold text-[#333] mb-6 flex items-center gap-2">
             <BarChart3 size={20} color="#00833e" />
-            Performans Grafik
+            Bu Haftanın Aktivitesi
           </h2>
 
-          {/* Mock Bar Chart */}
+          {/* Activity Timeline */}
           <div className="space-y-4">
             {[
-              { label: 'Pazartesi', value: 285, max: 400 },
-              { label: 'Salı', value: 320, max: 400 },
-              { label: 'Çarşamba', value: 295, max: 400 },
-              { label: 'Perşembe', value: 350, max: 400 },
-              { label: 'Cuma', value: 375, max: 400 },
-              { label: 'Cumartesi', value: 380, max: 400 },
-              { label: 'Pazar', value: 340, max: 400 },
+              { label: 'Pazartesi', views: 285, messages: 8, reviews: 2 },
+              { label: 'Salı', views: 320, messages: 12, reviews: 3 },
+              { label: 'Çarşamba', views: 295, messages: 10, reviews: 1 },
+              { label: 'Perşembe', views: 350, messages: 15, reviews: 4 },
+              { label: 'Cuma', views: 375, messages: 18, reviews: 5 },
+              { label: 'Cumartesi', views: 380, messages: 20, reviews: 6 },
+              { label: 'Pazar', views: 340, messages: 16, reviews: 4 },
             ].map((item, idx) => (
-              <div key={idx}>
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-medium text-[#333]">{item.label}</span>
-                  <span className="text-xs text-[#8f8f8f]">{item.value}</span>
+              <div key={idx} className="border-l-4 border-[#00833e] pl-4 py-2">
+                <div className="flex justify-between items-start mb-2">
+                  <span className="text-sm font-semibold text-[#333]">{item.label}</span>
+                  <div className="flex gap-3 text-xs">
+                    <span className="px-2 py-1 bg-[#e6f4ec] text-[#00833e] rounded">
+                      <Eye size={12} className="inline mr-1" />{item.views}
+                    </span>
+                  </div>
                 </div>
-                <div className="w-full bg-[#e0e0e0] rounded-full h-2">
-                  <div
-                    className="bg-[#00833e] h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${(item.value / item.max) * 100}%` }}
-                  ></div>
-                </div>
+                <p className="text-xs text-[#8f8f8f]">
+                  {item.messages} mesaj • {item.reviews} yorum
+                </p>
               </div>
             ))}
           </div>

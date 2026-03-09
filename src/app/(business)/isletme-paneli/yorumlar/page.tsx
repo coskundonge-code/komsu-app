@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Star, Send, ChevronDown } from 'lucide-react';
+import { Star, Send, ChevronDown, Filter, ArrowUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
@@ -109,10 +109,20 @@ export default function BusinessPanelReviewsPage() {
   const [replyingId, setReplyingId] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
   const [replies, setReplies] = useState<Record<string, boolean>>({});
+  const [sortBy, setSortBy] = useState<'date' | 'rating'>('date');
+  const [sortOpen, setSortOpen] = useState(false);
 
   const filtered = mockReviews.filter((review) => {
     if (selectedRating === null) return true;
     return review.rating === selectedRating;
+  });
+
+  const sorted = [...filtered].sort((a, b) => {
+    if (sortBy === 'date') {
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    } else {
+      return b.rating - a.rating;
+    }
   });
 
   const handleReplySubmit = (reviewId: string) => {
@@ -133,24 +143,28 @@ export default function BusinessPanelReviewsPage() {
       <div className="max-w-5xl mx-auto py-6 px-4">
         {/* Header Section */}
         <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden mb-6 p-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-[#333]">Müşteri Yorumları</h1>
-              <p className="text-[#8f8f8f] text-sm mt-1">Müşterilerinizin değerlendirmelerini yönetin ve yanıtlayın</p>
+              <h1 className="text-2xl font-bold text-[#333]">Müşteri Yorumları Yönetimi</h1>
+              <p className="text-[#8f8f8f] text-sm mt-1">Müşteri değerlendirmelerini filtreleyin, yanıtlayın ve performansınızı takip edin</p>
             </div>
+          </div>
 
+          {/* Filter and Sort Controls */}
+          <div className="flex flex-col sm:flex-row gap-3">
             {/* Rating Filter Dropdown */}
-            <div className="relative">
+            <div className="relative flex-1">
               <button
                 onClick={() => setOpenDropdown(!openDropdown)}
-                className="flex items-center gap-2 px-4 py-2.5 bg-[#f0f2f5] border border-[#e0e0e0] rounded-lg text-[#333] font-medium text-sm hover:bg-[#e0e0e0] transition-colors"
+                className="w-full flex items-center gap-2 px-4 py-2.5 bg-[#f0f2f5] border border-[#e0e0e0] rounded-lg text-[#333] font-medium text-sm hover:bg-[#e0e0e0] transition-colors"
               >
+                <Filter size={16} />
                 {selectedLabel}
-                <ChevronDown className={cn('w-4 h-4 transition-transform', openDropdown && 'rotate-180')} />
+                <ChevronDown className={cn('w-4 h-4 transition-transform ml-auto', openDropdown && 'rotate-180')} />
               </button>
 
               {openDropdown && (
-                <div className="absolute right-0 top-full mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50 min-w-40">
+                <div className="absolute left-0 top-full mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50 min-w-48">
                   {ratingFilters.map((filter) => (
                     <button
                       key={filter.id}
@@ -183,6 +197,51 @@ export default function BusinessPanelReviewsPage() {
                       )}
                     </button>
                   ))}
+                </div>
+              )}
+            </div>
+
+            {/* Sort Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setSortOpen(!sortOpen)}
+                className="flex items-center gap-2 px-4 py-2.5 bg-[#f0f2f5] border border-[#e0e0e0] rounded-lg text-[#333] font-medium text-sm hover:bg-[#e0e0e0] transition-colors whitespace-nowrap"
+              >
+                <ArrowUpDown size={16} />
+                {sortBy === 'date' ? 'Tarih' : 'Puan'}
+                <ChevronDown className={cn('w-4 h-4 transition-transform', sortOpen && 'rotate-180')} />
+              </button>
+
+              {sortOpen && (
+                <div className="absolute right-0 top-full mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50 min-w-40">
+                  <button
+                    onClick={() => {
+                      setSortBy('date');
+                      setSortOpen(false);
+                    }}
+                    className={cn(
+                      'w-full text-left px-4 py-3 text-sm transition-colors',
+                      sortBy === 'date'
+                        ? 'bg-[#00833e] text-white font-medium'
+                        : 'text-[#404040] hover:bg-[#f0f2f5]'
+                    )}
+                  >
+                    En Yeni
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSortBy('rating');
+                      setSortOpen(false);
+                    }}
+                    className={cn(
+                      'w-full text-left px-4 py-3 text-sm transition-colors',
+                      sortBy === 'rating'
+                        ? 'bg-[#00833e] text-white font-medium'
+                        : 'text-[#404040] hover:bg-[#f0f2f5]'
+                    )}
+                  >
+                    En Yüksek Puan
+                  </button>
                 </div>
               )}
             </div>
@@ -234,7 +293,7 @@ export default function BusinessPanelReviewsPage() {
 
         {/* Reviews List */}
         <div className="space-y-4">
-          {filtered.map((review) => (
+          {sorted.map((review) => (
             <div
               key={review.id}
               className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6 hover:shadow-md transition-shadow"
@@ -345,7 +404,7 @@ export default function BusinessPanelReviewsPage() {
         </div>
 
         {/* Empty State */}
-        {filtered.length === 0 && (
+        {sorted.length === 0 && (
           <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-12 text-center">
             <Star className="w-12 h-12 text-[#e0e0e0] mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-[#333] mb-2">Yorum bulunamadı</h3>
@@ -354,6 +413,48 @@ export default function BusinessPanelReviewsPage() {
                 ? 'Seçilen derecelendirme için yorum bulunmuyor.'
                 : 'Henüz yorum alınmamış.'}
             </p>
+          </div>
+        )}
+
+        {/* Star Rating Distribution */}
+        {sorted.length > 0 && (
+          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6 mt-8">
+            <h3 className="text-lg font-bold text-[#333] mb-4">Yıldız Dağılımı</h3>
+            <div className="space-y-3">
+              {[5, 4, 3, 2, 1].map((rating) => {
+                const count = mockReviews.filter((r) => r.rating === rating).length;
+                const percentage = (count / mockReviews.length) * 100;
+
+                return (
+                  <div key={rating} className="flex items-center gap-3">
+                    <div className="flex items-center gap-1 w-16">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          size={14}
+                          className={
+                            i < rating
+                              ? 'fill-[#f59e0b] text-[#f59e0b]'
+                              : 'text-[#e0e0e0]'
+                          }
+                        />
+                      ))}
+                    </div>
+                    <div className="flex-1">
+                      <div className="w-full bg-[#e0e0e0] rounded-full h-2">
+                        <div
+                          className="bg-[#00833e] h-2 rounded-full transition-all"
+                          style={{ width: `${percentage}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    <span className="text-sm font-medium text-[#333] w-12 text-right">
+                      {count} ({Math.round(percentage)}%)
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>
