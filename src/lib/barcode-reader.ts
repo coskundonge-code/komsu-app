@@ -31,8 +31,10 @@ export interface DocumentExtraction {
  * - 4 grup, her biri 4 alfanumerik karakter
  * - Tire ile ayrılmış
  * - Genellikle NV ile başlar
+ * - PDF text extraction bazen boşluk ekler: "NV02 - ILLE - G5U8 - RLN9"
  */
-const EDEVLET_CODE_PATTERN = /\b([A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4})\b/g
+const EDEVLET_CODE_PATTERN = /\b([A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4})\b/g
+const EDEVLET_CODE_PATTERN_LOOSE = /([A-Za-z0-9]{4})\s*[-–—]\s*([A-Za-z0-9]{4})\s*[-–—]\s*([A-Za-z0-9]{4})\s*[-–—]\s*([A-Za-z0-9]{4})/g
 
 /**
  * Extract verification code from a file (PDF or image)
@@ -57,24 +59,47 @@ async function extractFromPDF(file: File): Promise<BarcodeResult | null> {
     const arrayBuffer = await file.arrayBuffer()
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
 
-    // Extract text from first page (belge doğrulama kodu genelde 1. sayfada)
-    const page = await pdf.getPage(1)
-    const textContent = await page.getTextContent()
-    const pageText = textContent.items
-      .map((item: any) => item.str)
-      .join(' ')
+    // Tüm sayfaları tara (genelde 1. sayfada ama bazen 2.'de olabilir)
+    const numPages = Math.min(pdf.numPages, 3)
 
-    // e-Devlet belge doğrulama kodu ara (NV02-ILLE-G5U8-RLN9 formatı)
-    const code = findEdevletCode(pageText)
-    if (code) {
-      return {
-        code,
-        source: 'pdf-text',
-        confidence: 'high'
+    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+      const page = await pdf.getPage(pageNum)
+      const textContent = await page.getTextContent()
+
+      // Yöntem 1: Boşlukla birleştir
+      const pageTextSpaced = textContent.items
+        .map((item: any) => item.str)
+        .join(' ')
+
+      let code = findEdevletCode(pageTextSpaced)
+      if (code) {
+        return { code, source: 'pdf-text', confidence: 'high' }
       }
+
+      // Yöntem 2: Boşluksuz birleştir (PDF bazen her karakteri ayrı item yapar)
+      const pageTextNoSpace = textContent.items
+        .map((item: any) => item.str)
+        .join('')
+
+      code = findEdevletCode(pageTextNoSpace)
+      if (code) {
+        return { code, source: 'pdf-text', confidence: 'high' }
+      }
+
+      // Yöntem 3: Her satırı ayrı birleştir (y koordinatına göre gruplama)
+      const lineText = extractTextByLines(textContent.items as any[])
+      code = findEdevletCode(lineText)
+      if (code) {
+        return { code, source: 'pdf-text', confidence: 'high' }
+      }
+
+      // Debug: Çıkarılan metni logla
+      console.log(`[barcode-reader] Page ${pageNum} text (spaced):`, pageTextSpaced.substring(0, 500))
+      console.log(`[barcode-reader] Page ${pageNum} text (nospace):`, pageTextNoSpace.substring(0, 500))
     }
 
-    // Fallback: PDF'i canvas'a render edip barkod tara
+    // Fallback: İlk sayfayı canvas'a render edip barkod tara
+    const page = await pdf.getPage(1)
     const viewport = page.getViewport({ scale: 2.0 })
     const canvas = document.createElement('canvas')
     canvas.width = viewport.width
@@ -91,6 +116,28 @@ async function extractFromPDF(file: File): Promise<BarcodeResult | null> {
     console.error('PDF extraction error:', error)
     return null
   }
+}
+
+/**
+ * PDF text items'ı satır satır grupla (aynı Y koordinatındaki itemlar bir satır)
+ */
+function extractTextByLines(items: Array<{ str: string; transform: number[] }>): string {
+  if (items.length === 0) return ''
+
+  // Y koordinatına göre grupla (transform[5] = y)
+  const lines: Map<number, string[]> = new Map()
+  for (const item of items) {
+    if (!item.str.trim()) continue
+    const y = Math.round((item.transform?.[5] || 0) / 2) * 2 // 2px tolerans
+    if (!lines.has(y)) lines.set(y, [])
+    lines.get(y)!.push(item.str)
+  }
+
+  // Satırları Y'ye göre sırala ve birleştir
+  return Array.from(lines.entries())
+    .sort((a, b) => b[0] - a[0]) // PDF'de Y yukarıdan aşağı azalır
+    .map(([, texts]) => texts.join(''))
+    .join('\n')
 }
 
 /**
@@ -161,19 +208,55 @@ async function detectBarcodeFromCanvas(canvas: HTMLCanvasElement): Promise<Barco
 /**
  * e-Devlet belge doğrulama kodunu metinde bul
  * Format: NV02-ILLE-G5U8-RLN9 (XXXX-XXXX-XXXX-XXXX)
+ * PDF text extraction bazen boşluk ekler veya tire yerine dash kullanır
  */
 function findEdevletCode(text: string): string | null {
-  // Ana pattern: 4 grup, 4 karakter, tire ile ayrılmış
-  const matches = text.match(EDEVLET_CODE_PATTERN)
+  // Yöntem 1: Sıkı pattern (XXXX-XXXX-XXXX-XXXX, case-insensitive)
+  const strictMatches = text.match(EDEVLET_CODE_PATTERN)
+  if (strictMatches && strictMatches.length > 0) {
+    for (const match of strictMatches) {
+      if (match.toUpperCase().startsWith('NV')) return match.toUpperCase()
+    }
+    return strictMatches[0].toUpperCase()
+  }
 
-  if (matches && matches.length > 0) {
-    for (const match of matches) {
-      // NV ile başlayan kodlar en yüksek öncelikli
-      if (match.startsWith('NV')) {
-        return match
+  // Yöntem 2: Gevşek pattern (boşluk ve farklı tire tipleri)
+  let looseMatch: RegExpExecArray | null
+  const looseRegex = new RegExp(EDEVLET_CODE_PATTERN_LOOSE.source, 'g')
+  const looseResults: string[] = []
+  while ((looseMatch = looseRegex.exec(text)) !== null) {
+    const code = `${looseMatch[1]}-${looseMatch[2]}-${looseMatch[3]}-${looseMatch[4]}`.toUpperCase()
+    looseResults.push(code)
+  }
+  if (looseResults.length > 0) {
+    for (const code of looseResults) {
+      if (code.startsWith('NV')) return code
+    }
+    return looseResults[0]
+  }
+
+  // Yöntem 3: Metindeki tüm boşlukları ve tireleri normalize et, sonra tekrar dene
+  const normalized = text.replace(/\s+/g, '').replace(/[-–—]/g, '-')
+  const normalizedMatches = normalized.match(EDEVLET_CODE_PATTERN)
+  if (normalizedMatches && normalizedMatches.length > 0) {
+    for (const match of normalizedMatches) {
+      if (match.toUpperCase().startsWith('NV')) return match.toUpperCase()
+    }
+    return normalizedMatches[0].toUpperCase()
+  }
+
+  // Yöntem 4: 16 karakterlik alfanumerik blok ara (4'lü gruplar halinde)
+  // PDF bazen tireleri tamamen yiyor
+  const rawAlphaNum = text.replace(/[^A-Za-z0-9]/g, '')
+  const blockMatch = rawAlphaNum.match(/([A-Za-z0-9]{16})/g)
+  if (blockMatch) {
+    for (const block of blockMatch) {
+      // NV ile başlıyorsa büyük ihtimalle e-Devlet kodu
+      if (block.toUpperCase().startsWith('NV')) {
+        const formatted = `${block.slice(0,4)}-${block.slice(4,8)}-${block.slice(8,12)}-${block.slice(12,16)}`.toUpperCase()
+        return formatted
       }
     }
-    return matches[0]
   }
 
   return null
@@ -235,17 +318,42 @@ export async function extractFullDocumentInfo(file: File): Promise<DocumentExtra
     const arrayBuffer = await file.arrayBuffer()
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
 
-    const page = await pdf.getPage(1)
-    const textContent = await page.getTextContent()
-    const pageText = textContent.items
-      .map((item: any) => item.str)
-      .join(' ')
+    // Tüm sayfaların metnini topla
+    let allTextSpaced = ''
+    let allTextNoSpace = ''
+    let allTextByLines = ''
 
-    // Barkod kodu
-    const code = findEdevletCode(pageText)
+    const numPages = Math.min(pdf.numPages, 3)
+    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+      const page = await pdf.getPage(pageNum)
+      const textContent = await page.getTextContent()
 
-    // TC Kimlik No
-    const tcKimlikNo = findTCKimlikNo(pageText)
+      const spaced = textContent.items.map((item: any) => item.str).join(' ')
+      const noSpace = textContent.items.map((item: any) => item.str).join('')
+      const byLines = extractTextByLines(textContent.items as any[])
+
+      allTextSpaced += ' ' + spaced
+      allTextNoSpace += noSpace
+      allTextByLines += '\n' + byLines
+    }
+
+    // Debug: Çıkarılan metni logla
+    console.log('[barcode-reader] Full doc text (spaced):', allTextSpaced.substring(0, 800))
+    console.log('[barcode-reader] Full doc text (no space):', allTextNoSpace.substring(0, 800))
+    console.log('[barcode-reader] Full doc text (by lines):', allTextByLines.substring(0, 800))
+
+    // Barkod kodu - tüm yöntemlerle dene
+    let code = findEdevletCode(allTextSpaced)
+    if (!code) code = findEdevletCode(allTextNoSpace)
+    if (!code) code = findEdevletCode(allTextByLines)
+
+    // TC Kimlik No - tüm metinlerde ara
+    let tcKimlikNo = findTCKimlikNo(allTextSpaced)
+    if (!tcKimlikNo) tcKimlikNo = findTCKimlikNo(allTextNoSpace)
+    if (!tcKimlikNo) tcKimlikNo = findTCKimlikNo(allTextByLines)
+
+    // Metin analizi için en iyi kaynağı seç
+    const pageText = allTextSpaced
 
     // Ad Soyad - genellikle "Adı Soyadı" veya TC No'dan sonra gelir
     let fullName: string | null = null
