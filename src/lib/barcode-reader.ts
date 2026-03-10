@@ -161,7 +161,7 @@ async function inflateAsync(data: Uint8Array): Promise<string | null> {
     try {
       const ds = new DecompressionStream(format)
       const writer = ds.writable.getWriter()
-      writer.write(data)
+      writer.write(data as unknown as Uint8Array<ArrayBuffer>)
       writer.close()
 
       const reader = ds.readable.getReader()
