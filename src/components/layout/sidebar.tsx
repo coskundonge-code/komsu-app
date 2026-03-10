@@ -4,36 +4,38 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
-  Home, Compass, ShoppingBag, Calendar, Users, Building2,
+  Home, Search, ShoppingBag, Calendar, Users, Building2,
   MessageCircle, Bell, AlertTriangle, Settings, HelpCircle, User,
-  ChevronRight, X
+  ChevronRight, X, UserPlus, PlusCircle
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-// Primary navigation items
+// Primary navigation items (matches Nextdoor.com structure)
 const primaryNavItems = [
   { icon: Home, label: 'Ana Sayfa', href: '/' },
-  { icon: Compass, label: 'Keşfet', href: '/kesfet' },
-  { icon: ShoppingBag, label: 'Pazar Yeri', href: '/pazar' },
-  { icon: Calendar, label: 'Etkinlikler', href: '/etkinlikler' },
+  { icon: Search, label: 'Keşfet', href: '/kesfet' },
+  { icon: ShoppingBag, label: 'Satılık & Ücretsiz', href: '/pazar' },
   { icon: Users, label: 'Gruplar', href: '/gruplar' },
-  { icon: Building2, label: 'İşletmeler', href: '/isletmeler' },
+  { icon: Calendar, label: 'Etkinlikler', href: '/etkinlikler' },
+  { icon: Building2, label: 'Yerel İşletmeler', href: '/isletmeler' },
 ]
 
 // Items with badge counters
 const interactiveItems = [
+  { icon: Bell, label: 'Uyarılar', href: '/bildirimler', badge: 'notifications' },
   { icon: MessageCircle, label: 'Mesajlar', href: '/mesajlar', badge: 'messages' },
-  { icon: Bell, label: 'Bildirimler', href: '/bildirimler', badge: 'notifications' },
-  { icon: AlertTriangle, label: 'Uyarılar', href: '/uyarilar', badge: null },
+  { icon: AlertTriangle, label: 'Güvenlik', href: '/uyarilar', badge: null },
 ]
 
 // Secondary navigation items
 const secondaryNavItems = [
+  { icon: User, label: 'Profilim', href: '/profil' },
+  { icon: UserPlus, label: 'Komşularını Davet Et', href: '/davet' },
+  { icon: PlusCircle, label: 'İşletme Sayfası Ekle', href: '/isletme-ekle' },
   { icon: Settings, label: 'Ayarlar', href: '/ayarlar' },
-  { icon: HelpCircle, label: 'Yardım', href: '/yardim' },
-  { icon: User, label: 'Profil', href: '/profil' },
+  { icon: HelpCircle, label: 'Yardım Merkezi', href: '/yardim' },
 ]
 
 // Mock user data - replace with actual user context in production
