@@ -16,10 +16,19 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const handleLogout = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/giris')
-    router.refresh()
+    try {
+      // Client-side sign out first
+      const supabase = createClient()
+      await supabase.auth.signOut()
+    } catch (e) {
+      // Ignore client-side errors
+    }
+    // Server-side sign out to clear cookies properly
+    const form = document.createElement('form')
+    form.method = 'POST'
+    form.action = '/auth/signout'
+    document.body.appendChild(form)
+    form.submit()
   }
 
   useEffect(() => {

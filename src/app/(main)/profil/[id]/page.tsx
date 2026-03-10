@@ -256,27 +256,25 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
 
                 {/* Profile Info and Badges */}
                 <div className="flex-1">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-3">
-                    <div>
-                      <h1 className="text-2xl sm:text-3xl font-bold text-[#333] mb-2">{mockProfile.name}</h1>
-                      {/* Badges */}
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        {mockProfile.badges.map((badge) => (
-                          <div
-                            key={badge.id}
-                            className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-[#00833e]/10 to-[#006b32]/10 rounded-full border border-[#00833e]/30"
-                          >
-                            {badge.icon === 'helper' && <Award size={14} className="text-[#00833e]" />}
-                            {badge.icon === 'active' && <Zap size={14} className="text-[#00833e]" />}
-                            {badge.icon === 'trusted' && <Shield size={14} className="text-[#00833e]" />}
-                            <span className="text-xs font-medium text-[#006b32]">{badge.label}</span>
-                          </div>
-                        ))}
-                      </div>
+                  <div className="mb-3">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-[#333] mb-2">{mockProfile.name}</h1>
+                    {/* Badges */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {mockProfile.badges.map((badge) => (
+                        <div
+                          key={badge.id}
+                          className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-[#00833e]/10 to-[#006b32]/10 rounded-full border border-[#00833e]/30"
+                        >
+                          {badge.icon === 'helper' && <Award size={14} className="text-[#00833e]" />}
+                          {badge.icon === 'active' && <Zap size={14} className="text-[#00833e]" />}
+                          {badge.icon === 'trusted' && <Shield size={14} className="text-[#00833e]" />}
+                          <span className="text-xs font-medium text-[#006b32]">{badge.label}</span>
+                        </div>
+                      ))}
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0 w-full sm:w-auto">
+                    <div className="flex flex-row gap-2">
                       {isOwnProfile ? (
                         <Link
                           href="/ayarlar"
@@ -289,12 +287,12 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                         <>
                           <Link
                             href="/mesajlar"
-                            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-all card-hover"
+                            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-all card-hover text-sm"
                           >
                             <Send size={16} />
                             Mesaj Gönder
                           </Link>
-                          <button className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-[#00833e] text-[#00833e] hover:bg-[#00833e]/5 font-medium rounded-lg transition-all card-hover">
+                          <button className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-[#00833e] text-[#00833e] hover:bg-[#00833e]/5 font-medium rounded-lg transition-all card-hover text-sm">
                             <UserPlus size={16} />
                             Komşu Ekle
                           </button>
