@@ -39,6 +39,8 @@ const publicRoutes = [
   '/gonderi',
   '/ara',
   '/davet',
+  '/referans-kullan',
+  '/adres-dogrulama',
 ]
 
 export async function middleware(request: NextRequest) {

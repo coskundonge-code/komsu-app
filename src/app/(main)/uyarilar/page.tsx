@@ -310,7 +310,7 @@ export default function AlertsPage() {
           </div>
 
           {/* Controls Row */}
-          <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center justify-between gap-3 flex-wrap mb-4">
             {/* Active/Past Toggle */}
             <div className="flex items-center gap-2 bg-[#f0f2f5] rounded-full p-1">
               <button
