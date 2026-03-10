@@ -1476,6 +1476,104 @@ export type Database = {
           updated_at?: string
         }
       }
+      // === CONTENT MODERATION SYSTEM ===
+      content_moderation: {
+        Row: {
+          id: string
+          content_type: 'post' | 'listing' | 'group' | 'event' | 'alert' | 'comment' | 'business_review' | 'story'
+          content_id: string
+          author_id: string
+          status: 'pending_ai' | 'ai_approved' | 'ai_rejected' | 'pending_admin' | 'admin_approved' | 'admin_rejected' | 'published' | 'removed'
+          ai_score: number | null
+          ai_categories: string[] | null
+          ai_reasoning: string | null
+          ai_reviewed_at: string | null
+          admin_id: string | null
+          admin_note: string | null
+          admin_reviewed_at: string | null
+          content_snapshot: string
+          title_snapshot: string | null
+          image_urls_snapshot: string[] | null
+          priority: 'low' | 'medium' | 'high' | 'critical'
+          auto_approved: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          content_type: 'post' | 'listing' | 'group' | 'event' | 'alert' | 'comment' | 'business_review' | 'story'
+          content_id: string
+          author_id: string
+          status?: 'pending_ai' | 'ai_approved' | 'ai_rejected' | 'pending_admin' | 'admin_approved' | 'admin_rejected' | 'published' | 'removed'
+          ai_score?: number | null
+          ai_categories?: string[] | null
+          ai_reasoning?: string | null
+          ai_reviewed_at?: string | null
+          admin_id?: string | null
+          admin_note?: string | null
+          admin_reviewed_at?: string | null
+          content_snapshot: string
+          title_snapshot?: string | null
+          image_urls_snapshot?: string[] | null
+          priority?: 'low' | 'medium' | 'high' | 'critical'
+          auto_approved?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          content_type?: 'post' | 'listing' | 'group' | 'event' | 'alert' | 'comment' | 'business_review' | 'story'
+          content_id?: string
+          author_id?: string
+          status?: 'pending_ai' | 'ai_approved' | 'ai_rejected' | 'pending_admin' | 'admin_approved' | 'admin_rejected' | 'published' | 'removed'
+          ai_score?: number | null
+          ai_categories?: string[] | null
+          ai_reasoning?: string | null
+          ai_reviewed_at?: string | null
+          admin_id?: string | null
+          admin_note?: string | null
+          admin_reviewed_at?: string | null
+          content_snapshot?: string
+          title_snapshot?: string | null
+          image_urls_snapshot?: string[] | null
+          priority?: 'low' | 'medium' | 'high' | 'critical'
+          auto_approved?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      moderation_rules: {
+        Row: {
+          id: string
+          rule_type: 'keyword' | 'regex' | 'ai_category'
+          pattern: string
+          action: 'auto_reject' | 'flag_review' | 'auto_approve'
+          severity: 'low' | 'medium' | 'high' | 'critical'
+          description: string
+          is_active: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          rule_type: 'keyword' | 'regex' | 'ai_category'
+          pattern: string
+          action: 'auto_reject' | 'flag_review' | 'auto_approve'
+          severity?: 'low' | 'medium' | 'high' | 'critical'
+          description: string
+          is_active?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          rule_type?: 'keyword' | 'regex' | 'ai_category'
+          pattern?: string
+          action?: 'auto_reject' | 'flag_review' | 'auto_approve'
+          severity?: 'low' | 'medium' | 'high' | 'critical'
+          description?: string
+          is_active?: boolean
+          created_at?: string
+        }
+      }
     }
     Views: {}
     Functions: {}
