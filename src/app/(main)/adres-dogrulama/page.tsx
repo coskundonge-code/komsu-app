@@ -9,7 +9,7 @@ import {
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 
-type Step = 'upload' | 'processing' | 'verified' | 'failed';
+type Step = 'upload' | 'processing' | 'manual-barcode' | 'verified' | 'failed';
 
 interface ProcessStep {
   id: string;
@@ -31,6 +31,7 @@ export default function AddressVerificationPage() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [extractedCode, setExtractedCode] = useState('');
+  const [manualCode, setManualCode] = useState('');
   const [extractedTc, setExtractedTc] = useState('');
   const [userTcKimlikNo, setUserTcKimlikNo] = useState('');
   const [verificationResult, setVerificationResult] = useState<any>(null);
@@ -153,9 +154,9 @@ export default function AddressVerificationPage() {
 
       if (!code) {
         updateStep('barcode', 'error');
-        updateStepLabel('barcode', 'Barkod numarası belgede bulunamadı');
-        setErrorMessage('Belgede barkod numarası bulunamadı. Lütfen e-Devlet\'ten indirdiğiniz orijinal PDF belgeyi yükleyin.');
-        setCurrentStep('failed');
+        updateStepLabel('barcode', 'Barkod numarası otomatik bulunamadı — Manuel giriş bekleniyor');
+        // Fail yerine manuel giriş adımına yönlendir
+        setCurrentStep('manual-barcode');
         return;
       }
 
@@ -235,10 +236,88 @@ export default function AddressVerificationPage() {
     }
   }, [userTcKimlikNo]);
 
+  /**
+   * Manuel barkod girişi sonrası doğrulama devam eder
+   */
+  const continueWithManualCode = useCallback(async (manualCodeInput: string) => {
+    const code = manualCodeInput.trim().toUpperCase();
+    if (!code) return;
+
+    setExtractedCode(code);
+    setCurrentStep('processing');
+
+    // Barkod adımını güncelle
+    updateStep('barcode', 'done');
+    updateStepLabel('barcode', `Barkod numarası (manuel): ${code}`);
+
+    try {
+      // ===== ADIM 3: TC Kimlik No =====
+      updateStep('tc', 'active');
+      await delay(400);
+
+      const tcToUse = userTcKimlikNo || extractedTc || '';
+      if (!tcToUse) {
+        updateStep('tc', 'error');
+        updateStepLabel('tc', 'TC Kimlik No bulunamadı');
+        setErrorMessage('TC Kimlik numaranız bulunamadı. Lütfen profil ayarlarınızdan TC Kimlik No\'nuzu ekleyin.');
+        setCurrentStep('failed');
+        return;
+      }
+
+      const maskedTc = tcToUse.substring(0, 3) + '****' + tcToUse.substring(7);
+      updateStep('tc', 'done');
+      updateStepLabel('tc', `TC Kimlik No alındı: ${maskedTc}`);
+
+      // ===== ADIM 4: e-Devlet =====
+      updateStep('edevlet', 'active');
+      updateStepLabel('edevlet', 'Barkod numarası e-Devlet\'e giriliyor...');
+      await delay(600);
+
+      const response = await fetch('/api/verify-document', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, tcKimlikNo: tcToUse, documentInfo })
+      });
+
+      const result = await response.json();
+      updateStep('edevlet', 'done');
+      updateStepLabel('edevlet', 'e-Devlet belge doğrulama sorgusu tamamlandı');
+
+      // ===== ADIM 5: Karşılaştırma =====
+      updateStep('compare', 'active');
+      await delay(500);
+      updateStep('compare', 'done');
+      updateStepLabel('compare', 'Adres bilgileri karşılaştırıldı');
+
+      // ===== ADIM 6: Sonuç =====
+      updateStep('result', 'active');
+      await delay(400);
+
+      if (result.verified) {
+        setVerificationResult(result);
+        updateStep('result', 'done');
+        updateStepLabel('result', 'Adres doğrulandı!');
+        await delay(800);
+        setCurrentStep('verified');
+      } else {
+        updateStep('result', 'error');
+        updateStepLabel('result', 'Adres doğrulanamadı');
+        setErrorMessage(result.message || 'Belge e-Devlet üzerinden doğrulanamadı.');
+        await delay(600);
+        setCurrentStep('failed');
+      }
+    } catch (error) {
+      console.error('Manual code process error:', error);
+      setErrorMessage('Doğrulama sırasında beklenmeyen bir hata oluştu.');
+      setCurrentStep('failed');
+    }
+  }, [userTcKimlikNo, extractedTc, documentInfo]);
+
   const resetProcess = () => {
     setCurrentStep('upload');
     setUploadedFile(null);
     setExtractedCode('');
+    setManualCode('');
     setErrorMessage('');
     setVerificationResult(null);
     setDocumentInfo({});
@@ -408,6 +487,91 @@ export default function AddressVerificationPage() {
               {processSteps.map((step) => (
                 <ProcessStepRow key={step.id} step={step} />
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* ========== ADIM: MANUEL BARKOD GİRİŞİ ========== */}
+        {currentStep === 'manual-barcode' && (
+          <div className="space-y-6">
+            {/* Süreç özeti */}
+            <div className="bg-white rounded-xl border border-[#e0e0e0] overflow-hidden">
+              <div className="bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-5 text-white">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                    <ScanBarcode className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold">Barkod Numarası Gerekli</h2>
+                    <p className="text-white/80 text-sm">Otomatik bulunamadı — lütfen kendiniz girin.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tamamlanan adımlar */}
+              <div className="px-6 py-4 space-y-3 border-b border-[#e0e0e0]">
+                {processSteps.map((step) => (
+                  <ProcessStepRow key={step.id} step={step} />
+                ))}
+              </div>
+
+              {/* Manuel giriş formu */}
+              <div className="px-6 py-6">
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-5">
+                  <div className="flex gap-3">
+                    <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-amber-900 mb-1">Barkod Numarasını Nerede Bulabilirsiniz?</p>
+                      <p className="text-sm text-amber-800">
+                        e-Devlet belgenizin üst kısmında veya altında{' '}
+                        <strong>XXXX-XXXX-XXXX-XXXX</strong> formatında bir doğrulama kodu bulunur.
+                        Genellikle &quot;Barkod No&quot; veya &quot;Doğrulama Kodu&quot; olarak etiketlenir.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <label htmlFor="manual-barcode" className="block text-sm font-semibold text-[#333] mb-2">
+                  Barkod / Doğrulama Numarası
+                </label>
+                <input
+                  id="manual-barcode"
+                  type="text"
+                  value={manualCode}
+                  onChange={(e) => setManualCode(e.target.value.toUpperCase())}
+                  placeholder="Örn: NV02-ILLE-G5U8-RLN9"
+                  className="w-full px-4 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-[#fafafa] focus:bg-white focus:outline-none focus:ring-2 focus:border-[#00833e] focus:ring-[#00833e]/20 font-mono text-base tracking-wider"
+                  autoFocus
+                />
+                <p className="text-xs text-[#8f8f8f] mt-2">
+                  Tire (-) ile veya tiresiz girebilirsiniz. Örn: NV02ILLEG5U8RLN9
+                </p>
+
+                <div className="flex gap-3 mt-5">
+                  <button
+                    onClick={() => {
+                      let code = manualCode.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+                      // 16 karakterse 4'lü gruplara böl
+                      if (code.length === 16) {
+                        code = `${code.slice(0,4)}-${code.slice(4,8)}-${code.slice(8,12)}-${code.slice(12,16)}`;
+                      }
+                      if (code.length >= 10) {
+                        continueWithManualCode(code);
+                      }
+                    }}
+                    disabled={manualCode.replace(/[^A-Za-z0-9]/g, '').length < 10}
+                    className="flex-1 px-6 py-3 bg-[#00833e] text-white font-semibold rounded-lg hover:bg-[#006b32] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    Doğrulamaya Devam Et
+                  </button>
+                  <button
+                    onClick={resetProcess}
+                    className="px-6 py-3 border border-[#e0e0e0] text-[#666] font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    Farklı Belge
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}
