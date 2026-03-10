@@ -1,11 +1,26 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { Navbar } from "@/components/layout/navbar";
 import { Sidebar } from "@/components/layout/sidebar";
-import { RightSidebar } from "@/components/layout/right-sidebar";
 import { BottomBar } from "@/components/layout/bottom-bar";
 import { Footer } from "@/components/layout/footer";
 import { SkipLink } from "@/components/ui/skip-link";
+
+const RightSidebar = dynamic(() => import("@/components/layout/right-sidebar").then((m) => ({ default: m.RightSidebar })), {
+  loading: () => (
+    <div className="w-[300px] flex-shrink-0 hidden xl:block py-4 px-2 space-y-4">
+      <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] h-48 animate-pulse" />
+      <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] h-64 animate-pulse" />
+      <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] h-48 animate-pulse" />
+    </div>
+  ),
+  ssr: true,
+});
+
+const WelcomeModal = dynamic(() => import("@/components/shared/welcome-modal").then((m) => ({ default: m.WelcomeModal })), {
+  ssr: false,
+});
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -39,6 +54,9 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
       {/* Mobile Bottom Bar */}
       <BottomBar />
+
+      {/* Welcome Modal */}
+      <WelcomeModal />
     </div>
   );
 }

@@ -70,6 +70,7 @@ export function Sidebar({ className, ...props }: SidebarProps) {
         'flex-shrink-0 py-4',
         className
       )}
+      aria-label="Ana navigasyon"
       {...props}
     >
       {/* User Profile Section */}
@@ -104,10 +105,11 @@ export function Sidebar({ className, ...props }: SidebarProps) {
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
             className={cn(
-              'flex-shrink-0 p-1 hover:bg-white rounded-md transition-colors',
+              'flex-shrink-0 p-1 hover:bg-white rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-[#00833e]',
               isCollapsed && 'hidden'
             )}
             title={isCollapsed ? 'Aç' : 'Kapat'}
+            aria-label={isCollapsed ? 'Kenar çubuğunu aç' : 'Kenar çubuğunu kapat'}
           >
             <ChevronRight className="w-4 h-4 text-[#8f8f8f]" />
           </button>
@@ -118,7 +120,7 @@ export function Sidebar({ className, ...props }: SidebarProps) {
       <nav className={cn(
         'flex flex-col gap-1 px-2 mb-4',
         isCollapsed && 'px-1'
-      )}>
+      )} aria-label="Ana sayfalar">
         {primaryNavItems.map((item) => {
           const Icon = item.icon
           const active = isActive(item.href)
@@ -128,7 +130,7 @@ export function Sidebar({ className, ...props }: SidebarProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 relative group',
+                'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 relative group focus:outline-none focus:ring-2 focus:ring-[#00833e] focus:ring-offset-0',
                 'text-[15px] font-medium',
                 active
                   ? 'bg-[#00833e] text-white shadow-md'
@@ -136,6 +138,7 @@ export function Sidebar({ className, ...props }: SidebarProps) {
                 isCollapsed && 'justify-center px-2'
               )}
               title={isCollapsed ? item.label : undefined}
+              aria-current={active ? 'page' : undefined}
             >
               <Icon className={cn(
                 'w-5 h-5 flex-shrink-0 transition-colors duration-200',
@@ -162,7 +165,7 @@ export function Sidebar({ className, ...props }: SidebarProps) {
       <nav className={cn(
         'flex flex-col gap-1 px-2 mb-4',
         isCollapsed && 'px-1'
-      )}>
+      )} aria-label="İnteraktif sayfalar">
         {interactiveItems.map((item) => {
           const Icon = item.icon
           const active = isActive(item.href)
@@ -173,7 +176,7 @@ export function Sidebar({ className, ...props }: SidebarProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 relative group',
+                'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 relative group focus:outline-none focus:ring-2 focus:ring-[#00833e] focus:ring-offset-0',
                 'text-[15px] font-medium',
                 active
                   ? 'bg-[#00833e] text-white shadow-md'
@@ -181,6 +184,7 @@ export function Sidebar({ className, ...props }: SidebarProps) {
                 isCollapsed && 'justify-center px-2'
               )}
               title={isCollapsed ? item.label : undefined}
+              aria-current={active ? 'page' : undefined}
             >
               <div className="relative flex-shrink-0">
                 <Icon className={cn(
@@ -217,7 +221,7 @@ export function Sidebar({ className, ...props }: SidebarProps) {
       <nav className={cn(
         'flex flex-col gap-1 px-2 mb-4',
         isCollapsed && 'px-1'
-      )}>
+      )} aria-label="Ayarlar ve destek">
         {secondaryNavItems.map((item) => {
           const Icon = item.icon
           const active = isActive(item.href)
@@ -227,7 +231,7 @@ export function Sidebar({ className, ...props }: SidebarProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 relative group',
+                'flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 relative group focus:outline-none focus:ring-2 focus:ring-[#00833e] focus:ring-offset-0',
                 'text-sm',
                 active
                   ? 'text-[#00833e] font-semibold bg-green-50'
@@ -235,6 +239,7 @@ export function Sidebar({ className, ...props }: SidebarProps) {
                 isCollapsed && 'justify-center px-2 py-2.5'
               )}
               title={isCollapsed ? item.label : undefined}
+              aria-current={active ? 'page' : undefined}
             >
               <Icon className="w-4 h-4 flex-shrink-0" />
 

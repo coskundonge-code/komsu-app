@@ -33,7 +33,7 @@ export function BottomBar() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-[#e0e0e0]" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+    <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-[#e0e0e0]" role="navigation" aria-label="Mobil Navigasyon" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <div className="flex items-center justify-around px-2 py-2">
         {/* First two items */}
         {items.slice(0, 2).map((item) => {
@@ -47,13 +47,14 @@ export function BottomBar() {
               href={item.href}
               onClick={() => handleLinkClick(item.href)}
               className={cn(
-                'flex flex-col items-center justify-center gap-1 px-4 py-2 min-w-[64px] rounded-lg transition-all duration-200 ease-out',
+                'flex flex-col items-center justify-center gap-1 px-4 py-2 min-w-[64px] rounded-lg transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#00833e]',
                 'active:scale-95',
                 active
                   ? 'text-[#00833e]'
                   : 'text-[#8f8f8f]',
                 isPressed && 'scale-95'
               )}
+              aria-current={active ? 'page' : undefined}
             >
               <Icon className={cn('transition-all duration-150', active ? 'w-6 h-6' : 'w-5 h-5')} strokeWidth={active ? 2.5 : 2} />
               <span className={cn('text-[10px] font-semibold', active ? 'text-[#00833e]' : 'text-[#8f8f8f]')}>
@@ -68,10 +69,11 @@ export function BottomBar() {
           href="/?post=new"
           onClick={() => handleLinkClick('create')}
           className={cn(
-            'flex flex-col items-center justify-center gap-1 px-3 py-2 transition-all duration-200 ease-out',
+            'flex flex-col items-center justify-center gap-1 px-3 py-2 transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00833e] rounded-lg',
             'active:scale-95',
             activeLink === 'create' && 'scale-95'
           )}
+          aria-label="Yeni gönderi oluştur"
         >
           <div className="relative flex items-center justify-center">
             <div className="absolute inset-0 bg-[#00833e] rounded-full blur-lg opacity-30"></div>
@@ -95,13 +97,14 @@ export function BottomBar() {
               href={item.href}
               onClick={() => handleLinkClick(item.href)}
               className={cn(
-                'flex flex-col items-center justify-center gap-1 px-4 py-2 min-w-[64px] rounded-lg transition-all duration-200 ease-out relative',
+                'flex flex-col items-center justify-center gap-1 px-4 py-2 min-w-[64px] rounded-lg transition-all duration-200 ease-out relative focus:outline-none focus:ring-2 focus:ring-[#00833e]',
                 'active:scale-95',
                 active
                   ? 'text-[#00833e]'
                   : 'text-[#8f8f8f]',
                 isPressed && 'scale-95'
               )}
+              aria-current={active ? 'page' : undefined}
             >
               <div className="relative">
                 <Icon className={cn('transition-all duration-150', active ? 'w-6 h-6' : 'w-5 h-5')} strokeWidth={active ? 2.5 : 2} />
@@ -119,6 +122,6 @@ export function BottomBar() {
           )
         })}
       </div>
-    </div>
+    </nav>
   )
 }

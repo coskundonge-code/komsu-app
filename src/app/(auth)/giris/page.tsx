@@ -182,7 +182,7 @@ export default function GirisPage() {
           )}
 
           {/* Form */}
-          <form onSubmit={handleSignIn} className="space-y-4 mb-6">
+          <form onSubmit={handleSignIn} className="space-y-4 mb-6" noValidate>
             {/* Email Input */}
             <div>
               <label htmlFor="email" className="block text-sm font-semibold text-[#333] mb-2.5">
@@ -200,6 +200,8 @@ export default function GirisPage() {
                   }}
                   placeholder="ornek@email.com"
                   disabled={isLoading}
+                  aria-invalid={!!emailError}
+                  aria-describedby={emailError ? 'email-error' : undefined}
                   className={`w-full pl-12 pr-4 py-3 border rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:ring-2 transition disabled:bg-[#f0f2f5] disabled:cursor-not-allowed ${
                     emailError
                       ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
@@ -208,7 +210,7 @@ export default function GirisPage() {
                 />
               </div>
               {emailError && (
-                <p className="text-red-600 text-xs mt-2 flex items-center gap-1">
+                <p id="email-error" className="text-red-600 text-xs mt-2 flex items-center gap-1">
                   <AlertCircle className="w-3.5 h-3.5" />
                   {emailError}
                 </p>
@@ -240,6 +242,8 @@ export default function GirisPage() {
                   }}
                   placeholder="••••••••"
                   disabled={isLoading}
+                  aria-invalid={!!passwordError}
+                  aria-describedby={passwordError ? 'password-error' : undefined}
                   className={`w-full pl-12 pr-12 py-3 border rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:ring-2 transition disabled:bg-[#f0f2f5] disabled:cursor-not-allowed ${
                     passwordError
                       ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
@@ -251,12 +255,13 @@ export default function GirisPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   disabled={isLoading}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8f8f8f] hover:text-[#404040] transition disabled:cursor-not-allowed"
+                  aria-label={showPassword ? 'Şifreyi gizle' : 'Şifreyi göster'}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
               {passwordError && (
-                <p className="text-red-600 text-xs mt-2 flex items-center gap-1">
+                <p id="password-error" className="text-red-600 text-xs mt-2 flex items-center gap-1">
                   <AlertCircle className="w-3.5 h-3.5" />
                   {passwordError}
                 </p>

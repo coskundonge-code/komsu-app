@@ -261,7 +261,7 @@ export default function KayitPage() {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSignUp} className="space-y-4">
+          <form onSubmit={handleSignUp} className="space-y-4" noValidate>
             {/* Full Name Input */}
             <div>
               <label htmlFor="fullName" className="block text-sm font-semibold text-[#333] mb-2.5">
@@ -279,6 +279,8 @@ export default function KayitPage() {
                   }}
                   placeholder="Adınız Soyadınız"
                   disabled={isLoading}
+                  aria-invalid={!!fullNameError}
+                  aria-describedby={fullNameError ? 'fullName-error' : undefined}
                   className={`w-full pl-12 pr-4 py-3 border rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:ring-2 transition disabled:bg-[#f0f2f5] ${
                     fullNameError
                       ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
@@ -287,7 +289,7 @@ export default function KayitPage() {
                 />
               </div>
               {fullNameError && (
-                <p className="text-red-600 text-xs mt-2 flex items-center gap-1">
+                <p id="fullName-error" className="text-red-600 text-xs mt-2 flex items-center gap-1">
                   <AlertCircle className="w-3.5 h-3.5" />
                   {fullNameError}
                 </p>
@@ -311,6 +313,8 @@ export default function KayitPage() {
                   }}
                   placeholder="ornek@email.com"
                   disabled={isLoading}
+                  aria-invalid={!!emailError}
+                  aria-describedby={emailError ? 'email-error' : undefined}
                   className={`w-full pl-12 pr-4 py-3 border rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:ring-2 transition disabled:bg-[#f0f2f5] ${
                     emailError
                       ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
@@ -319,7 +323,7 @@ export default function KayitPage() {
                 />
               </div>
               {emailError && (
-                <p className="text-red-600 text-xs mt-2 flex items-center gap-1">
+                <p id="email-error" className="text-red-600 text-xs mt-2 flex items-center gap-1">
                   <AlertCircle className="w-3.5 h-3.5" />
                   {emailError}
                 </p>
@@ -343,6 +347,8 @@ export default function KayitPage() {
                   }}
                   placeholder="En az 8 karakter"
                   disabled={isLoading}
+                  aria-invalid={!!passwordError}
+                  aria-describedby={passwordError ? 'password-error' : undefined}
                   className={`w-full pl-12 pr-12 py-3 border rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:ring-2 transition disabled:bg-[#f0f2f5] ${
                     passwordError
                       ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
@@ -354,12 +360,13 @@ export default function KayitPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   disabled={isLoading}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8f8f8f] hover:text-[#404040] transition disabled:cursor-not-allowed"
+                  aria-label={showPassword ? 'Şifreyi gizle' : 'Şifreyi göster'}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
               {passwordError && (
-                <p className="text-red-600 text-xs mt-2 flex items-center gap-1">
+                <p id="password-error" className="text-red-600 text-xs mt-2 flex items-center gap-1">
                   <AlertCircle className="w-3.5 h-3.5" />
                   {passwordError}
                 </p>
@@ -383,6 +390,8 @@ export default function KayitPage() {
                   }}
                   placeholder="Şifrenizi tekrar girin"
                   disabled={isLoading}
+                  aria-invalid={!!confirmPasswordError}
+                  aria-describedby={confirmPasswordError ? 'confirmPassword-error' : undefined}
                   className={`w-full pl-12 pr-12 py-3 border rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:ring-2 transition disabled:bg-[#f0f2f5] ${
                     confirmPasswordError
                       ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
@@ -394,12 +403,13 @@ export default function KayitPage() {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   disabled={isLoading}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8f8f8f] hover:text-[#404040] transition disabled:cursor-not-allowed"
+                  aria-label={showConfirmPassword ? 'Şifreyi gizle' : 'Şifreyi göster'}
                 >
                   {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
               {confirmPasswordError && (
-                <p className="text-red-600 text-xs mt-2 flex items-center gap-1">
+                <p id="confirmPassword-error" className="text-red-600 text-xs mt-2 flex items-center gap-1">
                   <AlertCircle className="w-3.5 h-3.5" />
                   {confirmPasswordError}
                 </p>

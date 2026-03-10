@@ -1,27 +1,11 @@
-import type { Metadata } from "next";
-import { generatePageMetadata } from "@/lib/seo";
+import type { Metadata } from 'next';
 
-export const metadata: Metadata = generatePageMetadata({
-  title: "Blog | KomşuApp",
-  description:
-    "KomşuApp Blog. Mahalle hayatı, komşuluk ve yerel topluluklar hakkında yazılar.",
-  openGraph: {
-    url: "https://komsuapp.com/blog",
-    title: "Blog | KomşuApp",
-    description:
-      "KomşuApp Blog. Mahalle hayatı, komşuluk ve yerel topluluklar hakkında yazılar.",
-  },
-  twitter: {
-    title: "Blog | KomşuApp",
-    description:
-      "KomşuApp Blog. Mahalle hayatı, komşuluk ve yerel topluluklar hakkında yazılar.",
-  },
-});
+export const metadata: Metadata = {
+  title: "Blog - Mahalle, Güvenlik ve Topluluk Rehberi",
+  description: "Mahalleleriniz, güvenlik ve topluluk hakkında ilham verici hikayeler, pratik ipuçları ve son güncellemeleri okuyun. Komşuluk kültürünü güçlendirin.",
+  keywords: ["blog", "mahalle rehberi", "güvenlik ipuçları", "topluluk haberleri", "komşuluk"],
+};
 
-export default function BlogLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function BlogLayout({ children }: { children: React.ReactNode }) {
   return children;
 }

@@ -1,10 +1,11 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'İşletmeler',
-  description: 'Mahallenizdeki yerel işletmeleri keşfedin. Restoranlar, kafeler, dükkanlar ve diğer hizmetleri bulun. Komşu işletmelerini destekleyin.',
+  title: "İşletmeler - Mahallenizdeki Önerilen Dükkanlar",
+  description: "Mahallenizdeki en iyi işletmeleri, restoranları, kafeleri ve hizmet sağlayıcılarını keşfedin. Komşularının önerileri ve değerlendirmeleri ile seçim yapın.",
+  keywords: ["işletmeler", "mahalle işletmeleri", "restoranlar", "kafeler", "hizmet sağlayıcılar", "yerel işletmeler"],
 };
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+export default function IsletmelerLayout({ children }: { children: React.ReactNode }) {
+  return children;
 }
