@@ -9,6 +9,7 @@ const publicRoutes = [
   '/kayit',
   '/sifre-sifirla',
   '/auth/callback',
+  '/auth/signout',
   '/api/auth',
   '/pazar',
   '/kesfet',
