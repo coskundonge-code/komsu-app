@@ -107,7 +107,7 @@ export function AddressVerificationBanner({
               e-Devlet ile Doğrula
             </Link>
             <Link
-              href="/davet"
+              href="/referans-kullan"
               className="inline-flex items-center gap-2 px-4 py-2 bg-white text-blue-700 text-sm font-medium rounded-lg border border-blue-300 hover:bg-blue-50 transition-colors"
             >
               <UserPlus className="w-4 h-4" />
