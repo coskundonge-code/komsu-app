@@ -211,29 +211,29 @@ export default function StoriesBar() {
             className="flex gap-4 overflow-x-auto scrollbar-hide px-2"
           >
             {/* Add Story Button */}
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 w-[80px]">
               <button
                 onClick={handleAddStory}
-                className="flex flex-col items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none"
+                className="w-full flex flex-col items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none"
               >
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#00833e] to-[#006b32] flex items-center justify-center shadow-sm border-2 border-[#e0e0e0] hover:shadow-md transition-shadow">
-                  <Plus size={28} className="text-white" />
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#00833e] to-[#006b32] flex items-center justify-center shadow-sm border-2 border-[#e0e0e0] hover:shadow-md transition-shadow mx-auto">
+                  <Plus size={24} className="text-white" />
                 </div>
-                <span className="text-xs font-medium text-[#333] text-center max-w-[80px]">
-                  Hikayeni Ekle
+                <span className="text-xs font-medium text-[#333] text-center w-full truncate">
+                  Yeni Paylaşım
                 </span>
               </button>
             </div>
 
             {/* Story Items */}
             {stories.map((story) => (
-              <div key={story.id} className="flex-shrink-0">
+              <div key={story.id} className="flex-shrink-0 w-[80px]">
                 <button
                   onClick={() => openStory(story)}
-                  className="flex flex-col items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none"
+                  className="w-full flex flex-col items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none"
                 >
                   <div
-                    className={`w-20 h-20 rounded-full flex items-center justify-center shadow-sm border-2 transition-colors overflow-hidden ${
+                    className={`w-16 h-16 rounded-full flex items-center justify-center shadow-sm border-2 transition-colors overflow-hidden mx-auto ${
                       story.viewed
                         ? 'border-[#e0e0e0] opacity-75'
                         : 'border-[#00833e] shadow-md'
@@ -242,13 +242,13 @@ export default function StoriesBar() {
                     <Image
                       src={story.avatar}
                       alt={story.userName}
-                      width={80}
-                      height={80}
+                      width={64}
+                      height={64}
                       unoptimized
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="text-xs font-medium text-[#333] text-center max-w-[80px] line-clamp-2">
+                  <span className="text-xs font-medium text-[#333] text-center w-full truncate block">
                     {story.userName}
                   </span>
                 </button>

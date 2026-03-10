@@ -1,5 +1,8 @@
 'use client';
 
+import BusinessPackages from '@/components/business/business-packages';
+import { PackageType, BillingPeriod } from '@/lib/services/business-subscription';
+
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import {
@@ -49,6 +52,8 @@ interface WorkingHours {
 }
 
 interface FormData {
+  selectedPackage?: PackageType;
+  selectedBillingPeriod?: BillingPeriod;
   logo: string | null;
   cover: string | null;
   name: string;
@@ -267,6 +272,23 @@ export default function IsletmeEklePage() {
             </div>
           ))}
         </div>
+
+            {/* Step 4: Package Selection */}
+            {step === 4 && (
+              <div className="mb-8">
+                <BusinessPackages
+                  onSelectPackage={(packageId, billingPeriod) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      selectedPackage: packageId,
+                      selectedBillingPeriod: billingPeriod,
+                    }));
+                  }}
+                  selectedPackage={formData.selectedPackage}
+                  selectedBillingPeriod={formData.selectedBillingPeriod}
+                />
+              </div>
+            )}
 
         {/* Success Screen */}
         {step === 4 ? (
@@ -753,9 +775,9 @@ export default function IsletmeEklePage() {
                 </button>
               )}
               <button
-                type={step === 3 ? 'submit' : 'button'}
+                type={step === 4 ? 'submit' : 'button'}
                 onClick={() => {
-                  if (step < 3) setStep(step + 1);
+                  if (step < 4) setStep(step + 1);
                 }}
                 disabled={getStepButtonDisabled()}
                 className={`flex-1 font-semibold py-3 px-4 rounded-lg transition-colors ${
@@ -764,7 +786,7 @@ export default function IsletmeEklePage() {
                     : 'bg-[#00833e] hover:bg-[#006b32] text-white'
                 }`}
               >
-                {step === 3
+                {step === 4
                   ? 'İşletme Oluştur'
                   : step === 1
                   ? 'İleri'

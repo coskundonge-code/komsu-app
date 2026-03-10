@@ -1162,6 +1162,320 @@ export type Database = {
           created_at?: string
         }
       }
+      // === ADDRESS VERIFICATION (e-Devlet) ===
+      address_verifications: {
+        Row: {
+          id: string
+          user_id: string
+          verification_status: 'pending' | 'document_uploaded' | 'barcode_verified' | 'approved' | 'rejected' | 'expired'
+          edevlet_redirect_url: string | null
+          barcode_image_url: string | null
+          barcode_value: string | null
+          barcode_verified_at: string | null
+          document_uploaded_at: string | null
+          address_text: string | null
+          verified_neighborhood_id: string | null
+          rejection_reason: string | null
+          expires_at: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          verification_status?: 'pending' | 'document_uploaded' | 'barcode_verified' | 'approved' | 'rejected' | 'expired'
+          edevlet_redirect_url?: string | null
+          barcode_image_url?: string | null
+          barcode_value?: string | null
+          barcode_verified_at?: string | null
+          document_uploaded_at?: string | null
+          address_text?: string | null
+          verified_neighborhood_id?: string | null
+          rejection_reason?: string | null
+          expires_at: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          verification_status?: 'pending' | 'document_uploaded' | 'barcode_verified' | 'approved' | 'rejected' | 'expired'
+          edevlet_redirect_url?: string | null
+          barcode_image_url?: string | null
+          barcode_value?: string | null
+          barcode_verified_at?: string | null
+          document_uploaded_at?: string | null
+          address_text?: string | null
+          verified_neighborhood_id?: string | null
+          rejection_reason?: string | null
+          expires_at?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      // === LISTING QUOTAS & PAYMENTS ===
+      listing_quotas: {
+        Row: {
+          id: string
+          user_id: string
+          year: number
+          free_listings_used: number
+          free_listings_limit: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          year: number
+          free_listings_used?: number
+          free_listings_limit?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          year?: number
+          free_listings_used?: number
+          free_listings_limit?: number
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      listing_payments: {
+        Row: {
+          id: string
+          user_id: string
+          listing_id: string | null
+          payment_type: 'listing_fee' | 'featured' | 'business_listing'
+          amount: number
+          currency: string
+          status: 'pending' | 'completed' | 'failed' | 'refunded'
+          payment_provider: string | null
+          payment_reference: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          listing_id?: string | null
+          payment_type: 'listing_fee' | 'featured' | 'business_listing'
+          amount: number
+          currency?: string
+          status?: 'pending' | 'completed' | 'failed' | 'refunded'
+          payment_provider?: string | null
+          payment_reference?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          listing_id?: string | null
+          payment_type?: 'listing_fee' | 'featured' | 'business_listing'
+          amount?: number
+          currency?: string
+          status?: 'pending' | 'completed' | 'failed' | 'refunded'
+          payment_provider?: string | null
+          payment_reference?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      featured_listings: {
+        Row: {
+          id: string
+          listing_id: string
+          user_id: string
+          payment_id: string
+          featured_until: string
+          position_priority: number
+          impressions: number
+          clicks: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          listing_id: string
+          user_id: string
+          payment_id: string
+          featured_until: string
+          position_priority?: number
+          impressions?: number
+          clicks?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          listing_id?: string
+          user_id?: string
+          payment_id?: string
+          featured_until?: string
+          position_priority?: number
+          impressions?: number
+          clicks?: number
+          created_at?: string
+        }
+      }
+      // === BUSINESS LISTING PACKAGES ===
+      business_listing_packages: {
+        Row: {
+          id: string
+          name: string
+          description: string
+          price_monthly: number
+          price_yearly: number
+          features: string[]
+          max_photos: number
+          analytics_access: boolean
+          priority_support: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          description: string
+          price_monthly: number
+          price_yearly: number
+          features: string[]
+          max_photos?: number
+          analytics_access?: boolean
+          priority_support?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          description?: string
+          price_monthly?: number
+          price_yearly?: number
+          features?: string[]
+          max_photos?: number
+          analytics_access?: boolean
+          priority_support?: boolean
+          created_at?: string
+        }
+      }
+      business_subscriptions: {
+        Row: {
+          id: string
+          business_id: string
+          package_id: string
+          status: 'active' | 'cancelled' | 'expired' | 'trial'
+          billing_period: 'monthly' | 'yearly'
+          current_period_start: string
+          current_period_end: string
+          payment_reference: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          business_id: string
+          package_id: string
+          status?: 'active' | 'cancelled' | 'expired' | 'trial'
+          billing_period?: 'monthly' | 'yearly'
+          current_period_start: string
+          current_period_end: string
+          payment_reference?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          business_id?: string
+          package_id?: string
+          status?: 'active' | 'cancelled' | 'expired' | 'trial'
+          billing_period?: 'monthly' | 'yearly'
+          current_period_start?: string
+          current_period_end?: string
+          payment_reference?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      // === ENHANCED REVIEW SYSTEM WITH ANTI-FAKE ===
+      review_verifications: {
+        Row: {
+          id: string
+          review_id: string
+          user_id: string
+          is_verified_neighbor: boolean
+          has_visited_business: boolean
+          review_quality_score: number
+          flagged_as_fake: boolean
+          flag_reason: string | null
+          moderation_status: 'pending' | 'approved' | 'rejected' | 'under_review'
+          ip_address_hash: string | null
+          device_fingerprint_hash: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          review_id: string
+          user_id: string
+          is_verified_neighbor?: boolean
+          has_visited_business?: boolean
+          review_quality_score?: number
+          flagged_as_fake?: boolean
+          flag_reason?: string | null
+          moderation_status?: 'pending' | 'approved' | 'rejected' | 'under_review'
+          ip_address_hash?: string | null
+          device_fingerprint_hash?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          review_id?: string
+          user_id?: string
+          is_verified_neighbor?: boolean
+          has_visited_business?: boolean
+          review_quality_score?: number
+          flagged_as_fake?: boolean
+          flag_reason?: string | null
+          moderation_status?: 'pending' | 'approved' | 'rejected' | 'under_review'
+          ip_address_hash?: string | null
+          device_fingerprint_hash?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      review_reports: {
+        Row: {
+          id: string
+          review_id: string
+          reporter_user_id: string
+          reason: 'fake' | 'inappropriate' | 'spam' | 'conflict_of_interest' | 'other'
+          description: string | null
+          status: 'open' | 'investigating' | 'resolved' | 'dismissed'
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          review_id: string
+          reporter_user_id: string
+          reason: 'fake' | 'inappropriate' | 'spam' | 'conflict_of_interest' | 'other'
+          description?: string | null
+          status?: 'open' | 'investigating' | 'resolved' | 'dismissed'
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          review_id?: string
+          reporter_user_id?: string
+          reason?: 'fake' | 'inappropriate' | 'spam' | 'conflict_of_interest' | 'other'
+          description?: string | null
+          status?: 'open' | 'investigating' | 'resolved' | 'dismissed'
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
     Views: {}
     Functions: {}
