@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Eye, EyeOff, CheckCircle2, User, Mail, Lock, Phone, AlertCircle } from 'lucide-react'
+import { registerSchema } from '@/lib/validations/auth'
 
 export default function KayitPage() {
   const router = useRouter()
@@ -21,51 +22,38 @@ export default function KayitPage() {
   const [success, setSuccess] = useState('')
   const [fullNameError, setFullNameError] = useState('')
   const [emailError, setEmailError] = useState('')
+  const [phoneError, setPhoneError] = useState('')
   const [passwordError, setPasswordError] = useState('')
   const [confirmPasswordError, setConfirmPasswordError] = useState('')
 
   const supabase = createClient()
 
   const validateForm = () => {
-    let isValid = true
     setFullNameError('')
     setEmailError('')
+    setPhoneError('')
     setPasswordError('')
     setConfirmPasswordError('')
 
-    if (!fullName.trim()) {
-      setFullNameError("Ad ve soyadınızı girin")
-      isValid = false
-    } else if (fullName.trim().split(' ').length < 2) {
-      setFullNameError("Lütfen ad ve soyadınızı girin")
-      isValid = false
+    const result = registerSchema.safeParse({
+      fullName,
+      email,
+      phone,
+      password,
+      confirmPassword,
+    })
+
+    if (!result.success) {
+      const errors = result.error.flatten().fieldErrors
+      if (errors.fullName?.[0]) setFullNameError(errors.fullName[0])
+      if (errors.email?.[0]) setEmailError(errors.email[0])
+      if (errors.phone?.[0]) setPhoneError(errors.phone[0])
+      if (errors.password?.[0]) setPasswordError(errors.password[0])
+      if (errors.confirmPassword?.[0]) setConfirmPasswordError(errors.confirmPassword[0])
+      return false
     }
 
-    if (!email.trim()) {
-      setEmailError("E-posta adresinizi girin")
-      isValid = false
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setEmailError("Geçerli bir e-posta adresi girin")
-      isValid = false
-    }
-
-    if (!password) {
-      setPasswordError("Şifre oluşturun")
-      isValid = false
-    } else if (password.length < 8) {
-      setPasswordError("Şifre en az 8 karakterden oluşmalıdır")
-      isValid = false
-    }
-
-    if (!confirmPassword) {
-      setConfirmPasswordError("Şifrenizi tekrar girin")
-      isValid = false
-    } else if (password !== confirmPassword) {
-      setConfirmPasswordError("Şifreler eşleşmiyor")
-      isValid = false
-    }
-
-    return isValid
+    return true
   }
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -427,12 +415,27 @@ export default function KayitPage() {
                   id="phone"
                   type="tel"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => {
+                    setPhone(e.target.value)
+                    if (phoneError) setPhoneError('')
+                  }}
                   placeholder="+90 5XX XXX XXXX"
                   disabled={isLoading}
-                  className="w-full pl-12 pr-4 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20 transition disabled:bg-[#f0f2f5]"
+                  aria-invalid={!!phoneError}
+                  aria-describedby={phoneError ? 'phone-error' : undefined}
+                  className={`w-full pl-12 pr-4 py-3 border rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:ring-2 transition disabled:bg-[#f0f2f5] ${
+                    phoneError
+                      ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
+                      : 'border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20'
+                  }`}
                 />
               </div>
+              {phoneError && (
+                <p id="phone-error" className="text-red-600 text-xs mt-2 flex items-center gap-1">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  {phoneError}
+                </p>
+              )}
             </div>
 
             {/* Terms Checkbox */}

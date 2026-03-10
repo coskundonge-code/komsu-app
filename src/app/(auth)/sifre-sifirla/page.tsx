@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Mail, Lock, ArrowLeft, Eye, EyeOff, CheckCircle2, Home } from 'lucide-react'
+import { resetPasswordSchema, resetPasswordFormSchema } from '@/lib/validations/auth'
 
 function SifreSifirlaContent() {
   const router = useRouter()
@@ -17,6 +18,9 @@ function SifreSifirlaContent() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+  const [confirmPasswordError, setConfirmPasswordError] = useState('')
 
   const supabase = createClient()
 
@@ -31,7 +35,19 @@ function SifreSifirlaContent() {
   const handleRequestReset = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+    setEmailError('')
     setIsLoading(true)
+
+    const validationResult = resetPasswordSchema.safeParse({ email })
+
+    if (!validationResult.success) {
+      const errors = validationResult.error.flatten().fieldErrors
+      if (errors.email?.[0]) {
+        setEmailError(errors.email[0])
+      }
+      setIsLoading(false)
+      return
+    }
 
     try {
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
@@ -55,14 +71,22 @@ function SifreSifirlaContent() {
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+    setPasswordError('')
+    setConfirmPasswordError('')
 
-    if (password.length < 8) {
-      setError('Şifre en az 8 karakterden oluşmalıdır')
-      return
-    }
+    const validationResult = resetPasswordFormSchema.safeParse({
+      password,
+      confirmPassword,
+    })
 
-    if (password !== confirmPassword) {
-      setError('Şifreler eşleşmiyor')
+    if (!validationResult.success) {
+      const errors = validationResult.error.flatten().fieldErrors
+      if (errors.password?.[0]) {
+        setPasswordError(errors.password[0])
+      }
+      if (errors.confirmPassword?.[0]) {
+        setConfirmPasswordError(errors.confirmPassword[0])
+      }
       return
     }
 
@@ -179,16 +203,35 @@ function SifreSifirlaContent() {
                       id="email"
                       type="email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => {
+                        setEmail(e.target.value)
+                        if (emailError) setEmailError('')
+                      }}
                       placeholder="ornek@email.com"
                       required
                       disabled={isLoading}
-                      className="w-full pl-12 pr-4 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20 transition disabled:bg-[#f0f2f5] disabled:cursor-not-allowed"
+                      aria-invalid={!!emailError}
+                      aria-describedby={emailError ? 'email-error' : undefined}
+                      className={`w-full pl-12 pr-4 py-3 border rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:ring-2 transition disabled:bg-[#f0f2f5] disabled:cursor-not-allowed ${
+                        emailError
+                          ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
+                          : 'border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20'
+                      }`}
                     />
                   </div>
-                  <p className="text-xs text-[#8f8f8f] mt-2">
-                    E-posta adresinize şifre sıfırlama bağlantısı göndereceğiz.
-                  </p>
+                  {emailError && (
+                    <p id="email-error" className="text-red-600 text-xs mt-2 flex items-center gap-1">
+                      <svg className="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                      {emailError}
+                    </p>
+                  )}
+                  {!emailError && (
+                    <p className="text-xs text-[#8f8f8f] mt-2">
+                      E-posta adresinize şifre sıfırlama bağlantısı göndereceğiz.
+                    </p>
+                  )}
                 </div>
 
                 <button
@@ -254,11 +297,20 @@ function SifreSifirlaContent() {
                       id="password"
                       type={showPassword ? 'text' : 'password'}
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(e) => {
+                        setPassword(e.target.value)
+                        if (passwordError) setPasswordError('')
+                      }}
                       placeholder="••••••••"
                       required
                       disabled={isLoading}
-                      className="w-full pl-12 pr-12 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20 transition disabled:bg-[#f0f2f5] disabled:cursor-not-allowed"
+                      aria-invalid={!!passwordError}
+                      aria-describedby={passwordError ? 'password-error' : undefined}
+                      className={`w-full pl-12 pr-12 py-3 border rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:ring-2 transition disabled:bg-[#f0f2f5] disabled:cursor-not-allowed ${
+                        passwordError
+                          ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
+                          : 'border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20'
+                      }`}
                     />
                     <button
                       type="button"
@@ -273,7 +325,17 @@ function SifreSifirlaContent() {
                       )}
                     </button>
                   </div>
-                  <p className="text-xs text-[#8f8f8f] mt-2">En az 8 karakter olmalıdır</p>
+                  {passwordError && (
+                    <p id="password-error" className="text-red-600 text-xs mt-2 flex items-center gap-1">
+                      <svg className="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                      {passwordError}
+                    </p>
+                  )}
+                  {!passwordError && (
+                    <p className="text-xs text-[#8f8f8f] mt-2">En az 8 karakter olmalıdır</p>
+                  )}
                 </div>
 
                 <div>
@@ -286,11 +348,20 @@ function SifreSifirlaContent() {
                       id="confirmPassword"
                       type={showConfirmPassword ? 'text' : 'password'}
                       value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      onChange={(e) => {
+                        setConfirmPassword(e.target.value)
+                        if (confirmPasswordError) setConfirmPasswordError('')
+                      }}
                       placeholder="••••••••"
                       required
                       disabled={isLoading}
-                      className="w-full pl-12 pr-12 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20 transition disabled:bg-[#f0f2f5] disabled:cursor-not-allowed"
+                      aria-invalid={!!confirmPasswordError}
+                      aria-describedby={confirmPasswordError ? 'confirmPassword-error' : undefined}
+                      className={`w-full pl-12 pr-12 py-3 border rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:ring-2 transition disabled:bg-[#f0f2f5] disabled:cursor-not-allowed ${
+                        confirmPasswordError
+                          ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
+                          : 'border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20'
+                      }`}
                     />
                     <button
                       type="button"
@@ -305,6 +376,14 @@ function SifreSifirlaContent() {
                       )}
                     </button>
                   </div>
+                  {confirmPasswordError && (
+                    <p id="confirmPassword-error" className="text-red-600 text-xs mt-2 flex items-center gap-1">
+                      <svg className="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                      {confirmPasswordError}
+                    </p>
+                  )}
                 </div>
 
                 <button

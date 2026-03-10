@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Eye, EyeOff, Mail, Lock, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { loginSchema } from '@/lib/validations/auth'
 
 export default function GirisPage() {
   const router = useRouter()
@@ -20,27 +21,22 @@ export default function GirisPage() {
   const supabase = createClient()
 
   const validateForm = () => {
-    let isValid = true
     setEmailError('')
     setPasswordError('')
 
-    if (!email.trim()) {
-      setEmailError("E-posta adresinizi girin")
-      isValid = false
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setEmailError("Geçerli bir e-posta adresi girin")
-      isValid = false
+    const result = loginSchema.safeParse({
+      email,
+      password,
+    })
+
+    if (!result.success) {
+      const errors = result.error.flatten().fieldErrors
+      if (errors.email?.[0]) setEmailError(errors.email[0])
+      if (errors.password?.[0]) setPasswordError(errors.password[0])
+      return false
     }
 
-    if (!password) {
-      setPasswordError("Şifrenizi girin")
-      isValid = false
-    } else if (password.length < 6) {
-      setPasswordError("Şifre en az 6 karakter olmalıdır")
-      isValid = false
-    }
-
-    return isValid
+    return true
   }
 
   const handleSignIn = async (e: React.FormEvent) => {
