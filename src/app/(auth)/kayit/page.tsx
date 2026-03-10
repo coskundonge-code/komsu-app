@@ -4,11 +4,12 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { Eye, EyeOff, CheckCircle2, User, Mail, Lock, Phone, AlertCircle } from 'lucide-react'
+import { Eye, EyeOff, CheckCircle2, User, Mail, Lock, Phone, AlertCircle, CreditCard } from 'lucide-react'
 import { registerSchema } from '@/lib/validations/auth'
 
 export default function KayitPage() {
   const router = useRouter()
+  const [tcKimlikNo, setTcKimlikNo] = useState('')
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -20,6 +21,7 @@ export default function KayitPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [tcKimlikNoError, setTcKimlikNoError] = useState('')
   const [fullNameError, setFullNameError] = useState('')
   const [emailError, setEmailError] = useState('')
   const [phoneError, setPhoneError] = useState('')
@@ -29,6 +31,7 @@ export default function KayitPage() {
   const supabase = createClient()
 
   const validateForm = () => {
+    setTcKimlikNoError('')
     setFullNameError('')
     setEmailError('')
     setPhoneError('')
@@ -36,6 +39,7 @@ export default function KayitPage() {
     setConfirmPasswordError('')
 
     const result = registerSchema.safeParse({
+      tcKimlikNo,
       fullName,
       email,
       phone,
@@ -45,6 +49,7 @@ export default function KayitPage() {
 
     if (!result.success) {
       const errors = result.error.flatten().fieldErrors
+      if (errors.tcKimlikNo?.[0]) setTcKimlikNoError(errors.tcKimlikNo[0])
       if (errors.fullName?.[0]) setFullNameError(errors.fullName[0])
       if (errors.email?.[0]) setEmailError(errors.email[0])
       if (errors.phone?.[0]) setPhoneError(errors.phone[0])
@@ -77,6 +82,7 @@ export default function KayitPage() {
         options: {
           data: {
             full_name: fullName,
+            tc_kimlik_no: tcKimlikNo,
             phone: phone || null,
           },
           emailRedirectTo: `${window.location.origin}/auth/callback`,
@@ -250,6 +256,43 @@ export default function KayitPage() {
 
           {/* Form */}
           <form onSubmit={handleSignUp} className="space-y-4" noValidate>
+            {/* TC Kimlik No Input */}
+            <div>
+              <label htmlFor="tcKimlikNo" className="block text-sm font-semibold text-[#333] mb-2.5">
+                TC Kimlik No
+              </label>
+              <div className="relative">
+                <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8f8f8f]" />
+                <input
+                  id="tcKimlikNo"
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={11}
+                  value={tcKimlikNo}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '')
+                    setTcKimlikNo(val)
+                    if (tcKimlikNoError) setTcKimlikNoError('')
+                  }}
+                  placeholder="11 haneli TC Kimlik Numaranız"
+                  disabled={isLoading}
+                  aria-invalid={!!tcKimlikNoError}
+                  aria-describedby={tcKimlikNoError ? 'tcKimlikNo-error' : undefined}
+                  className={`w-full pl-12 pr-4 py-3 border rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:ring-2 transition disabled:bg-[#f0f2f5] ${
+                    tcKimlikNoError
+                      ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
+                      : 'border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20'
+                  }`}
+                />
+              </div>
+              {tcKimlikNoError && (
+                <p id="tcKimlikNo-error" className="text-red-600 text-xs mt-2 flex items-center gap-1">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  {tcKimlikNoError}
+                </p>
+              )}
+            </div>
+
             {/* Full Name Input */}
             <div>
               <label htmlFor="fullName" className="block text-sm font-semibold text-[#333] mb-2.5">

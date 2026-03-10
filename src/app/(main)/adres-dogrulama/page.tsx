@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import {
   Upload, CheckCircle2, ExternalLink, AlertCircle,
   Loader2, Shield, FileText, ScanBarcode, ArrowRight,
   RefreshCw, XCircle, Eye, Search
 } from 'lucide-react';
 import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
 
 type Step = 'info' | 'scanning' | 'verifying' | 'verified' | 'failed' | 'manual';
 
@@ -23,12 +24,26 @@ export default function AddressVerificationPage() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [extractedCode, setExtractedCode] = useState('');
+  const [extractedTc, setExtractedTc] = useState('');
+  const [userTcKimlikNo, setUserTcKimlikNo] = useState('');
   const [manualCode, setManualCode] = useState('');
   const [statusText, setStatusText] = useState('');
   const [verificationResult, setVerificationResult] = useState<any>(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [documentInfo, setDocumentInfo] = useState<DocumentInfo>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Kullanıcının TC Kimlik No'sunu profil bilgisinden al
+  useEffect(() => {
+    const fetchUserTC = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user?.user_metadata?.tc_kimlik_no) {
+        setUserTcKimlikNo(user.user_metadata.tc_kimlik_no);
+      }
+    };
+    fetchUserTC();
+  }, []);
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -58,53 +73,85 @@ export default function AddressVerificationPage() {
     setStatusText('Belge okunuyor...');
 
     try {
-      // 1. Barkod kodunu çıkar
-      const { extractVerificationCode } = await import('@/lib/barcode-reader');
-      setStatusText('Barkod numarası aranıyor...');
+      // 1. Tüm belge bilgilerini çıkar (barkod, TC, ad, adres)
+      const { extractFullDocumentInfo, extractVerificationCode } = await import('@/lib/barcode-reader');
+      setStatusText('Barkod numarası ve belge bilgileri aranıyor...');
 
-      const result = await extractVerificationCode(file);
+      // Önce tam çıkarma dene
+      const fullInfo = await extractFullDocumentInfo(file);
 
-      if (!result) {
+      let code: string | null = null;
+      let tcFromDoc: string | null = null;
+
+      if (fullInfo) {
+        code = fullInfo.code;
+        tcFromDoc = fullInfo.tcKimlikNo;
+
+        // Belge bilgilerini kaydet
+        const info: DocumentInfo = {};
+        if (fullInfo.neighborhood) info.neighborhood = fullInfo.neighborhood;
+        if (fullInfo.district) info.district = fullInfo.district;
+        if (fullInfo.city) info.city = fullInfo.city;
+        if (fullInfo.address) info.address = fullInfo.address;
+        if (fullInfo.fullName) info.holderName = fullInfo.fullName;
+        setDocumentInfo(info);
+
+        if (tcFromDoc) setExtractedTc(tcFromDoc);
+      }
+
+      // Fallback: sadece barkod çıkar
+      if (!code) {
+        const result = await extractVerificationCode(file);
+        if (result) code = result.code;
+      }
+
+      if (!code) {
         setStatusText('Barkod otomatik okunamadı.');
         await delay(300);
         setCurrentStep('manual');
         return;
       }
 
-      const code = result.code;
       setExtractedCode(code);
 
-      // 2. PDF'den ek bilgileri çıkar (adres, ilçe, il)
-      if (file.type === 'application/pdf') {
-        const info = await extractDocumentDetails(file);
-        setDocumentInfo(info);
+      // TC Kimlik No: önce kullanıcı profilinden, yoksa belgeden
+      const tcToUse = userTcKimlikNo || tcFromDoc || '';
+
+      if (!tcToUse) {
+        // TC yoksa manual moda geç ama barkod var
+        setStatusText('TC Kimlik No bulunamadı. Lütfen manuel girin.');
+        await delay(300);
+        setCurrentStep('manual');
+        return;
       }
 
-      // 3. Otomatik doğrulamaya geç
+      // 2. Otomatik doğrulamaya geç
       setCurrentStep('verifying');
       setStatusText('turkiye.gov.tr belge doğrulama sorgulanıyor...');
 
-      await verifyCode(code);
+      await verifyCode(code, tcToUse);
 
     } catch (error) {
       console.error('Process error:', error);
       setCurrentStep('manual');
     }
-  }, []);
+  }, [userTcKimlikNo]);
 
   /**
    * turkiye.gov.tr/belge-dogrulama üzerinden doğrula
    */
-  const verifyCode = async (code: string) => {
+  const verifyCode = async (code: string, tcKimlikNo?: string) => {
     setCurrentStep('verifying');
-    setStatusText('turkiye.gov.tr/belge-dogrulama sorgulanıyor...');
+    setStatusText('turkiye.gov.tr sorgulanıyor...');
     setErrorMessage('');
+
+    const tcToSend = tcKimlikNo || userTcKimlikNo || extractedTc;
 
     try {
       const response = await fetch('/api/verify-document', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, documentInfo })
+        body: JSON.stringify({ code, tcKimlikNo: tcToSend, documentInfo })
       });
 
       const result = await response.json();
@@ -128,7 +175,7 @@ export default function AddressVerificationPage() {
     const code = (manualCode || extractedCode).trim();
     if (code.length >= 8) {
       setExtractedCode(code);
-      verifyCode(code);
+      verifyCode(code, userTcKimlikNo || extractedTc);
     }
   };
 
@@ -337,9 +384,10 @@ export default function AddressVerificationPage() {
               {/* İşlem adımları */}
               <div className="max-w-sm mx-auto space-y-3 text-left mb-4">
                 <StepItem label="Barkod kodu belgeden okundu" done />
-                <StepItem label={`turkiye.gov.tr/belge-dogrulama açılıyor`} done />
-                <StepItem label={`Barkod no giriliyor: ${extractedCode}`} active />
-                <StepItem label="Sonuç bekleniyor..." />
+                <StepItem label="TC Kimlik No alındı" done />
+                <StepItem label="turkiye.gov.tr sorgulanıyor..." active />
+                <StepItem label="Belge bilgileri karşılaştırılıyor" />
+                <StepItem label="Sonuç" />
               </div>
 
               <p className="text-sm text-[#8f8f8f]">{statusText}</p>

@@ -14,6 +14,17 @@ export interface BarcodeResult {
   confidence: 'high' | 'medium' | 'low'
 }
 
+export interface DocumentExtraction {
+  code: string | null
+  tcKimlikNo: string | null
+  fullName: string | null
+  address: string | null
+  neighborhood: string | null
+  district: string | null
+  city: string | null
+  source: 'pdf-text' | 'barcode-api' | 'pattern-match'
+}
+
 /**
  * e-Devlet belge doğrulama kodu formatı:
  * NV02-ILLE-G5U8-RLN9
@@ -156,18 +167,128 @@ function findEdevletCode(text: string): string | null {
   const matches = text.match(EDEVLET_CODE_PATTERN)
 
   if (matches && matches.length > 0) {
-    // T.C. kimlik numarasını filtrele (11 haneli saf rakam, tire içermez - zaten pattern'e uymaz)
-    // Adres No'yu filtrele (saf rakam - zaten pattern'e uymaz çünkü tire gerekli)
-    // En uygun kodu döndür
     for (const match of matches) {
       // NV ile başlayan kodlar en yüksek öncelikli
       if (match.startsWith('NV')) {
         return match
       }
     }
-    // NV ile başlamasa da ilk eşleşmeyi döndür
     return matches[0]
   }
 
   return null
+}
+
+/**
+ * TC Kimlik No validation algorithm
+ */
+function isValidTCKimlik(tc: string): boolean {
+  if (tc.length !== 11 || tc[0] === '0' || !/^\d{11}$/.test(tc)) return false
+  const d = tc.split('').map(Number)
+  const c10 = ((d[0]+d[2]+d[4]+d[6]+d[8])*7 - (d[1]+d[3]+d[5]+d[7])) % 10
+  if ((c10 < 0 ? c10+10 : c10) !== d[9]) return false
+  return d.slice(0,10).reduce((a,b)=>a+b,0) % 10 === d[10]
+}
+
+/**
+ * TC Kimlik No'yu metinden bul (11 haneli, algoritma geçerli)
+ */
+function findTCKimlikNo(text: string): string | null {
+  // 11 haneli rakam gruplarını bul
+  const matches = text.match(/\b([1-9]\d{10})\b/g)
+  if (!matches) return null
+
+  for (const match of matches) {
+    if (isValidTCKimlik(match)) {
+      return match
+    }
+  }
+  return null
+}
+
+/**
+ * PDF'den tüm belge bilgilerini çıkar (barkod, TC, ad, adres)
+ */
+export async function extractFullDocumentInfo(file: File): Promise<DocumentExtraction | null> {
+  if (file.type !== 'application/pdf') {
+    // Görüntü dosyası ise sadece barkod tara
+    const barcodeResult = await extractFromImage(file)
+    if (barcodeResult) {
+      return {
+        code: barcodeResult.code,
+        tcKimlikNo: null,
+        fullName: null,
+        address: null,
+        neighborhood: null,
+        district: null,
+        city: null,
+        source: barcodeResult.source,
+      }
+    }
+    return null
+  }
+
+  try {
+    const pdfjsLib = await import('pdfjs-dist')
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`
+
+    const arrayBuffer = await file.arrayBuffer()
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
+
+    const page = await pdf.getPage(1)
+    const textContent = await page.getTextContent()
+    const pageText = textContent.items
+      .map((item: any) => item.str)
+      .join(' ')
+
+    // Barkod kodu
+    const code = findEdevletCode(pageText)
+
+    // TC Kimlik No
+    const tcKimlikNo = findTCKimlikNo(pageText)
+
+    // Ad Soyad - genellikle "Adı Soyadı" veya TC No'dan sonra gelir
+    let fullName: string | null = null
+    const nameMatch = pageText.match(/(?:Adı?\s*(?:ve\s*)?Soyadı?|Ad\s*Soyad)\s*[:\-]?\s*([A-ZÇĞİÖŞÜa-zçğıöşü\s]+?)(?:\s*T\.C\.|Doğum|Adres|Nüfus)/i)
+    if (nameMatch) {
+      fullName = nameMatch[1].trim()
+    }
+
+    // Adres bilgileri
+    let address: string | null = null
+    let neighborhood: string | null = null
+    let district: string | null = null
+    let city: string | null = null
+
+    // Mahalle
+    const mahalleMatch = pageText.match(/([A-ZÇĞİÖŞÜa-zçğıöşü]+\s*MAH\.?)/i)
+    if (mahalleMatch) neighborhood = mahalleMatch[1].trim()
+
+    // İlçe / İl - genellikle "İLÇE / İL" formatında
+    const ilceIlMatch = pageText.match(/([A-ZÇĞİÖŞÜ]+)\s*\/\s*([A-ZÇĞİÖŞÜ]+)\s*$/m)
+    if (ilceIlMatch) {
+      district = ilceIlMatch[1].trim()
+      city = ilceIlMatch[2].trim()
+    }
+
+    // Tam adres
+    const addressMatch = pageText.match(/(?:Adres|Yerleşim\s*Yeri\s*Adresi?)\s*[:\-]?\s*(.+?)(?:\n|Belge|Nüfus|Düzenle)/i)
+    if (addressMatch) {
+      address = addressMatch[1].trim().replace(/\s+/g, ' ')
+    }
+
+    return {
+      code,
+      tcKimlikNo,
+      fullName,
+      address,
+      neighborhood,
+      district,
+      city,
+      source: 'pdf-text',
+    }
+  } catch (error) {
+    console.error('Full document extraction error:', error)
+    return null
+  }
 }
