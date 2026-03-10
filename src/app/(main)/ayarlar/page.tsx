@@ -105,8 +105,8 @@ export default function AyarlarPage() {
           <div className="flex items-center gap-6 mb-8 pb-8 border-b border-[#e0e0e0]">
             <div className="relative">
               <Image
-                src={profileData.email || mockUser.avatar}
-                alt="Profile"
+                src={mockUser.avatar}
+                alt={profileData.name}
                 width={80}
                 height={80}
                 unoptimized

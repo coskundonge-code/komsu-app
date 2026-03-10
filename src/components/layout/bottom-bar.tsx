@@ -33,7 +33,7 @@ export function BottomBar() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white border-t border-[#e0e0e0]" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+    <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-[#e0e0e0]" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <div className="flex items-center justify-around px-2 py-2">
         {/* First two items */}
         {items.slice(0, 2).map((item) => {

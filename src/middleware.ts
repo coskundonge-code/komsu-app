@@ -22,6 +22,23 @@ const publicRoutes = [
   '/isletmeler',
   '/isletme-ekle',
   '/yardim',
+  '/blog',
+  '/admin',
+  '/isletme-paneli',
+  '/favoriler',
+  '/hakkinda',
+  '/iletisim',
+  '/kariyer',
+  '/nasil-calisir',
+  '/topluluk-kurallari',
+  '/kosullar',
+  '/gizlilik',
+  '/kvkk',
+  '/cerez-politikasi',
+  '/guvenlik',
+  '/gonderi',
+  '/ara',
+  '/davet',
 ]
 
 export async function middleware(request: NextRequest) {

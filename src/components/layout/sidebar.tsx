@@ -65,7 +65,7 @@ export function Sidebar({ className, ...props }: SidebarProps) {
   return (
     <aside
       className={cn(
-        'hidden md:flex flex-col bg-white border-r border-[#e0e0e0] transition-all duration-300',
+        'hidden lg:flex flex-col bg-white border-r border-[#e0e0e0] transition-all duration-300',
         isCollapsed ? 'w-20' : 'w-[260px]',
         'flex-shrink-0 py-4',
         className
