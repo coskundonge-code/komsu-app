@@ -193,14 +193,14 @@ export default function GroupsPage() {
             Keşfet
           </button>
           <button
-            onClick={() => setActiveTab('mine')}
+            onClick={() => { setActiveTab('mine'); setActiveCategory('all'); }}
             className={`pb-3 font-bold text-lg transition-colors ${
               activeTab === 'mine'
                 ? 'text-[#00833e] border-b-2 border-[#00833e]'
                 : 'text-[#8f8f8f] hover:text-[#333]'
             }`}
           >
-            Gruplarım
+            Gruplarım ({joinedGroups.size})
           </button>
         </div>
 
@@ -294,6 +294,7 @@ export default function GroupsPage() {
                   <button
                     onClick={(e) => {
                       e.preventDefault();
+                      e.stopPropagation();
                       setJoinedGroups((prev) => {
                         const next = new Set(prev);
                         if (next.has(group.id)) next.delete(group.id);

@@ -38,13 +38,15 @@ const onboardingCards = [
     cta: 'Başla',
     ctaColor: 'bg-[#00833e] text-white hover:bg-[#006b32]',
     href: '/isletme-ekle',
+    isDownload: false,
   },
   {
     icon: Download,
     title: 'Mobil uygulamayı indir',
     cta: 'Uygulamayı İndir',
     ctaColor: 'bg-[#333] text-white hover:bg-[#1a1a1a]',
-    href: '/yardim',
+    href: '#',
+    isDownload: true,
   },
 ];
 
@@ -223,6 +225,7 @@ export default function FeedPage() {
   const [postsToShow, setPostsToShow] = useState(6);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [posts, setPosts] = useState(mockPosts);
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
 
   const toggleLike = (postId: string) => {
     setLikedPosts((prev) => ({ ...prev, [postId]: !prev[postId] }));
@@ -290,6 +293,45 @@ export default function FeedPage() {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleModalSubmit}
       />
+
+      {/* Download App Modal */}
+      {showDownloadModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowDownloadModal(false)}>
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6 relative" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setShowDownloadModal(false)} className="absolute top-4 right-4 p-1 hover:bg-gray-100 rounded-full">
+              <X className="w-5 h-5 text-gray-500" />
+            </button>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-[#00833e] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl">🏘️</span>
+              </div>
+              <h3 className="text-xl font-bold text-[#333] mb-2">KomşuApp Mobil</h3>
+              <p className="text-sm text-[#8f8f8f] mb-6">Mobil uygulamamız yakında App Store ve Google Play&apos;de!</p>
+              <div className="space-y-3">
+                <button className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition-colors">
+                  <span className="text-xl">🍎</span>
+                  <div className="text-left">
+                    <p className="text-[10px] text-gray-400">Yakında</p>
+                    <p className="text-sm font-semibold">App Store</p>
+                  </div>
+                </button>
+                <button className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition-colors">
+                  <span className="text-xl">▶️</span>
+                  <div className="text-left">
+                    <p className="text-[10px] text-gray-400">Yakında</p>
+                    <p className="text-sm font-semibold">Google Play</p>
+                  </div>
+                </button>
+              </div>
+              <p className="text-xs text-[#8f8f8f] mt-4">Uygulama çıktığında bildirim almak için e-postanızı bırakın.</p>
+              <div className="flex gap-2 mt-2">
+                <input type="email" placeholder="E-posta adresiniz" className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#00833e]" />
+                <button className="px-4 py-2 bg-[#00833e] text-white text-sm font-medium rounded-lg hover:bg-[#006b32]">Bildir</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="max-w-[680px] mx-auto px-4 py-4">
         {/* Safety Alert Banner */}
         {hasSafetyAlert && (
@@ -476,15 +518,26 @@ export default function FeedPage() {
             <div className="flex gap-3 overflow-x-auto">
               {onboardingCards.map((card, i) => {
                 const Icon = card.icon;
+                if (card.isDownload) {
+                  return (
+                    <button key={i} onClick={() => setShowDownloadModal(true)} className="min-w-[200px] border border-[#e0e0e0] rounded-lg p-4 flex flex-col items-start gap-3 hover:border-[#00833e] hover:shadow-md transition-all text-left">
+                      <div className="w-10 h-10 bg-[#f0f2f5] rounded-full flex items-center justify-center">
+                        <Icon className="w-5 h-5 text-[#404040]" />
+                      </div>
+                      <p className="text-sm font-medium text-[#333]">{card.title}</p>
+                      <span className={cn('px-4 py-2 rounded-full text-sm font-semibold transition-colors', card.ctaColor)}>
+                        {card.cta}
+                      </span>
+                    </button>
+                  );
+                }
                 return (
                   <Link key={i} href={card.href} className="min-w-[200px] border border-[#e0e0e0] rounded-lg p-4 flex flex-col items-start gap-3 hover:border-[#00833e] hover:shadow-md transition-all">
                     <div className="w-10 h-10 bg-[#f0f2f5] rounded-full flex items-center justify-center">
                       <Icon className="w-5 h-5 text-[#404040]" />
                     </div>
                     <p className="text-sm font-medium text-[#333]">{card.title}</p>
-                    <span
-                      className={cn('px-4 py-2 rounded-full text-sm font-semibold transition-colors', card.ctaColor)}
-                    >
+                    <span className={cn('px-4 py-2 rounded-full text-sm font-semibold transition-colors', card.ctaColor)}>
                       {card.cta}
                     </span>
                   </Link>

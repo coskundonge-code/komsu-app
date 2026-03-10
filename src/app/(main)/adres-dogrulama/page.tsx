@@ -85,7 +85,7 @@ export default function AddressVerificationPage() {
                   Aşağıdaki bağlantıya tıklayarak e-Devlet hesabınızla giriş yapın ve adres belgesi alın.
                 </p>
                 <a
-                  href="https://www.turkiye.gov.tr/nvi-adres-belgesi-sorgulama"
+                  href="https://www.turkiye.gov.tr/nvi-yerlesim-yeri-ve-diger-adres-belgesi-sorgulama"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 bg-[#00833e] text-white font-medium rounded-lg hover:bg-[#006b32] transition-colors"

@@ -106,18 +106,29 @@ export function Sidebar({ className, ...props }: SidebarProps) {
           )}
 
           {/* Collapse Toggle */}
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className={cn(
-              'flex-shrink-0 p-1 hover:bg-white rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-[#00833e]',
-              isCollapsed && 'hidden'
-            )}
-            title={isCollapsed ? 'Aç' : 'Kapat'}
-            aria-label={isCollapsed ? 'Kenar çubuğunu aç' : 'Kenar çubuğunu kapat'}
-          >
-            <ChevronRight className="w-4 h-4 text-[#8f8f8f]" />
-          </button>
+          {!isCollapsed && (
+            <button
+              onClick={() => setIsCollapsed(true)}
+              className="flex-shrink-0 p-1 hover:bg-white rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+              title="Daralt"
+              aria-label="Kenar çubuğunu daralt"
+            >
+              <ChevronRight className="w-4 h-4 text-[#8f8f8f]" />
+            </button>
+          )}
         </div>
+
+        {/* Expand button when collapsed - click avatar area */}
+        {isCollapsed && (
+          <button
+            onClick={() => setIsCollapsed(false)}
+            className="mt-2 w-full flex items-center justify-center p-1.5 hover:bg-gray-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+            title="Genişlet"
+            aria-label="Kenar çubuğunu genişlet"
+          >
+            <ChevronRight className="w-4 h-4 text-[#8f8f8f] rotate-180" />
+          </button>
+        )}
       </div>
 
       {/* Primary Navigation */}
