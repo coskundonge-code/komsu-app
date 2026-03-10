@@ -153,6 +153,17 @@ export default function AddressVerificationPage() {
   }, [userTcKimlikNo]);
 
   /**
+   * Dosya yüklemeden direkt manuel giriş ekranına git
+   */
+  const goToManualEntry = useCallback(() => {
+    setExtractedCode('');
+    setExtractedTc('');
+    setProcessSteps([]);
+    setErrorMessage('');
+    setCurrentStep('manual-entry');
+  }, []);
+
+  /**
    * e-Devlet doğrulama sorgusu
    */
   const runVerification = async (code: string, tcKimlikNo: string) => {
@@ -174,6 +185,13 @@ export default function AddressVerificationPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code, tcKimlikNo, documentInfo })
       });
+
+      // JSON olmayan cevapları yakala (ör: middleware redirect)
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        console.error('API returned non-JSON response:', response.status, contentType);
+        throw new Error('Sunucu geçersiz bir yanıt döndürdü. Lütfen giriş yapıp tekrar deneyin.');
+      }
 
       const result = await response.json();
       updateStep('edevlet', 'done', 'e-Devlet sorgusu tamamlandı');
@@ -348,6 +366,18 @@ export default function AddressVerificationPage() {
                     />
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl border border-[#e0e0e0] p-5">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-[#666]">Barkod numarasını kendiniz girmek ister misiniz?</span>
+                <button
+                  onClick={goToManualEntry}
+                  className="text-sm font-medium text-[#00833e] hover:text-[#006b32] flex items-center gap-1"
+                >
+                  Manuel Giriş <ArrowRight className="w-3 h-3" />
+                </button>
               </div>
             </div>
 

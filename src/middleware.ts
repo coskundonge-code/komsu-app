@@ -43,6 +43,7 @@ const publicRoutes = [
   '/referans-kullan',
   '/adres-dogrulama',
   '/konum-secimi',
+  '/api/verify-document',
 ]
 
 // Routes exempt from location check (user needs to access these even without location)
@@ -55,6 +56,8 @@ const locationExemptRoutes = [
   '/auth/signout',
   '/api/auth',
   '/hesap-kilitli',
+  '/adres-dogrulama',
+  '/api/verify-document',
   '/hakkinda',
   '/iletisim',
   '/kosullar',
