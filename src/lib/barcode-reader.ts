@@ -1,14 +1,14 @@
 /**
- * e-Devlet Belge Doğrulama Kodu Okuyucu
+ * e-Devlet Belge Doğrulama Kodu Okuyucu v3
  *
  * e-Devlet adres belgelerinden doğrulama kodunu (barkod numarası) otomatik çıkarır.
- * Format: XXXX-XXXX-XXXX-XXXX (4 grup, 4 karakter, tire ile ayrılmış)
+ * Barkod No formatı: 16 alfanumerik karakter (genellikle NV ile başlar)
+ * Gösterim: XXXX-XXXX-XXXX-XXXX veya düz 16 karakter
  *
- * Stratejiler:
- * 1. PDF metin çıkarma (pdfjs-dist) + pattern matching
- * 2. PDF'yi canvas'a render + BarcodeDetector API
- * 3. PDF'yi canvas'a render + jsQR (QR kod tarama)
- * 4. Görüntü dosyası için BarcodeDetector + jsQR
+ * Stratejiler (sırasıyla):
+ * 1. PDF metin çıkarma + çoklu pattern matching
+ * 2. QR kod tarama (jsQR) - farklı çözünürlüklerde
+ * 3. BarcodeDetector API (Chrome)
  */
 
 import jsQR from 'jsqr'
@@ -28,6 +28,25 @@ export interface DocumentExtraction {
   district: string | null
   city: string | null
   source: 'pdf-text' | 'barcode-api' | 'qr-scan' | 'pattern-match'
+}
+
+// ============================================================
+// PDF.JS WORKER SETUP
+// ============================================================
+
+let workerConfigured = false
+
+async function getPdfjs() {
+  const pdfjsLib = await import('pdfjs-dist')
+
+  if (!workerConfigured) {
+    // pdfjs-dist 4.x: CDN'den worker yükle
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`
+    workerConfigured = true
+  }
+
+  return pdfjsLib
 }
 
 // ============================================================
@@ -64,49 +83,97 @@ export async function extractFullDocumentInfo(file: File): Promise<DocumentExtra
   }
 
   try {
-    const pdfjsLib = await import('pdfjs-dist')
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`
-
+    const pdfjsLib = await getPdfjs()
     const arrayBuffer = await file.arrayBuffer()
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
 
-    // ===== AŞAMA 1: Metin Çıkarma =====
-    let allTextSpaced = ''
-    let allTextNoSpace = ''
-    let allTextByLines = ''
+    console.log('[barcode] PDF loaded, pages:', pdf.numPages)
+
+    // ===== AŞAMA 1: Metin Çıkarma (TÜM sayfalardan) =====
+    let allRawText = ''
+    let allItemTexts: string[] = []
     let allItems: any[] = []
+    let allLineTexts = ''
 
     const numPages = Math.min(pdf.numPages, 5)
     for (let pageNum = 1; pageNum <= numPages; pageNum++) {
       const page = await pdf.getPage(pageNum)
       const textContent = await page.getTextContent()
       const items = textContent.items as any[]
-      allItems = allItems.concat(items)
 
-      allTextSpaced += ' ' + items.map((i: any) => i.str).join(' ')
-      allTextNoSpace += items.map((i: any) => i.str).join('')
-      allTextByLines += '\n' + extractTextByLines(items)
+      // Her item'ın metnini al
+      for (const item of items) {
+        const str = (item.str || '').trim()
+        if (str) {
+          allItemTexts.push(str)
+          allItems.push(item)
+        }
+      }
+
+      // Ham metinler - boşluklu
+      allRawText += ' ' + items.map((i: any) => i.str || '').join(' ')
+      // Satır satır metin
+      allLineTexts += '\n' + extractTextByLines(items)
     }
 
-    console.log('[barcode] Items count:', allItems.length)
-    console.log('[barcode] Text (spaced, 800ch):', allTextSpaced.substring(0, 800))
-    console.log('[barcode] Text (lines, 800ch):', allTextByLines.substring(0, 800))
-    console.log('[barcode] First 40 items:', allItems.slice(0, 40).map((i: any) => `"${i.str}"`).join(', '))
+    // Tüm metni temizle
+    allRawText = allRawText.trim()
 
-    // Metin tabanlı barkod arama
-    let code = findCodeFromTexts(allTextSpaced, allTextNoSpace, allTextByLines, allItems)
+    // DEBUG LOG
+    console.log('[barcode] Total text items:', allItemTexts.length)
+    console.log('[barcode] Raw text (first 1000):', allRawText.substring(0, 1000))
+    console.log('[barcode] Line text (first 1000):', allLineTexts.substring(0, 1000))
+    console.log('[barcode] All item values:', allItemTexts.map(s => `"${s}"`).join(', '))
 
-    // ===== AŞAMA 2: Canvas tabanlı barkod tarama =====
+    // ===== Metin tabanlı barkod arama (ÇOK KAPSAMLI) =====
+    let code: string | null = null
+
+    // Strateji 1: Tüm text kaynakları üzerinde pattern search
+    code = findBarcodeInText(allRawText)
+    if (code) { console.log('[barcode] Found via raw text:', code); }
+
     if (!code) {
-      console.log('[barcode] Text extraction failed, trying canvas scan...')
+      code = findBarcodeInText(allLineTexts)
+      if (code) { console.log('[barcode] Found via line text:', code); }
+    }
+
+    // Strateji 2: Her item'ı tek tek kontrol et
+    if (!code) {
+      for (const str of allItemTexts) {
+        code = findBarcodeInText(str)
+        if (code) { console.log('[barcode] Found in single item:', str, '->', code); break }
+      }
+    }
+
+    // Strateji 3: Ardışık item'ları birleştir (2'li, 3'lü, 4'lü ... 16'lı)
+    if (!code) {
+      code = findCodeByCombiningItems(allItemTexts)
+      if (code) { console.log('[barcode] Found by combining items:', code); }
+    }
+
+    // Strateji 4: "Barkod" / "Doğrulama" etiketi yakınında ara
+    if (!code) {
+      code = findCodeNearLabel(allItemTexts)
+      if (code) { console.log('[barcode] Found near label:', code); }
+    }
+
+    // Strateji 5: Tüm alfanumerik blokları tara
+    if (!code) {
+      code = findAlphanumericBlock(allRawText)
+      if (code) { console.log('[barcode] Found alphanumeric block:', code); }
+    }
+
+    // ===== AŞAMA 2: QR Kod Tarama (Canvas) =====
+    if (!code) {
+      console.log('[barcode] Text strategies failed, trying QR scan...')
       for (let pageNum = 1; pageNum <= Math.min(numPages, 2); pageNum++) {
         const page = await pdf.getPage(pageNum)
-        // Farklı çözünürlüklerde dene
-        for (const scale of [3.0, 4.0, 2.0]) {
-          const result = await scanPageAsImage(page, scale)
+        // Çok farklı çözünürlüklerde dene
+        for (const scale of [2.0, 3.0, 4.0, 5.0, 1.5]) {
+          const result = await scanPageForQR(page, scale)
           if (result) {
             code = result.code
-            console.log(`[barcode] Found via canvas scan (page ${pageNum}, scale ${scale}):`, code)
+            console.log(`[barcode] Found via QR scan (page ${pageNum}, scale ${scale}):`, code)
             break
           }
         }
@@ -115,28 +182,25 @@ export async function extractFullDocumentInfo(file: File): Promise<DocumentExtra
     }
 
     // TC Kimlik No
-    let tcKimlikNo = findTCKimlikNo(allTextSpaced)
-    if (!tcKimlikNo) tcKimlikNo = findTCKimlikNo(allTextNoSpace)
-    if (!tcKimlikNo) tcKimlikNo = findTCKimlikNo(allTextByLines)
+    const tcKimlikNo = findTCKimlikNo(allRawText) || findTCKimlikNo(allLineTexts)
 
     // Ad, adres bilgileri
-    const pageText = allTextSpaced
     let fullName: string | null = null
-    const nameMatch = pageText.match(/(?:Adı?\s*(?:ve\s*)?Soyadı?|Ad\s*Soyad)\s*[:\-]?\s*([A-ZÇĞİÖŞÜa-zçğıöşü\s]+?)(?:\s*T\.C\.|Doğum|Adres|Nüfus)/i)
+    const nameMatch = allRawText.match(/(?:Adı?\s*(?:ve\s*)?Soyadı?|Ad\s*Soyad)\s*[:\-]?\s*([A-ZÇĞİÖŞÜa-zçğıöşü\s]+?)(?:\s*T\.C\.|Doğum|Adres|Nüfus)/i)
     if (nameMatch) fullName = nameMatch[1].trim()
 
-    let address: string | null = null
     let neighborhood: string | null = null
     let district: string | null = null
     let city: string | null = null
+    let address: string | null = null
 
-    const mahalleMatch = pageText.match(/([A-ZÇĞİÖŞÜa-zçğıöşü]+\s*MAH\.?)/i)
+    const mahalleMatch = allRawText.match(/([A-ZÇĞİÖŞÜa-zçğıöşü]+\s*MAH\.?)/i)
     if (mahalleMatch) neighborhood = mahalleMatch[1].trim()
 
-    const ilceIlMatch = pageText.match(/([A-ZÇĞİÖŞÜ]+)\s*\/\s*([A-ZÇĞİÖŞÜ]+)\s*$/m)
+    const ilceIlMatch = allRawText.match(/([A-ZÇĞİÖŞÜ]+)\s*\/\s*([A-ZÇĞİÖŞÜ]+)\s*$/m)
     if (ilceIlMatch) { district = ilceIlMatch[1].trim(); city = ilceIlMatch[2].trim() }
 
-    const addressMatch = pageText.match(/(?:Adres|Yerleşim\s*Yeri\s*Adresi?)\s*[:\-]?\s*(.+?)(?:\n|Belge|Nüfus|Düzenle)/i)
+    const addressMatch = allRawText.match(/(?:Adres|Yerleşim\s*Yeri\s*Adresi?)\s*[:\-]?\s*(.+?)(?:\n|Belge|Nüfus|Düzenle)/i)
     if (addressMatch) address = addressMatch[1].trim().replace(/\s+/g, ' ')
 
     return {
@@ -150,272 +214,370 @@ export async function extractFullDocumentInfo(file: File): Promise<DocumentExtra
 }
 
 // ============================================================
-// METİN TABANLI ARAMA
+// BARKOD BULMA STRATEJİLERİ
 // ============================================================
 
 /**
- * Tüm metin kaynaklarından barkod kodu bul
+ * Metinde e-Devlet barkod kodu ara
+ * Çok esnek: tire ile, tiresiz, boşluklu, her türlü formatı yakalar
  */
-function findCodeFromTexts(spaced: string, noSpace: string, byLines: string, items: any[]): string | null {
-  // 1. Ana metin kaynaklarından dene
-  for (const text of [spaced, noSpace, byLines]) {
-    const code = findEdevletCode(text)
-    if (code) return code
-  }
-
-  // 2. Her satırı ayrı dene
-  const lines = byLines.split('\n')
-  for (const line of lines) {
-    const code = findEdevletCode(line)
-    if (code) return code
-  }
-
-  // 3. "Barkod" veya "Doğrulama" yakınında ara
-  const code3 = findCodeNearKeyword(items)
-  if (code3) return code3
-
-  // 4. Kayan pencere (sliding window) - bitişik item'ları birleştir
-  for (let windowSize = 4; windowSize <= 12; windowSize++) {
-    for (let i = 0; i < items.length - windowSize + 1; i++) {
-      const windowText = items.slice(i, i + windowSize).map((it: any) => it.str || '').join('')
-      const code = findEdevletCode(windowText)
-      if (code) return code
-      // Boşlukla da dene
-      const windowSpaced = items.slice(i, i + windowSize).map((it: any) => it.str || '').join(' ')
-      const code2 = findEdevletCode(windowSpaced)
-      if (code2) return code2
-    }
-  }
-
-  // 5. Her item'ı tek tek dene
-  for (const item of items) {
-    const str = (item.str || '').trim()
-    if (str.length >= 4) {
-      const code = findEdevletCode(str)
-      if (code) return code
-    }
-  }
-
-  return null
-}
-
-/**
- * e-Devlet belge doğrulama kodunu metinde bul
- * En esnek arama: 7 farklı strateji
- */
-function findEdevletCode(text: string): string | null {
+function findBarcodeInText(text: string): string | null {
   if (!text || text.length < 8) return null
 
-  // 1. XXXX-XXXX-XXXX-XXXX (standart)
-  const strict = /([A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4})/g
-  const m1 = [...text.matchAll(strict)]
-  if (m1.length > 0) {
-    const nvMatch = m1.find(m => m[1].toUpperCase().startsWith('NV'))
-    return (nvMatch || m1[0])[1].toUpperCase()
+  // 1. XXXX-XXXX-XXXX-XXXX (standart tire formatı)
+  const dashPattern = /\b([A-Za-z0-9]{4})-([A-Za-z0-9]{4})-([A-Za-z0-9]{4})-([A-Za-z0-9]{4})\b/g
+  const dashMatches = [...text.matchAll(dashPattern)]
+  if (dashMatches.length > 0) {
+    // NV ile başlayanı tercih et
+    const nvMatch = dashMatches.find(m => m[0].toUpperCase().startsWith('NV'))
+    const best = nvMatch || dashMatches[0]
+    return best[0].toUpperCase()
   }
 
-  // 2. Gevşek ayırıcı (boşluk, tire, nokta, slash vb.)
-  const loose = /([A-Za-z0-9]{4})\s*[-–—‐.:\/\\|]\s*([A-Za-z0-9]{4})\s*[-–—‐.:\/\\|]\s*([A-Za-z0-9]{4})\s*[-–—‐.:\/\\|]\s*([A-Za-z0-9]{4})/g
-  const m2 = [...text.matchAll(loose)]
-  if (m2.length > 0) {
-    for (const m of m2) {
+  // 2. Çeşitli ayırıcılarla (boşluk, nokta, eğik çizgi vb.)
+  const looseSep = /([A-Za-z0-9]{4})\s*[-–—‐.:\/\\|]\s*([A-Za-z0-9]{4})\s*[-–—‐.:\/\\|]\s*([A-Za-z0-9]{4})\s*[-–—‐.:\/\\|]\s*([A-Za-z0-9]{4})/g
+  const looseMatches = [...text.matchAll(looseSep)]
+  if (looseMatches.length > 0) {
+    for (const m of looseMatches) {
       const c = `${m[1]}-${m[2]}-${m[3]}-${m[4]}`.toUpperCase()
       if (c.startsWith('NV')) return c
     }
-    return `${m2[0][1]}-${m2[0][2]}-${m2[0][3]}-${m2[0][4]}`.toUpperCase()
+    return `${looseMatches[0][1]}-${looseMatches[0][2]}-${looseMatches[0][3]}-${looseMatches[0][4]}`.toUpperCase()
   }
 
-  // 3. Boşlukla ayrılmış 4'lü gruplar
+  // 3. Boşluk ile ayrılmış 4'lü gruplar
   const spaceGroups = /\b([A-Za-z0-9]{4})\s+([A-Za-z0-9]{4})\s+([A-Za-z0-9]{4})\s+([A-Za-z0-9]{4})\b/g
-  const m3 = [...text.matchAll(spaceGroups)]
-  for (const m of m3) {
+  const spaceMatches = [...text.matchAll(spaceGroups)]
+  for (const m of spaceMatches) {
     const combined = m[1] + m[2] + m[3] + m[4]
+    // Alfanumerik karışık olmalı (sadece rakam değil)
     if (/[A-Za-z]/.test(combined) && /[0-9]/.test(combined)) {
       return `${m[1]}-${m[2]}-${m[3]}-${m[4]}`.toUpperCase()
     }
   }
 
-  // 4. Tüm ayırıcıları kaldırıp 16 karakterlik blok
-  const clean = text.replace(/[\s\-–—‐.:\/\\|,;]+/g, '')
-  // NV ile başlayan yeri bul
-  const nvIdx = clean.toUpperCase().indexOf('NV')
-  if (nvIdx >= 0 && nvIdx + 16 <= clean.length) {
-    const sub = clean.substring(nvIdx, nvIdx + 16)
-    if (/^[A-Za-z0-9]{16}$/.test(sub) && /[A-Za-z]/.test(sub) && /[0-9]/.test(sub)) {
-      return `${sub.slice(0,4)}-${sub.slice(4,8)}-${sub.slice(8,12)}-${sub.slice(12,16)}`.toUpperCase()
+  // 4. "NV" ile başlayan herhangi bir 16 karakter alfanumerik blok
+  const cleanText = text.replace(/[\s\-–—‐.:\/\\|,;()[\]{}]+/g, '')
+  const nvIdx = cleanText.toUpperCase().indexOf('NV')
+  if (nvIdx >= 0 && nvIdx + 16 <= cleanText.length) {
+    const sub = cleanText.substring(nvIdx, nvIdx + 16)
+    if (/^[A-Za-z0-9]{16}$/.test(sub)) {
+      return formatAsBarcode(sub)
     }
   }
 
-  // 5. Alfanumerik 16-char blok (NV olmadan)
-  const alphaOnly = text.replace(/[^A-Za-z0-9]/g, '')
-  if (alphaOnly.length >= 16 && alphaOnly.length <= 50) {
-    // 16 karakterlik mixed alfanumerik blok bul
-    const blockMatch = alphaOnly.match(/([A-Za-z][A-Za-z0-9]{15})/g) // Harfle başlayan
-    if (blockMatch) {
-      for (const block of blockMatch) {
-        if (/[A-Za-z]/.test(block) && /[0-9]/.test(block) && !/^\d+$/.test(block)) {
-          return `${block.slice(0,4)}-${block.slice(4,8)}-${block.slice(8,12)}-${block.slice(12,16)}`.toUpperCase()
+  // 5. "barkodNo=" parametresi olan URL
+  const urlMatch = text.match(/barkodNo[=:]\s*([A-Za-z0-9\-]{10,25})/i)
+  if (urlMatch) {
+    const cleaned = urlMatch[1].replace(/[^A-Za-z0-9]/g, '')
+    if (cleaned.length >= 16) {
+      return formatAsBarcode(cleaned.substring(0, 16))
+    }
+  }
+
+  // 6. turkiye.gov.tr URL'i
+  const urlFullMatch = text.match(/turkiye\.gov\.tr[^\s]*barkodNo[=:]\s*([A-Za-z0-9\-]+)/i)
+  if (urlFullMatch) {
+    const cleaned = urlFullMatch[1].replace(/[^A-Za-z0-9]/g, '')
+    if (cleaned.length >= 16) {
+      return formatAsBarcode(cleaned.substring(0, 16))
+    }
+  }
+
+  return null
+}
+
+/**
+ * Ardışık item'ları birleştirerek barkod bul
+ * PDF'de barkod metni parçalar halinde olabileceği için
+ */
+function findCodeByCombiningItems(items: string[]): string | null {
+  // 2'li, 3'lü, ... 20'li pencereler
+  for (let windowSize = 2; windowSize <= Math.min(20, items.length); windowSize++) {
+    for (let i = 0; i <= items.length - windowSize; i++) {
+      const window = items.slice(i, i + windowSize)
+
+      // Birleşik (boşluksuz)
+      const joined = window.join('')
+      let code = findBarcodeInText(joined)
+      if (code) return code
+
+      // Boşluklu
+      const spaced = window.join(' ')
+      code = findBarcodeInText(spaced)
+      if (code) return code
+
+      // Tire ile
+      const dashed = window.join('-')
+      code = findBarcodeInText(dashed)
+      if (code) return code
+    }
+  }
+
+  // Son çare: tüm item'ları birleştirip NV ara
+  const allJoined = items.join('')
+  const nvIdx = allJoined.toUpperCase().indexOf('NV')
+  if (nvIdx >= 0 && nvIdx + 16 <= allJoined.length) {
+    const sub = allJoined.substring(nvIdx, nvIdx + 16)
+    if (/^[A-Za-z0-9]{16}$/.test(sub)) {
+      return formatAsBarcode(sub)
+    }
+  }
+
+  return null
+}
+
+/**
+ * "Barkod" veya "Doğrulama" gibi etiketlerin yakınındaki değeri bul
+ */
+function findCodeNearLabel(items: string[]): string | null {
+  const labels = ['barkod', 'doğrulama', 'dogrulama', 'belge no', 'referans', 'sorgu no', 'kontrol']
+
+  for (let i = 0; i < items.length; i++) {
+    const lower = items[i].toLowerCase()
+    const isLabel = labels.some(l => lower.includes(l))
+    if (!isLabel) continue
+
+    console.log(`[barcode] Found label "${items[i]}" at index ${i}`)
+
+    // Etiketin sonrasındaki 15 item'a bak
+    for (let range = 1; range <= 15; range++) {
+      if (i + range >= items.length) break
+
+      // Tek tek dene
+      const val = items[i + range]
+      let code = findBarcodeInText(val)
+      if (code) return code
+
+      // Birleştirerek dene (etiketin sonrası)
+      const afterItems = items.slice(i + 1, i + 1 + range)
+      code = findBarcodeInText(afterItems.join(''))
+      if (code) return code
+      code = findBarcodeInText(afterItems.join(' '))
+      if (code) return code
+      code = findBarcodeInText(afterItems.join('-'))
+      if (code) return code
+    }
+
+    // Etiketin kendisi ile sonraki item'ları birleştir
+    // Bazen "Barkod No:NV02ILLEG5U8RLN9" gibi birleşik olabilir
+    const labelAndNext = items.slice(i, Math.min(i + 5, items.length)).join('')
+    const afterColon = labelAndNext.match(/(?:barkod|doğrulama|dogrulama)\s*(?:no|kodu|numarası|numarasi)?\s*[:\-=]?\s*(.+)/i)
+    if (afterColon) {
+      const cleaned = afterColon[1].replace(/[^A-Za-z0-9]/g, '')
+      if (cleaned.length >= 16) {
+        return formatAsBarcode(cleaned.substring(0, 16))
+      }
+      // Daha kısa ama potansiyel kod
+      const code = findBarcodeInText(afterColon[1])
+      if (code) return code
+    }
+  }
+
+  return null
+}
+
+/**
+ * Tüm metin içinde herhangi bir 16 karakterlik alfanumerik mixed blok bul
+ * Bu en geniş ve son çare strateji
+ */
+function findAlphanumericBlock(text: string): string | null {
+  // Tüm ayırıcıları kaldır
+  const clean = text.replace(/[^A-Za-z0-9]/g, '')
+
+  // NV ile başlayan herhangi bir yeri bul
+  let idx = 0
+  while (true) {
+    const nvPos = clean.toUpperCase().indexOf('NV', idx)
+    if (nvPos < 0 || nvPos + 16 > clean.length) break
+
+    const candidate = clean.substring(nvPos, nvPos + 16)
+    if (/^[A-Za-z0-9]{16}$/.test(candidate) && /[0-9]/.test(candidate)) {
+      // NVI (Nüfus ve Vatandaşlık İşleri) gibi kelimeleri atla
+      if (!candidate.toUpperCase().startsWith('NVI') || /\d/.test(candidate.substring(0, 4))) {
+        return formatAsBarcode(candidate)
+      }
+    }
+    idx = nvPos + 1
+  }
+
+  // NV yoksa, harfle başlayan ve içinde hem harf hem rakam olan 16'lı bloklar
+  // Bu çok geniş olabilir, sadece belirli koşullarda kullan
+  const blocks = clean.match(/[A-Za-z][A-Za-z0-9]{15}/g)
+  if (blocks) {
+    for (const block of blocks) {
+      const upper = block.toUpperCase()
+      // Yaygın kelimeler/kısaltmalar değilse
+      if (
+        /[0-9]/.test(block) &&       // En az 1 rakam
+        /[A-Za-z]/.test(block) &&     // En az 1 harf
+        !/^[A-Z]+$/.test(upper) &&    // Tamamen büyük harf kelime değil
+        !/^(YERLESIMYERIVE|NUFUSVEVATAN|TURKIYECUMHUR)/.test(upper) // Bilinen kelimeler değil
+      ) {
+        // En az 3 rakam ve 3 harf içermeli (gerçek barkod)
+        const digitCount = (block.match(/[0-9]/g) || []).length
+        const letterCount = (block.match(/[A-Za-z]/g) || []).length
+        if (digitCount >= 3 && letterCount >= 3) {
+          return formatAsBarcode(block)
         }
       }
     }
   }
 
-  // 6. "Barkod" etiketinden sonraki değeri al
-  const afterLabel = text.match(/[Bb]arkod\s*(?:No|Numaras[ıi])?\s*[:\-]?\s*([A-Za-z0-9\s\-–]{10,30})/i)
-  if (afterLabel) {
-    const val = afterLabel[1].replace(/\s+/g, '').replace(/[-–—]+/g, '-')
-    const innerCode = findEdevletCode(val) // recursive ama farklı input
-    if (innerCode) return innerCode
-    // Temiz alfanumerik
-    const cleaned = val.replace(/[^A-Za-z0-9]/g, '')
-    if (cleaned.length >= 16) {
-      return `${cleaned.slice(0,4)}-${cleaned.slice(4,8)}-${cleaned.slice(8,12)}-${cleaned.slice(12,16)}`.toUpperCase()
-    }
-  }
-
-  // 7. "Doğrulama" etiketinden sonra
-  const afterVerify = text.match(/[Dd]o[ğg]rulama\s*(?:Kodu|No)?\s*[:\-]?\s*([A-Za-z0-9\s\-–]{10,30})/i)
-  if (afterVerify) {
-    const cleaned = afterVerify[1].replace(/[^A-Za-z0-9]/g, '')
-    if (cleaned.length >= 16) {
-      return `${cleaned.slice(0,4)}-${cleaned.slice(4,8)}-${cleaned.slice(8,12)}-${cleaned.slice(12,16)}`.toUpperCase()
-    }
-  }
-
   return null
 }
 
 /**
- * Anahtar kelime yakınında kod ara
+ * 16 karakterlik string'i XXXX-XXXX-XXXX-XXXX formatına çevir
  */
-function findCodeNearKeyword(items: any[]): string | null {
-  const keywords = ['barkod', 'doğrulama', 'belge no', 'referans', 'sorgu', 'kontrol', 'dogrulama']
-
-  for (let i = 0; i < items.length; i++) {
-    const str = ((items[i] || {}).str || '').toLowerCase()
-    if (!keywords.some(kw => str.includes(kw))) continue
-
-    // Bu keyword'ün etrafındaki item'ları topla
-    for (const range of [[i, i+8], [i-2, i+6], [i, i+12]]) {
-      const start = Math.max(0, range[0])
-      const end = Math.min(items.length, range[1])
-      const nearby = items.slice(start, end).map((it: any) => it.str || '')
-
-      // Boşlukla birleştir
-      let code = findEdevletCode(nearby.join(' '))
-      if (code) return code
-      // Birleşik
-      code = findEdevletCode(nearby.join(''))
-      if (code) return code
-    }
+function formatAsBarcode(raw: string): string {
+  const clean = raw.replace(/[^A-Za-z0-9]/g, '').toUpperCase()
+  if (clean.length >= 16) {
+    return `${clean.slice(0, 4)}-${clean.slice(4, 8)}-${clean.slice(8, 12)}-${clean.slice(12, 16)}`
   }
-  return null
+  return clean.toUpperCase()
 }
 
-/**
- * PDF text items'ı satır satır grupla (Y koordinatına göre)
- */
+// ============================================================
+// METİN SATIR ÇIKARMA
+// ============================================================
+
 function extractTextByLines(items: Array<{ str: string; transform: number[] }>): string {
   if (items.length === 0) return ''
   const lines: Map<number, Array<{ str: string; x: number }>> = new Map()
+
   for (const item of items) {
     if (!item.str.trim()) continue
+    // Y koordinatını 2 piksel hassasiyetle grupla
     const y = Math.round((item.transform?.[5] || 0) / 2) * 2
     const x = item.transform?.[4] || 0
     if (!lines.has(y)) lines.set(y, [])
     lines.get(y)!.push({ str: item.str, x })
   }
+
   return Array.from(lines.entries())
-    .sort((a, b) => b[0] - a[0])
+    .sort((a, b) => b[0] - a[0]) // üstten alta
     .map(([, texts]) => {
-      texts.sort((a, b) => a.x - b.x)
-      return texts.map(t => t.str).join('')
+      texts.sort((a, b) => a.x - b.x) // soldan sağa
+      return texts.map(t => t.str).join(' ')
     })
     .join('\n')
 }
 
 // ============================================================
-// CANVAS TABANLI TARAMA (BarcodeDetector + jsQR)
+// QR KOD / BARKOD TARAMA (Canvas)
 // ============================================================
 
-/**
- * PDF sayfasını canvas'a render edip barkod/QR tara
- */
-async function scanPageAsImage(page: any, scale: number): Promise<BarcodeResult | null> {
+async function scanPageForQR(page: any, scale: number): Promise<BarcodeResult | null> {
   try {
     const viewport = page.getViewport({ scale })
     const canvas = document.createElement('canvas')
     canvas.width = viewport.width
     canvas.height = viewport.height
     const ctx = canvas.getContext('2d')!
+
+    // Beyaz arka plan (bazı PDF'ler transparent olabilir)
+    ctx.fillStyle = 'white'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
     await page.render({ canvasContext: ctx, viewport }).promise
 
-    // Tam sayfa tara
-    let result = await scanCanvas(canvas)
+    // Tam sayfa QR tara
+    let result = await scanCanvasForCodes(canvas)
     if (result) return result
 
-    // Üst 1/3 bölge (barkod genelde üstte)
-    result = await scanRegion(canvas, ctx, 0, 0, canvas.width, Math.floor(canvas.height / 3))
+    // Bölge tarama: üst yarı (QR genelde üstte)
+    result = await scanRegion(canvas, 0, 0, canvas.width, Math.floor(canvas.height / 2))
     if (result) return result
 
-    // Alt 1/3 bölge
-    result = await scanRegion(canvas, ctx, 0, Math.floor(canvas.height * 2 / 3), canvas.width, Math.floor(canvas.height / 3))
+    // Alt yarı
+    result = await scanRegion(canvas, 0, Math.floor(canvas.height / 2), canvas.width, Math.floor(canvas.height / 2))
     if (result) return result
 
-    // Sol üst köşe
-    result = await scanRegion(canvas, ctx, 0, 0, Math.floor(canvas.width / 2), Math.floor(canvas.height / 3))
+    // Sol üst çeyrek
+    result = await scanRegion(canvas, 0, 0, Math.floor(canvas.width / 2), Math.floor(canvas.height / 2))
     if (result) return result
 
-    // Sağ üst köşe
-    result = await scanRegion(canvas, ctx, Math.floor(canvas.width / 2), 0, Math.floor(canvas.width / 2), Math.floor(canvas.height / 3))
+    // Sağ üst çeyrek
+    result = await scanRegion(canvas, Math.floor(canvas.width / 2), 0, Math.floor(canvas.width / 2), Math.floor(canvas.height / 2))
     if (result) return result
 
     return null
   } catch (error) {
-    console.warn('[barcode] Canvas scan error:', error)
+    console.warn('[barcode] Canvas scan error at scale', scale, error)
     return null
   }
 }
 
-/**
- * Belirli bir bölgeyi tara
- */
 async function scanRegion(
-  sourceCanvas: HTMLCanvasElement,
-  sourceCtx: CanvasRenderingContext2D,
-  x: number, y: number, width: number, height: number
+  source: HTMLCanvasElement,
+  x: number, y: number, w: number, h: number
 ): Promise<BarcodeResult | null> {
+  if (w < 50 || h < 50) return null
   const regionCanvas = document.createElement('canvas')
-  regionCanvas.width = width
-  regionCanvas.height = height
-  const regionCtx = regionCanvas.getContext('2d')!
-  regionCtx.drawImage(sourceCanvas, x, y, width, height, 0, 0, width, height)
-  return scanCanvas(regionCanvas)
+  regionCanvas.width = w
+  regionCanvas.height = h
+  const ctx = regionCanvas.getContext('2d')!
+  ctx.drawImage(source, x, y, w, h, 0, 0, w, h)
+  return scanCanvasForCodes(regionCanvas)
 }
 
-/**
- * Canvas'tan barkod ve QR kod tara
- */
-async function scanCanvas(canvas: HTMLCanvasElement): Promise<BarcodeResult | null> {
-  // 1. BarcodeDetector API (Chrome'da mevcut)
+async function scanCanvasForCodes(canvas: HTMLCanvasElement): Promise<BarcodeResult | null> {
+  const ctx = canvas.getContext('2d')!
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+
+  // 1. jsQR - tüm tarayıcılarda çalışır
+  try {
+    const qrResult = jsQR(imageData.data, imageData.width, imageData.height, {
+      inversionAttempts: 'attemptBoth',
+    })
+    if (qrResult && qrResult.data) {
+      const raw = qrResult.data.trim()
+      console.log('[barcode] jsQR found:', raw)
+
+      // Direkt barkod kodu
+      let code = findBarcodeInText(raw)
+      if (code) return { code, source: 'qr-scan', confidence: 'high' }
+
+      // URL ise parametrelerden çıkar
+      if (raw.includes('turkiye.gov.tr') || raw.includes('belge-dogrulama') || raw.includes('barkodNo')) {
+        code = extractCodeFromUrl(raw)
+        if (code) return { code, source: 'qr-scan', confidence: 'high' }
+      }
+
+      // Ham değer (yeterli uzunlukta)
+      const cleaned = raw.replace(/[^A-Za-z0-9]/g, '')
+      if (cleaned.length >= 16) {
+        return { code: formatAsBarcode(cleaned.substring(0, 16)), source: 'qr-scan', confidence: 'medium' }
+      }
+    }
+  } catch (e) {
+    console.warn('[barcode] jsQR error:', e)
+  }
+
+  // 2. BarcodeDetector API (varsa)
   try {
     if ('BarcodeDetector' in window) {
       const detector = new (window as any).BarcodeDetector({
         formats: ['qr_code', 'code_128', 'code_39', 'data_matrix', 'pdf417', 'aztec', 'ean_13', 'ean_8']
       })
       const barcodes = await detector.detect(canvas)
-      if (barcodes.length > 0) {
-        for (const barcode of barcodes) {
-          const raw = barcode.rawValue.trim()
-          console.log('[barcode] BarcodeDetector found:', raw)
-          const code = findEdevletCode(raw)
+      for (const barcode of barcodes) {
+        const raw = (barcode.rawValue || '').trim()
+        if (!raw) continue
+        console.log('[barcode] BarcodeDetector found:', raw)
+
+        let code = findBarcodeInText(raw)
+        if (code) return { code, source: 'barcode-api', confidence: 'high' }
+
+        if (raw.includes('turkiye.gov.tr') || raw.includes('barkodNo')) {
+          code = extractCodeFromUrl(raw)
           if (code) return { code, source: 'barcode-api', confidence: 'high' }
-          // URL ise içinden kod çıkar
-          if (raw.includes('turkiye.gov.tr') || raw.includes('edevlet')) {
-            const urlCode = extractCodeFromUrl(raw)
-            if (urlCode) return { code: urlCode, source: 'barcode-api', confidence: 'high' }
-          }
-          if (raw.length >= 8) return { code: raw, source: 'barcode-api', confidence: 'medium' }
+        }
+
+        const cleaned = raw.replace(/[^A-Za-z0-9]/g, '')
+        if (cleaned.length >= 16) {
+          return { code: formatAsBarcode(cleaned.substring(0, 16)), source: 'barcode-api', confidence: 'medium' }
         }
       }
     }
@@ -423,104 +585,42 @@ async function scanCanvas(canvas: HTMLCanvasElement): Promise<BarcodeResult | nu
     console.warn('[barcode] BarcodeDetector error:', e)
   }
 
-  // 2. jsQR (QR kod tarama - tüm tarayıcılarda çalışır)
-  try {
-    const ctx = canvas.getContext('2d')!
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-    const qrResult = jsQR(imageData.data, imageData.width, imageData.height, {
-      inversionAttempts: 'attemptBoth',
-    })
-    if (qrResult) {
-      const raw = qrResult.data.trim()
-      console.log('[barcode] jsQR found:', raw)
-      const code = findEdevletCode(raw)
-      if (code) return { code, source: 'qr-scan', confidence: 'high' }
-      if (raw.includes('turkiye.gov.tr') || raw.includes('edevlet')) {
-        const urlCode = extractCodeFromUrl(raw)
-        if (urlCode) return { code: urlCode, source: 'qr-scan', confidence: 'high' }
-      }
-      if (raw.length >= 8) return { code: raw, source: 'qr-scan', confidence: 'medium' }
-    }
-  } catch (e) {
-    console.warn('[barcode] jsQR error:', e)
-  }
-
   return null
 }
 
-/**
- * URL'den e-Devlet belge doğrulama kodunu çıkar
- * Örn: https://www.turkiye.gov.tr/belge-dogrulama?barkodNo=NV02ILLEG5U8RLN9
- */
 function extractCodeFromUrl(url: string): string | null {
   try {
     const urlObj = new URL(url)
-    const params = ['barkodNo', 'barkod', 'code', 'belgeNo', 'referans']
-    for (const p of params) {
-      const val = urlObj.searchParams.get(p)
+    for (const param of ['barkodNo', 'barkod', 'code', 'belgeNo', 'referans']) {
+      const val = urlObj.searchParams.get(param)
       if (val) {
-        const code = findEdevletCode(val)
+        const code = findBarcodeInText(val)
         if (code) return code
-        // 16 karakter alfanumerik
         const cleaned = val.replace(/[^A-Za-z0-9]/g, '')
-        if (cleaned.length >= 16) {
-          return `${cleaned.slice(0,4)}-${cleaned.slice(4,8)}-${cleaned.slice(8,12)}-${cleaned.slice(12,16)}`.toUpperCase()
-        }
+        if (cleaned.length >= 16) return formatAsBarcode(cleaned.substring(0, 16))
       }
     }
-    // Path'ten dene
-    const pathParts = urlObj.pathname.split('/')
-    for (const part of pathParts) {
-      if (part.length >= 16) {
-        const code = findEdevletCode(part)
-        if (code) return code
-      }
+  } catch {
+    // URL değilse parametreleri regex ile ara
+    const paramMatch = url.match(/barkodNo[=:]\s*([A-Za-z0-9\-]+)/i)
+    if (paramMatch) {
+      const cleaned = paramMatch[1].replace(/[^A-Za-z0-9]/g, '')
+      if (cleaned.length >= 16) return formatAsBarcode(cleaned.substring(0, 16))
     }
-  } catch { /* URL parse hatası — devam et */ }
+  }
   return null
 }
 
 // ============================================================
-// GÖRÜNTÜ DOSYASINDAN ÇIKARMA
+// TEK DOSYA FONKSİYONLARI
 // ============================================================
 
 async function extractFromPDF(file: File): Promise<BarcodeResult | null> {
-  try {
-    const pdfjsLib = await import('pdfjs-dist')
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`
-
-    const arrayBuffer = await file.arrayBuffer()
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
-    const numPages = Math.min(pdf.numPages, 5)
-
-    // Metin çıkarma
-    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-      const page = await pdf.getPage(pageNum)
-      const textContent = await page.getTextContent()
-      const items = textContent.items as any[]
-
-      const spaced = items.map((i: any) => i.str).join(' ')
-      const noSpace = items.map((i: any) => i.str).join('')
-      const byLines = extractTextByLines(items)
-
-      const code = findCodeFromTexts(spaced, noSpace, byLines, items)
-      if (code) return { code, source: 'pdf-text', confidence: 'high' }
-    }
-
-    // Canvas tabanlı tarama
-    for (let pageNum = 1; pageNum <= Math.min(numPages, 2); pageNum++) {
-      const page = await pdf.getPage(pageNum)
-      for (const scale of [3.0, 4.0, 2.0]) {
-        const result = await scanPageAsImage(page, scale)
-        if (result) return result
-      }
-    }
-
-    return null
-  } catch (error) {
-    console.error('[barcode] PDF extraction error:', error)
-    return null
+  const fullResult = await extractFullDocumentInfo(file)
+  if (fullResult?.code) {
+    return { code: fullResult.code, source: fullResult.source, confidence: 'high' }
   }
+  return null
 }
 
 async function extractFromImage(file: File): Promise<BarcodeResult | null> {
@@ -540,7 +640,7 @@ async function extractFromImage(file: File): Promise<BarcodeResult | null> {
     ctx.drawImage(img, 0, 0)
     URL.revokeObjectURL(imageUrl)
 
-    return scanCanvas(canvas)
+    return scanCanvasForCodes(canvas)
   } catch (error) {
     console.error('[barcode] Image extraction error:', error)
     return null
@@ -554,9 +654,9 @@ async function extractFromImage(file: File): Promise<BarcodeResult | null> {
 function isValidTCKimlik(tc: string): boolean {
   if (tc.length !== 11 || tc[0] === '0' || !/^\d{11}$/.test(tc)) return false
   const d = tc.split('').map(Number)
-  const c10 = ((d[0]+d[2]+d[4]+d[6]+d[8])*7 - (d[1]+d[3]+d[5]+d[7])) % 10
-  if ((c10 < 0 ? c10+10 : c10) !== d[9]) return false
-  return d.slice(0,10).reduce((a,b)=>a+b,0) % 10 === d[10]
+  const c10 = ((d[0] + d[2] + d[4] + d[6] + d[8]) * 7 - (d[1] + d[3] + d[5] + d[7])) % 10
+  if ((c10 < 0 ? c10 + 10 : c10) !== d[9]) return false
+  return d.slice(0, 10).reduce((a, b) => a + b, 0) % 10 === d[10]
 }
 
 function findTCKimlikNo(text: string): string | null {
