@@ -4,18 +4,17 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import {
   Upload, CheckCircle2, ExternalLink, AlertCircle,
   Loader2, Shield, FileText, ScanBarcode, ArrowRight,
-  RefreshCw, XCircle, Eye, Search, MapPin
+  RefreshCw, XCircle, Eye
 } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 
-type Step = 'upload' | 'processing' | 'manual-barcode' | 'verified' | 'failed';
+type Step = 'upload' | 'processing' | 'manual-entry' | 'verified' | 'failed';
 
 interface ProcessStep {
   id: string;
   label: string;
   status: 'pending' | 'active' | 'done' | 'error';
-  detail?: string;
 }
 
 interface DocumentInfo {
@@ -32,6 +31,7 @@ export default function AddressVerificationPage() {
   const [dragActive, setDragActive] = useState(false);
   const [extractedCode, setExtractedCode] = useState('');
   const [manualCode, setManualCode] = useState('');
+  const [manualTc, setManualTc] = useState('');
   const [extractedTc, setExtractedTc] = useState('');
   const [userTcKimlikNo, setUserTcKimlikNo] = useState('');
   const [verificationResult, setVerificationResult] = useState<any>(null);
@@ -39,15 +39,7 @@ export default function AddressVerificationPage() {
   const [documentInfo, setDocumentInfo] = useState<DocumentInfo>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // İşlem adımları
-  const [processSteps, setProcessSteps] = useState<ProcessStep[]>([
-    { id: 'read', label: 'Belge okunuyor...', status: 'pending' },
-    { id: 'barcode', label: 'Barkod numarası aranıyor...', status: 'pending' },
-    { id: 'tc', label: 'TC Kimlik No kontrol ediliyor...', status: 'pending' },
-    { id: 'edevlet', label: 'e-Devlet belge doğrulama sorgulanıyor...', status: 'pending' },
-    { id: 'compare', label: 'Adres bilgileri karşılaştırılıyor...', status: 'pending' },
-    { id: 'result', label: 'Sonuç belirleniyor...', status: 'pending' },
-  ]);
+  const [processSteps, setProcessSteps] = useState<ProcessStep[]>([]);
 
   // Kullanıcının TC Kimlik No'sunu profil bilgisinden al
   useEffect(() => {
@@ -61,16 +53,9 @@ export default function AddressVerificationPage() {
     fetchUserTC();
   }, []);
 
-  // Adım güncelle helper
-  const updateStep = (id: string, status: ProcessStep['status'], detail?: string) => {
+  const updateStep = (id: string, status: ProcessStep['status'], label?: string) => {
     setProcessSteps(prev =>
-      prev.map(s => s.id === id ? { ...s, status, detail: detail ?? s.detail } : s)
-    );
-  };
-
-  const updateStepLabel = (id: string, label: string) => {
-    setProcessSteps(prev =>
-      prev.map(s => s.id === id ? { ...s, label } : s)
+      prev.map(s => s.id === id ? { ...s, status, label: label ?? s.label } : s)
     );
   };
 
@@ -92,8 +77,9 @@ export default function AddressVerificationPage() {
   };
 
   /**
-   * Tam otomatik akış:
-   * Dosya yükle → Barkod oku → TC al → e-Devlet sorgula → Sonuç
+   * Ana akış: Dosya → Barkod Okuma
+   * Barkod bulunamazsa manuel giriş ekranına yönlendir
+   * Barkod bulunursa doğrulamaya devam et
    */
   const processFile = useCallback(async (file: File) => {
     setUploadedFile(file);
@@ -102,41 +88,29 @@ export default function AddressVerificationPage() {
 
     const isImage = file.type.startsWith('image/');
 
-    // Adımları sıfırla
     setProcessSteps([
-      { id: 'read', label: isImage ? 'Fotoğraf yükleniyor...' : 'Belge okunuyor...', status: 'pending' },
-      { id: 'barcode', label: isImage ? 'Fotoğraftan barkod okunuyor (OCR)...' : 'Barkod numarası aranıyor...', status: 'pending' },
-      { id: 'tc', label: 'TC Kimlik No kontrol ediliyor...', status: 'pending' },
-      { id: 'edevlet', label: 'e-Devlet belge doğrulama sorgulanıyor...', status: 'pending' },
-      { id: 'compare', label: 'Adres bilgileri karşılaştırılıyor...', status: 'pending' },
-      { id: 'result', label: 'Sonuç belirleniyor...', status: 'pending' },
+      { id: 'read', label: isImage ? 'Fotoğraf yükleniyor...' : 'PDF belgesi yükleniyor...', status: 'pending' },
+      { id: 'ocr', label: isImage ? 'Fotoğraftan metin okunuyor (OCR)...' : 'PDF belgeden metin çıkarılıyor (OCR)...', status: 'pending' },
+      { id: 'barcode', label: 'Barkod numarası aranıyor...', status: 'pending' },
     ]);
 
     try {
-      // ===== ADIM 1: Belge okunuyor =====
+      // ADIM 1: Dosya yükleniyor
       updateStep('read', 'active');
-      await delay(500);
+      await delay(400);
+      updateStep('read', 'done', `Dosya yüklendi: ${file.name}`);
 
-      const { extractFullDocumentInfo, extractVerificationCode } = await import('@/lib/barcode-reader');
+      // ADIM 2: OCR ile metin çıkarma
+      updateStep('ocr', 'active');
 
-      updateStep('read', 'done', file.name);
-      updateStepLabel('read', `Belge okundu: ${file.name}`);
-
-      // ===== ADIM 2: Barkod numarası aranıyor =====
-      updateStep('barcode', 'active');
-      await delay(300);
-
-      let code: string | null = null;
-      let tcFromDoc: string | null = null;
-
-      // Önce tam çıkarma dene
+      const { extractFullDocumentInfo } = await import('@/lib/barcode-reader');
       const fullInfo = await extractFullDocumentInfo(file);
 
-      if (fullInfo) {
-        code = fullInfo.code;
-        tcFromDoc = fullInfo.tcKimlikNo;
+      updateStep('ocr', 'done', 'Metin başarıyla okundu');
 
-        // Belge bilgilerini kaydet
+      // Belge bilgilerini kaydet
+      if (fullInfo) {
+        if (fullInfo.tcKimlikNo) setExtractedTc(fullInfo.tcKimlikNo);
         const info: DocumentInfo = {};
         if (fullInfo.neighborhood) info.neighborhood = fullInfo.neighborhood;
         if (fullInfo.district) info.district = fullInfo.district;
@@ -144,199 +118,146 @@ export default function AddressVerificationPage() {
         if (fullInfo.address) info.address = fullInfo.address;
         if (fullInfo.fullName) info.holderName = fullInfo.fullName;
         setDocumentInfo(info);
-
-        if (tcFromDoc) setExtractedTc(tcFromDoc);
       }
 
-      // Fallback: sadece barkod çıkar
-      if (!code) {
-        const result = await extractVerificationCode(file);
-        if (result) code = result.code;
-      }
+      // ADIM 3: Barkod arama
+      updateStep('barcode', 'active');
+      await delay(200);
 
-      if (!code) {
-        updateStep('barcode', 'error');
-        updateStepLabel('barcode', 'Barkod numarası otomatik bulunamadı — Manuel giriş bekleniyor');
-        // Fail yerine manuel giriş adımına yönlendir
-        setCurrentStep('manual-barcode');
-        return;
-      }
+      const code = fullInfo?.code || null;
 
-      setExtractedCode(code);
-      updateStep('barcode', 'done');
-      updateStepLabel('barcode', `Barkod numarası belgeden bulundu: ${code}`);
+      if (code) {
+        setExtractedCode(code);
+        updateStep('barcode', 'done', `Barkod bulundu: ${code}`);
 
-      // ===== ADIM 3: TC Kimlik No kontrol ediliyor =====
-      updateStep('tc', 'active');
-      await delay(400);
-
-      const tcToUse = userTcKimlikNo || tcFromDoc || '';
-
-      if (!tcToUse) {
-        updateStep('tc', 'error');
-        updateStepLabel('tc', 'TC Kimlik No bulunamadı');
-        setErrorMessage('TC Kimlik numaranız bulunamadı. Lütfen profil ayarlarınızdan TC Kimlik No\'nuzu ekleyin.');
-        setCurrentStep('failed');
-        return;
-      }
-
-      // TC'yi maskele: 400****0692 gibi
-      const maskedTc = tcToUse.substring(0, 3) + '****' + tcToUse.substring(7);
-      updateStep('tc', 'done');
-      updateStepLabel('tc', `TC Kimlik No alındı: ${maskedTc}`);
-
-      // ===== ADIM 4: e-Devlet sorgulanıyor =====
-      updateStep('edevlet', 'active');
-      updateStepLabel('edevlet', 'Barkod numarası e-Devlet\'e giriliyor...');
-      await delay(600);
-
-      const response = await fetch('/api/verify-document', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          code,
-          tcKimlikNo: tcToUse,
-          documentInfo
-        })
-      });
-
-      const result = await response.json();
-
-      updateStep('edevlet', 'done');
-      updateStepLabel('edevlet', 'e-Devlet belge doğrulama sorgusu tamamlandı');
-
-      // ===== ADIM 5: Karşılaştırma =====
-      updateStep('compare', 'active');
-      updateStepLabel('compare', 'Adres bilgileri karşılaştırılıyor...');
-      await delay(500);
-
-      updateStep('compare', 'done');
-      updateStepLabel('compare', 'Adres bilgileri karşılaştırıldı');
-
-      // ===== ADIM 6: Sonuç =====
-      updateStep('result', 'active');
-      await delay(400);
-
-      if (result.verified) {
-        setVerificationResult(result);
-        updateStep('result', 'done');
-        updateStepLabel('result', 'Adres doğrulandı!');
-        await delay(800);
-        setCurrentStep('verified');
+        // TC var mı kontrol et — TC yoksa bile manuel giriş ekranına yönlendir
+        const tcToUse = userTcKimlikNo || fullInfo?.tcKimlikNo || '';
+        if (tcToUse) {
+          // Barkod + TC mevcut → doğrulamaya devam et
+          await runVerification(code, tcToUse);
+        } else {
+          // Barkod bulundu ama TC yok → manuel giriş ekranı (sadece TC)
+          setCurrentStep('manual-entry');
+        }
       } else {
-        updateStep('result', 'error');
-        updateStepLabel('result', 'Adres doğrulanamadı');
-        setErrorMessage(result.message || 'Belge e-Devlet üzerinden doğrulanamadı.');
-        await delay(600);
-        setCurrentStep('failed');
+        updateStep('barcode', 'error', 'Barkod numarası belgede bulunamadı');
+        // Manuel giriş ekranına yönlendir (barkod + TC)
+        setCurrentStep('manual-entry');
       }
 
     } catch (error) {
       console.error('Process error:', error);
-      setErrorMessage('Doğrulama sırasında beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.');
+      setErrorMessage('Belge işlenirken bir hata oluştu. Lütfen tekrar deneyin.');
       setCurrentStep('failed');
     }
   }, [userTcKimlikNo]);
 
   /**
-   * Manuel barkod girişi sonrası doğrulama devam eder
+   * e-Devlet doğrulama sorgusu
    */
-  const continueWithManualCode = useCallback(async (manualCodeInput: string) => {
-    const code = manualCodeInput.trim().toUpperCase();
-    if (!code) return;
-
-    setExtractedCode(code);
+  const runVerification = async (code: string, tcKimlikNo: string) => {
+    // Doğrulama adımlarını ekle
+    setProcessSteps(prev => [
+      ...prev,
+      { id: 'edevlet', label: 'e-Devlet belge doğrulama sorgulanıyor...', status: 'pending' },
+      { id: 'result', label: 'Sonuç belirleniyor...', status: 'pending' },
+    ]);
     setCurrentStep('processing');
 
-    // Barkod adımını güncelle
-    updateStep('barcode', 'done');
-    updateStepLabel('barcode', `Barkod numarası (manuel): ${code}`);
-
     try {
-      // ===== ADIM 3: TC Kimlik No =====
-      updateStep('tc', 'active');
-      await delay(400);
-
-      const tcToUse = userTcKimlikNo || extractedTc || '';
-      if (!tcToUse) {
-        updateStep('tc', 'error');
-        updateStepLabel('tc', 'TC Kimlik No bulunamadı');
-        setErrorMessage('TC Kimlik numaranız bulunamadı. Lütfen profil ayarlarınızdan TC Kimlik No\'nuzu ekleyin.');
-        setCurrentStep('failed');
-        return;
-      }
-
-      const maskedTc = tcToUse.substring(0, 3) + '****' + tcToUse.substring(7);
-      updateStep('tc', 'done');
-      updateStepLabel('tc', `TC Kimlik No alındı: ${maskedTc}`);
-
-      // ===== ADIM 4: e-Devlet =====
+      // e-Devlet sorgusu
       updateStep('edevlet', 'active');
-      updateStepLabel('edevlet', 'Barkod numarası e-Devlet\'e giriliyor...');
-      await delay(600);
+      await delay(500);
 
       const response = await fetch('/api/verify-document', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, tcKimlikNo: tcToUse, documentInfo })
+        body: JSON.stringify({ code, tcKimlikNo, documentInfo })
       });
 
       const result = await response.json();
-      updateStep('edevlet', 'done');
-      updateStepLabel('edevlet', 'e-Devlet belge doğrulama sorgusu tamamlandı');
+      updateStep('edevlet', 'done', 'e-Devlet sorgusu tamamlandı');
 
-      // ===== ADIM 5: Karşılaştırma =====
-      updateStep('compare', 'active');
-      await delay(500);
-      updateStep('compare', 'done');
-      updateStepLabel('compare', 'Adres bilgileri karşılaştırıldı');
-
-      // ===== ADIM 6: Sonuç =====
+      // Sonuç
       updateStep('result', 'active');
-      await delay(400);
+      await delay(300);
 
       if (result.verified) {
         setVerificationResult(result);
-        updateStep('result', 'done');
-        updateStepLabel('result', 'Adres doğrulandı!');
-        await delay(800);
+        updateStep('result', 'done', 'Adres doğrulandı!');
+        await delay(600);
         setCurrentStep('verified');
       } else {
-        updateStep('result', 'error');
-        updateStepLabel('result', 'Adres doğrulanamadı');
+        updateStep('result', 'error', 'Adres doğrulanamadı');
         setErrorMessage(result.message || 'Belge e-Devlet üzerinden doğrulanamadı.');
-        await delay(600);
+        await delay(400);
         setCurrentStep('failed');
       }
     } catch (error) {
-      console.error('Manual code process error:', error);
-      setErrorMessage('Doğrulama sırasında beklenmeyen bir hata oluştu.');
+      console.error('Verification error:', error);
+      setErrorMessage('Doğrulama sırasında bir hata oluştu.');
       setCurrentStep('failed');
     }
-  }, [userTcKimlikNo, extractedTc, documentInfo]);
+  };
+
+  /**
+   * Manuel giriş sonrası doğrulamaya devam et
+   */
+  const continueWithManualEntry = useCallback(async () => {
+    // Barkod kodu
+    let code = extractedCode; // otomatik bulunduysa zaten var
+    if (!code) {
+      code = manualCode.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (code.length === 16) {
+        code = `${code.slice(0, 4)}-${code.slice(4, 8)}-${code.slice(8, 12)}-${code.slice(12, 16)}`;
+      }
+    }
+
+    if (!code || code.replace(/[^A-Z0-9]/g, '').length < 10) {
+      setErrorMessage('Geçerli bir barkod numarası girin.');
+      return;
+    }
+
+    // TC Kimlik No
+    const tc = userTcKimlikNo || extractedTc || manualTc.trim();
+    if (!tc || !/^[1-9]\d{10}$/.test(tc)) {
+      setErrorMessage('Geçerli bir TC Kimlik No girin (11 haneli).');
+      return;
+    }
+
+    setExtractedCode(code);
+    setErrorMessage('');
+
+    // İşlem adımlarını güncelle
+    setProcessSteps([
+      { id: 'barcode', label: `Barkod numarası: ${code}`, status: 'done' },
+      { id: 'tc', label: `TC Kimlik No: ${tc.substring(0, 3)}****${tc.substring(7)}`, status: 'done' },
+    ]);
+
+    await runVerification(code, tc);
+  }, [extractedCode, manualCode, manualTc, userTcKimlikNo, extractedTc, documentInfo]);
 
   const resetProcess = () => {
     setCurrentStep('upload');
     setUploadedFile(null);
     setExtractedCode('');
     setManualCode('');
+    setManualTc('');
     setErrorMessage('');
     setVerificationResult(null);
     setDocumentInfo({});
-    setProcessSteps([
-      { id: 'read', label: 'Belge okunuyor...', status: 'pending' },
-      { id: 'barcode', label: 'Barkod numarası aranıyor...', status: 'pending' },
-      { id: 'tc', label: 'TC Kimlik No kontrol ediliyor...', status: 'pending' },
-      { id: 'edevlet', label: 'e-Devlet belge doğrulama sorgulanıyor...', status: 'pending' },
-      { id: 'compare', label: 'Adres bilgileri karşılaştırılıyor...', status: 'pending' },
-      { id: 'result', label: 'Sonuç belirleniyor...', status: 'pending' },
-    ]);
+    setProcessSteps([]);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  // Progress bar yüzdesi
   const completedSteps = processSteps.filter(s => s.status === 'done').length;
-  const progressPercent = Math.round((completedSteps / processSteps.length) * 100);
+  const progressPercent = processSteps.length > 0
+    ? Math.round((completedSteps / processSteps.length) * 100)
+    : 0;
+
+  // Manuel giriş ekranında: barkod zaten bulunduysa sadece TC iste
+  const needsManualBarcode = !extractedCode;
+  const needsManualTc = !userTcKimlikNo && !extractedTc;
 
   return (
     <div className="min-h-screen bg-[#f0f2f5] py-8 px-4">
@@ -350,25 +271,22 @@ export default function AddressVerificationPage() {
           <p className="text-[#666]">e-Devlet adres belgenizi yükleyin, doğrulama otomatik olarak yapılsın.</p>
         </div>
 
-        {/* ========== ADIM: UPLOAD (Belge Yükle) ========== */}
+        {/* ========== UPLOAD ========== */}
         {currentStep === 'upload' && (
           <div className="space-y-6">
-            {/* Nasıl çalışır */}
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
               <div className="flex gap-3">
                 <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="font-semibold text-blue-900 mb-1">Nasıl Çalışır?</p>
                   <p className="text-sm text-blue-800">
-                    e-Devlet&apos;ten aldığınız adres belgesini yükleyin. Sistem barkod numarasını otomatik okuyacak,
-                    e-Devlet&apos;e girecek ve adresinizi anında doğrulayacak.
-                    Sizin hiçbir şey yapmanıza gerek yok.
+                    e-Devlet&apos;ten aldığınız adres belgesini (PDF veya fotoğraf) yükleyin.
+                    Sistem barkod numarasını otomatik olarak okuyup doğrulama yapacak.
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* e-Devlet link */}
             <div className="bg-white rounded-xl border border-[#e0e0e0] p-6">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-[#00833e]/10 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -377,7 +295,7 @@ export default function AddressVerificationPage() {
                 <div className="flex-1">
                   <h2 className="text-lg font-bold text-[#333] mb-2">1. e-Devlet&apos;ten Belge Alın</h2>
                   <p className="text-[#666] text-sm mb-4">
-                    &quot;Yerleşim Yeri ve Diğer Adres Belgesi&quot; hizmetinden PDF belgenizi indirin.
+                    &quot;Yerleşim Yeri ve Diğer Adres Belgesi&quot; hizmetinden belgenizi indirin veya ekran görüntüsü alın.
                   </p>
                   <a
                     href="https://www.turkiye.gov.tr/nvi-yerlesim-yeri-ve-diger-adres-belgesi-sorgulama"
@@ -392,7 +310,6 @@ export default function AddressVerificationPage() {
               </div>
             </div>
 
-            {/* Upload */}
             <div className="bg-white rounded-xl border border-[#e0e0e0] p-6">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -401,7 +318,7 @@ export default function AddressVerificationPage() {
                 <div className="flex-1">
                   <h2 className="text-lg font-bold text-[#333] mb-2">2. Belgeyi Yükleyin</h2>
                   <p className="text-[#666] text-sm mb-4">
-                    PDF belgenizi veya fotoğrafını yükleyin — gerisini biz hallederiz.
+                    PDF belgenizi veya fotoğrafını yükleyin. Barkod numarasını otomatik okuyacağız.
                   </p>
 
                   <div
@@ -434,12 +351,9 @@ export default function AddressVerificationPage() {
               </div>
             </div>
 
-            {/* Referans alternatifi */}
             <div className="bg-white rounded-xl border border-[#e0e0e0] p-5">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-[#666]">Alternatif: Komşu referans kodu ile doğrulama</span>
-                </div>
+                <span className="text-sm text-[#666]">Alternatif: Komşu referans kodu ile doğrulama</span>
                 <Link href="/referans-kullan" className="text-sm font-medium text-[#00833e] hover:text-[#006b32] flex items-center gap-1">
                   Referans Kullan <ArrowRight className="w-3 h-3" />
                 </Link>
@@ -448,22 +362,19 @@ export default function AddressVerificationPage() {
           </div>
         )}
 
-        {/* ========== ADIM: PROCESSING (Otomatik Süreç) ========== */}
+        {/* ========== PROCESSING ========== */}
         {currentStep === 'processing' && (
           <div className="bg-white rounded-xl border border-[#e0e0e0] overflow-hidden">
-            {/* Progress bar üst kısım */}
             <div className="bg-gradient-to-r from-[#00833e] to-[#006b32] px-6 py-5 text-white">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                   <Shield className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold">Adres Doğrulanıyor</h2>
-                  <p className="text-white/80 text-sm">Lütfen bekleyin, işlem otomatik olarak yapılıyor...</p>
+                  <h2 className="text-lg font-bold">İşlem Devam Ediyor</h2>
+                  <p className="text-white/80 text-sm">Lütfen bekleyin...</p>
                 </div>
               </div>
-
-              {/* Progress bar */}
               <div className="w-full bg-white/20 rounded-full h-2.5">
                 <div
                   className="bg-white rounded-full h-2.5 transition-all duration-700 ease-out"
@@ -473,7 +384,6 @@ export default function AddressVerificationPage() {
               <p className="text-white/70 text-xs mt-2 text-right">{progressPercent}%</p>
             </div>
 
-            {/* Dosya bilgisi */}
             {uploadedFile && (
               <div className="px-6 py-3 bg-[#f9f9f9] border-b border-[#e0e0e0]">
                 <div className="flex items-center gap-2 text-sm text-[#666]">
@@ -484,7 +394,6 @@ export default function AddressVerificationPage() {
               </div>
             )}
 
-            {/* Süreç adımları */}
             <div className="px-6 py-5 space-y-4">
               {processSteps.map((step) => (
                 <ProcessStepRow key={step.id} step={step} />
@@ -493,10 +402,9 @@ export default function AddressVerificationPage() {
           </div>
         )}
 
-        {/* ========== ADIM: MANUEL BARKOD GİRİŞİ ========== */}
-        {currentStep === 'manual-barcode' && (
+        {/* ========== MANUEL GİRİŞ ========== */}
+        {currentStep === 'manual-entry' && (
           <div className="space-y-6">
-            {/* Süreç özeti */}
             <div className="bg-white rounded-xl border border-[#e0e0e0] overflow-hidden">
               <div className="bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-5 text-white">
                 <div className="flex items-center gap-3">
@@ -504,64 +412,122 @@ export default function AddressVerificationPage() {
                     <ScanBarcode className="w-6 h-6" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold">Barkod Numarası Gerekli</h2>
-                    <p className="text-white/80 text-sm">Otomatik bulunamadı — lütfen kendiniz girin.</p>
+                    <h2 className="text-xl font-bold">
+                      {needsManualBarcode ? 'Bilgi Girişi Gerekli' : 'TC Kimlik No Gerekli'}
+                    </h2>
+                    <p className="text-white/80 text-sm">
+                      {needsManualBarcode
+                        ? 'Barkod numarası otomatik bulunamadı, lütfen kendiniz girin.'
+                        : 'Barkod bulundu! Doğrulama için TC Kimlik No gerekli.'
+                      }
+                    </p>
                   </div>
                 </div>
               </div>
 
               {/* Tamamlanan adımlar */}
-              <div className="px-6 py-4 space-y-3 border-b border-[#e0e0e0]">
-                {processSteps.map((step) => (
-                  <ProcessStepRow key={step.id} step={step} />
-                ))}
-              </div>
+              {processSteps.length > 0 && (
+                <div className="px-6 py-4 space-y-3 border-b border-[#e0e0e0]">
+                  {processSteps.map((step) => (
+                    <ProcessStepRow key={step.id} step={step} />
+                  ))}
+                </div>
+              )}
 
               {/* Manuel giriş formu */}
-              <div className="px-6 py-6">
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-5">
-                  <div className="flex gap-3">
-                    <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-semibold text-amber-900 mb-1">Barkod Numarasını Nerede Bulabilirsiniz?</p>
-                      <p className="text-sm text-amber-800">
-                        e-Devlet belgenizin üst kısmında veya altında{' '}
-                        <strong>XXXX-XXXX-XXXX-XXXX</strong> formatında bir doğrulama kodu bulunur.
-                        Genellikle &quot;Barkod No&quot; veya &quot;Doğrulama Kodu&quot; olarak etiketlenir.
-                      </p>
+              <div className="px-6 py-6 space-y-5">
+                {errorMessage && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700">
+                    {errorMessage}
+                  </div>
+                )}
+
+                {/* Barkod alanı */}
+                {needsManualBarcode && (
+                  <div>
+                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
+                      <div className="flex gap-3">
+                        <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-semibold text-amber-900 mb-1">Barkod Numarasını Nerede Bulabilirsiniz?</p>
+                          <p className="text-sm text-amber-800">
+                            e-Devlet belgenizin sağ üst köşesinde, barkod resminin hemen altında{' '}
+                            <strong>XXXX-XXXX-XXXX-XXXX</strong> formatında yazılmıştır.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <label htmlFor="manual-barcode" className="block text-sm font-semibold text-[#333] mb-2">
+                      Barkod / Doğrulama Numarası
+                    </label>
+                    <input
+                      id="manual-barcode"
+                      type="text"
+                      value={manualCode}
+                      onChange={(e) => setManualCode(e.target.value.toUpperCase())}
+                      placeholder="Örn: NV02-ILLE-G5U8-RLN9"
+                      className="w-full px-4 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-[#fafafa] focus:bg-white focus:outline-none focus:ring-2 focus:border-[#00833e] focus:ring-[#00833e]/20 font-mono text-base tracking-wider"
+                      autoFocus
+                    />
+                    <p className="text-xs text-[#8f8f8f] mt-1">
+                      Tire ile veya tiresiz girebilirsiniz.
+                    </p>
+                  </div>
+                )}
+
+                {/* Barkod bulunduysa göster */}
+                {!needsManualBarcode && extractedCode && (
+                  <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                    <div className="flex items-center gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-green-900 text-sm">Barkod Belgeden Okundu</p>
+                        <p className="text-green-800 font-mono text-base tracking-wider">{extractedCode}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
 
-                <label htmlFor="manual-barcode" className="block text-sm font-semibold text-[#333] mb-2">
-                  Barkod / Doğrulama Numarası
-                </label>
-                <input
-                  id="manual-barcode"
-                  type="text"
-                  value={manualCode}
-                  onChange={(e) => setManualCode(e.target.value.toUpperCase())}
-                  placeholder="Örn: NV02-ILLE-G5U8-RLN9"
-                  className="w-full px-4 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-[#fafafa] focus:bg-white focus:outline-none focus:ring-2 focus:border-[#00833e] focus:ring-[#00833e]/20 font-mono text-base tracking-wider"
-                  autoFocus
-                />
-                <p className="text-xs text-[#8f8f8f] mt-2">
-                  Tire (-) ile veya tiresiz girebilirsiniz. Örn: NV02ILLEG5U8RLN9
-                </p>
+                {/* TC Kimlik No alanı */}
+                {needsManualTc && (
+                  <div>
+                    <label htmlFor="manual-tc" className="block text-sm font-semibold text-[#333] mb-2">
+                      TC Kimlik Numaranız
+                    </label>
+                    <input
+                      id="manual-tc"
+                      type="text"
+                      value={manualTc}
+                      onChange={(e) => setManualTc(e.target.value.replace(/\D/g, '').slice(0, 11))}
+                      placeholder="11 haneli TC Kimlik No"
+                      className="w-full px-4 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-[#fafafa] focus:bg-white focus:outline-none focus:ring-2 focus:border-[#00833e] focus:ring-[#00833e]/20 font-mono text-base tracking-wider"
+                      maxLength={11}
+                      autoFocus={!needsManualBarcode}
+                    />
+                    <p className="text-xs text-[#8f8f8f] mt-1">
+                      e-Devlet doğrulaması için TC Kimlik numaranız gereklidir.
+                    </p>
+                  </div>
+                )}
 
-                <div className="flex gap-3 mt-5">
+                {/* TC profilde varsa göster */}
+                {!needsManualTc && (userTcKimlikNo || extractedTc) && (
+                  <div className="bg-green-50 border border-green-200 rounded-xl p-3">
+                    <div className="flex items-center gap-2 text-sm text-green-800">
+                      <CheckCircle2 className="w-4 h-4 text-green-600" />
+                      <span>TC Kimlik No: {(userTcKimlikNo || extractedTc).substring(0, 3)}****{(userTcKimlikNo || extractedTc).substring(7)}</span>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex gap-3 pt-2">
                   <button
-                    onClick={() => {
-                      let code = manualCode.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
-                      // 16 karakterse 4'lü gruplara böl
-                      if (code.length === 16) {
-                        code = `${code.slice(0,4)}-${code.slice(4,8)}-${code.slice(8,12)}-${code.slice(12,16)}`;
-                      }
-                      if (code.length >= 10) {
-                        continueWithManualCode(code);
-                      }
-                    }}
-                    disabled={manualCode.replace(/[^A-Za-z0-9]/g, '').length < 10}
+                    onClick={continueWithManualEntry}
+                    disabled={
+                      (needsManualBarcode && manualCode.replace(/[^A-Za-z0-9]/g, '').length < 10) ||
+                      (needsManualTc && manualTc.length < 11)
+                    }
                     className="flex-1 px-6 py-3 bg-[#00833e] text-white font-semibold rounded-lg hover:bg-[#006b32] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Doğrulamaya Devam Et
@@ -570,7 +536,7 @@ export default function AddressVerificationPage() {
                     onClick={resetProcess}
                     className="px-6 py-3 border border-[#e0e0e0] text-[#666] font-medium rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    Farklı Belge
+                    Baştan Başla
                   </button>
                 </div>
               </div>
@@ -578,10 +544,9 @@ export default function AddressVerificationPage() {
           </div>
         )}
 
-        {/* ========== ADIM: VERIFIED (Başarılı) ========== */}
+        {/* ========== VERIFIED ========== */}
         {currentStep === 'verified' && verificationResult && (
           <div className="space-y-6">
-            {/* Süreç özeti */}
             <div className="bg-white rounded-xl border border-[#e0e0e0] overflow-hidden">
               <div className="bg-gradient-to-r from-[#00833e] to-[#006b32] px-6 py-5 text-white">
                 <div className="flex items-center gap-3">
@@ -595,7 +560,6 @@ export default function AddressVerificationPage() {
                 </div>
               </div>
 
-              {/* Tamamlanan adımların özeti */}
               <div className="px-6 py-4 space-y-3">
                 {processSteps.map((step) => (
                   <ProcessStepRow key={step.id} step={step} />
@@ -603,9 +567,7 @@ export default function AddressVerificationPage() {
               </div>
             </div>
 
-            {/* Doğrulama detayları */}
             <div className="bg-white rounded-xl border border-[#e0e0e0] p-6">
-              {/* Doğrulama rozeti */}
               <div className="bg-[#e6f4ec] border border-[#00833e]/30 rounded-xl p-4 mb-5">
                 <div className="flex items-center gap-3">
                   <CheckCircle2 className="w-6 h-6 text-[#00833e] flex-shrink-0" />
@@ -616,7 +578,6 @@ export default function AddressVerificationPage() {
                 </div>
               </div>
 
-              {/* Belge detayları */}
               {verificationResult.details && (
                 <div className="bg-[#f0f2f5] rounded-xl p-5 mb-5">
                   <h3 className="font-semibold text-[#333] mb-3 flex items-center gap-2">
@@ -637,7 +598,6 @@ export default function AddressVerificationPage() {
                 </div>
               )}
 
-              {/* turkiye.gov.tr link */}
               <div className="text-center mb-5">
                 <a
                   href="https://www.turkiye.gov.tr/belge-dogrulama"
@@ -669,10 +629,9 @@ export default function AddressVerificationPage() {
           </div>
         )}
 
-        {/* ========== ADIM: FAILED (Başarısız) ========== */}
+        {/* ========== FAILED ========== */}
         {currentStep === 'failed' && (
           <div className="space-y-6">
-            {/* Süreç özeti - hata ile */}
             <div className="bg-white rounded-xl border border-[#e0e0e0] overflow-hidden">
               <div className="bg-gradient-to-r from-red-500 to-red-600 px-6 py-5 text-white">
                 <div className="flex items-center gap-3">
@@ -686,15 +645,15 @@ export default function AddressVerificationPage() {
                 </div>
               </div>
 
-              {/* Adımların durumu */}
-              <div className="px-6 py-4 space-y-3">
-                {processSteps.map((step) => (
-                  <ProcessStepRow key={step.id} step={step} />
-                ))}
-              </div>
+              {processSteps.length > 0 && (
+                <div className="px-6 py-4 space-y-3">
+                  {processSteps.map((step) => (
+                    <ProcessStepRow key={step.id} step={step} />
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Aksiyon butonları */}
             <div className="bg-white rounded-xl border border-[#e0e0e0] p-6">
               <h3 className="font-semibold text-[#333] mb-4">Ne yapabilirsiniz?</h3>
               <div className="space-y-3">
@@ -703,7 +662,7 @@ export default function AddressVerificationPage() {
                   className="w-full flex items-center gap-3 px-5 py-3.5 bg-[#00833e] text-white font-medium rounded-lg hover:bg-[#006b32] transition-colors"
                 >
                   <RefreshCw className="w-5 h-5" />
-                  Farklı Bir Belge Yükle
+                  Tekrar Dene
                 </button>
                 <a
                   href="https://www.turkiye.gov.tr/nvi-yerlesim-yeri-ve-diger-adres-belgesi-sorgulama"
@@ -717,7 +676,6 @@ export default function AddressVerificationPage() {
               </div>
             </div>
 
-            {/* Referans alternatifi */}
             <div className="bg-white rounded-xl border border-[#e0e0e0] p-5">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-[#666]">Alternatif: Komşu referans kodu ile doğrulama</span>
@@ -733,7 +691,6 @@ export default function AddressVerificationPage() {
   );
 }
 
-/** Süreç adım satırı - animasyonlu */
 function ProcessStepRow({ step }: { step: ProcessStep }) {
   return (
     <div className={`flex items-start gap-3 transition-all duration-300 ${
@@ -759,21 +716,18 @@ function ProcessStepRow({ step }: { step: ProcessStep }) {
           <div className="w-6 h-6 border-2 border-gray-300 rounded-full" />
         )}
       </div>
-      <div className="flex-1 min-w-0">
-        <p className={`text-sm leading-relaxed ${
-          step.status === 'done' ? 'text-[#333] font-medium' :
-          step.status === 'active' ? 'text-amber-700 font-medium' :
-          step.status === 'error' ? 'text-red-600 font-medium' :
-          'text-[#8f8f8f]'
-        }`}>
-          {step.label}
-        </p>
-      </div>
+      <p className={`text-sm leading-relaxed ${
+        step.status === 'done' ? 'text-[#333] font-medium' :
+        step.status === 'active' ? 'text-amber-700 font-medium' :
+        step.status === 'error' ? 'text-red-600 font-medium' :
+        'text-[#8f8f8f]'
+      }`}>
+        {step.label}
+      </p>
     </div>
   );
 }
 
-/** Belge detay satırı */
 function DetailRow({ label, value }: { label: string; value?: string }) {
   if (!value) return null;
   return (
