@@ -100,10 +100,12 @@ export default function AddressVerificationPage() {
     setCurrentStep('processing');
     setErrorMessage('');
 
+    const isImage = file.type.startsWith('image/');
+
     // Adımları sıfırla
     setProcessSteps([
-      { id: 'read', label: 'Belge okunuyor...', status: 'pending' },
-      { id: 'barcode', label: 'Barkod numarası aranıyor...', status: 'pending' },
+      { id: 'read', label: isImage ? 'Fotoğraf yükleniyor...' : 'Belge okunuyor...', status: 'pending' },
+      { id: 'barcode', label: isImage ? 'Fotoğraftan barkod okunuyor (OCR)...' : 'Barkod numarası aranıyor...', status: 'pending' },
       { id: 'tc', label: 'TC Kimlik No kontrol ediliyor...', status: 'pending' },
       { id: 'edevlet', label: 'e-Devlet belge doğrulama sorgulanıyor...', status: 'pending' },
       { id: 'compare', label: 'Adres bilgileri karşılaştırılıyor...', status: 'pending' },
@@ -399,7 +401,7 @@ export default function AddressVerificationPage() {
                 <div className="flex-1">
                   <h2 className="text-lg font-bold text-[#333] mb-2">2. Belgeyi Yükleyin</h2>
                   <p className="text-[#666] text-sm mb-4">
-                    PDF belgenizi yükleyin — gerisini biz hallederiz.
+                    PDF belgenizi veya fotoğrafını yükleyin — gerisini biz hallederiz.
                   </p>
 
                   <div
