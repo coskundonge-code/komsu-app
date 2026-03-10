@@ -41,3 +41,5 @@ yarn-error.log*
 next-env.d.ts
 TOAST_*.md
 TOAST_*.txt
+
+# PDF.js worker (auto-copied via postinstall)
