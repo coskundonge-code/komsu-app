@@ -37,6 +37,7 @@ const secondaryNavItems = [
   { icon: PlusCircle, label: 'İşletme Sayfası Ekle', href: '/isletme-ekle' },
   { icon: Settings, label: 'Ayarlar', href: '/ayarlar' },
   { icon: HelpCircle, label: 'Yardım Merkezi', href: '/yardim' },
+  { icon: AlertTriangle, label: 'Yönetici Paneli', href: '/admin' },
 ]
 
 // Mock user data - replace with actual user context in production

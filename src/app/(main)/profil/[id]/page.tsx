@@ -325,7 +325,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
 
             {/* Address Verification Status */}
             <div className="mb-6">
-              <AddressVerificationStatus status="verified" />
+              <AddressVerificationStatus status="unverified" daysRemaining={27} />
             </div>
 
             {/* Stats Row */}

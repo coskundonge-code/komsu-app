@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { User, Store, Heart, Settings, HelpCircle, LogOut } from 'lucide-react'
+import { User, Store, Heart, Settings, HelpCircle, LogOut, Shield, UserPlus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 interface UserDropdownProps {
@@ -102,6 +102,16 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
           <span className="text-sm font-medium">Ayarlar</span>
         </Link>
 
+        {/* Komşularını Davet Et */}
+        <Link
+          href="/davet"
+          onClick={onClose}
+          className="flex items-center gap-3 px-4 py-2.5 text-[#333] hover:bg-[#f0f2f5] transition-colors"
+        >
+          <UserPlus className="w-4 h-4 flex-shrink-0" />
+          <span className="text-sm font-medium">Komşularını Davet Et</span>
+        </Link>
+
         {/* Yardım */}
         <Link
           href="/yardim"
@@ -110,6 +120,16 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
         >
           <HelpCircle className="w-4 h-4 flex-shrink-0" />
           <span className="text-sm font-medium">Yardım</span>
+        </Link>
+
+        {/* Admin Paneli */}
+        <Link
+          href="/admin"
+          onClick={onClose}
+          className="flex items-center gap-3 px-4 py-2.5 text-[#00833e] hover:bg-[#f0f2f5] transition-colors"
+        >
+          <Shield className="w-4 h-4 flex-shrink-0" />
+          <span className="text-sm font-medium">Yönetici Paneli</span>
         </Link>
 
         {/* Divider */}

@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { PostFormModal } from '@/components/feed/post-form-modal';
 import StoriesBar from '@/components/feed/stories-bar';
 import { getFeedImageUrl } from '@/lib/demo-images';
+import { AddressVerificationBanner } from '@/components/feed/address-verification-banner';
 
 // Category definitions
 const POST_CATEGORIES = [
@@ -314,6 +315,9 @@ export default function FeedPage() {
             className="w-full px-4 py-2.5 bg-[#f0f2f5] border border-[#e0e0e0] rounded-full text-[15px] text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e] transition-colors"
           />
         </div>
+
+        {/* Address Verification Banner - shown to unverified users */}
+        <AddressVerificationBanner status="unverified" daysRemaining={27} />
 
         {/* Stories Bar */}
         <StoriesBar />

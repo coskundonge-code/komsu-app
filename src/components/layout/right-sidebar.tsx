@@ -93,6 +93,26 @@ export function RightSidebar() {
         </div>
       </div>
 
+      {/* Invite Neighbors Card */}
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg shadow-sm border border-blue-200 overflow-hidden">
+        <div className="p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-2xl">🏘️</span>
+            <p className="text-[15px] font-bold text-[#333]">Komşularını Davet Et</p>
+          </div>
+          <p className="text-sm text-[#666] mb-3">
+            Referans kodunla en fazla 3 komşunu sisteme davet et. Davet ettiğin komşular adres doğrulama adımını atlayabilir!
+          </p>
+          <Link
+            href="/davet"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#00833e] text-white text-sm font-semibold rounded-lg hover:bg-[#006b32] transition-colors w-full"
+          >
+            <span>Davet Kodunu Al</span>
+            <ChevronRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </div>
+
       {/* Business Promo Card */}
       <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
         <div className="h-[160px] bg-gradient-to-br from-[#00833e] to-[#006b32] flex items-center justify-center">
@@ -133,15 +153,19 @@ export function RightSidebar() {
 
       {/* Chats Widget - Bottom Right */}
       <div className="fixed bottom-0 right-4 w-[300px] z-40">
-        <button className="w-full flex items-center justify-between px-4 py-3 bg-white border border-[#e0e0e0] border-b-0 rounded-t-lg shadow-lg hover:bg-[#f9f9f9] transition-colors">
+        <Link
+          href="/mesajlar"
+          className="w-full flex items-center justify-between px-4 py-3 bg-white border border-[#e0e0e0] border-b-0 rounded-t-lg shadow-lg hover:bg-[#f9f9f9] transition-colors"
+        >
           <div className="flex items-center gap-2">
             <span className="text-[15px] font-bold text-[#333]">Sohbetler</span>
+            <span className="w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center font-bold">3</span>
           </div>
           <div className="flex items-center gap-2">
             <Edit3 className="w-4 h-4 text-[#404040]" />
             <ChevronUp className="w-4 h-4 text-[#404040]" />
           </div>
-        </button>
+        </Link>
       </div>
     </div>
   )
