@@ -433,7 +433,7 @@ export default function SearchResultsPage() {
   const renderPersonResult = (person: Person) => (
     <Link
       key={person.id}
-      href={`/profile/${person.id}`}
+      href={`/profil/${person.id}`}
       className="bg-white border border-[#e0e0e0] rounded-lg p-4 hover:shadow-md transition-shadow flex items-center gap-3"
     >
       <Image

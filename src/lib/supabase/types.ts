@@ -1574,6 +1574,52 @@ export type Database = {
           created_at?: string
         }
       }
+      referral_codes: {
+        Row: {
+          id: string
+          user_id: string
+          code: string
+          max_uses: number
+          current_uses: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          code: string
+          max_uses?: number
+          current_uses?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          code?: string
+          max_uses?: number
+          current_uses?: number
+          created_at?: string
+        }
+      }
+      referral_uses: {
+        Row: {
+          id: string
+          referral_code_id: string
+          referred_user_id: string
+          used_at: string
+        }
+        Insert: {
+          id?: string
+          referral_code_id: string
+          referred_user_id: string
+          used_at?: string
+        }
+        Update: {
+          id?: string
+          referral_code_id?: string
+          referred_user_id?: string
+          used_at?: string
+        }
+      }
     }
     Views: {}
     Functions: {}

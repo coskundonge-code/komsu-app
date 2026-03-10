@@ -2,7 +2,8 @@
 
 import { User, Bell, Lock, MapPin, LogOut, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 
 const settingsNavigation = [
   { name: 'Hesap', href: '/ayarlar', icon: User },
@@ -17,6 +18,14 @@ export default function SettingsLayoutClient({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push('/giris');
+    router.refresh();
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -59,7 +68,7 @@ export default function SettingsLayoutClient({
                     </Link>
                   );
                 })}
-                <button className="flex items-center gap-3 px-4 py-4 border-l-4 border-l-transparent text-red-600 hover:bg-red-50 transition-colors text-left">
+                <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-4 border-l-4 border-l-transparent text-red-600 hover:bg-red-50 transition-colors text-left">
                   <LogOut className="w-5 h-5" />
                   <span className="font-medium">Çıkış Yap</span>
                 </button>

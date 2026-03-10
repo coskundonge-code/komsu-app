@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 import {
   Menu,
   X,
@@ -50,6 +51,14 @@ const ADMIN_MENU = [
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push('/giris');
+    router.refresh();
+  };
 
   return (
     <div className="flex h-screen bg-[#f0f2f5]">
@@ -129,6 +138,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             {sidebarOpen && <span className="text-sm font-medium">Ayarlar</span>}
           </Link>
           <button
+            onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-3 text-[#d1fae5] hover:bg-red-700 rounded-lg transition-colors"
             title={!sidebarOpen ? 'Çıkış' : ''}
           >

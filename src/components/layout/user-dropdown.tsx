@@ -2,7 +2,9 @@
 
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { User, Store, Heart, Settings, HelpCircle, LogOut } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 interface UserDropdownProps {
   isOpen: boolean
@@ -10,7 +12,15 @@ interface UserDropdownProps {
 }
 
 export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
+  const router = useRouter()
   const dropdownRef = useRef<HTMLDivElement>(null)
+
+  const handleLogout = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/giris')
+    router.refresh()
+  }
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -107,6 +117,7 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
 
         {/* Çıkış Yap */}
         <button
+          onClick={handleLogout}
           className="w-full flex items-center gap-3 px-4 py-2.5 text-red-600 hover:bg-[#f0f2f5] transition-colors"
         >
           <LogOut className="w-4 h-4 flex-shrink-0" />

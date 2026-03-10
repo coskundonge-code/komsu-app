@@ -2,12 +2,14 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import {
   X, Home, Compass, ShoppingBag, Calendar, Users, Building2,
   MessageCircle, Bell, Heart, Settings, User, LogOut
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { createClient } from '@/lib/supabase/client'
+import { getAvatarUrl } from '@/lib/demo-images'
 
 interface MobileDrawerProps {
   isOpen: boolean
@@ -18,7 +20,7 @@ interface MobileDrawerProps {
 const mockUser = {
   name: 'Ahmet Yılmaz',
   neighborhood: 'Kadıköy, İstanbul',
-  avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop',
+  avatar: getAvatarUrl('Ahmet Yılmaz', 0),
 }
 
 // Primary navigation items
@@ -36,12 +38,20 @@ const primaryNavItems = [
 
 // Secondary navigation items
 const secondaryNavItems = [
-  { icon: User, label: 'Profil', href: '/profil' },
+  { icon: User, label: 'Profil', href: '/profil/me' },
   { icon: Settings, label: 'Ayarlar', href: '/ayarlar' },
 ]
 
 export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
   const pathname = usePathname()
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/giris')
+    router.refresh()
+  }
 
   // Check if route is active
   const isActive = (href: string) => {
@@ -83,7 +93,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
         {/* User Profile Section */}
         <div className="px-4 py-5 border-b border-[#e0e0e0]">
           <Link
-            href="/profil"
+            href="/profil/me"
             onClick={onClose}
             className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#f0f2f5] transition-colors"
           >
@@ -170,7 +180,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
         {/* Logout Button */}
         <div className="mt-auto pt-4 px-2 pb-6 border-t border-[#e0e0e0]">
           <button
-            onClick={onClose}
+            onClick={handleLogout}
             className={cn(
               'flex items-center gap-3 w-full px-3 py-2.5 rounded-lg transition-all duration-200',
               'text-[15px] font-medium text-red-600 hover:bg-red-50'

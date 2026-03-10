@@ -25,6 +25,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
+import { AddressVerificationStatus } from '@/components/verification/address-verification-status';
 
 interface ProfileData {
   name: string;
@@ -320,6 +321,11 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
               <div className="border-t border-[#e0e0e0] pt-4">
                 <p className="text-[#404040] text-sm leading-relaxed">{mockProfile.bio}</p>
               </div>
+            </div>
+
+            {/* Address Verification Status */}
+            <div className="mb-6">
+              <AddressVerificationStatus status="verified" />
             </div>
 
             {/* Stats Row */}

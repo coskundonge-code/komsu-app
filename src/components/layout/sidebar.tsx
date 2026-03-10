@@ -9,6 +9,7 @@ import {
   ChevronRight, X, UserPlus, PlusCircle
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { getAvatarUrl } from '@/lib/demo-images'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -31,7 +32,7 @@ const interactiveItems = [
 
 // Secondary navigation items
 const secondaryNavItems = [
-  { icon: User, label: 'Profilim', href: '/profil' },
+  { icon: User, label: 'Profilim', href: '/profil/me' },
   { icon: UserPlus, label: 'Komşularını Davet Et', href: '/davet' },
   { icon: PlusCircle, label: 'İşletme Sayfası Ekle', href: '/isletme-ekle' },
   { icon: Settings, label: 'Ayarlar', href: '/ayarlar' },
@@ -42,7 +43,7 @@ const secondaryNavItems = [
 const mockUser = {
   name: 'Ahmet Yılmaz',
   neighborhood: 'Kadıköy, İstanbul',
-  avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop',
+  avatar: getAvatarUrl('Ahmet Yılmaz', 0),
   unreadMessages: 3,
   unreadNotifications: 5,
 }

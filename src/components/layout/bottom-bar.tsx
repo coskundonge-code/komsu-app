@@ -17,7 +17,7 @@ export function BottomBar() {
     { icon: Home, label: 'Ana Sayfa', href: '/' },
     { icon: Compass, label: 'Keşfet', href: '/kesfet' },
     { icon: MessageCircle, label: 'Mesajlar', href: '/mesajlar' },
-    { icon: User, label: 'Profil', href: '/profil' },
+    { icon: User, label: 'Profil', href: '/profil/me' },
   ]
 
   const isActive = (href: string): boolean => {

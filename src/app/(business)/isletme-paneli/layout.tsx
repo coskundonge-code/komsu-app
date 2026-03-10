@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 import {
   Menu,
   X,
@@ -32,6 +33,14 @@ const BUSINESS_MENU = [
 export default function BusinessLayout({ children }: BusinessLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push('/giris');
+    router.refresh();
+  };
 
   return (
     <div className="flex h-screen bg-[#f0f2f5]">
@@ -108,9 +117,7 @@ export default function BusinessLayout({ children }: BusinessLayoutProps) {
             {sidebarOpen && <span className="font-medium text-sm">Ana Sayfaya Dön</span>}
           </Link>
           <button
-            onClick={() => {
-              /* Logout handler */
-            }}
+            onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-3 text-[#404040] hover:bg-red-50 hover:text-red-600 rounded-lg transition-all duration-200"
             title={!sidebarOpen ? 'Çıkış Yap' : ''}
           >
