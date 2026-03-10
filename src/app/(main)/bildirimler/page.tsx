@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
 
 type NotificationType = "like" | "comment" | "mention" | "event" | "marketplace" | "alert";
 
@@ -40,7 +41,7 @@ const mockNotifications: Notification[] = [
     action: "Mahalle Temizlik Günü gönderinizi beğendi",
     timestamp: "2 dakika",
     read: false,
-    avatar: "https://picsum.photos/96/96?random=51",
+    avatar: getFeedImageUrl(51, 96, 96),
     href: "/post/1",
   },
   {
@@ -51,7 +52,7 @@ const mockNotifications: Notification[] = [
     action: "Yeni açılan kafe gönderinize yorum yaptı: Harika yer!",
     timestamp: "5 dakika",
     read: false,
-    avatar: "https://picsum.photos/96/96?random=52",
+    avatar: getFeedImageUrl(52, 96, 96),
     href: "/post/2",
   },
   {
@@ -62,7 +63,7 @@ const mockNotifications: Notification[] = [
     action: "Sizi bir gönderide bahsetti: Komşu buluşmaları hakkında",
     timestamp: "12 dakika",
     read: false,
-    avatar: "https://picsum.photos/96/96?random=54",
+    avatar: getFeedImageUrl(54, 96, 96),
     href: "/post/3",
   },
   {
@@ -73,7 +74,7 @@ const mockNotifications: Notification[] = [
     action: "Komşu Kahvaltısı etkinliğine katılımınızı bekliyoruz",
     timestamp: "1 saat",
     read: false,
-    avatar: "https://picsum.photos/96/96?random=55",
+    avatar: getFeedImageUrl(55, 96, 96),
     href: "/etkinlikler/1",
   },
   {
@@ -84,7 +85,7 @@ const mockNotifications: Notification[] = [
     action: "Bahçe ekim zamanı gönderinizi beğendi",
     timestamp: "3 saat",
     read: false,
-    avatar: "https://picsum.photos/96/96?random=53",
+    avatar: getFeedImageUrl(53, 96, 96),
     href: "/post/5",
   },
   {
@@ -95,7 +96,7 @@ const mockNotifications: Notification[] = [
     action: "Yardım talepleri gönderinize yorum yaptı: Bana da lazım",
     timestamp: "5 saat",
     read: false,
-    avatar: "https://picsum.photos/96/96?random=58",
+    avatar: getFeedImageUrl(58, 96, 96),
     href: "/post/4",
   },
   {
@@ -106,7 +107,7 @@ const mockNotifications: Notification[] = [
     action: "Satış için koyduğunuz bisikleti satın almak istiyor",
     timestamp: "6 saat",
     read: false,
-    avatar: "https://picsum.photos/96/96?random=59",
+    avatar: getFeedImageUrl(59, 96, 96),
     href: "/market/1",
   },
   {
@@ -117,7 +118,7 @@ const mockNotifications: Notification[] = [
     action: "Mahallede yeni güvenlik bildirimi: Caddede bakım çalışması başlıyor",
     timestamp: "8 saat",
     read: false,
-    avatar: "https://picsum.photos/96/96?random=60",
+    avatar: getFeedImageUrl(60, 96, 96),
     href: "/bildirimler",
   },
   {
@@ -128,7 +129,7 @@ const mockNotifications: Notification[] = [
     action: "Komşu etkinlikleri gönderinizi beğendi",
     timestamp: "1 gün",
     read: true,
-    avatar: "https://picsum.photos/96/96?random=57",
+    avatar: getFeedImageUrl(57, 96, 96),
     href: "/post/8",
   },
   {
@@ -139,7 +140,7 @@ const mockNotifications: Notification[] = [
     action: "Sizi bir yorumda bahsetti: Bahçeyle ilgili ipuçları",
     timestamp: "1 gün",
     read: true,
-    avatar: "https://picsum.photos/96/96?random=56",
+    avatar: getFeedImageUrl(56, 96, 96),
     href: "/post/9",
   },
   {
@@ -150,7 +151,7 @@ const mockNotifications: Notification[] = [
     action: "Futsal turnuvası etkinliği - Cumartesi saat 15:00",
     timestamp: "2 gün",
     read: true,
-    avatar: "https://picsum.photos/96/96?random=63",
+    avatar: getFeedImageUrl(63, 96, 96),
     href: "/etkinlikler/2",
   },
   {
@@ -161,7 +162,7 @@ const mockNotifications: Notification[] = [
     action: "Komşu Kahvaltısı etkinliğinin gönderiyle ilgili yorum yaptı",
     timestamp: "2 gün",
     read: true,
-    avatar: "https://picsum.photos/96/96?random=61",
+    avatar: getFeedImageUrl(61, 96, 96),
     href: "/post/10",
   },
   {
@@ -172,7 +173,7 @@ const mockNotifications: Notification[] = [
     action: "Bulduğunuz ürün benzerine sahip - ilgi gösterebilir",
     timestamp: "3 gün",
     read: true,
-    avatar: "https://picsum.photos/96/96?random=64",
+    avatar: getFeedImageUrl(64, 96, 96),
     href: "/market/2",
   },
   {
@@ -183,7 +184,7 @@ const mockNotifications: Notification[] = [
     action: "Haftalık mahalle özeti: 12 yeni gönderi, 45 yorumlar",
     timestamp: "4 gün",
     read: true,
-    avatar: "https://picsum.photos/96/96?random=65",
+    avatar: getFeedImageUrl(65, 96, 96),
     href: "/bildirimler",
   },
   {
@@ -194,7 +195,7 @@ const mockNotifications: Notification[] = [
     action: "Yerel restaurant tavsiye gönderinizi beğendi",
     timestamp: "1 hafta",
     read: true,
-    avatar: "https://picsum.photos/96/96?random=66",
+    avatar: getFeedImageUrl(66, 96, 96),
     href: "/post/11",
   },
   {
@@ -205,7 +206,7 @@ const mockNotifications: Notification[] = [
     action: "Sizi bir etkinlik paylaşımında bahsetti: Komşu pikniği",
     timestamp: "1 hafta",
     read: true,
-    avatar: "https://picsum.photos/96/96?random=62",
+    avatar: getFeedImageUrl(62, 96, 96),
     href: "/post/12",
   },
 ];

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
 import {
   User,
   Mail,
@@ -25,7 +26,7 @@ const mockUser = {
   name: "Ayşe Yılmaz",
   email: "ayse.yilmaz@example.com",
   phone: "+90 555 123 4567",
-  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=1",
+  avatar: getAvatarUrl('1', 0),
   bio: "Mahalle temsilcisi ve sosyal aktiviteler koordinatörü.",
   neighborhood: "Güngören, İstanbul",
 };

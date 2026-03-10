@@ -7,6 +7,7 @@ import { WeatherWidget } from '@/components/widgets/weather-widget'
 import { TrendingWidget } from '@/components/widgets/trending-widget'
 import { UpcomingEventsWidget } from '@/components/widgets/upcoming-events-widget'
 import { NeighborhoodStatsWidget } from '@/components/widgets/neighborhood-stats-widget'
+import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
 
 export function RightSidebar() {
   return (
@@ -71,7 +72,7 @@ export function RightSidebar() {
       <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-md transition-shadow">
         <div className="relative h-32 bg-gradient-to-br from-[#00833e] to-[#006b32] overflow-hidden">
           <Image
-            src="https://picsum.photos/300/128?random=1"
+            src={getFeedImageUrl(1, 300, 128)}
             alt="Moda Kafe & Bistro"
             fill
             unoptimized

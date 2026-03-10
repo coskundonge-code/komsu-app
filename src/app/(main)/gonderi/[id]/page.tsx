@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 import {
   ChevronLeft,
   ChevronRight,
@@ -80,7 +81,7 @@ const mockPostsDB: Record<string, MockPost> = {
     author: {
       id: 'user1',
       name: 'Seda Kaya',
-      avatar: 'https://picsum.photos/200/200?random=100',
+      avatar: getFeedImageUrl(100, 200, 200),
       neighborhood: 'Şişli',
     },
     createdAt: '2 saat önce',
@@ -88,8 +89,8 @@ const mockPostsDB: Record<string, MockPost> = {
 
 Eğer siz de şüpheli bir aktivite gözlemlediyseniz, lütfen paylaşın. Birlikte mahallelerimizi daha güvenli hale getirebiliriz.`,
     images: [
-      'https://picsum.photos/800/600?random=101',
-      'https://picsum.photos/800/600?random=102',
+      getFeedImageUrl(101, 800, 600),
+      getFeedImageUrl(102, 800, 600),
     ],
     reactions: {
       beğen: 234,
@@ -105,7 +106,7 @@ Eğer siz de şüpheli bir aktivite gözlemlediyseniz, lütfen paylaşın. Birli
     author: {
       id: 'user2',
       name: 'Ahmet Yıldız',
-      avatar: 'https://picsum.photos/200/200?random=103',
+      avatar: getFeedImageUrl(103, 200, 200),
       neighborhood: 'Şişli',
     },
     createdAt: '5 saat önce',
@@ -124,9 +125,9 @@ Bağlantı: 0553-XXX-XXXX
 
 Katılacaksanız lütfen bu gönderi altında yorum yazın!`,
     images: [
-      'https://picsum.photos/800/600?random=104',
-      'https://picsum.photos/800/600?random=105',
-      'https://picsum.photos/800/600?random=106',
+      getFeedImageUrl(104, 800, 600),
+      getFeedImageUrl(105, 800, 600),
+      getFeedImageUrl(106, 800, 600),
     ],
     reactions: {
       beğen: 156,
@@ -145,7 +146,7 @@ const mockComments: Record<string, MockComment[]> = {
       author: {
         id: 'user3',
         name: 'Müge Özdemir',
-        avatar: 'https://picsum.photos/200/200?random=107',
+        avatar: getFeedImageUrl(107, 200, 200),
         neighborhood: 'Şişli',
       },
       createdAt: '1 saat önce',
@@ -157,7 +158,7 @@ const mockComments: Record<string, MockComment[]> = {
           author: {
             id: 'user1',
             name: 'Seda Kaya',
-            avatar: 'https://picsum.photos/200/200?random=100',
+            avatar: getFeedImageUrl(100, 200, 200),
             neighborhood: 'Şişli',
           },
           createdAt: '45 dakika önce',
@@ -172,7 +173,7 @@ const mockComments: Record<string, MockComment[]> = {
       author: {
         id: 'user4',
         name: 'İbrahim Demir',
-        avatar: 'https://picsum.photos/200/200?random=108',
+        avatar: getFeedImageUrl(108, 200, 200),
         neighborhood: 'Şişli',
       },
       createdAt: '1.5 saat önce',
@@ -185,7 +186,7 @@ const mockComments: Record<string, MockComment[]> = {
       author: {
         id: 'user5',
         name: 'Fatma Yildiz',
-        avatar: 'https://picsum.photos/200/200?random=109',
+        avatar: getFeedImageUrl(109, 200, 200),
         neighborhood: 'Şişli',
       },
       createdAt: '2 saat önce',
@@ -197,7 +198,7 @@ const mockComments: Record<string, MockComment[]> = {
           author: {
             id: 'user6',
             name: 'Murat Gül',
-            avatar: 'https://picsum.photos/200/200?random=110',
+            avatar: getFeedImageUrl(110, 200, 200),
             neighborhood: 'Şişli',
           },
           createdAt: '1.5 saat önce',
@@ -210,7 +211,7 @@ const mockComments: Record<string, MockComment[]> = {
           author: {
             id: 'user5',
             name: 'Fatma Yildiz',
-            avatar: 'https://picsum.photos/200/200?random=109',
+            avatar: getFeedImageUrl(109, 200, 200),
             neighborhood: 'Şişli',
           },
           createdAt: '1 saat önce',
@@ -225,7 +226,7 @@ const mockComments: Record<string, MockComment[]> = {
       author: {
         id: 'user7',
         name: 'Zeynep Aydın',
-        avatar: 'https://picsum.photos/200/200?random=111',
+        avatar: getFeedImageUrl(111, 200, 200),
         neighborhood: 'Şişli',
       },
       createdAt: '2.5 saat önce',
@@ -240,7 +241,7 @@ const mockComments: Record<string, MockComment[]> = {
       author: {
         id: 'user8',
         name: 'Gül Kaya',
-        avatar: 'https://picsum.photos/200/200?random=112',
+        avatar: getFeedImageUrl(112, 200, 200),
         neighborhood: 'Şişli',
       },
       createdAt: '3 saat önce',
@@ -252,7 +253,7 @@ const mockComments: Record<string, MockComment[]> = {
           author: {
             id: 'user2',
             name: 'Ahmet Yıldız',
-            avatar: 'https://picsum.photos/200/200?random=103',
+            avatar: getFeedImageUrl(103, 200, 200),
             neighborhood: 'Şişli',
           },
           createdAt: '2.5 saat önce',
@@ -267,7 +268,7 @@ const mockComments: Record<string, MockComment[]> = {
       author: {
         id: 'user9',
         name: 'Can Yüksek',
-        avatar: 'https://picsum.photos/200/200?random=113',
+        avatar: getFeedImageUrl(113, 200, 200),
         neighborhood: 'Şişli',
       },
       createdAt: '4 saat önce',
@@ -280,7 +281,7 @@ const mockComments: Record<string, MockComment[]> = {
       author: {
         id: 'user10',
         name: 'Aslı Türk',
-        avatar: 'https://picsum.photos/200/200?random=114',
+        avatar: getFeedImageUrl(114, 200, 200),
         neighborhood: 'Şişli',
       },
       createdAt: '4.5 saat önce',
@@ -377,7 +378,7 @@ export default function PostDetailPage({
       type: 'guvenlik' as const,
       title: 'Caddede Kuyu Açılmış, Dikkat!',
       author: 'Levent Kara',
-      image: 'https://picsum.photos/300/300?random=115',
+      image: getFeedImageUrl(115, 300, 300),
       timeAgo: '6 saat önce',
     },
     {
@@ -385,7 +386,7 @@ export default function PostDetailPage({
       type: 'satiliki' as const,
       title: 'Masif Ahşap Masa - 1500₺',
       author: 'Hasan Demir',
-      image: 'https://picsum.photos/300/300?random=116',
+      image: getFeedImageUrl(116, 300, 300),
       timeAgo: '8 saat önce',
     },
     {
@@ -393,7 +394,7 @@ export default function PostDetailPage({
       type: 'oneri' as const,
       title: 'Mahallede Kütüphane Açılması Önerisi',
       author: 'Nilüfer Aksoy',
-      image: 'https://picsum.photos/300/300?random=117',
+      image: getFeedImageUrl(117, 300, 300),
       timeAgo: '1 gün önce',
     },
   ];
@@ -630,7 +631,7 @@ export default function PostDetailPage({
                     <div className="mt-4 space-y-3">
                       <div className="flex gap-3">
                         <Image
-                          src="https://picsum.photos/200/200?random=200"
+                          src={getFeedImageUrl(200, 200, 200)}
                           alt="Your avatar"
                           width={40}
                           height={40}
@@ -727,7 +728,7 @@ export default function PostDetailPage({
                       {replyingTo === comment.id && (
                         <div className="ml-10 flex gap-3 mt-3">
                           <Image
-                            src="https://picsum.photos/200/200?random=200"
+                            src={getFeedImageUrl(200, 200, 200)}
                             alt="Your avatar"
                             width={32}
                             height={32}

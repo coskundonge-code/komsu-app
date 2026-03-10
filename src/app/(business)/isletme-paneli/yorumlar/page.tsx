@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Star, Send, ChevronDown, Filter, ArrowUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 
 const ratingFilters = [
   { id: 'all', label: 'Tümü', stars: null },
@@ -18,7 +19,7 @@ const mockReviews = [
   {
     id: '1',
     authorName: 'Ayşe Kaya',
-    avatar: 'https://picsum.photos/48/48?random=101',
+    avatar: getFeedImageUrl(101, 48, 48),
     rating: 5,
     date: '2026-03-09',
     text: 'Harika bir deneyim yaşadım! Personel çok ilgili ve nazik, yemekler lezzetli ve taze. Kesinlikle tekrar gelirim ve arkadaşlarıma tavsiye ederim.',
@@ -27,7 +28,7 @@ const mockReviews = [
   {
     id: '2',
     authorName: 'Mert Demir',
-    avatar: 'https://picsum.photos/48/48?random=102',
+    avatar: getFeedImageUrl(102, 48, 48),
     rating: 4,
     date: '2026-03-07',
     text: 'Genel olarak güzel bir yer. Ortam ve ambiyans çok hoş. Tek sıkıntısı menü biraz daha çeşitli olabilir ama yemek kalitesi iyiydi.',
@@ -36,7 +37,7 @@ const mockReviews = [
   {
     id: '3',
     authorName: 'Zeynep Şahin',
-    avatar: 'https://picsum.photos/48/48?random=103',
+    avatar: getFeedImageUrl(103, 48, 48),
     rating: 5,
     date: '2026-03-05',
     text: 'Muhteşem! Servis hızlı, yemekler damak tadına hitap ediyordu. Fiyatlar da oldukça uygun. Kesinlikle geleceğim.',
@@ -45,7 +46,7 @@ const mockReviews = [
   {
     id: '4',
     authorName: 'Fatma Yılmaz',
-    avatar: 'https://picsum.photos/48/48?random=104',
+    avatar: getFeedImageUrl(104, 48, 48),
     rating: 3,
     date: '2026-03-03',
     text: 'Ortalama bir deneyim. Yemek iyiydi ama bekleme süresi biraz uzundu. Personel ise çok ilgiliydi.',
@@ -54,7 +55,7 @@ const mockReviews = [
   {
     id: '5',
     authorName: 'Ahmet Çetin',
-    avatar: 'https://picsum.photos/48/48?random=105',
+    avatar: getFeedImageUrl(105, 48, 48),
     rating: 5,
     date: '2026-03-01',
     text: 'Birinci sınıf hizmet! Mekan çok güzel tasarlanmış, müzik seviyesi mükemmel, yemekler süper lezzetli. Sahibine teşekkürler!',
@@ -63,7 +64,7 @@ const mockReviews = [
   {
     id: '6',
     authorName: 'Seda Eren',
-    avatar: 'https://picsum.photos/48/48?random=106',
+    avatar: getFeedImageUrl(106, 48, 48),
     rating: 4,
     date: '2026-02-27',
     text: 'Güzel bir mekan, temizlik standartları yüksek. Biraz kalabalık olsa da keyifli bir zaman geçirdim.',
@@ -72,7 +73,7 @@ const mockReviews = [
   {
     id: '7',
     authorName: 'Emre Koç',
-    avatar: 'https://picsum.photos/48/48?random=107',
+    avatar: getFeedImageUrl(107, 48, 48),
     rating: 5,
     date: '2026-02-25',
     text: 'En son ziyaretimiz harika geçti. Yeni menüdeki tatlılar resmen mübarek! Özellikle baklava enfes.',
@@ -81,7 +82,7 @@ const mockReviews = [
   {
     id: '8',
     authorName: 'Nuri Polat',
-    avatar: 'https://picsum.photos/48/48?random=108',
+    avatar: getFeedImageUrl(108, 48, 48),
     rating: 2,
     date: '2026-02-23',
     text: 'Kahveler biraz nötr geldi bana. Ortam güzel ama yemek kalitesi beklenenden düşüktü. Fiyata göre biraz pahalı.',

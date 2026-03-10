@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 
 // Mock listings database - expanded with multiple variations
 const mockListingsDB: Record<string, any> = {
@@ -38,15 +39,15 @@ const mockListingsDB: Record<string, any> = {
     description:
       'Lenovo IdeaPad 5 15.6" Full HD IPS ekran, Intel Core i5-1135G7, 8GB DDR4 RAM, 512GB SSD. Çok az kullanılmıştır. Orijinal kutusu ve tüm aksesuarları mevcuttur. Garantisi 1 yıl kalmıştır. İyi bir laptop arayan kişiler için ideal. Sadece kişisel kullanım için alınmıştı.',
     images: [
-      'https://picsum.photos/800/600?random=1',
-      'https://picsum.photos/800/600?random=2',
-      'https://picsum.photos/800/600?random=3',
-      'https://picsum.photos/800/600?random=4',
+      getFeedImageUrl(1, 800, 600),
+      getFeedImageUrl(2, 800, 600),
+      getFeedImageUrl(3, 800, 600),
+      getFeedImageUrl(4, 800, 600),
     ],
     seller: {
       id: 'seller1',
       name: 'Mehmet Yılmaz',
-      avatar: 'https://picsum.photos/200/200?random=5',
+      avatar: getFeedImageUrl(5, 200, 200),
       rating: 4.8,
       reviewCount: 23,
       responseTime: '< 1 saat',
@@ -80,14 +81,14 @@ const mockListingsDB: Record<string, any> = {
     description:
       'IKEA Ektorp serisi 3 kişilik kanepe. Açık gri renk, harika durumda. Temiz, hiç hasarı yok. Çok konforlu oturuş. Kanepenin boyutları: Genişlik 242cm, Derinlik 88cm, Yükseklik 88cm. Kapı altından kolaylıkla geçebilir. Kılıfı çıkarılabilir ve yıkanabilir.',
     images: [
-      'https://picsum.photos/800/600?random=6',
-      'https://picsum.photos/800/600?random=7',
-      'https://picsum.photos/800/600?random=8',
+      getFeedImageUrl(6, 800, 600),
+      getFeedImageUrl(7, 800, 600),
+      getFeedImageUrl(8, 800, 600),
     ],
     seller: {
       id: 'seller2',
       name: 'Ayşe Kaya',
-      avatar: 'https://picsum.photos/200/200?random=9',
+      avatar: getFeedImageUrl(9, 200, 200),
       rating: 4.9,
       reviewCount: 18,
       responseTime: '< 30 dakika',
@@ -121,14 +122,14 @@ const mockListingsDB: Record<string, any> = {
     description:
       'PlayStation 5, orjinal kutusunda, hiç kullanılmamış, vinil sealiyle paketli. Satış belgesi ve 2 yılık garantisi mevcuttur. Çok nadir bulunur bu koşulda. Tüm kontroller yapılmıştır. Acil para ihtiyacı nedeniyle satılıyor. Elden teslim tercih edilir. Testini yüz yüze yapabilirsiniz.',
     images: [
-      'https://picsum.photos/800/600?random=10',
-      'https://picsum.photos/800/600?random=11',
-      'https://picsum.photos/800/600?random=12',
+      getFeedImageUrl(10, 800, 600),
+      getFeedImageUrl(11, 800, 600),
+      getFeedImageUrl(12, 800, 600),
     ],
     seller: {
       id: 'seller3',
       name: 'Mert Demir',
-      avatar: 'https://picsum.photos/200/200?random=13',
+      avatar: getFeedImageUrl(13, 200, 200),
       rating: 4.7,
       reviewCount: 12,
       responseTime: '< 2 saat',
@@ -189,7 +190,7 @@ export default function ListingDetailPage({
       title: 'Dell Inspiron 15 - Yeni Model',
       price: 7200,
       image:
-        'https://picsum.photos/500/500?random=14',
+        getFeedImageUrl(14, 500, 500),
       location: 'Şişli',
       timeAgo: '3 saat',
       isFree: false,
@@ -199,7 +200,7 @@ export default function ListingDetailPage({
       title: 'HP Pavilion - 13 inç Ultrabook',
       price: 6800,
       image:
-        'https://picsum.photos/500/500?random=15',
+        getFeedImageUrl(15, 500, 500),
       location: 'Taksim',
       timeAgo: '5 saat',
       isFree: false,
@@ -209,7 +210,7 @@ export default function ListingDetailPage({
       title: 'Asus VivoBook 15 - İi Fiyat',
       price: 5900,
       image:
-        'https://picsum.photos/500/500?random=16',
+        getFeedImageUrl(16, 500, 500),
       location: 'Beşiktaş',
       timeAgo: '6 saat',
       isFree: false,
@@ -219,7 +220,7 @@ export default function ListingDetailPage({
       title: 'MacBook Air M1 - 2023',
       price: 12500,
       image:
-        'https://picsum.photos/500/500?random=17',
+        getFeedImageUrl(17, 500, 500),
       location: 'Nişantaşı',
       timeAgo: '1 gün',
       isFree: false,

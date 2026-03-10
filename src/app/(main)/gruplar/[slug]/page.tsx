@@ -22,6 +22,7 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import { getAvatarUrl, getFeedImageUrl } from '@/lib/demo-images';
 
 interface Post {
   id: string;
@@ -48,8 +49,8 @@ const mockGroupDetail = {
   id: 'komsu-kahvaltilari',
   name: 'Kadıköy Spor Kulübü',
   slug: 'kadikoy-spor-kulubu',
-  coverImage: 'https://picsum.photos/1200/600?random=39',
-  icon: 'https://api.dicebear.com/7.x/avataaars/svg?seed=sportclub',
+  coverImage: getFeedImageUrl(39, 1200, 600),
+  icon: getAvatarUrl('Spor Kulübü', 0),
   category: 'Spor & Fitness',
   privacy: 'public',
   description: 'Kadıköy mahallesi sakinleri için futbol, voleybol, tenis ve genel fitness etkinlikleri.',
@@ -61,33 +62,33 @@ const mockGroupDetail = {
   isAdmin: true,
   isModerator: false,
   members: [
-    { id: '1', name: 'Mehmet Demirel', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1', role: 'Admin', joinedDate: new Date('2022-03-15') },
-    { id: '2', name: 'Ayşe Kılıç', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2', role: 'Moderatör', joinedDate: new Date('2022-04-20') },
-    { id: '3', name: 'Fatih Özdemir', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=3', role: 'Moderatör', joinedDate: new Date('2022-05-10') },
-    { id: '4', name: 'Zeynep Yavuz', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=4', role: 'Üye', joinedDate: new Date('2023-01-22') },
-    { id: '5', name: 'Hakan Şahin', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=5', role: 'Üye', joinedDate: new Date('2023-02-14') },
-    { id: '6', name: 'Meral Coşkun', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=6', role: 'Üye', joinedDate: new Date('2023-06-08') },
-    { id: '7', name: 'Emre Kardeş', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=7', role: 'Üye', joinedDate: new Date('2024-01-11') },
-    { id: '8', name: 'Serap Ersoy', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=8', role: 'Üye', joinedDate: new Date('2024-05-03') },
+    { id: '1', name: 'Mehmet Demirel', avatar: getAvatarUrl('Member1', 0), role: 'Admin', joinedDate: new Date('2022-03-15') },
+    { id: '2', name: 'Ayşe Kılıç', avatar: getAvatarUrl('Member2', 1), role: 'Moderatör', joinedDate: new Date('2022-04-20') },
+    { id: '3', name: 'Fatih Özdemir', avatar: getAvatarUrl('Member3', 2), role: 'Moderatör', joinedDate: new Date('2022-05-10') },
+    { id: '4', name: 'Zeynep Yavuz', avatar: getAvatarUrl('Member4', 3), role: 'Üye', joinedDate: new Date('2023-01-22') },
+    { id: '5', name: 'Hakan Şahin', avatar: getAvatarUrl('Member5', 4), role: 'Üye', joinedDate: new Date('2023-02-14') },
+    { id: '6', name: 'Meral Coşkun', avatar: getAvatarUrl('Member6', 5), role: 'Üye', joinedDate: new Date('2023-06-08') },
+    { id: '7', name: 'Emre Kardeş', avatar: getAvatarUrl('Member7', 6), role: 'Üye', joinedDate: new Date('2024-01-11') },
+    { id: '8', name: 'Serap Ersoy', avatar: getAvatarUrl('Member8', 7), role: 'Üye', joinedDate: new Date('2024-05-03') },
   ] as Member[],
   posts: [
     {
       id: '1',
       author: 'Fatih Özdemir',
       authorId: '3',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=3',
+      avatar: getAvatarUrl('Member3', 2),
       content: '⚽ Cumartesi 15:00 parkta futbol maçı var! Herkesi bekliyoruz. Forma veya sadece spor giyim yeterli. Katılmak için cevaplayın 👇',
       timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000),
       likes: 23,
       comments: 8,
       liked: false,
-      image: 'https://picsum.photos/400/300?random=40',
+      image: getFeedImageUrl(40, 400, 300),
     },
     {
       id: '2',
       author: 'Ayşe Kılıç',
       authorId: '2',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2',
+      avatar: getAvatarUrl('Member2', 1),
       content: 'Yeni yüzme antrenmanları başlıyor! Pazartesi ve perşembe akşamları 18:30-19:30 arasında. Herkesin seviyesine uygun. İlgilenenler bize yazabilir.',
       timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000),
       likes: 31,
@@ -99,7 +100,7 @@ const mockGroupDetail = {
       id: '3',
       author: 'Mehmet Demirel',
       authorId: '1',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
+      avatar: getAvatarUrl('Member1', 0),
       content: '🏆 Geçtiğimiz cumartesinin futbol turnuvasında harika bir gün geçirdik! Tüm katılımcılara teşekkür ederim. Resimler albümde. Gelecek ay yine yapacağız!',
       timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
       likes: 52,
@@ -111,7 +112,7 @@ const mockGroupDetail = {
       id: '4',
       author: 'Zeynep Yavuz',
       authorId: '4',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=4',
+      avatar: getAvatarUrl('Member4', 3),
       content: 'Yoga sınıfı için aydınlık bir mekan arıyoruz. Pazardaki etkinlik çok sıcak oldu. Bir çatı bahçesi veya kapalı mekan bilen var mı?',
       timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
       likes: 14,
@@ -123,7 +124,7 @@ const mockGroupDetail = {
       id: '5',
       author: 'Hakan Şahin',
       authorId: '5',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=5',
+      avatar: getAvatarUrl('Member5', 4),
       content: 'Tenis turnuvası için kaydolmak isteyen varsa lütfen haber versin. 20 kişi sayımız tamamlanırsa başlayabiliriz. Hepinizi bekliyoruz!',
       timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
       likes: 18,
@@ -162,7 +163,7 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
       id: String(posts.length + 1),
       author: 'Siz',
       authorId: 'current-user',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=99',
+      avatar: getAvatarUrl('Siz', 0),
       content: newPostContent,
       timestamp: new Date(),
       likes: 0,
@@ -382,7 +383,7 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
                     <form onSubmit={handlePostSubmit} className="space-y-4">
                       <div className="flex gap-4">
                         <Image
-                          src="https://api.dicebear.com/7.x/avataaars/svg?seed=99"
+                          src={getAvatarUrl('Siz', 0)}
                           alt="Sizin Avatarınız"
                           width={40}
                           height={40}
@@ -593,7 +594,7 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                     <div key={i} className="relative h-32 bg-[#e0e0e0] rounded-lg overflow-hidden hover:opacity-80 transition-opacity cursor-pointer">
                       <Image
-                        src={`https://picsum.photos/200/200?random=${i + 100}`}
+                        src={getFeedImageUrl(i + 100, 200, 200)}
                         alt={`Medya ${i}`}
                         fill
                         className="object-cover"
@@ -612,7 +613,7 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
                   <div className="flex gap-4 p-4 sm:p-6">
                     <div className="relative h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0 rounded-lg overflow-hidden bg-[#e0e0e0]">
                       <Image
-                        src="https://picsum.photos/300/200?random=50"
+                        src={getFeedImageUrl(50, 300, 200)}
                         alt="Etkinlik"
                         fill
                         className="object-cover"
@@ -643,7 +644,7 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
                   <div className="flex gap-4 p-4 sm:p-6">
                     <div className="relative h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0 rounded-lg overflow-hidden bg-[#e0e0e0]">
                       <Image
-                        src="https://picsum.photos/300/200?random=51"
+                        src={getFeedImageUrl(51, 300, 200)}
                         alt="Etkinlik"
                         fill
                         className="object-cover"
@@ -674,7 +675,7 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
                   <div className="flex gap-4 p-4 sm:p-6">
                     <div className="relative h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0 rounded-lg overflow-hidden bg-[#e0e0e0]">
                       <Image
-                        src="https://picsum.photos/300/200?random=52"
+                        src={getFeedImageUrl(52, 300, 200)}
                         alt="Etkinlik"
                         fill
                         className="object-cover"

@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 import {
   ArrowLeft,
   Calendar,
@@ -26,12 +27,12 @@ const blogArticles: Record<string, any> = {
     title: 'Mahallede Güvenliği Nasıl Artırabiliriz?',
     excerpt:
       'Komşuluk bağlantılarını güçlendirerek mahallede güvenlik hissi oluşturmanın pratik yollarını öğrenin.',
-    heroImage: 'https://picsum.photos/1200/600?random=1',
+    heroImage: getFeedImageUrl(1, 1200, 600),
     category: 'Güvenlik İpuçları',
     author: {
       name: 'Ayşe Kaya',
       role: 'Güvenlik Danışmanı',
-      avatar: 'https://picsum.photos/100/100?random=101',
+      avatar: getFeedImageUrl(101, 100, 100),
       bio: 'Ayşe Kaya, 15 yıldan fazla mahalle güvenliği ve topluluk geliştirme alanında çalışmıştır. KomşuApp güvenlik inisiyatifinin kurucu üyesidir.',
     },
     publishDate: '2026-03-08',
@@ -137,12 +138,12 @@ const blogArticles: Record<string, any> = {
     title: 'KomşuApp Topluluk Yönetimi: En İyi Uygulamalar',
     excerpt:
       'Mahalle gruplarını etkili bir şekilde yönetmek ve aktif bir topluluk oluşturmak için ipuçları.',
-    heroImage: 'https://picsum.photos/1200/600?random=2',
+    heroImage: getFeedImageUrl(2, 1200, 600),
     category: 'Topluluk',
     author: {
       name: 'Mehmet Demir',
       role: 'Topluluk Yöneticisi',
-      avatar: 'https://picsum.photos/100/100?random=102',
+      avatar: getFeedImageUrl(102, 100, 100),
       bio: 'Mehmet Demir, 8 yıldan beri online topluluk yönetimi konusunda uzmanlaşmıştır. Türkiye\'nin en aktif KomşuApp topluluk yöneticilerinden biridir.',
     },
     publishDate: '2026-03-06',
@@ -204,12 +205,12 @@ const blogArticles: Record<string, any> = {
     title: 'Yerel İşletmecilerin Başarı Hikayeleri',
     excerpt:
       'Cihangir Mahallesinde işletmesini KomşuApp sayesinde nasıl büyüttüğünü öğrenin.',
-    heroImage: 'https://picsum.photos/1200/600?random=3',
+    heroImage: getFeedImageUrl(3, 1200, 600),
     category: 'İşletme Hikayeleri',
     author: {
       name: 'Zeynep Aydın',
       role: 'İşletme Yazarı',
-      avatar: 'https://picsum.photos/100/100?random=103',
+      avatar: getFeedImageUrl(103, 100, 100),
       bio: 'Zeynep Aydın, yerel işletmelerin dijital dönüşümü hakkında yazıyor. Küçük işletmelerin başarısı onun tutkusudur.',
     },
     publishDate: '2026-03-04',
@@ -262,7 +263,7 @@ const allArticles = [
     slug: 'mahallede-guvenlik-nasil-artirabiliriz',
     title: 'Mahallede Güvenliği Nasıl Artırabiliriz?',
     excerpt: 'Komşuluk bağlantılarını güçlendirerek mahallede güvenlik hissi oluşturmanın pratik yollarını öğrenin.',
-    image: 'https://picsum.photos/400/300?random=1',
+    image: getFeedImageUrl(1, 400, 300),
     category: 'Güvenlik İpuçları',
     readTime: '5 dk',
   },
@@ -271,7 +272,7 @@ const allArticles = [
     slug: 'komsuapp-topluluk-yonetimi',
     title: 'KomşuApp Topluluk Yönetimi: En İyi Uygulamalar',
     excerpt: 'Mahalle gruplarını etkili bir şekilde yönetmek ve aktif bir topluluk oluşturmak için ipuçları.',
-    image: 'https://picsum.photos/400/300?random=2',
+    image: getFeedImageUrl(2, 400, 300),
     category: 'Topluluk',
     readTime: '7 dk',
   },
@@ -280,7 +281,7 @@ const allArticles = [
     slug: 'yerel-isletmecilerin-basari-hikayeleri',
     title: 'Yerel İşletmecilerin Başarı Hikayeleri',
     excerpt: 'Cihangir Mahallesinde işletmesini KomşuApp sayesinde nasıl büyüttüğünü öğrenin.',
-    image: 'https://picsum.photos/400/300?random=3',
+    image: getFeedImageUrl(3, 400, 300),
     category: 'İşletme Hikayeleri',
     readTime: '6 dk',
   },
@@ -289,7 +290,7 @@ const allArticles = [
     slug: 'yeni-ozellik-komsu-yardim-agi',
     title: 'Yeni Özellik: Komşu Yardım Ağı',
     excerpt: 'Mahalle sakinlerinin birbirlerine yardım etmesi için tasarlanmış yeni özelliği keşfet.',
-    image: 'https://picsum.photos/400/300?random=4',
+    image: getFeedImageUrl(4, 400, 300),
     category: 'Uygulama Güncellemeleri',
     readTime: '4 dk',
   },
@@ -298,7 +299,7 @@ const allArticles = [
     slug: 'beyoglu-mahallesi-guvenli-topluluk',
     title: 'Beyoğlu Mahallesi: Güvenli Bir Topluluk Hikayesi',
     excerpt: 'Nasıl bir mahalle "en güvenli mahalle" unvanını kazandığını gördük.',
-    image: 'https://picsum.photos/400/300?random=5',
+    image: getFeedImageUrl(5, 400, 300),
     category: 'Mahalle Haberleri',
     readTime: '8 dk',
   },
@@ -307,7 +308,7 @@ const allArticles = [
     slug: 'cevrimici-guvenlik-ipuclari',
     title: 'Çevrimiçi Güvenlik: Her Mahalle Sakininin Bilmesi Gerekenler',
     excerpt: 'Platformda güvenli kalmanın ve mahallenizdeki mevcut tehditleri tanımanın yolları.',
-    image: 'https://picsum.photos/400/300?random=6',
+    image: getFeedImageUrl(6, 400, 300),
     category: 'Güvenlik İpuçları',
     readTime: '6 dk',
   },
@@ -316,7 +317,7 @@ const allArticles = [
     slug: 'topluluk-etkinligi-mahalle-piknigi',
     title: 'Topluluk Etkinliği: İlk Mahalle Pikniği Başarılı Oldu',
     excerpt: 'Beşiktaş Mahallesi sakinleri ilk kez buluştu ve harika vakit geçirdi.',
-    image: 'https://picsum.photos/400/300?random=7',
+    image: getFeedImageUrl(7, 400, 300),
     category: 'Mahalle Haberleri',
     readTime: '5 dk',
   },
@@ -325,7 +326,7 @@ const allArticles = [
     slug: 'komsuapp-mobil-hizli-kullanma-ipuclari',
     title: 'KomşuApp Mobilini Hızlı Kullanma İpuçları',
     excerpt: 'Mobil uygulamayı en etkili şekilde kullanmak için hızlı rehberimiz.',
-    image: 'https://picsum.photos/400/300?random=8',
+    image: getFeedImageUrl(8, 400, 300),
     category: 'Uygulama Güncellemeleri',
     readTime: '3 dk',
   },
@@ -335,7 +336,7 @@ const allArticles = [
     title: 'Mahallede Atıl Alanları Topluluk Bahçelerine Dönüştürme',
     excerpt:
       'Yeşil alanlar ve topluluk bahçeleri oluşturarak mahallenizi nasıl güzelleştirebilirsiniz?',
-    image: 'https://picsum.photos/400/300?random=9',
+    image: getFeedImageUrl(9, 400, 300),
     category: 'Topluluk',
     readTime: '7 dk',
   },
@@ -742,7 +743,7 @@ export default function BlogDetailPage({
               <div className="pb-6 border-b border-[#e0e0e0]">
                 <div className="flex gap-4 mb-3">
                   <Image
-                    src="https://picsum.photos/40/40?random=201"
+                    src={getFeedImageUrl(201, 40, 40)}
                     alt="Yorum Yazarı"
                     width={40}
                     height={40}
@@ -761,7 +762,7 @@ export default function BlogDetailPage({
               <div className="pb-6 border-b border-[#e0e0e0]">
                 <div className="flex gap-4 mb-3">
                   <Image
-                    src="https://picsum.photos/40/40?random=202"
+                    src={getFeedImageUrl(202, 40, 40)}
                     alt="Yorum Yazarı"
                     width={40}
                     height={40}

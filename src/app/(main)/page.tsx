@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { PostFormModal } from '@/components/feed/post-form-modal';
 import StoriesBar from '@/components/feed/stories-bar';
+import { getFeedImageUrl } from '@/lib/demo-images';
 
 // Category definitions
 const POST_CATEGORIES = [
@@ -57,7 +58,7 @@ const mockPosts = [
     category: 'guvenlik',
     title: "Mahallede Şüpheli Faaliyet - Dikkat",
     body: "Değerli mahalleli komşularımız, son iki haftada mahalle çeperinde bazı şüpheli hareketliler yaşanmıştır. Lütfen çevre dikkat edin ve yetkililerine haber veriniz. Acil durumda 155 arayınız. Mahalle güvenliği hepimizin sorumluluğudur.",
-    image: 'https://picsum.photos/800/400?random=100',
+    image: getFeedImageUrl(100),
     reactions: 156,
     comments: 42,
     feed: 'foryou',
@@ -71,7 +72,7 @@ const mockPosts = [
     category: 'etkinlikler',
     title: "Mahalle Pikniği Bu Akşam!",
     body: "Merhaba komşular, bu akşam saat 20:00'de mahalle parkında piknik yapıyoruz. Katılmak isteyen herkesi bekliyoruz! Yanınıza battaniye ve atıştırmalık getirmeniz yeterli. Çocuklar için oyunlar da planlıyoruz.",
-    image: 'https://picsum.photos/800/400?random=58',
+    image: getFeedImageUrl(58),
     reactions: 24,
     comments: 8,
     feed: 'foryou',
@@ -85,7 +86,7 @@ const mockPosts = [
     category: 'kayipbuluntu',
     title: "Kayıp Kedi - Turuncu Tekir",
     body: "Pazartesi günü turuncu renkli kedim mahallede kayboldu. Adı Mişmiş, çok uysal ve evcil. Görürseniz lütfen haber verin. 0555 123 4567 arayabilirsiniz. Ödül vardır.",
-    image: 'https://picsum.photos/800/400?random=59',
+    image: getFeedImageUrl(59),
     reactions: 42,
     comments: 15,
     feed: 'recent',
@@ -112,7 +113,7 @@ const mockPosts = [
     category: 'guvenlik',
     title: "Mahallede Şüpheli Araç",
     body: "Dün gece saat 23:00 civarında Moda Caddesi üzerinde uzun süre park halinde bekleyen koyu renkli bir araç dikkatimi çekti. Plakayı not edemedim ama dikkatli olalım komşular. Benzer durum görenler haber versin.",
-    image: 'https://picsum.photos/800/400?random=61',
+    image: getFeedImageUrl(61),
     reactions: 67,
     comments: 23,
     feed: 'trending',
@@ -126,7 +127,7 @@ const mockPosts = [
     category: 'oneriler',
     title: "Çengelköy Sahilinde Yeni Yürüyüş Yolu",
     body: 'Belediye sahil boyunca harika bir yürüyüş yolu yaptı. Akşam saatlerinde çok güzel oluyor, herkese tavsiye ederim. Doğa ve deniz keyfi için ideal!',
-    image: 'https://picsum.photos/800/400?random=62',
+    image: getFeedImageUrl(62),
     reactions: 31,
     comments: 9,
     feed: 'nearby',
@@ -140,7 +141,7 @@ const mockPosts = [
     category: 'oneriler',
     title: "Organik Pazarı - Taze Sebzeler",
     body: 'Levent\'teki yeni organik pazarı denediniz mi? Her cumartesi kuruluyor, sebzeler çok taze ve uygun fiyatlı. Yerel üreticilerden doğrudan alışveriş yapabiliyoruz.',
-    image: 'https://picsum.photos/800/400?random=63',
+    image: getFeedImageUrl(63),
     reactions: 55,
     comments: 18,
     feed: 'nearby',
@@ -167,7 +168,7 @@ const mockPosts = [
     category: 'satilik',
     title: "Ikinci El Bisiklet - Satılık",
     body: 'Çok az kullanılmış dağ bisikleti satıyorum. Marka: Trek, modelo: Marlin 7, 2023 yılı, durumu müthiş. Sadece 2.500 TL. İletişim: 0555 987 6543',
-    image: 'https://picsum.photos/800/400?random=64',
+    image: getFeedImageUrl(64),
     reactions: 34,
     comments: 12,
     feed: 'recent',
@@ -181,7 +182,7 @@ const mockPosts = [
     category: 'genel',
     title: "Mahalle Temizlik Etkinliği",
     body: 'Cumartesi sabahı mahalle parkında ortak temizlik etkinliği yapıyoruz. Herkesi katılmaya davet ediyoruz. Eldiveler ve çöp torbaları biz sağlayacağız. Saat 09:00\'da başlıyoruz!',
-    image: 'https://picsum.photos/800/400?random=65',
+    image: getFeedImageUrl(65),
     reactions: 48,
     comments: 16,
     feed: 'foryou',
@@ -195,7 +196,7 @@ const mockPosts = [
     category: 'satilik',
     title: "Antika Mobilya Koleksiyonu",
     body: 'Ev taşındığından antika mobilya satıyorum. Masif meşe yemek masası, sandalyeler, kütüphane. Fotoğralar ve fiyat listesi için WhatsApp: 0555 444 1111',
-    image: 'https://picsum.photos/800/400?random=66',
+    image: getFeedImageUrl(66),
     reactions: 22,
     comments: 7,
     feed: 'recent',

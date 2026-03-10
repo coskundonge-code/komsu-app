@@ -14,6 +14,15 @@ import {
   BarChart3,
   LogOut,
   Settings,
+  MessageSquare,
+  Users2,
+  Store,
+  CreditCard,
+  CheckCircle2,
+  Bell,
+  Star,
+  ShoppingBag,
+  Lock,
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -24,9 +33,18 @@ const ADMIN_MENU = [
   { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { label: 'Kullanıcılar', href: '/admin/kullanicilar', icon: Users },
   { label: 'Mahalleler', href: '/admin/mahalleler', icon: MapPin },
+  { label: 'Gönderiler', href: '/admin/gonderiler', icon: MessageSquare },
+  { label: 'Gruplar', href: '/admin/gruplar', icon: Users2 },
+  { label: 'İşletmeler', href: '/admin/isletmeler', icon: Store },
+  { label: 'Ödemeler', href: '/admin/odemeler', icon: CreditCard },
+  { label: 'Doğrulama', href: '/admin/dogrulama', icon: CheckCircle2 },
+  { label: 'Bildirimler', href: '/admin/bildirimler', icon: Bell },
+  { label: 'Yorumlar', href: '/admin/yorumlar', icon: Star },
+  { label: 'İlanlar', href: '/admin/ilanlar', icon: ShoppingBag },
   { label: 'Moderasyon', href: '/admin/moderasyon', icon: Shield },
   { label: 'Reklamlar', href: '/admin/reklamlar', icon: Megaphone },
   { label: 'Raporlar', href: '/admin/raporlar', icon: BarChart3 },
+  { label: 'Güvenlik', href: '/admin/guvenlik', icon: Lock },
 ];
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
@@ -98,13 +116,18 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
         {/* Bottom Actions */}
         <div className="p-3 border-t border-[#006b32] space-y-1">
-          <button
-            className="w-full flex items-center gap-3 px-4 py-3 text-[#d1fae5] hover:bg-[#006b32] rounded-lg transition-colors"
+          <Link
+            href="/admin/ayarlar"
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+              pathname === '/admin/ayarlar'
+                ? 'bg-[#00833e] text-white'
+                : 'text-[#d1fae5] hover:bg-[#006b32]'
+            }`}
             title={!sidebarOpen ? 'Ayarlar' : ''}
           >
             <Settings size={20} className="flex-shrink-0" />
             {sidebarOpen && <span className="text-sm font-medium">Ayarlar</span>}
-          </button>
+          </Link>
           <button
             className="w-full flex items-center gap-3 px-4 py-3 text-[#d1fae5] hover:bg-red-700 rounded-lg transition-colors"
             title={!sidebarOpen ? 'Çıkış' : ''}

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { ArrowLeft, Clock, MapPin, Share2, Bookmark, ThumbsUp, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 
 const mockNewsDetail: Record<string, {
   title: string;
@@ -22,7 +23,7 @@ const mockNewsDetail: Record<string, {
     source: 'Komşu Haberleri',
     time: '2 saat önce',
     category: 'İşletmeler',
-    thumbnail: 'https://picsum.photos/800/400?random=76',
+    thumbnail: getFeedImageUrl(76, 800, 400),
     author: 'Editör',
     readTime: '3 dk okuma',
   },
@@ -32,7 +33,7 @@ const mockNewsDetail: Record<string, {
     source: 'Belediye Duyurusu',
     time: '4 saat önce',
     category: 'Belediye',
-    thumbnail: 'https://picsum.photos/800/400?random=77',
+    thumbnail: getFeedImageUrl(77, 800, 400),
     author: 'Belediye Basın',
     readTime: '2 dk okuma',
   },

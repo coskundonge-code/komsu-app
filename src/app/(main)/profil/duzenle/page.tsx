@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
+import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
 import {
   Camera,
   Check,
@@ -61,8 +62,8 @@ const mockProfileData: ProfileFormData = {
   address: "Mimar Sinan Cad. No: 45",
   interests: ["Spor", "Müzik", "Teknoloji"],
   skills: ["Elektrik Onarımı", "İnsan Kaynakları"],
-  avatar: "https://picsum.photos/200/200?random=78",
-  coverImage: "https://picsum.photos/1200/400?random=78",
+  avatar: getFeedImageUrl(78, 200, 200),
+  coverImage: getFeedImageUrl(78, 1200, 400),
 };
 
 export default function ProfileEditPage() {

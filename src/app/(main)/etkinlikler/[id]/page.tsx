@@ -19,6 +19,7 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 
 const mockEvent = {
   id: '1',
@@ -33,11 +34,11 @@ Aileleriniz, dostlarınız ve komşularınız ile gelmeniz çok hoş olacak. Mah
   location: 'Mahalle Parkı, Açık Alanı',
   neighborhood: 'Fatih Mahallesi, İstanbul',
   coordinates: { lat: 41.0082, lng: 28.9784 },
-  coverImage: 'https://picsum.photos/1200/600?random=41',
+  coverImage: getFeedImageUrl(41, 1200, 600),
   organizer: {
     id: '1',
     name: 'Ayşe Yılmaz',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
+    avatar: getAvatarUrl('1', Math.random()),
     bio: 'Mahalle temsilcisi ve sosyal aktiviteler koordinatörü',
     verified: true,
   },
@@ -47,16 +48,16 @@ Aileleriniz, dostlarınız ve komşularınız ile gelmeniz çok hoş olacak. Mah
   isOnline: false,
   category: 'Sosyal',
   attendees: [
-    { id: '1', name: 'Fatih Demir', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2', status: 'joined' },
-    { id: '2', name: 'Zeynep Kaya', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=3', status: 'interested' },
-    { id: '3', name: 'Meral Çetin', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=4', status: 'joined' },
-    { id: '4', name: 'Hakan Yağız', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=5', status: 'joined' },
+    { id: '1', name: 'Fatih Demir', avatar: getAvatarUrl('2', Math.random()), status: 'joined' },
+    { id: '2', name: 'Zeynep Kaya', avatar: getAvatarUrl('3', Math.random()), status: 'interested' },
+    { id: '3', name: 'Meral Çetin', avatar: getAvatarUrl('4', Math.random()), status: 'joined' },
+    { id: '4', name: 'Hakan Yağız', avatar: getAvatarUrl('5', Math.random()), status: 'joined' },
   ],
   comments: [
     {
       id: '1',
       author: 'Fatih Demir',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2',
+      avatar: getAvatarUrl('2', Math.random()),
       text: 'Harika bir etkinlik! Herkes davetlidir, lütfen katılın! Mahallede daha çok birbirini tanımamız gerekiyor.',
       timestamp: new Date(2026, 2, 10),
       likes: 5,
@@ -64,7 +65,7 @@ Aileleriniz, dostlarınız ve komşularınız ile gelmeniz çok hoş olacak. Mah
     {
       id: '2',
       author: 'Zeynep Kaya',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=3',
+      avatar: getAvatarUrl('3', Math.random()),
       text: 'Ben ve ailelerim kesinlikle geleceğiz. Çocuklar için de aktiviteler var mı?',
       timestamp: new Date(2026, 2, 11),
       likes: 3,
@@ -72,7 +73,7 @@ Aileleriniz, dostlarınız ve komşularınız ile gelmeniz çok hoş olacak. Mah
     {
       id: '3',
       author: 'Ayşe Yılmaz',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
+      avatar: getAvatarUrl('1', Math.random()),
       text: 'Evet Zeynep, çocuklar için boyama etkinliği ve oyun alanı organize ettim. Herkes eğlenecek ve keyifli zaman geçirecek!',
       timestamp: new Date(2026, 2, 11),
       likes: 8,
@@ -87,7 +88,7 @@ const similarEvents = [
     date: '2026-03-22',
     time: '14:00',
     location: 'Spor Alanı',
-    coverImage: 'https://picsum.photos/500/300?random=42',
+    coverImage: getFeedImageUrl(42, 500, 300),
     attendeeCount: 32,
   },
   {
@@ -96,7 +97,7 @@ const similarEvents = [
     date: '2026-03-25',
     time: '19:00',
     location: 'Toplantı Salonu',
-    coverImage: 'https://picsum.photos/500/300?random=43',
+    coverImage: getFeedImageUrl(43, 500, 300),
     attendeeCount: 18,
   },
   {
@@ -105,7 +106,7 @@ const similarEvents = [
     date: '2026-04-02',
     time: '07:00',
     location: 'Mahalle Parkı',
-    coverImage: 'https://picsum.photos/500/300?random=44',
+    coverImage: getFeedImageUrl(44, 500, 300),
     attendeeCount: 24,
   },
 ];
@@ -121,7 +122,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
       const newComment = {
         id: String(comments.length + 1),
         author: 'Sizin Adınız',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=99',
+        avatar: getAvatarUrl('99', Math.random()),
         text: commentText,
         timestamp: new Date(),
         likes: 0,
@@ -446,7 +447,7 @@ END:VCALENDAR`;
           <div className="mb-6 sm:mb-8 pb-6 sm:pb-8 border-b border-[#e0e0e0]">
             <div className="flex gap-3 sm:gap-4">
               <Image
-                src="https://api.dicebear.com/7.x/avataaars/svg?seed=99"
+                src={getAvatarUrl('99', 0)}
                 alt="Sizin profiliniz"
                 width={40}
                 height={40}

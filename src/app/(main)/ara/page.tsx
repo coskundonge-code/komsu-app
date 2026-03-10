@@ -19,6 +19,7 @@ import {
   Search as SearchIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
 
 // Type definitions
 interface Post {
@@ -81,7 +82,7 @@ const mockPosts: Post[] = [
     excerpt: 'Apartman girişindeki depo tamamen boşaltıldı. Herkes lütfen eşyalarını kontrol etsin.',
     date: '2 saat önce',
     reactions: 12,
-    avatar: 'https://picsum.photos/40/40?random=1',
+    avatar: getFeedImageUrl(1, 40, 40),
   },
   {
     id: '2',
@@ -89,7 +90,7 @@ const mockPosts: Post[] = [
     excerpt: 'Bu hafta sonu mahalle temizliği yapılacak. İlgilenen arkadaşlar lütfen cevap versin.',
     date: '4 saat önce',
     reactions: 24,
-    avatar: 'https://picsum.photos/40/40?random=2',
+    avatar: getFeedImageUrl(2, 40, 40),
   },
   {
     id: '3',
@@ -97,7 +98,7 @@ const mockPosts: Post[] = [
     excerpt: 'Kütüphanemize yeni kitaplar eklendi. Kiminiz ilgilenir?',
     date: '1 gün önce',
     reactions: 8,
-    avatar: 'https://picsum.photos/40/40?random=3',
+    avatar: getFeedImageUrl(3, 40, 40),
   },
   {
     id: '4',
@@ -105,7 +106,7 @@ const mockPosts: Post[] = [
     excerpt: 'Blok halkının isteği üzerine tenis masası kurdum. Herkes rahat rahat kullanabilir.',
     date: '2 gün önce',
     reactions: 45,
-    avatar: 'https://picsum.photos/40/40?random=4',
+    avatar: getFeedImageUrl(4, 40, 40),
   },
   {
     id: '5',
@@ -113,7 +114,7 @@ const mockPosts: Post[] = [
     excerpt: 'Çatıdaki antena sorunu için ustalar gelecek. Herkes evde olsun lütfen.',
     date: '3 gün önce',
     reactions: 19,
-    avatar: 'https://picsum.photos/40/40?random=5',
+    avatar: getFeedImageUrl(5, 40, 40),
   },
 ]
 
@@ -158,28 +159,28 @@ const mockPeople: Person[] = [
     name: 'Fatma Türk',
     neighborhood: 'Fenerbahçe',
     mutualConnections: 5,
-    avatar: 'https://picsum.photos/40/40?random=10',
+    avatar: getFeedImageUrl(10, 40, 40),
   },
   {
     id: '2',
     name: 'Hasan Demir',
     neighborhood: 'Moda',
     mutualConnections: 3,
-    avatar: 'https://picsum.photos/40/40?random=11',
+    avatar: getFeedImageUrl(11, 40, 40),
   },
   {
     id: '3',
     name: 'Gül Yıldız',
     neighborhood: 'Caferağa',
     mutualConnections: 7,
-    avatar: 'https://picsum.photos/40/40?random=12',
+    avatar: getFeedImageUrl(12, 40, 40),
   },
   {
     id: '4',
     name: 'Kerem Çetin',
     neighborhood: 'Caddebostan',
     mutualConnections: 2,
-    avatar: 'https://picsum.photos/40/40?random=13',
+    avatar: getFeedImageUrl(13, 40, 40),
   },
 ]
 
@@ -213,21 +214,21 @@ const mockGroups: Group[] = [
     name: 'Mahalle Gönüllüleri',
     members: 342,
     description: 'Sosyal aktiviteler ve komşuluk yardımlaşması',
-    image: 'https://picsum.photos/80/80?random=20',
+    image: getFeedImageUrl(20, 80, 80),
   },
   {
     id: '2',
     name: 'Ebeveynler Grubu',
     members: 156,
     description: 'Çocuk yetiştirme ve eğitim konuları hakkında tartışmalar',
-    image: 'https://picsum.photos/80/80?random=21',
+    image: getFeedImageUrl(21, 80, 80),
   },
   {
     id: '3',
     name: 'Spor ve Fitness',
     members: 89,
     description: 'Spor aktiviteleri ve fitness tavsiyesi',
-    image: 'https://picsum.photos/80/80?random=22',
+    image: getFeedImageUrl(22, 80, 80),
   },
 ]
 
@@ -236,7 +237,7 @@ const mockListings: Listing[] = [
     id: '1',
     title: 'Laptop Lenovo - Az Kullanılmış',
     price: 8500,
-    image: 'https://picsum.photos/100/100?random=30',
+    image: getFeedImageUrl(30, 100, 100),
     condition: 'Çok İyi',
     neighborhood: 'Moda',
     isFree: false,
@@ -245,7 +246,7 @@ const mockListings: Listing[] = [
     id: '2',
     title: 'IKEA Kanepe - Açık Gri',
     price: 2200,
-    image: 'https://picsum.photos/100/100?random=31',
+    image: getFeedImageUrl(31, 100, 100),
     condition: 'Çok İyi',
     neighborhood: 'Fenerbahçe',
     isFree: false,
@@ -254,7 +255,7 @@ const mockListings: Listing[] = [
     id: '3',
     title: 'Çocuk Kitapları Seti',
     price: 0,
-    image: 'https://picsum.photos/100/100?random=32',
+    image: getFeedImageUrl(32, 100, 100),
     condition: 'İyi',
     neighborhood: 'Caferağa',
     isFree: true,
@@ -263,7 +264,7 @@ const mockListings: Listing[] = [
     id: '4',
     title: 'Dumbbell Seti 20kg',
     price: 1200,
-    image: 'https://picsum.photos/100/100?random=33',
+    image: getFeedImageUrl(33, 100, 100),
     condition: 'Yeni',
     neighborhood: 'Moda',
     isFree: false,
@@ -272,7 +273,7 @@ const mockListings: Listing[] = [
     id: '5',
     title: 'PlayStation 5',
     price: 6500,
-    image: 'https://picsum.photos/100/100?random=34',
+    image: getFeedImageUrl(34, 100, 100),
     condition: 'Çok İyi',
     neighborhood: 'Kadıköy',
     isFree: false,

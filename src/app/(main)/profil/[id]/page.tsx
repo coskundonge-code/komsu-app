@@ -24,6 +24,7 @@ import {
 import Link from 'next/link';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 
 interface ProfileData {
   name: string;
@@ -79,8 +80,8 @@ interface ProfileData {
 const mockProfile: ProfileData = {
   name: 'Coşkun Dönge',
   initials: 'CD',
-  avatar: 'https://picsum.photos/200/200?random=78',
-  coverImage: 'https://picsum.photos/1200/400?random=78',
+  avatar: getFeedImageUrl(78, 200, 200),
+  coverImage: getFeedImageUrl(78, 1200, 400),
   neighborhood: 'Kadıköy, Moda',
   joinDate: '15 Mart 2026',
   bio: 'Mahalle gönüllüsü. Komşu topluluğunu geliştirmede tutkulu. Spor, müzik ve sosyal projeler benim tutkum.',

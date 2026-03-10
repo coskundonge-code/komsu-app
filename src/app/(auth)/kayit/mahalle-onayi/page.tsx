@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { ChevronRight, MapPin, Users, MessageSquare, Home } from 'lucide-react'
 import Image from 'next/image'
+import { getFeedImageUrl } from '@/lib/demo-images'
 
 interface NeighborhoodData {
   name: string
@@ -23,7 +24,7 @@ const MOCK_NEIGHBORHOODS: Record<string, NeighborhoodData> = {
     memberCount: 2341,
     activePosts: 156,
     nearbyBusinesses: 45,
-    mapImageUrl: 'https://picsum.photos/600/300?random=100',
+    mapImageUrl: getFeedImageUrl(100, 600, 300),
   },
   'Moda': {
     name: 'Moda',
@@ -32,7 +33,7 @@ const MOCK_NEIGHBORHOODS: Record<string, NeighborhoodData> = {
     memberCount: 3456,
     activePosts: 289,
     nearbyBusinesses: 67,
-    mapImageUrl: 'https://picsum.photos/600/300?random=101',
+    mapImageUrl: getFeedImageUrl(101, 600, 300),
   },
   'Ortaköy': {
     name: 'Ortaköy',
@@ -41,7 +42,7 @@ const MOCK_NEIGHBORHOODS: Record<string, NeighborhoodData> = {
     memberCount: 1823,
     activePosts: 112,
     nearbyBusinesses: 38,
-    mapImageUrl: 'https://picsum.photos/600/300?random=102',
+    mapImageUrl: getFeedImageUrl(102, 600, 300),
   },
   'Göztepe': {
     name: 'Göztepe',
@@ -50,7 +51,7 @@ const MOCK_NEIGHBORHOODS: Record<string, NeighborhoodData> = {
     memberCount: 2789,
     activePosts: 201,
     nearbyBusinesses: 52,
-    mapImageUrl: 'https://picsum.photos/600/300?random=103',
+    mapImageUrl: getFeedImageUrl(103, 600, 300),
   },
 }
 

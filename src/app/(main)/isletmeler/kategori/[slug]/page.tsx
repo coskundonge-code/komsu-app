@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import { Search, Star, MapPin, ChevronLeft, ArrowUpDown } from 'lucide-react'
 import Link from 'next/link'
+import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
 
 interface Business {
   id: string
@@ -37,7 +38,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.8,
       reviewCount: 245,
       distance: '0.5 km',
-      logo: 'https://picsum.photos/200/200?random=1',
+      logo: getFeedImageUrl(1, 200, 200),
     },
     {
       id: '2',
@@ -46,7 +47,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.6,
       reviewCount: 189,
       distance: '1.2 km',
-      logo: 'https://picsum.photos/200/200?random=2',
+      logo: getFeedImageUrl(2, 200, 200),
     },
     {
       id: '3',
@@ -55,7 +56,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 312,
       distance: '0.8 km',
-      logo: 'https://picsum.photos/200/200?random=3',
+      logo: getFeedImageUrl(3, 200, 200),
     },
     {
       id: '4',
@@ -64,7 +65,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.5,
       reviewCount: 156,
       distance: '1.5 km',
-      logo: 'https://picsum.photos/200/200?random=4',
+      logo: getFeedImageUrl(4, 200, 200),
     },
     {
       id: '5',
@@ -73,7 +74,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.9,
       reviewCount: 423,
       distance: '0.3 km',
-      logo: 'https://picsum.photos/200/200?random=5',
+      logo: getFeedImageUrl(5, 200, 200),
     },
     {
       id: '6',
@@ -82,7 +83,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.4,
       reviewCount: 134,
       distance: '2 km',
-      logo: 'https://picsum.photos/200/200?random=6',
+      logo: getFeedImageUrl(6, 200, 200),
     },
     {
       id: '7',
@@ -91,7 +92,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 267,
       distance: '1.1 km',
-      logo: 'https://picsum.photos/200/200?random=7',
+      logo: getFeedImageUrl(7, 200, 200),
     },
     {
       id: '8',
@@ -100,7 +101,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.6,
       reviewCount: 198,
       distance: '1.8 km',
-      logo: 'https://picsum.photos/200/200?random=8',
+      logo: getFeedImageUrl(8, 200, 200),
     },
   ],
   kafe: [
@@ -111,7 +112,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.8,
       reviewCount: 345,
       distance: '0.4 km',
-      logo: 'https://picsum.photos/200/200?random=10',
+      logo: getFeedImageUrl(10, 200, 200),
     },
     {
       id: '2',
@@ -120,7 +121,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 267,
       distance: '1 km',
-      logo: 'https://picsum.photos/200/200?random=11',
+      logo: getFeedImageUrl(11, 200, 200),
     },
     {
       id: '3',
@@ -129,7 +130,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.5,
       reviewCount: 189,
       distance: '1.3 km',
-      logo: 'https://picsum.photos/200/200?random=12',
+      logo: getFeedImageUrl(12, 200, 200),
     },
     {
       id: '4',
@@ -138,7 +139,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.6,
       reviewCount: 212,
       distance: '0.7 km',
-      logo: 'https://picsum.photos/200/200?random=13',
+      logo: getFeedImageUrl(13, 200, 200),
     },
     {
       id: '5',
@@ -147,7 +148,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.9,
       reviewCount: 456,
       distance: '0.2 km',
-      logo: 'https://picsum.photos/200/200?random=14',
+      logo: getFeedImageUrl(14, 200, 200),
     },
     {
       id: '6',
@@ -156,7 +157,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.4,
       reviewCount: 128,
       distance: '2.1 km',
-      logo: 'https://picsum.photos/200/200?random=15',
+      logo: getFeedImageUrl(15, 200, 200),
     },
     {
       id: '7',
@@ -165,7 +166,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.6,
       reviewCount: 289,
       distance: '0.9 km',
-      logo: 'https://picsum.photos/200/200?random=16',
+      logo: getFeedImageUrl(16, 200, 200),
     },
     {
       id: '8',
@@ -174,7 +175,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 334,
       distance: '1.4 km',
-      logo: 'https://picsum.photos/200/200?random=17',
+      logo: getFeedImageUrl(17, 200, 200),
     },
   ],
   market: [
@@ -185,7 +186,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.5,
       reviewCount: 198,
       distance: '0.6 km',
-      logo: 'https://picsum.photos/200/200?random=20',
+      logo: getFeedImageUrl(20, 200, 200),
     },
     {
       id: '2',
@@ -194,7 +195,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 267,
       distance: '1.2 km',
-      logo: 'https://picsum.photos/200/200?random=21',
+      logo: getFeedImageUrl(21, 200, 200),
     },
     {
       id: '3',
@@ -203,7 +204,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.8,
       reviewCount: 345,
       distance: '1.8 km',
-      logo: 'https://picsum.photos/200/200?random=22',
+      logo: getFeedImageUrl(22, 200, 200),
     },
     {
       id: '4',
@@ -212,7 +213,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.3,
       reviewCount: 156,
       distance: '2.5 km',
-      logo: 'https://picsum.photos/200/200?random=23',
+      logo: getFeedImageUrl(23, 200, 200),
     },
     {
       id: '5',
@@ -221,7 +222,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.6,
       reviewCount: 234,
       distance: '0.8 km',
-      logo: 'https://picsum.photos/200/200?random=24',
+      logo: getFeedImageUrl(24, 200, 200),
     },
     {
       id: '6',
@@ -230,7 +231,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.4,
       reviewCount: 167,
       distance: '1.5 km',
-      logo: 'https://picsum.photos/200/200?random=25',
+      logo: getFeedImageUrl(25, 200, 200),
     },
     {
       id: '7',
@@ -239,7 +240,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 289,
       distance: '0.5 km',
-      logo: 'https://picsum.photos/200/200?random=26',
+      logo: getFeedImageUrl(26, 200, 200),
     },
     {
       id: '8',
@@ -248,7 +249,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.5,
       reviewCount: 201,
       distance: '1.9 km',
-      logo: 'https://picsum.photos/200/200?random=27',
+      logo: getFeedImageUrl(27, 200, 200),
     },
   ],
   kuafor: [
@@ -259,7 +260,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.9,
       reviewCount: 512,
       distance: '0.3 km',
-      logo: 'https://picsum.photos/200/200?random=30',
+      logo: getFeedImageUrl(30, 200, 200),
     },
     {
       id: '2',
@@ -268,7 +269,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 289,
       distance: '1.1 km',
-      logo: 'https://picsum.photos/200/200?random=31',
+      logo: getFeedImageUrl(31, 200, 200),
     },
     {
       id: '3',
@@ -277,7 +278,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.6,
       reviewCount: 234,
       distance: '1.7 km',
-      logo: 'https://picsum.photos/200/200?random=32',
+      logo: getFeedImageUrl(32, 200, 200),
     },
     {
       id: '4',
@@ -286,7 +287,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.8,
       reviewCount: 401,
       distance: '0.9 km',
-      logo: 'https://picsum.photos/200/200?random=33',
+      logo: getFeedImageUrl(33, 200, 200),
     },
     {
       id: '5',
@@ -295,7 +296,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.5,
       reviewCount: 167,
       distance: '2 km',
-      logo: 'https://picsum.photos/200/200?random=34',
+      logo: getFeedImageUrl(34, 200, 200),
     },
     {
       id: '6',
@@ -304,7 +305,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.4,
       reviewCount: 145,
       distance: '1.3 km',
-      logo: 'https://picsum.photos/200/200?random=35',
+      logo: getFeedImageUrl(35, 200, 200),
     },
     {
       id: '7',
@@ -313,7 +314,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.8,
       reviewCount: 367,
       distance: '0.6 km',
-      logo: 'https://picsum.photos/200/200?random=36',
+      logo: getFeedImageUrl(36, 200, 200),
     },
     {
       id: '8',
@@ -322,7 +323,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.6,
       reviewCount: 203,
       distance: '1.5 km',
-      logo: 'https://picsum.photos/200/200?random=37',
+      logo: getFeedImageUrl(37, 200, 200),
     },
   ],
   eczane: [
@@ -333,7 +334,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.8,
       reviewCount: 289,
       distance: '0.4 km',
-      logo: 'https://picsum.photos/200/200?random=40',
+      logo: getFeedImageUrl(40, 200, 200),
     },
     {
       id: '2',
@@ -342,7 +343,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 245,
       distance: '1.2 km',
-      logo: 'https://picsum.photos/200/200?random=41',
+      logo: getFeedImageUrl(41, 200, 200),
     },
     {
       id: '3',
@@ -351,7 +352,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.9,
       reviewCount: 334,
       distance: '0.8 km',
-      logo: 'https://picsum.photos/200/200?random=42',
+      logo: getFeedImageUrl(42, 200, 200),
     },
     {
       id: '4',
@@ -360,7 +361,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.5,
       reviewCount: 156,
       distance: '1.8 km',
-      logo: 'https://picsum.photos/200/200?random=43',
+      logo: getFeedImageUrl(43, 200, 200),
     },
     {
       id: '5',
@@ -369,7 +370,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.6,
       reviewCount: 198,
       distance: '0.9 km',
-      logo: 'https://picsum.photos/200/200?random=44',
+      logo: getFeedImageUrl(44, 200, 200),
     },
     {
       id: '6',
@@ -378,7 +379,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 267,
       distance: '1.4 km',
-      logo: 'https://picsum.photos/200/200?random=45',
+      logo: getFeedImageUrl(45, 200, 200),
     },
     {
       id: '7',
@@ -387,7 +388,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.8,
       reviewCount: 312,
       distance: '0.6 km',
-      logo: 'https://picsum.photos/200/200?random=46',
+      logo: getFeedImageUrl(46, 200, 200),
     },
     {
       id: '8',
@@ -396,7 +397,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.4,
       reviewCount: 128,
       distance: '2.2 km',
-      logo: 'https://picsum.photos/200/200?random=47',
+      logo: getFeedImageUrl(47, 200, 200),
     },
   ],
   veteriner: [
@@ -407,7 +408,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.9,
       reviewCount: 267,
       distance: '0.7 km',
-      logo: 'https://picsum.photos/200/200?random=50',
+      logo: getFeedImageUrl(50, 200, 200),
     },
     {
       id: '2',
@@ -416,7 +417,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 189,
       distance: '1.3 km',
-      logo: 'https://picsum.photos/200/200?random=51',
+      logo: getFeedImageUrl(51, 200, 200),
     },
     {
       id: '3',
@@ -425,7 +426,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.6,
       reviewCount: 145,
       distance: '2.1 km',
-      logo: 'https://picsum.photos/200/200?random=52',
+      logo: getFeedImageUrl(52, 200, 200),
     },
     {
       id: '4',
@@ -434,7 +435,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.8,
       reviewCount: 301,
       distance: '1.1 km',
-      logo: 'https://picsum.photos/200/200?random=53',
+      logo: getFeedImageUrl(53, 200, 200),
     },
     {
       id: '5',
@@ -443,7 +444,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.5,
       reviewCount: 167,
       distance: '1.8 km',
-      logo: 'https://picsum.photos/200/200?random=54',
+      logo: getFeedImageUrl(54, 200, 200),
     },
     {
       id: '6',
@@ -452,7 +453,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 123,
       distance: '2.3 km',
-      logo: 'https://picsum.photos/200/200?random=55',
+      logo: getFeedImageUrl(55, 200, 200),
     },
     {
       id: '7',
@@ -461,7 +462,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.9,
       reviewCount: 234,
       distance: '0.5 km',
-      logo: 'https://picsum.photos/200/200?random=56',
+      logo: getFeedImageUrl(56, 200, 200),
     },
     {
       id: '8',
@@ -470,7 +471,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.6,
       reviewCount: 198,
       distance: '1.4 km',
-      logo: 'https://picsum.photos/200/200?random=57',
+      logo: getFeedImageUrl(57, 200, 200),
     },
   ],
   'spor-salonu': [
@@ -481,7 +482,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 289,
       distance: '0.8 km',
-      logo: 'https://picsum.photos/200/200?random=60',
+      logo: getFeedImageUrl(60, 200, 200),
     },
     {
       id: '2',
@@ -490,7 +491,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.8,
       reviewCount: 345,
       distance: '1.5 km',
-      logo: 'https://picsum.photos/200/200?random=61',
+      logo: getFeedImageUrl(61, 200, 200),
     },
     {
       id: '3',
@@ -499,7 +500,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.6,
       reviewCount: 201,
       distance: '0.6 km',
-      logo: 'https://picsum.photos/200/200?random=62',
+      logo: getFeedImageUrl(62, 200, 200),
     },
     {
       id: '4',
@@ -508,7 +509,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.9,
       reviewCount: 234,
       distance: '1.9 km',
-      logo: 'https://picsum.photos/200/200?random=63',
+      logo: getFeedImageUrl(63, 200, 200),
     },
     {
       id: '5',
@@ -517,7 +518,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.5,
       reviewCount: 167,
       distance: '2.2 km',
-      logo: 'https://picsum.photos/200/200?random=64',
+      logo: getFeedImageUrl(64, 200, 200),
     },
     {
       id: '6',
@@ -526,7 +527,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.8,
       reviewCount: 267,
       distance: '0.4 km',
-      logo: 'https://picsum.photos/200/200?random=65',
+      logo: getFeedImageUrl(65, 200, 200),
     },
     {
       id: '7',
@@ -535,7 +536,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.6,
       reviewCount: 189,
       distance: '1.1 km',
-      logo: 'https://picsum.photos/200/200?random=66',
+      logo: getFeedImageUrl(66, 200, 200),
     },
     {
       id: '8',
@@ -544,7 +545,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 156,
       distance: '2 km',
-      logo: 'https://picsum.photos/200/200?random=67',
+      logo: getFeedImageUrl(67, 200, 200),
     },
   ],
   'oto-servis': [
@@ -555,7 +556,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.8,
       reviewCount: 234,
       distance: '1.2 km',
-      logo: 'https://picsum.photos/200/200?random=70',
+      logo: getFeedImageUrl(70, 200, 200),
     },
     {
       id: '2',
@@ -564,7 +565,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.6,
       reviewCount: 189,
       distance: '0.9 km',
-      logo: 'https://picsum.photos/200/200?random=71',
+      logo: getFeedImageUrl(71, 200, 200),
     },
     {
       id: '3',
@@ -573,7 +574,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 267,
       distance: '1.5 km',
-      logo: 'https://picsum.photos/200/200?random=72',
+      logo: getFeedImageUrl(72, 200, 200),
     },
     {
       id: '4',
@@ -582,7 +583,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.5,
       reviewCount: 145,
       distance: '2.1 km',
-      logo: 'https://picsum.photos/200/200?random=73',
+      logo: getFeedImageUrl(73, 200, 200),
     },
     {
       id: '5',
@@ -591,7 +592,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.9,
       reviewCount: 301,
       distance: '0.7 km',
-      logo: 'https://picsum.photos/200/200?random=74',
+      logo: getFeedImageUrl(74, 200, 200),
     },
     {
       id: '6',
@@ -600,7 +601,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.4,
       reviewCount: 123,
       distance: '2.3 km',
-      logo: 'https://picsum.photos/200/200?random=75',
+      logo: getFeedImageUrl(75, 200, 200),
     },
     {
       id: '7',
@@ -609,7 +610,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.6,
       reviewCount: 178,
       distance: '1.1 km',
-      logo: 'https://picsum.photos/200/200?random=76',
+      logo: getFeedImageUrl(76, 200, 200),
     },
     {
       id: '8',
@@ -618,7 +619,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 212,
       distance: '0.5 km',
-      logo: 'https://picsum.photos/200/200?random=77',
+      logo: getFeedImageUrl(77, 200, 200),
     },
   ],
   temizlik: [
@@ -629,7 +630,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.8,
       reviewCount: 289,
       distance: '1.1 km',
-      logo: 'https://picsum.photos/200/200?random=80',
+      logo: getFeedImageUrl(80, 200, 200),
     },
     {
       id: '2',
@@ -638,7 +639,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 234,
       distance: '0.7 km',
-      logo: 'https://picsum.photos/200/200?random=81',
+      logo: getFeedImageUrl(81, 200, 200),
     },
     {
       id: '3',
@@ -647,7 +648,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.6,
       reviewCount: 167,
       distance: '1.8 km',
-      logo: 'https://picsum.photos/200/200?random=82',
+      logo: getFeedImageUrl(82, 200, 200),
     },
     {
       id: '4',
@@ -656,7 +657,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.9,
       reviewCount: 312,
       distance: '0.5 km',
-      logo: 'https://picsum.photos/200/200?random=83',
+      logo: getFeedImageUrl(83, 200, 200),
     },
     {
       id: '5',
@@ -665,7 +666,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.5,
       reviewCount: 145,
       distance: '2 km',
-      logo: 'https://picsum.photos/200/200?random=84',
+      logo: getFeedImageUrl(84, 200, 200),
     },
     {
       id: '6',
@@ -674,7 +675,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 198,
       distance: '1.5 km',
-      logo: 'https://picsum.photos/200/200?random=85',
+      logo: getFeedImageUrl(85, 200, 200),
     },
     {
       id: '7',
@@ -683,7 +684,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.6,
       reviewCount: 156,
       distance: '1.2 km',
-      logo: 'https://picsum.photos/200/200?random=86',
+      logo: getFeedImageUrl(86, 200, 200),
     },
     {
       id: '8',
@@ -692,7 +693,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.8,
       reviewCount: 267,
       distance: '0.9 km',
-      logo: 'https://picsum.photos/200/200?random=87',
+      logo: getFeedImageUrl(87, 200, 200),
     },
   ],
   egitim: [
@@ -703,7 +704,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.8,
       reviewCount: 267,
       distance: '0.6 km',
-      logo: 'https://picsum.photos/200/200?random=90',
+      logo: getFeedImageUrl(90, 200, 200),
     },
     {
       id: '2',
@@ -712,7 +713,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 189,
       distance: '1.3 km',
-      logo: 'https://picsum.photos/200/200?random=91',
+      logo: getFeedImageUrl(91, 200, 200),
     },
     {
       id: '3',
@@ -721,7 +722,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.9,
       reviewCount: 234,
       distance: '1.1 km',
-      logo: 'https://picsum.photos/200/200?random=92',
+      logo: getFeedImageUrl(92, 200, 200),
     },
     {
       id: '4',
@@ -730,7 +731,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.6,
       reviewCount: 156,
       distance: '1.9 km',
-      logo: 'https://picsum.photos/200/200?random=93',
+      logo: getFeedImageUrl(93, 200, 200),
     },
     {
       id: '5',
@@ -739,7 +740,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.8,
       reviewCount: 201,
       distance: '0.8 km',
-      logo: 'https://picsum.photos/200/200?random=94',
+      logo: getFeedImageUrl(94, 200, 200),
     },
     {
       id: '6',
@@ -748,7 +749,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.7,
       reviewCount: 178,
       distance: '1.5 km',
-      logo: 'https://picsum.photos/200/200?random=95',
+      logo: getFeedImageUrl(95, 200, 200),
     },
     {
       id: '7',
@@ -757,7 +758,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.6,
       reviewCount: 145,
       distance: '2 km',
-      logo: 'https://picsum.photos/200/200?random=96',
+      logo: getFeedImageUrl(96, 200, 200),
     },
     {
       id: '8',
@@ -766,7 +767,7 @@ const MOCK_BUSINESSES_BY_CATEGORY: Record<string, Business[]> = {
       rating: 4.9,
       reviewCount: 289,
       distance: '0.4 km',
-      logo: 'https://picsum.photos/200/200?random=97',
+      logo: getFeedImageUrl(97, 200, 200),
     },
   ],
 }

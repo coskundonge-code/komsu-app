@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { ChevronLeft, Search, Send, Image as ImageIcon, Smile, MessageCirclePlus, Phone, Video, MessageSquare, ShoppingBag, Bell } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
 
 interface Conversation {
   id: string;
@@ -20,7 +21,7 @@ const mockConversations: Conversation[] = [
   {
     id: "1",
     name: "Ahmet Yılmaz",
-    avatar: "https://picsum.photos/96/96?random=61",
+    avatar: getFeedImageUrl(61, 96, 96),
     lastMessage: "Temizlik malzemeleri hakkında bilgi alabilir miyim?",
     time: "2 sa",
     unread: 2,
@@ -30,7 +31,7 @@ const mockConversations: Conversation[] = [
   {
     id: "2",
     name: "Fatma Şahin",
-    avatar: "https://picsum.photos/96/96?random=62",
+    avatar: getFeedImageUrl(62, 96, 96),
     lastMessage: "Tükenmez kalem ve defter bölüştürebiliriz",
     time: "5 sa",
     unread: 1,
@@ -40,7 +41,7 @@ const mockConversations: Conversation[] = [
   {
     id: "3",
     name: "Mehmet Demir",
-    avatar: "https://picsum.photos/96/96?random=63",
+    avatar: getFeedImageUrl(63, 96, 96),
     lastMessage: "Elektrik ustası önerebilir misiniz?",
     time: "1 gün",
     unread: 0,
@@ -50,7 +51,7 @@ const mockConversations: Conversation[] = [
   {
     id: "4",
     name: "Zeynep Kaya",
-    avatar: "https://picsum.photos/96/96?random=64",
+    avatar: getFeedImageUrl(64, 96, 96),
     lastMessage: "Bisiklet çok güzel olmuş, teşekkürler!",
     time: "3 gün",
     unread: 0,
@@ -60,7 +61,7 @@ const mockConversations: Conversation[] = [
   {
     id: "5",
     name: "Komşu Yardım Grubu",
-    avatar: "https://picsum.photos/96/96?random=65",
+    avatar: getFeedImageUrl(65, 96, 96),
     lastMessage: "Herkese iyi akşamlar, yarın piknik var mı?",
     time: "1 hafta",
     unread: 0,
@@ -70,7 +71,7 @@ const mockConversations: Conversation[] = [
   {
     id: "6",
     name: "Ayşe Kılıç",
-    avatar: "https://picsum.photos/96/96?random=71",
+    avatar: getFeedImageUrl(71, 96, 96),
     lastMessage: "Balkon bitkileriniz çok güzel!",
     time: "2 gün",
     unread: 0,
@@ -80,7 +81,7 @@ const mockConversations: Conversation[] = [
   {
     id: "7",
     name: "Hasan Demir",
-    avatar: "https://picsum.photos/96/96?random=72",
+    avatar: getFeedImageUrl(72, 96, 96),
     lastMessage: "Pazartesi uygun mu sözleşme imzalamak için?",
     time: "4 saat",
     unread: 3,
@@ -90,7 +91,7 @@ const mockConversations: Conversation[] = [
   {
     id: "8",
     name: "Müzeyyen Şen",
-    avatar: "https://picsum.photos/96/96?random=73",
+    avatar: getFeedImageUrl(73, 96, 96),
     lastMessage: "Ekmek tarifini bekliyorum sabırsızlıkla!",
     time: "6 saat",
     unread: 0,
@@ -100,7 +101,7 @@ const mockConversations: Conversation[] = [
   {
     id: "9",
     name: "Ömer Kaya",
-    avatar: "https://picsum.photos/96/96?random=74",
+    avatar: getFeedImageUrl(74, 96, 96),
     lastMessage: "Oto elektrikçi arkadaşım var lazım olursa haber ver",
     time: "1 hafta",
     unread: 0,
@@ -110,7 +111,7 @@ const mockConversations: Conversation[] = [
   {
     id: "10",
     name: "Mobilya Pazar Yeri",
-    avatar: "https://picsum.photos/96/96?random=75",
+    avatar: getFeedImageUrl(75, 96, 96),
     lastMessage: "Sandalye stokta mevcut, teslim edebilirim",
     time: "3 saat",
     unread: 4,
@@ -120,7 +121,7 @@ const mockConversations: Conversation[] = [
   {
     id: "11",
     name: "Elektrik Malzemeleri",
-    avatar: "https://picsum.photos/96/96?random=76",
+    avatar: getFeedImageUrl(76, 96, 96),
     lastMessage: "Aydınlatma ürünleri şu anda indirimde!",
     time: "1 saat",
     unread: 0,
@@ -130,7 +131,7 @@ const mockConversations: Conversation[] = [
   {
     id: "12",
     name: "Yapı Destek Grubu",
-    avatar: "https://picsum.photos/96/96?random=77",
+    avatar: getFeedImageUrl(77, 96, 96),
     lastMessage: "Harita paylaşımı: Tasarım önerileri var mı?",
     time: "30 dk",
     unread: 5,

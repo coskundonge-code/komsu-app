@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ChevronLeft, Phone, Video, MoreVertical, Send, Paperclip, Smile, ArrowDown, MessageSquare } from "lucide-react";
+import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
 
 // Types
 interface Message {
@@ -28,61 +29,61 @@ const mockConversations: Conversation[] = [
   {
     id: "1",
     name: "Ahmet Yılmaz",
-    avatar: "https://picsum.photos/400/400?random=66",
+    avatar: getFeedImageUrl(66, 400, 400),
     online: true,
   },
   {
     id: "2",
     name: "Fatma Şahin",
-    avatar: "https://picsum.photos/400/400?random=67",
+    avatar: getFeedImageUrl(67, 400, 400),
     online: false,
   },
   {
     id: "3",
     name: "Komşu Yardım Grubu",
-    avatar: "https://picsum.photos/400/400?random=68",
+    avatar: getFeedImageUrl(68, 400, 400),
     online: true,
   },
   {
     id: "4",
     name: "Mehmet Demir",
-    avatar: "https://picsum.photos/400/400?random=69",
+    avatar: getFeedImageUrl(69, 400, 400),
     online: false,
   },
   {
     id: "5",
     name: "Zeynep Kaya",
-    avatar: "https://picsum.photos/400/400?random=70",
+    avatar: getFeedImageUrl(70, 400, 400),
     online: true,
   },
   {
     id: "6",
     name: "Soner Köse",
-    avatar: "https://picsum.photos/400/400?random=78",
+    avatar: getFeedImageUrl(78, 400, 400),
     online: false,
   },
   {
     id: "7",
     name: "Gamze Daşkan",
-    avatar: "https://picsum.photos/400/400?random=79",
+    avatar: getFeedImageUrl(79, 400, 400),
     online: true,
   },
   {
     id: "8",
     name: "Veli Kışlağı",
-    avatar: "https://picsum.photos/400/400?random=80",
+    avatar: getFeedImageUrl(80, 400, 400),
     online: false,
   },
   {
     id: "9",
     name: "Nilüfer Çolak",
-    avatar: "https://picsum.photos/400/400?random=81",
+    avatar: getFeedImageUrl(81, 400, 400),
     online: true,
   },
   {
     id: "10",
     name: "Mobilya Pazar Yeri",
-    avatar: "https://picsum.photos/400/400?random=82",
+    avatar: getFeedImageUrl(82, 400, 400),
     online: true,
   },
 ];
@@ -116,7 +117,7 @@ const mockMessages: Record<string, Message[]> = {
     },
     {
       id: "2.5",
-      image: "https://picsum.photos/300/300?random=100",
+      image: getFeedImageUrl(100, 300, 300),
       timestamp: "10:38",
       isOwn: false,
       read: true,
@@ -140,7 +141,7 @@ const mockMessages: Record<string, Message[]> = {
     },
     {
       id: "5",
-      image: "https://picsum.photos/300/300?random=101",
+      image: getFeedImageUrl(101, 300, 300),
       timestamp: "10:50",
       isOwn: true,
       read: true,
@@ -247,7 +248,7 @@ const mockMessages: Record<string, Message[]> = {
     },
     {
       id: "3",
-      image: "https://picsum.photos/300/300?random=102",
+      image: getFeedImageUrl(102, 300, 300),
       timestamp: "08:30",
       isOwn: false,
       read: true,
@@ -362,7 +363,7 @@ const mockMessages: Record<string, Message[]> = {
     },
     {
       id: "6",
-      image: "https://picsum.photos/300/300?random=103",
+      image: getFeedImageUrl(103, 300, 300),
       timestamp: "17:20",
       isOwn: false,
       read: true,
@@ -480,7 +481,7 @@ const mockMessages: Record<string, Message[]> = {
     },
     {
       id: "2",
-      image: "https://picsum.photos/300/300?random=104",
+      image: getFeedImageUrl(104, 300, 300),
       timestamp: "12:05",
       isOwn: true,
       read: true,

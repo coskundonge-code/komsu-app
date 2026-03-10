@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 import {
   Star,
   MapPin,
@@ -41,8 +42,8 @@ const MOCK_BUSINESS = {
   email: 'info@modafirin.com.tr',
   description: 'Moda Fırın, 1985 yılından beri Beşiktaş\'ta hizmet vermektedir. Taze fırın ürünleri, keke, pastane ve özel siparişleri ile ünlüdür. Her sabah erken saatlerde hazırlanan ekmeklerimiz ve pastalarımız müşterilerimizin favorisidir.',
   isOpen: true,
-  coverImage: 'https://picsum.photos/1200/400?random=201',
-  logo: 'https://picsum.photos/128/128?random=202',
+  coverImage: getFeedImageUrl(201, 1200, 400),
+  logo: getFeedImageUrl(202, 128, 128),
   hours: [
     { day: 'Pazartesi', open: '06:30', close: '21:00' },
     { day: 'Salı', open: '06:30', close: '21:00' },
@@ -63,12 +64,12 @@ const MOCK_BUSINESS = {
     'Baklava Çeşitleri',
   ],
   images: [
-    'https://picsum.photos/400/300?random=203',
-    'https://picsum.photos/400/300?random=204',
-    'https://picsum.photos/400/300?random=205',
-    'https://picsum.photos/400/300?random=206',
-    'https://picsum.photos/400/300?random=207',
-    'https://picsum.photos/400/300?random=208',
+    getFeedImageUrl(203, 400, 300),
+    getFeedImageUrl(204, 400, 300),
+    getFeedImageUrl(205, 400, 300),
+    getFeedImageUrl(206, 400, 300),
+    getFeedImageUrl(207, 400, 300),
+    getFeedImageUrl(208, 400, 300),
   ],
   ratingBreakdown: {
     5: 78,
@@ -145,7 +146,7 @@ const MOCK_RECOMMENDATIONS = [
     category: 'Tatlı & Pasta',
     rating: 4.7,
     reviewCount: 94,
-    coverImage: 'https://picsum.photos/600/300?random=301',
+    coverImage: getFeedImageUrl(301, 600, 300),
   },
   {
     id: '3',
@@ -153,7 +154,7 @@ const MOCK_RECOMMENDATIONS = [
     category: 'Kahvaltı & Çay',
     rating: 4.6,
     reviewCount: 156,
-    coverImage: 'https://picsum.photos/600/300?random=302',
+    coverImage: getFeedImageUrl(302, 600, 300),
   },
   {
     id: '5',
@@ -161,7 +162,7 @@ const MOCK_RECOMMENDATIONS = [
     category: 'Pastane',
     rating: 4.8,
     reviewCount: 203,
-    coverImage: 'https://picsum.photos/600/300?random=303',
+    coverImage: getFeedImageUrl(303, 600, 300),
   },
   {
     id: '6',
@@ -169,7 +170,7 @@ const MOCK_RECOMMENDATIONS = [
     category: 'Simit & Peynir',
     rating: 4.4,
     reviewCount: 87,
-    coverImage: 'https://picsum.photos/600/300?random=304',
+    coverImage: getFeedImageUrl(304, 600, 300),
   },
 ];
 

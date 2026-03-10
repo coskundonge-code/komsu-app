@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useState, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 
 interface ArticleStep {
   title: string;
@@ -38,32 +39,32 @@ const articlesData: { [key: string]: ArticleContent } = {
       {
         title: 'Ayarlar Sayfasına Gidin',
         description: 'Ana sayfada sağ altta bulunan profil ikonu veya menu simgesine tıklayın. Açılan menüden "Ayarlar" seçeneğini seçin.',
-        image: 'https://picsum.photos/600/300?random=1'
+        image: getFeedImageUrl(1, 600, 300)
       },
       {
         title: 'Profil Düzenle\'ye Tıklayın',
         description: 'Ayarlar sayfasında "Profil Düzenle" düğmesine tıklayarak profil düzenleme paneline girin.',
-        image: 'https://picsum.photos/600/300?random=2'
+        image: getFeedImageUrl(2, 600, 300)
       },
       {
         title: 'Fotoğrafınızı Güncelleyin',
         description: 'Mevcut profil fotoğrafına tıklayarak yeni bir fotoğraf yükleyin. Fotoğraf en az 200x200 piksel olmalıdır.',
-        image: 'https://picsum.photos/600/300?random=3'
+        image: getFeedImageUrl(3, 600, 300)
       },
       {
         title: 'Temel Bilgiler',
         description: 'Adınız, soyadınız ve cinsiyetiniz gibi temel bilgileri düzenleyin. Bu alanlar zorunludur.',
-        image: 'https://picsum.photos/600/300?random=4'
+        image: getFeedImageUrl(4, 600, 300)
       },
       {
         title: 'Biyografi Ekleyin',
         description: 'Kendinizi tanıtmak için 150 karaktere kadar biyografi yazın. Hobi, ilgi alanı veya kısaca kendinizi anlatabilirsiniz.',
-        image: 'https://picsum.photos/600/300?random=5'
+        image: getFeedImageUrl(5, 600, 300)
       },
       {
         title: 'Değişiklikleri Kaydedin',
         description: 'Tüm değişiklikleri yaptıktan sonra sayfanın altında bulunan "Kaydet" düğmesine tıklayın. Değişiklikler anında uygulanır.',
-        image: 'https://picsum.photos/600/300?random=6'
+        image: getFeedImageUrl(6, 600, 300)
       }
     ],
     relatedArticles: [
@@ -83,32 +84,32 @@ const articlesData: { [key: string]: ArticleContent } = {
       {
         title: 'Yeni Gönderi Oluşturmaya Başlayın',
         description: 'Ana sayfa veya akış sayfasında "Yeni Gönderi" düğmesine tıklayın veya "+" simgesine basın.',
-        image: 'https://picsum.photos/600/300?random=7'
+        image: getFeedImageUrl(7, 600, 300)
       },
       {
         title: 'Metin Yazın',
         description: 'Gönderi penceresine istediğiniz metni yazın. Etiketler, sorular ve düşüncelerinizi paylaşabilirsiniz.',
-        image: 'https://picsum.photos/600/300?random=8'
+        image: getFeedImageUrl(8, 600, 300)
       },
       {
         title: 'Fotoğraf veya Video Ekleyin',
         description: 'İsteğe bağlı olarak, metninizi desteklemek için bir veya daha fazla fotoğraf ekleyin. "Fotoğraf Ekle" düğmesini kullanın.',
-        image: 'https://picsum.photos/600/300?random=9'
+        image: getFeedImageUrl(9, 600, 300)
       },
       {
         title: 'Kişileri Etiketleyin',
         description: 'Gönderideki kişileri etiketlemek için "@" sembolünü kullanın. Bu kişilere bildirim gönderir.',
-        image: 'https://picsum.photos/600/300?random=10'
+        image: getFeedImageUrl(10, 600, 300)
       },
       {
         title: 'Gizlilik Ayarını Belirleyin',
         description: 'Gönderiyi kimlerin görebileceğini seçin: Herkese açık, sadece komşulara, veya özel grup.',
-        image: 'https://picsum.photos/600/300?random=11'
+        image: getFeedImageUrl(11, 600, 300)
       },
       {
         title: 'Yayınlayın',
         description: 'Tüm hazır olduğunda "Yayınla" düğmesine tıklayın. Gönderi anında akışta görüntülenecektir.',
-        image: 'https://picsum.photos/600/300?random=12'
+        image: getFeedImageUrl(12, 600, 300)
       }
     ],
     relatedArticles: [
@@ -128,32 +129,32 @@ const articlesData: { [key: string]: ArticleContent } = {
       {
         title: 'Pazar Yeri Bölümüne Gidin',
         description: 'Ana menüde veya alt navigasyonda "Pazar Yeri" seçeneğine tıklayın.',
-        image: 'https://picsum.photos/600/300?random=13'
+        image: getFeedImageUrl(13, 600, 300)
       },
       {
         title: 'Yeni Ürün Ekle\'ye Tıklayın',
         description: '"Yeni Ürün Ekle" veya "+" düğmesine tıklayarak ürün listeleme formunu açın.',
-        image: 'https://picsum.photos/600/300?random=14'
+        image: getFeedImageUrl(14, 600, 300)
       },
       {
         title: 'Ürün Fotoğrafları Yükleyin',
         description: 'Ürünün en az 3 fotoğrafını farklı açılardan yükleyin. Kaliteli, net fotoğraflar satış şansını arttırır.',
-        image: 'https://picsum.photos/600/300?random=15'
+        image: getFeedImageUrl(15, 600, 300)
       },
       {
         title: 'Ürün Başlığı ve Açıklaması',
         description: 'Kısa ve açıklayıcı bir başlık yazın. Açıklamada ürünün koşulu, rengi, boyutu ve özellikleri belirtin.',
-        image: 'https://picsum.photos/600/300?random=16'
+        image: getFeedImageUrl(16, 600, 300)
       },
       {
         title: 'Kategori ve Fiyat Belirleyin',
         description: 'Ürünün kategorisini seçin (Elektronik, Mobilya, vb.). Makul ve pazar değeri ile uyumlu bir fiyat belirleyin.',
-        image: 'https://picsum.photos/600/300?random=17'
+        image: getFeedImageUrl(17, 600, 300)
       },
       {
         title: 'Yayınlayın',
         description: 'Tüm bilgileri girdikten sonra "Yayınla" düğmesine tıklayın. Ürün anında Pazar Yeri\'nde görüntülenecektir.',
-        image: 'https://picsum.photos/600/300?random=18'
+        image: getFeedImageUrl(18, 600, 300)
       }
     ],
     relatedArticles: [
@@ -173,32 +174,32 @@ const articlesData: { [key: string]: ArticleContent } = {
       {
         title: 'Ayarlar > Güvenlik Bölümüne Gidin',
         description: "Profil menüsünden Ayarlar'a gidin ve sol menüden Güvenlik seçeneğini seçin.",
-        image: 'https://picsum.photos/600/300?random=19'
+        image: getFeedImageUrl(19, 600, 300)
       },
       {
         title: '2FA Seçeneğini Bulun',
         description: 'Güvenlik sayfasında "İki Faktörlü Kimlik Doğrulama" veya "2FA" bölümünü bulun.',
-        image: 'https://picsum.photos/600/300?random=20'
+        image: getFeedImageUrl(20, 600, 300)
       },
       {
         title: '2FA Yöntemini Seçin',
         description: 'SMS (Kısa Mesaj) veya Authenticator Uygulaması arasında seçim yapın. Authenticator daha güvenlidir.',
-        image: 'https://picsum.photos/600/300?random=21'
+        image: getFeedImageUrl(21, 600, 300)
       },
       {
         title: 'SMS İçin Doğrulama',
         description: 'SMS seçerseniz, telefon numaranız doğrulanır. Gönderilen kodu girin.',
-        image: 'https://picsum.photos/600/300?random=22'
+        image: getFeedImageUrl(22, 600, 300)
       },
       {
         title: 'Authenticator Uygulaması Kurulumu',
         description: 'Google Authenticator gibi bir uygulama yükleyin. QR kodunu tarayın ve 6 haneli kodu girin.',
-        image: 'https://picsum.photos/600/300?random=23'
+        image: getFeedImageUrl(23, 600, 300)
       },
       {
         title: '2FA\'yi Etkinleştirin',
         description: 'Doğrulama başarılı olduğunda, 2FA etkin hale gelir. Bundan sonra her oturum açışta kod girebilirsiniz.',
-        image: 'https://picsum.photos/600/300?random=24'
+        image: getFeedImageUrl(24, 600, 300)
       }
     ],
     relatedArticles: [
@@ -218,32 +219,32 @@ const articlesData: { [key: string]: ArticleContent } = {
       {
         title: 'Uygulamayı Kapatın',
         description: 'Açık uygulamayı tamamen kapatın. Android\'de geri düğmesine, iOS\'ta yukarıdan aşağıya kaydırın.',
-        image: 'https://picsum.photos/600/300?random=25'
+        image: getFeedImageUrl(25, 600, 300)
       },
       {
         title: 'Uygulamayı Yeniden Açın',
         description: 'Uygulamayı kapatıp 10 saniye bekleyin, sonra yeniden başlatın. Bu şekilde çoğu hata çözülür.',
-        image: 'https://picsum.photos/600/300?random=26'
+        image: getFeedImageUrl(26, 600, 300)
       },
       {
         title: 'Cihazı Yeniden Başlatın',
         description: 'Sorun devam ederse, telefonunuzu kapatıp yeniden başlatın. Telefon kapalıyken 5-10 saniye bekleyin.',
-        image: 'https://picsum.photos/600/300?random=27'
+        image: getFeedImageUrl(27, 600, 300)
       },
       {
         title: 'Uygulamayı Güncelleyin',
         description: 'Google Play Store veya Apple App Store\'da KomşuApp\'ın en son sürümü yüklü olup olmadığını kontrol edin.',
-        image: 'https://picsum.photos/600/300?random=28'
+        image: getFeedImageUrl(28, 600, 300)
       },
       {
         title: 'Uygulama Önbelleğini Temizleyin',
         description: 'Cihaz Ayarları > Uygulamalar > KomşuApp > Depolama > Önbelleği Temizle seçeneğine gidin.',
-        image: 'https://picsum.photos/600/300?random=29'
+        image: getFeedImageUrl(29, 600, 300)
       },
       {
         title: 'Destek ile İletişime Geçin',
         description: 'Sorun halen devam ederse, Yardım Merkezi\'nden destek ekibimize bildirin.',
-        image: 'https://picsum.photos/600/300?random=30'
+        image: getFeedImageUrl(30, 600, 300)
       }
     ],
     relatedArticles: [

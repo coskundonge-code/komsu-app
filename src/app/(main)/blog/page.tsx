@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
 import {
   ArrowLeft,
   Calendar,
@@ -28,7 +29,7 @@ const blogPosts: BlogPost[] = [
     title: "Mahallede Güvenliği Nasıl Artırabiliriz?",
     excerpt:
       "Komşuluk bağlantılarını güçlendirerek mahallede güvenlik hissi oluşturmanın pratik yollarını öğrenin.",
-    image: "https://picsum.photos/600/400?random=1",
+    image: getFeedImageUrl(1, 600, 400),
     author: "Ayşe Kaya",
     date: "2026-03-08",
     category: "Güvenlik",
@@ -39,7 +40,7 @@ const blogPosts: BlogPost[] = [
     title: "KomşuApp Yeni Topluluk Özellikleri: Daha İyi Bağlantılar",
     excerpt:
       "Mahalle gruplarını etkili bir şekilde yönetmek ve aktif bir topluluk oluşturmak için yeni araçlarımızı keşfedin.",
-    image: "https://picsum.photos/600/400?random=2",
+    image: getFeedImageUrl(2, 600, 400),
     author: "Mehmet Demir",
     date: "2026-03-06",
     category: "Topluluk",
@@ -50,7 +51,7 @@ const blogPosts: BlogPost[] = [
     title: "Mahallede Komşu Yardım Ağını Etkin Kullanma",
     excerpt:
       "Komşularınızla yardımlaşmak ve birbirini desteklemek için KomşuApp'ın yardım ağı özelliğini nasıl kullanacağınızı öğrenin.",
-    image: "https://picsum.photos/600/400?random=3",
+    image: getFeedImageUrl(3, 600, 400),
     author: "Zeynep Aydın",
     date: "2026-03-04",
     category: "İpuçları",
@@ -61,7 +62,7 @@ const blogPosts: BlogPost[] = [
     title: "Günceleme: Geliştirilmiş Mahalle İçeriği Paylaşımı",
     excerpt:
       "Mahalle sakinlerinin birbirlerine yardım etmesi için tasarlanmış yeni güvenlik ve gizlilik özelliklerini keşfet.",
-    image: "https://picsum.photos/600/400?random=4",
+    image: getFeedImageUrl(4, 600, 400),
     author: "KomşuApp Ekibi",
     date: "2026-03-01",
     category: "Güncellemeler",
@@ -72,7 +73,7 @@ const blogPosts: BlogPost[] = [
     title: "Cihangir Mahallesi: Topluluk Birliği Başarı Hikayesi",
     excerpt:
       "Nasıl bir mahalle KomşuApp sayesinde daha güvenli ve bağlı bir topluluk haline geldiğini gördük.",
-    image: "https://picsum.photos/600/400?random=5",
+    image: getFeedImageUrl(5, 600, 400),
     author: "Ali Yılmaz",
     date: "2026-02-28",
     category: "Topluluk",
@@ -83,7 +84,7 @@ const blogPosts: BlogPost[] = [
     title: "KomşuApp'ta Çevrimiçi Güvenlik ve Gizlilik Rehberi",
     excerpt:
       "Platformda güvenli kalmanın ve mahallenizdeki mevcut tehditleri tanımanın pratik yolları.",
-    image: "https://picsum.photos/600/400?random=6",
+    image: getFeedImageUrl(6, 600, 400),
     author: "Dr. Fatih Özer",
     date: "2026-02-25",
     category: "Güvenlik",
@@ -94,7 +95,7 @@ const blogPosts: BlogPost[] = [
     title: "Beşiktaş İlk Mahalle Pikniği: Komşuları Bir Araya Getirdi",
     excerpt:
       "Mahalle sakinlerinin ilk kez buluştuğu etkinlikle daha güçlü topluluk bağları oluştu.",
-    image: "https://picsum.photos/600/400?random=7",
+    image: getFeedImageUrl(7, 600, 400),
     author: "Emine Şahin",
     date: "2026-02-22",
     category: "Topluluk",
@@ -105,7 +106,7 @@ const blogPosts: BlogPost[] = [
     title: "KomşuApp Mobilini Verimli Kullanma: Pro İpuçları",
     excerpt:
       "Mobil uygulamayı en etkili şekilde kullanarak mahalle bağlantılarınızı yoğunlaştırın.",
-    image: "https://picsum.photos/600/400?random=8",
+    image: getFeedImageUrl(8, 600, 400),
     author: "Seren Tuna",
     date: "2026-02-20",
     category: "İpuçları",
@@ -116,7 +117,7 @@ const blogPosts: BlogPost[] = [
     title: "Mahallede Yeşil Alan Projesi: Topluluk Bahçesi Kurma Rehberi",
     excerpt:
       "Atıl alanları yeşil bahçelere dönüştürerek mahalle halkını bir araya getirin.",
-    image: "https://picsum.photos/600/400?random=9",
+    image: getFeedImageUrl(9, 600, 400),
     author: "Canan Çelik",
     date: "2026-02-18",
     category: "İpuçları",
@@ -127,7 +128,7 @@ const blogPosts: BlogPost[] = [
     title: "Mahallede Yeni Komşuları Tanıma: Sosyal Rehberi",
     excerpt:
       "Mahalle topluluğunu genişletmek ve yeni komşularla sağlıklı ilişkiler kurmak için stratejiler.",
-    image: "https://picsum.photos/600/400?random=10",
+    image: getFeedImageUrl(10, 600, 400),
     author: "Hakan Özdemir",
     date: "2026-02-15",
     category: "Topluluk",
@@ -138,7 +139,7 @@ const blogPosts: BlogPost[] = [
     title: "Mahallede Güvenlik Gözetim Sistemi Kurma Tartışması",
     excerpt:
       "Mahallenin güvenliğini artırmak için yapılacak ortak çalışmalar ve hukuki çerçeve.",
-    image: "https://picsum.photos/600/400?random=11",
+    image: getFeedImageUrl(11, 600, 400),
     author: "Murat Kaplan",
     date: "2026-02-12",
     category: "Güvenlik",
@@ -149,7 +150,7 @@ const blogPosts: BlogPost[] = [
     title: "KomşuApp İpuçları: Daha Etkili İçerik Paylaşımı",
     excerpt:
       "Mahalle haberlerinizi nasıl daha geniş bir kitleye ulaştıracağınızı ve katılımı nasıl artıracağınızı öğrenin.",
-    image: "https://picsum.photos/600/400?random=12",
+    image: getFeedImageUrl(12, 600, 400),
     author: "Leyla Şener",
     date: "2026-02-10",
     category: "İpuçları",
