@@ -93,8 +93,9 @@ export const metadata: Metadata = {
     email: false,
     telephone: false,
   },
-  verification: {
-    google: "your-google-verification-code",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/icon-192.png",
   },
 };
 

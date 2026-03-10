@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Admin ve özel alanları engelle
+Disallow: /admin
+Disallow: /isletme-paneli
+Disallow: /api/
+Disallow: /auth/
+
+# Sitemap
+Sitemap: https://komsuapp.com/sitemap.xml
