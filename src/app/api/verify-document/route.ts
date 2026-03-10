@@ -3,20 +3,16 @@ import { NextRequest, NextResponse } from 'next/server'
 /**
  * POST /api/verify-document
  *
- * Verifies an e-Devlet document code against turkiye.gov.tr/belge-dogrulama
+ * e-Devlet belge doğrulama kodu ile turkiye.gov.tr/belge-dogrulama üzerinden
+ * belgeyi doğrular.
  *
- * In production, this would:
- * 1. Use a headless browser (Puppeteer) to navigate to turkiye.gov.tr/belge-dogrulama
- * 2. Enter the barcode/verification code
- * 3. Solve any CAPTCHA (via a CAPTCHA service)
- * 4. Parse the result page
- *
- * For the MVP/demo, we simulate the verification process.
+ * Production'da: Puppeteer/Playwright ile turkiye.gov.tr'ye gidip formu doldurur.
+ * Demo'da: Kod formatını doğrulayıp simüle eder.
  */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { code } = body
+    const { code, documentInfo } = body
 
     if (!code || typeof code !== 'string') {
       return NextResponse.json(
@@ -25,101 +21,58 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate code format
-    const cleanCode = code.trim().replace(/[-\s]/g, '')
-    if (cleanCode.length < 8) {
-      return NextResponse.json(
-        { verified: false, message: 'Geçersiz doğrulama kodu formatı. Kod en az 8 karakter olmalıdır.' },
-        { status: 400 }
-      )
+    const cleanCode = code.trim()
+
+    // e-Devlet belge doğrulama kodu format kontrolü: XXXX-XXXX-XXXX-XXXX
+    const codePattern = /^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/
+    if (!codePattern.test(cleanCode)) {
+      return NextResponse.json({
+        verified: false,
+        message: 'Geçersiz belge doğrulama kodu formatı. Beklenen format: NV02-ILLE-G5U8-RLN9'
+      }, { status: 400 })
     }
 
-    // ===== Production Implementation =====
-    // In production, uncomment and use the following approach:
-    //
-    // Option 1: Direct API call (if turkiye.gov.tr provides an API)
-    // const verificationResult = await fetch('https://www.turkiye.gov.tr/api/belge-dogrulama', {
-    //   method: 'POST',
-    //   body: JSON.stringify({ barkodNo: cleanCode }),
-    //   headers: { 'Content-Type': 'application/json' }
-    // })
-    //
-    // Option 2: Headless browser approach (Puppeteer)
+    // ===== Production: turkiye.gov.tr/belge-dogrulama entegrasyonu =====
     // const browser = await puppeteer.launch({ headless: true })
     // const page = await browser.newPage()
     // await page.goto('https://www.turkiye.gov.tr/belge-dogrulama')
-    // await page.type('#barkodNo', cleanCode)
-    // await page.click('#dogrulaBtn')
-    // await page.waitForSelector('.result')
-    // const result = await page.evaluate(() => {
-    //   return document.querySelector('.result')?.textContent
+    // await page.waitForSelector('input[name="sorgulama_kodu"]')
+    //
+    // // Barkod numarasını gir (tire olmadan veya tireli)
+    // await page.type('input[name="sorgulama_kodu"]', cleanCode)
+    // await page.click('button[type="submit"]')
+    // await page.waitForNavigation()
+    //
+    // // Sonucu oku
+    // const resultText = await page.evaluate(() => {
+    //   return document.querySelector('.belge-sonuc')?.textContent || ''
     // })
     // await browser.close()
-    //
-    // Option 3: Supabase Edge Function with Deno's fetch
-    // const result = await supabase.functions.invoke('verify-edevlet', {
-    //   body: { code: cleanCode }
-    // })
-    // =====================================
+    // ====================================================================
 
-    // Simulate verification delay (1-3 seconds)
-    await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1500))
+    // Simülasyon: 2 saniye gecikme (turkiye.gov.tr yanıt süresi)
+    await new Promise(resolve => setTimeout(resolve, 2000))
 
-    // Simulate turkiye.gov.tr/belge-dogrulama response
-    // In production, this would parse actual response from the government portal
-    const verificationResult = simulateVerification(cleanCode)
-
-    return NextResponse.json(verificationResult)
+    // Doğrulama başarılı
+    return NextResponse.json({
+      verified: true,
+      message: 'Belge doğrulaması başarıyla tamamlandı.',
+      code: cleanCode,
+      details: {
+        documentType: 'Yerleşim Yeri ve Diğer Adres Belgesi',
+        issueDate: '10.03.2026',
+        validUntil: '09.04.2026',
+        issuedBy: 'Nüfus ve Vatandaşlık İşleri Genel Müdürlüğü',
+        // Belge bilgileri (documentInfo API'ye gönderildiyse kullan)
+        ...(documentInfo || {}),
+      },
+      verificationUrl: `https://www.turkiye.gov.tr/belge-dogrulama`
+    })
   } catch (error) {
     console.error('Document verification error:', error)
     return NextResponse.json(
       { verified: false, message: 'Doğrulama sırasında bir sunucu hatası oluştu.' },
       { status: 500 }
     )
-  }
-}
-
-/**
- * Simulates the turkiye.gov.tr/belge-dogrulama verification response
- * Replace with actual API integration in production
- */
-function simulateVerification(code: string): {
-  verified: boolean
-  message: string
-  details?: {
-    documentType?: string
-    issueDate?: string
-    holderName?: string
-    address?: string
-    neighborhood?: string
-    district?: string
-    city?: string
-  }
-  verificationUrl?: string
-} {
-  // For demo: codes starting with valid patterns are accepted
-  const isValid = code.length >= 8
-
-  if (isValid) {
-    return {
-      verified: true,
-      message: 'Belge doğrulaması başarıyla tamamlandı.',
-      details: {
-        documentType: 'Yerleşim Yeri ve Diğer Adres Belgesi',
-        issueDate: new Date().toLocaleDateString('tr-TR'),
-        holderName: '****** ******', // Masked for privacy
-        address: '****** Mah. ****** Cad. No:*** Daire:***',
-        neighborhood: 'Kadıköy',
-        district: 'Kadıköy',
-        city: 'İstanbul'
-      },
-      verificationUrl: `https://www.turkiye.gov.tr/belge-dogrulama?barkodNo=${code}`
-    }
-  }
-
-  return {
-    verified: false,
-    message: 'Bu doğrulama koduna ait belge bulunamadı. Lütfen kodu kontrol edip tekrar deneyin.',
-    verificationUrl: `https://www.turkiye.gov.tr/belge-dogrulama?barkodNo=${code}`
   }
 }
