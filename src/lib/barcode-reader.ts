@@ -37,6 +37,7 @@ async function getPdfjs() {
 
   const pdfjsLib = await import('pdfjs-dist')
 
+  // Worker — önce local, sonra CDN dene
   const workerUrls = [
     '/pdf.worker.min.mjs',
     `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`,
@@ -68,6 +69,11 @@ async function getPdfjs() {
   pdfjsReady = pdfjsLib
   return pdfjsLib
 }
+
+// CMap ve font URL'leri — PDF'deki özel font encoding'leri çözmek için ZORUNLU
+const CMAP_URL = '/cmaps/'
+const CMAP_PACKED = true
+const STANDARD_FONT_DATA_URL = '/standard_fonts/'
 
 // ============================================================
 // ANA FONKSİYONLAR
@@ -121,7 +127,13 @@ export async function extractFullDocumentInfo(file: File): Promise<DocumentExtra
     const pdfjsLib = await getPdfjs()
     console.log('[barcode] pdfjs-dist version:', pdfjsLib.version)
 
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
+    const pdf = await pdfjsLib.getDocument({
+      data: arrayBuffer,
+      cMapUrl: CMAP_URL,
+      cMapPacked: CMAP_PACKED,
+      standardFontDataUrl: STANDARD_FONT_DATA_URL,
+      useSystemFonts: true,
+    }).promise
     console.log('[barcode] PDF loaded successfully, pages:', pdf.numPages)
 
     let allText = ''
@@ -130,10 +142,20 @@ export async function extractFullDocumentInfo(file: File): Promise<DocumentExtra
 
     for (let pageNum = 1; pageNum <= numPages; pageNum++) {
       const page = await pdf.getPage(pageNum)
-      const textContent = await page.getTextContent()
+
+      // Metin çıkarma — normalizeWhitespace ve disableNormalization ile dene
+      const textContent = await page.getTextContent({
+        includeMarkedContent: false,
+        disableNormalization: false,
+      })
       const items = textContent.items as Array<{ str: string; transform?: number[] }>
 
       console.log(`[barcode] Page ${pageNum}: ${items.length} text items`)
+
+      // İlk 30 item'ı logla (debug için)
+      for (let i = 0; i < Math.min(items.length, 30); i++) {
+        console.log(`[barcode]   item[${i}]: "${items[i].str}"`)
+      }
 
       for (const item of items) {
         const str = (item.str || '').trim()
@@ -200,8 +222,40 @@ export async function extractFullDocumentInfo(file: File): Promise<DocumentExtra
       }
     }
 
+    // SON ÇARE: pdfjs metin çıkaramadıysa veya kod bulunamadıysa,
+    // PDF sayfasını canvas'a render edip OCR ile dene
+    if (!code && typeof document !== 'undefined') {
+      console.log('[barcode] All text strategies failed, trying PDF→Canvas→OCR...')
+      try {
+        const page = await pdf.getPage(1)
+        const scale = 2.5
+        const viewport = page.getViewport({ scale })
+        const canvas = document.createElement('canvas')
+        canvas.width = viewport.width
+        canvas.height = viewport.height
+        const ctx = canvas.getContext('2d')!
+        ctx.fillStyle = 'white'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        await page.render({ canvasContext: ctx, viewport }).promise
+        console.log('[barcode] PDF rendered to canvas, running OCR...')
+
+        // Canvas'ı blob'a çevir ve OCR'a gönder
+        const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'))
+        if (blob) {
+          const ocrFile = new File([blob], 'page1.png', { type: 'image/png' })
+          const ocrResult = await extractFromImageWithOCR(ocrFile)
+          if (ocrResult?.code) {
+            code = ocrResult.code
+            console.log('[barcode] ✅ Found via PDF→OCR:', code)
+          }
+        }
+      } catch (ocrErr) {
+        console.warn('[barcode] PDF→OCR fallback failed:', ocrErr)
+      }
+    }
+
     if (!code) {
-      console.warn('[barcode] ❌ No barcode found after all strategies')
+      console.warn('[barcode] ❌ No barcode found after all strategies (including OCR)')
     }
 
     // Diğer bilgiler

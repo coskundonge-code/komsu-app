@@ -42,4 +42,7 @@ next-env.d.ts
 TOAST_*.md
 TOAST_*.txt
 
-# PDF.js worker (auto-copied via postinstall)
+# PDF.js worker, CMap, fonts (auto-copied via postinstall)
+public/pdf.worker.min.mjs
+public/cmaps/
+public/standard_fonts/
