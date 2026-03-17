@@ -44,6 +44,9 @@ const publicRoutes = [
   '/adres-dogrulama',
   '/konum-secimi',
   '/api/verify-document',
+  '/odunc-kirala',
+  '/mahallem-kart',
+  '/askida-bagis',
 ]
 
 // Routes exempt from location check (user needs to access these even without location)
