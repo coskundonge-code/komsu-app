@@ -2,9 +2,12 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { Search, MapPin, ChevronRight, Map, List, Clock, Star, Zap, Phone } from 'lucide-react';
 import { BusinessCard } from '@/components/business/business-card';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
+
+const LeafletMap = dynamic(() => import('@/components/map/leaflet-map'), { ssr: false });
 
 interface Business {
   id: string;
@@ -19,6 +22,8 @@ interface Business {
   website?: string;
   isOpen: boolean;
   isFeatured?: boolean;
+  lat: number;
+  lng: number;
 }
 
 const MOCK_BUSINESSES: Business[] = [
@@ -35,6 +40,7 @@ const MOCK_BUSINESSES: Business[] = [
     website: 'kahvehane-keyif.com',
     isOpen: true,
     isFeatured: true,
+    lat: 41.0422, lng: 29.0050,
   },
   {
     id: '2',
@@ -48,6 +54,7 @@ const MOCK_BUSINESSES: Business[] = [
     phone: '+90 216 456 7890',
     isOpen: true,
     isFeatured: false,
+    lat: 40.9903, lng: 29.0280,
   },
   {
     id: '3',
@@ -61,6 +68,7 @@ const MOCK_BUSINESSES: Business[] = [
     phone: '+90 212 234 5678',
     isOpen: false,
     isFeatured: true,
+    lat: 41.0322, lng: 28.9836,
   },
   {
     id: '4',
@@ -75,6 +83,7 @@ const MOCK_BUSINESSES: Business[] = [
     website: 'guzellik-ayse.com',
     isOpen: true,
     isFeatured: false,
+    lat: 41.0371, lng: 28.9770,
   },
   {
     id: '5',
@@ -88,6 +97,7 @@ const MOCK_BUSINESSES: Business[] = [
     phone: '+90 212 345 6789',
     isOpen: true,
     isFeatured: false,
+    lat: 41.0602, lng: 28.9877,
   },
   {
     id: '6',
@@ -101,6 +111,7 @@ const MOCK_BUSINESSES: Business[] = [
     phone: '+90 212 678 9012',
     isOpen: false,
     isFeatured: false,
+    lat: 41.0800, lng: 29.0122,
   },
   {
     id: '7',
@@ -115,6 +126,7 @@ const MOCK_BUSINESSES: Business[] = [
     website: 'sağlık-eczane.com',
     isOpen: true,
     isFeatured: true,
+    lat: 41.0312, lng: 28.9740,
   },
   {
     id: '8',
@@ -129,6 +141,7 @@ const MOCK_BUSINESSES: Business[] = [
     website: 'pet-bakım.com',
     isOpen: true,
     isFeatured: false,
+    lat: 41.0190, lng: 28.9400,
   },
   {
     id: '9',
@@ -142,6 +155,7 @@ const MOCK_BUSINESSES: Business[] = [
     phone: '+90 212 555 1111',
     isOpen: true,
     isFeatured: false,
+    lat: 41.0255, lng: 28.9741,
   },
   {
     id: '10',
@@ -153,6 +167,7 @@ const MOCK_BUSINESSES: Business[] = [
     distance: 0.9,
     logo: getFeedImageUrl(109, 200, 200),
     phone: '+90 212 222 3333',
+    lat: 41.0370, lng: 28.9850,
     website: 'saglik-klinik.com',
     isOpen: true,
     isFeatured: false,
@@ -351,13 +366,19 @@ export default function IsletmelerPage() {
             </div>
           ) : (
             <div className="mb-12 bg-white rounded-lg border-2 border-[#e0e0e0] overflow-hidden">
-              <div className="h-96 bg-gradient-to-br from-[#f0f2f5] to-[#e0e0e0] flex flex-col items-center justify-center p-8 text-center">
-                <Map size={64} className="text-[#8f8f8f] mb-4" />
-                <h3 className="text-xl font-bold text-[#333] mb-2">Harita Görünümü</h3>
-                <p className="text-[#8f8f8f] max-w-md">
-                  Harita özelliği yakında kullanıma sunulacak. Şu anda liste görünümünü kullanabilirsiniz.
-                </p>
-              </div>
+              <LeafletMap
+                center={[41.0370, 28.9850]}
+                zoom={13}
+                className="w-full h-96"
+                markers={filteredAndSortedBusinesses.map(b => ({
+                  lat: b.lat,
+                  lng: b.lng,
+                  title: b.name,
+                  description: b.address,
+                  color: b.isOpen ? 'green' as const : 'red' as const,
+                  popup: `<strong>${b.name}</strong><br/><span style="color:#666">${b.category} · ${b.isOpen ? '✅ Açık' : '❌ Kapalı'}</span><br/><span style="color:#888;font-size:11px">${b.address}</span>`,
+                }))}
+              />
             </div>
           )
         ) : (

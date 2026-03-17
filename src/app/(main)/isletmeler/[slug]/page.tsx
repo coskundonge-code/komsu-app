@@ -2,7 +2,10 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
+
+const LeafletMap = dynamic(() => import('@/components/map/leaflet-map'), { ssr: false });
 import {
   Star,
   MapPin,
@@ -522,21 +525,24 @@ export default function BusinessDetailPage({ params }: PageProps) {
                       </div>
                     </div>
 
-                    {/* Map Placeholder */}
+                    {/* Map */}
                     <div>
                       <h3 className="text-lg font-bold text-gray-900 mb-3">
                         Konum
                       </h3>
-                      <div className="w-full h-64 bg-[#e0e0e0] rounded-lg flex items-center justify-center border border-[#d9d9d9]">
-                        <div className="text-center">
-                          <MapIcon
-                            size={48}
-                            className="text-gray-400 mx-auto mb-2"
-                          />
-                          <p className="text-gray-600 font-medium">
-                            Harita yükleniyor...
-                          </p>
-                        </div>
+                      <div className="w-full h-64 rounded-lg overflow-hidden border border-[#d9d9d9]">
+                        <LeafletMap
+                          center={[41.0422, 29.0050]}
+                          zoom={15}
+                          className="w-full h-full"
+                          markers={[{
+                            lat: 41.0422,
+                            lng: 29.0050,
+                            title: MOCK_BUSINESS.name,
+                            description: MOCK_BUSINESS.address,
+                            color: 'green',
+                          }]}
+                        />
                       </div>
                     </div>
                   </div>

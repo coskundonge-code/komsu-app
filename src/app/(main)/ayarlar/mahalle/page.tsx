@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+const LeafletMap = dynamic(() => import("@/components/map/leaflet-map"), { ssr: false });
 import {
   MapPin,
   Map,
@@ -180,14 +183,15 @@ export default function MahallePage() {
             Mevcut Mahalle
           </h2>
 
-          {/* Map Placeholder */}
-          <div className="w-full h-48 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0] flex items-center justify-center mb-6">
-            <div className="text-center">
-              <Map className="w-16 h-16 text-[#8f8f8f] mx-auto mb-3" />
-              <p className="text-sm text-[#8f8f8f]">
-                Mahalle haritası burada gösterilecek
-              </p>
-            </div>
+          {/* Map */}
+          <div className="w-full h-48 rounded-lg overflow-hidden border border-[#e0e0e0] mb-6">
+            <LeafletMap
+              center={[41.0422, 29.0050]}
+              zoom={15}
+              className="w-full h-full"
+              markers={[{ lat: 41.0422, lng: 29.0050, title: 'Mahalleniz', color: 'green' }]}
+              showUserLocation={true}
+            />
           </div>
 
           {/* Current Neighborhood Display */}

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import dynamic from 'next/dynamic';
 import {
   Search,
   AlertCircle,
@@ -25,6 +26,8 @@ import {
   Bell,
 } from 'lucide-react';
 import Link from 'next/link';
+
+const LeafletMap = dynamic(() => import('@/components/map/leaflet-map'), { ssr: false });
 
 interface Alert {
   id: string;
@@ -435,14 +438,22 @@ export default function AlertsPage() {
 
         {/* Sidebar */}
         <div className="lg:col-span-1 space-y-4">
-          {/* Map Placeholder */}
+          {/* Map */}
           <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden">
-            <div className="bg-gradient-to-br from-gray-100 to-gray-200 h-48 flex flex-col items-center justify-center">
-              <Map size={48} className="text-[#8f8f8f] mb-2" />
-              <p className="text-[#8f8f8f] font-medium text-center px-4">Harita Görünümü</p>
-            </div>
-            <div className="p-4">
-              <p className="text-sm text-[#8f8f8f] text-center">Harita görünümü yakında</p>
+            <LeafletMap
+              center={[41.0370, 28.9850]}
+              zoom={13}
+              className="w-full h-48"
+              markers={[
+                { lat: 41.0422, lng: 29.0050, title: 'Su Kesintisi', color: 'blue' },
+                { lat: 41.0350, lng: 28.9900, title: 'Yol Çalışması', color: 'orange' },
+                { lat: 41.0300, lng: 28.9780, title: 'Güvenlik Uyarısı', color: 'red' },
+                { lat: 41.0450, lng: 28.9750, title: 'Gürültü Şikayeti', color: 'orange' },
+              ]}
+              interactive={false}
+            />
+            <div className="p-3">
+              <p className="text-xs text-[#8f8f8f] text-center">Uyarı konumları haritada gösterilmektedir</p>
             </div>
           </div>
 
