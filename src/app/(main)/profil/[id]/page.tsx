@@ -11,7 +11,6 @@ import {
   CheckCircle,
   Shield,
   UserPlus,
-  Send,
   MessageSquare,
   Calendar as CalendarIcon,
   Lightbulb,
@@ -284,19 +283,10 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                           Profili Düzenle
                         </Link>
                       ) : (
-                        <>
-                          <Link
-                            href="/mesajlar"
-                            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-all card-hover text-sm"
-                          >
-                            <Send size={16} />
-                            Mesaj Gönder
-                          </Link>
-                          <button className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-[#00833e] text-[#00833e] hover:bg-[#00833e]/5 font-medium rounded-lg transition-all card-hover text-sm">
-                            <UserPlus size={16} />
-                            Komşu Ekle
-                          </button>
-                        </>
+                        <button className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-[#00833e] text-[#00833e] hover:bg-[#00833e]/5 font-medium rounded-lg transition-all card-hover text-sm">
+                          <UserPlus size={16} />
+                          Komşu Ekle
+                        </button>
                       )}
                     </div>
                   </div>

@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import {
-  MessageCircle,
   MapPin,
   Clock,
   Heart,
@@ -158,10 +157,7 @@ export default function ListingDetailPage({
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [showContactForm, setShowContactForm] = useState(false);
-  const [messageText, setMessageText] = useState('');
   const [showShareMenu, setShowShareMenu] = useState(false);
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   const prevImage = () => {
     setCurrentImageIndex(
@@ -174,14 +170,6 @@ export default function ListingDetailPage({
     setCurrentImageIndex(
       (prev) => (prev + 1) % mockListing.images.length
     );
-  };
-
-  const handleMessageSend = () => {
-    if (messageText.trim()) {
-      setShowSuccessMessage(true);
-      setMessageText('');
-      setTimeout(() => setShowSuccessMessage(false), 3000);
-    }
   };
 
   const similarListings = [
@@ -612,13 +600,6 @@ export default function ListingDetailPage({
 
               {/* Action Buttons */}
               <div className="space-y-2">
-                <button
-                  onClick={() => setShowContactForm(true)}
-                  className="w-full px-4 py-3 bg-[#00833e] text-white rounded-lg font-semibold hover:bg-[#006b32] transition-colors flex items-center justify-center gap-2 shadow-sm"
-                >
-                  <MessageCircle size={18} />
-                  Mesaj Gönder
-                </button>
                 <Link
                   href={`/profil/${mockListing.seller.id}`}
                   className="w-full px-4 py-3 border-2 border-[#00833e] text-[#00833e] rounded-lg font-semibold hover:bg-green-50 transition-colors text-center"
@@ -627,54 +608,6 @@ export default function ListingDetailPage({
                 </Link>
               </div>
             </div>
-
-            {/* Contact Form Modal */}
-            {showContactForm && (
-              <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-bold text-[#333]">Mesaj Gönder</h3>
-                  <button
-                    onClick={() => {
-                      setShowContactForm(false);
-                      setMessageText('');
-                    }}
-                    className="text-[#8f8f8f] hover:text-[#333] transition-colors"
-                  >
-                    ✕
-                  </button>
-                </div>
-
-                {showSuccessMessage && (
-                  <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-start gap-2">
-                    <Check size={18} className="text-[#00833e] flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-green-800">
-                      Mesajınız satıcıya gönderildi
-                    </p>
-                  </div>
-                )}
-
-                <textarea
-                  value={messageText}
-                  onChange={(e) => setMessageText(e.target.value)}
-                  placeholder="Satıcıya sorulu veya teklifinizi yazın..."
-                  rows={4}
-                  className="w-full px-4 py-3 border border-[#e0e0e0] rounded-lg text-sm text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:ring-2 focus:ring-[#00833e] focus:ring-opacity-30 resize-none mb-3 transition"
-                />
-
-                <button
-                  onClick={handleMessageSend}
-                  disabled={!messageText.trim()}
-                  className={cn(
-                    'w-full px-4 py-3 rounded-lg font-semibold transition-colors',
-                    messageText.trim()
-                      ? 'bg-[#00833e] text-white hover:bg-[#006b32]'
-                      : 'bg-[#e0e0e0] text-[#8f8f8f] cursor-not-allowed'
-                  )}
-                >
-                  Gönder
-                </button>
-              </div>
-            )}
 
             {/* Report Card */}
             <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-4">
@@ -687,27 +620,6 @@ export default function ListingDetailPage({
         </div>
       </div>
 
-      {/* Mobile Bottom Action Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#e0e0e0] shadow-lg md:hidden">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
-          <div className="text-left">
-            <p className="text-xs text-[#8f8f8f]">Fiyat</p>
-            <p className="text-2xl font-bold text-[#00833e]">
-              ₺{mockListing.price.toLocaleString('tr-TR')}
-            </p>
-          </div>
-          <button
-            onClick={() => setShowContactForm(!showContactForm)}
-            className="flex-1 px-4 py-3 bg-[#00833e] text-white rounded-lg font-semibold hover:bg-[#006b32] transition-colors flex items-center justify-center gap-2"
-          >
-            <MessageCircle size={18} />
-            Mesaj Gönder
-          </button>
-        </div>
-      </div>
-
-      {/* Spacer for mobile */}
-      <div className="h-24 md:h-0" />
     </div>
   );
 }
