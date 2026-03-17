@@ -93,13 +93,13 @@ export default function CommunityGuidelinesPage() {
           {/* Header */}
           <div className="bg-gradient-to-br from-[#00833e] to-[#006b32] p-8 text-white">
             <h1 className="text-3xl font-bold mb-2">Topluluk Kuralları</h1>
-            <p className="text-green-100">KomşuApp'te herkese saygılı, güvenli ve aydınlık bir ortam</p>
+            <p className="text-green-100">Mahallem'de herkese saygılı, güvenli ve aydınlık bir ortam</p>
           </div>
 
           {/* Giriş */}
           <div className="p-8 md:p-12 bg-blue-50 border-b border-[#e0e0e0]">
             <p className="text-[#404040] leading-relaxed">
-              KomşuApp, komşularımızın birbirine güvenle bağlanabileceği, bilgi paylaşabileceği ve
+              Mahallem, komşularımızın birbirine güvenle bağlanabileceği, bilgi paylaşabileceği ve
               yardımlaşabileceği bir topluluktur. Bu kurallar, platforma katılan herkesi saygılı
               bir ortam oluşturmaya çağırır. Kuralları ihlal eden kullanıcılar uyarı, hesap askıya
               alma veya kalıcı silme cezasına tabi tutulabilirler.
@@ -187,7 +187,7 @@ export default function CommunityGuidelinesPage() {
             <div className="text-center">
               <h2 className="text-2xl font-bold text-[#333] mb-3">Kuralları İhlal Gördünüz mü?</h2>
               <p className="text-[#404040] mb-6 max-w-2xl mx-auto">
-                KomşuApp topluluğunun güvenliğini sağlamak bizim ortak sorumluluğumuz. Sorunlu içeriği
+                Mahallem topluluğunun güvenliğini sağlamak bizim ortak sorumluluğumuz. Sorunlu içeriği
                 gördüğünüzde lütfen bildirin.
               </p>
               <Link
@@ -243,7 +243,7 @@ export default function CommunityGuidelinesPage() {
           {/* Footer */}
           <div className="border-t border-[#e0e0e0] bg-[#f0f2f5] py-6 px-8 text-center">
             <p className="text-sm text-[#8f8f8f] mb-4">
-              © 2026 KomşuApp — Trendex Lojistik tarafından geliştirilmiştir.
+              © 2026 Mahallem — Trendex Lojistik tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link

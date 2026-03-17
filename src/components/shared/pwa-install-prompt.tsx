@@ -79,7 +79,7 @@ export function PWAInstallPrompt() {
               <Download size={18} className="text-white" />
             </div>
             <p className="text-sm font-medium text-[#333]">
-              KomşuApp'ı ana ekranına ekle!
+              Mahallem'i ana ekranına ekle!
             </p>
           </div>
 

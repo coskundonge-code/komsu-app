@@ -1,4 +1,4 @@
-# KomşuApp - UI Components & Layout Guide
+# Mahallem - UI Components & Layout Guide
 
 ## Quick Start
 

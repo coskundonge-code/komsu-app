@@ -33,7 +33,7 @@ const blogArticles: Record<string, any> = {
       name: 'Ayşe Kaya',
       role: 'Güvenlik Danışmanı',
       avatar: getFeedImageUrl(101, 100, 100),
-      bio: 'Ayşe Kaya, 15 yıldan fazla mahalle güvenliği ve topluluk geliştirme alanında çalışmıştır. KomşuApp güvenlik inisiyatifinin kurucu üyesidir.',
+      bio: 'Ayşe Kaya, 15 yıldan fazla mahalle güvenliği ve topluluk geliştirme alanında çalışmıştır. Mahallem güvenlik inisiyatifinin kurucu üyesidir.',
     },
     publishDate: '2026-03-08',
     readTime: '5 dk',
@@ -62,7 +62,7 @@ const blogArticles: Record<string, any> = {
       },
       {
         type: 'paragraph',
-        text: 'KomşuApp kullanarak, bulunduğunuz mahallede birbiriyle tanışan bir topluluk oluşturabilirsiniz. Platform aracılığıyla etkinlik planlamak, mesaj paylaşmak ve birbirlerinize yardım etmek çok daha kolaydır.',
+        text: 'Mahallem kullanarak, bulunduğunuz mahallede birbiriyle tanışan bir topluluk oluşturabilirsiniz. Platform aracılığıyla etkinlik planlamak, mesaj paylaşmak ve birbirlerinize yardım etmek çok daha kolaydır.',
       },
       {
         type: 'heading',
@@ -84,7 +84,7 @@ const blogArticles: Record<string, any> = {
       },
       {
         type: 'paragraph',
-        text: 'Etkili bir iletişim ağı, mahalle güvenliğinin temel taşıdır. KomşuApp gibi dijital platformlar, bu ağları kurmanın en etkili yollarından biridir. Platform üzerinden şüpheli aktiviteler, güvenlik tehditleri veya acil durumlar hakkında uyarı yaymak çok hızlıdır.',
+        text: 'Etkili bir iletişim ağı, mahalle güvenliğinin temel taşıdır. Mahallem gibi dijital platformlar, bu ağları kurmanın en etkili yollarından biridir. Platform üzerinden şüpheli aktiviteler, güvenlik tehditleri veya acil durumlar hakkında uyarı yaymak çok hızlıdır.',
       },
       {
         type: 'paragraph',
@@ -123,7 +123,7 @@ const blogArticles: Record<string, any> = {
       },
       {
         type: 'paragraph',
-        text: 'Mahalle güvenliği, tüm sakinlerin katılımı ve işbirliği ile oluşturulur. Komşularınızı tanıyın, iletişim halinde kalın, acil durum planları hazırlayın ve birbirlerinizi destekleyin. KomşuApp gibi araçlar bu süreci kolaylaştırır ve daha güvenli, daha samimi mahalleler oluşturmanıza yardımcı olur.',
+        text: 'Mahalle güvenliği, tüm sakinlerin katılımı ve işbirliği ile oluşturulur. Komşularınızı tanıyın, iletişim halinde kalın, acil durum planları hazırlayın ve birbirlerinizi destekleyin. Mahallem gibi araçlar bu süreci kolaylaştırır ve daha güvenli, daha samimi mahalleler oluşturmanıza yardımcı olur.',
       },
       {
         type: 'paragraph',
@@ -132,10 +132,10 @@ const blogArticles: Record<string, any> = {
     ],
     relatedArticles: [2, 5, 9],
   },
-  'komsuapp-topluluk-yonetimi': {
+  'mahallem-topluluk-yonetimi': {
     id: 2,
-    slug: 'komsuapp-topluluk-yonetimi',
-    title: 'KomşuApp Topluluk Yönetimi: En İyi Uygulamalar',
+    slug: 'mahallem-topluluk-yonetimi',
+    title: 'Mahallem Topluluk Yönetimi: En İyi Uygulamalar',
     excerpt:
       'Mahalle gruplarını etkili bir şekilde yönetmek ve aktif bir topluluk oluşturmak için ipuçları.',
     heroImage: getFeedImageUrl(2, 1200, 600),
@@ -144,7 +144,7 @@ const blogArticles: Record<string, any> = {
       name: 'Mehmet Demir',
       role: 'Topluluk Yöneticisi',
       avatar: getFeedImageUrl(102, 100, 100),
-      bio: 'Mehmet Demir, 8 yıldan beri online topluluk yönetimi konusunda uzmanlaşmıştır. Türkiye\'nin en aktif KomşuApp topluluk yöneticilerinden biridir.',
+      bio: 'Mehmet Demir, 8 yıldan beri online topluluk yönetimi konusunda uzmanlaşmıştır. Türkiye\'nin en aktif Mahallem topluluk yöneticilerinden biridir.',
     },
     publishDate: '2026-03-06',
     readTime: '7 dk',
@@ -158,7 +158,7 @@ const blogArticles: Record<string, any> = {
     content: [
       {
         type: 'paragraph',
-        text: 'Bir mahalle topluluğu yönetmek, kişilik, sabır ve tutarlı stratejiye ihtiyaç duyar. KomşuApp üzerinde başarılı bir topluluk oluşturmak istiyorsanız, bu yazıdaki ipuçlarını uygulayabilirsiniz.',
+        text: 'Bir mahalle topluluğu yönetmek, kişilik, sabır ve tutarlı stratejiye ihtiyaç duyar. Mahallem üzerinde başarılı bir topluluk oluşturmak istiyorsanız, bu yazıdaki ipuçlarını uygulayabilirsiniz.',
       },
       {
         type: 'heading',
@@ -204,7 +204,7 @@ const blogArticles: Record<string, any> = {
     slug: 'yerel-isletmecilerin-basari-hikayeleri',
     title: 'Yerel İşletmecilerin Başarı Hikayeleri',
     excerpt:
-      'Cihangir Mahallesinde işletmesini KomşuApp sayesinde nasıl büyüttüğünü öğrenin.',
+      'Cihangir Mahallesinde işletmesini Mahallem sayesinde nasıl büyüttüğünü öğrenin.',
     heroImage: getFeedImageUrl(3, 1200, 600),
     category: 'İşletme Hikayeleri',
     author: {
@@ -223,7 +223,7 @@ const blogArticles: Record<string, any> = {
     content: [
       {
         type: 'paragraph',
-        text: 'Cihangir Mahallesinin kalbinde 30 yıldır hizmet veren Gül Bakkalı\'nın sahibi Gül Hanım, KomşuApp sayesinde işletmesini tamamen değiştirdi.',
+        text: 'Cihangir Mahallesinin kalbinde 30 yıldır hizmet veren Gül Bakkalı\'nın sahibi Gül Hanım, Mahallem sayesinde işletmesini tamamen değiştirdi.',
       },
       {
         type: 'heading',
@@ -232,7 +232,7 @@ const blogArticles: Record<string, any> = {
       },
       {
         type: 'paragraph',
-        text: 'Başlangıçta dijital platformlara şüpheli olan Gül Hanım, torununun teşvikiyle KomşuApp\'ta bir sayfa açmaya karar verdi. Bulunduğu mahalledeki mahallelerini takip eden müşteriler kendisine mensaj göndererek sipariş vermek istediler.',
+        text: 'Başlangıçta dijital platformlara şüpheli olan Gül Hanım, torununun teşvikiyle Mahallem\'ta bir sayfa açmaya karar verdi. Bulunduğu mahalledeki mahallelerini takip eden müşteriler kendisine mensaj göndererek sipariş vermek istediler.',
       },
       {
         type: 'paragraph',
@@ -245,7 +245,7 @@ const blogArticles: Record<string, any> = {
       },
       {
         type: 'paragraph',
-        text: 'Bugün Gül Bakkalı, mahallede en popüler bakkallarından biri. Müşterileri KomşuApp\'ta onu takip ediyor, yeni ürünleri merakla bekliyorlar ve ona tavsiye ediyorlar. Gül Hanım da mahallede daha iyi tanınıyor ve işletmesine daha çok müşteri kazanıyor.',
+        text: 'Bugün Gül Bakkalı, mahallede en popüler bakkallarından biri. Müşterileri Mahallem\'ta onu takip ediyor, yeni ürünleri merakla bekliyorlar ve ona tavsiye ediyorlar. Gül Hanım da mahallede daha iyi tanınıyor ve işletmesine daha çok müşteri kazanıyor.',
       },
       {
         type: 'paragraph',
@@ -269,8 +269,8 @@ const allArticles = [
   },
   {
     id: 2,
-    slug: 'komsuapp-topluluk-yonetimi',
-    title: 'KomşuApp Topluluk Yönetimi: En İyi Uygulamalar',
+    slug: 'mahallem-topluluk-yonetimi',
+    title: 'Mahallem Topluluk Yönetimi: En İyi Uygulamalar',
     excerpt: 'Mahalle gruplarını etkili bir şekilde yönetmek ve aktif bir topluluk oluşturmak için ipuçları.',
     image: getFeedImageUrl(2, 400, 300),
     category: 'Topluluk',
@@ -280,7 +280,7 @@ const allArticles = [
     id: 3,
     slug: 'yerel-isletmecilerin-basari-hikayeleri',
     title: 'Yerel İşletmecilerin Başarı Hikayeleri',
-    excerpt: 'Cihangir Mahallesinde işletmesini KomşuApp sayesinde nasıl büyüttüğünü öğrenin.',
+    excerpt: 'Cihangir Mahallesinde işletmesini Mahallem sayesinde nasıl büyüttüğünü öğrenin.',
     image: getFeedImageUrl(3, 400, 300),
     category: 'İşletme Hikayeleri',
     readTime: '6 dk',
@@ -323,8 +323,8 @@ const allArticles = [
   },
   {
     id: 8,
-    slug: 'komsuapp-mobil-hizli-kullanma-ipuclari',
-    title: 'KomşuApp Mobilini Hızlı Kullanma İpuçları',
+    slug: 'mahallem-mobil-hizli-kullanma-ipuclari',
+    title: 'Mahallem Mobilini Hızlı Kullanma İpuçları',
     excerpt: 'Mobil uygulamayı en etkili şekilde kullanmak için hızlı rehberimiz.',
     image: getFeedImageUrl(8, 400, 300),
     category: 'Uygulama Güncellemeleri',
@@ -713,7 +713,7 @@ export default function BlogDetailPage({
         {/* Call to Action */}
         <section className="mt-16 p-8 md:p-12 bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-lg text-white text-center">
           <h2 className="text-3xl font-bold mb-4">
-            KomşuApp Topluluğuna Katılın
+            Mahallem Topluluğuna Katılın
           </h2>
           <p className="text-green-100 mb-8 max-w-2xl mx-auto">
             Mahallenizdeki komşularınızla tanışın, bilgi paylaşın ve birlikte güçlü bir topluluk oluşturun.

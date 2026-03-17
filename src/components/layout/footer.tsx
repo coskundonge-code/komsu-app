@@ -9,7 +9,7 @@ export function Footer({ className, ...props }: FooterProps) {
 
   const footerSections = [
     {
-      title: "KomşuApp",
+      title: "Mahallem",
       links: [
         { label: "Hakkında", href: "/hakkinda" },
         { label: "Nasıl Çalışır", href: "/nasil-calisir" },
@@ -38,22 +38,22 @@ export function Footer({ className, ...props }: FooterProps) {
     {
       title: "İndir",
       links: [
-        { label: "App Store", href: "https://apps.apple.com/komsuapp" },
-        { label: "Google Play", href: "https://play.google.com/store/apps/komsuapp" },
+        { label: "App Store", href: "https://apps.apple.com/mahallem" },
+        { label: "Google Play", href: "https://play.google.com/store/apps/mahallem" },
       ],
     },
   ];
 
   const socialLinks = [
-    { icon: Twitter, href: "https://twitter.com/komsuapp", label: "Twitter" },
+    { icon: Twitter, href: "https://twitter.com/mahallem", label: "Twitter" },
     {
       icon: Instagram,
-      href: "https://instagram.com/komsuapp",
+      href: "https://instagram.com/mahallem",
       label: "Instagram",
     },
     {
       icon: Facebook,
-      href: "https://facebook.com/komsuapp",
+      href: "https://facebook.com/mahallem",
       label: "Facebook",
     },
   ];
@@ -93,7 +93,7 @@ export function Footer({ className, ...props }: FooterProps) {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             {/* Copyright */}
             <p className="text-xs text-[#8f8f8f]">
-              © {currentYear} KomşuApp. Tüm hakları saklıdır.
+              © {currentYear} Mahallem. Tüm hakları saklıdır.
             </p>
 
             {/* Social Links */}

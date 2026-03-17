@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import { generatePageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "Güvenlik | KomşuApp",
+  title: "Güvenlik | Mahallem",
   description:
-    "KomşuApp Güvenlik. Hesabınızı nasıl koruyabileceğinizi ve güvenli kalabileceğinizi öğrenin.",
+    "Mahallem Güvenlik. Hesabınızı nasıl koruyabileceğinizi ve güvenli kalabileceğinizi öğrenin.",
   openGraph: {
-    url: "https://komsuapp.com/guvenlik",
-    title: "Güvenlik | KomşuApp",
+    url: "https://mahallem.com/guvenlik",
+    title: "Güvenlik | Mahallem",
     description:
-      "KomşuApp Güvenlik. Hesabınızı nasıl koruyabileceğinizi ve güvenli kalabileceğinizi öğrenin.",
+      "Mahallem Güvenlik. Hesabınızı nasıl koruyabileceğinizi ve güvenli kalabileceğinizi öğrenin.",
   },
   twitter: {
-    title: "Güvenlik | KomşuApp",
+    title: "Güvenlik | Mahallem",
     description:
-      "KomşuApp Güvenlik. Hesabınızı nasıl koruyabileceğinizi ve güvenli kalabileceğinizi öğrenin.",
+      "Mahallem Güvenlik. Hesabınızı nasıl koruyabileceğinizi ve güvenli kalabileceğinizi öğrenin.",
   },
 });
 

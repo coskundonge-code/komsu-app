@@ -55,7 +55,7 @@ export function WelcomeModal() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-[#00833e] rounded-full mb-4">
             <span className="text-white text-2xl font-bold">K</span>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900">KomşuApp</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Mahallem</h2>
           <p className="text-gray-600 leading-relaxed">
             Mahallenizin sosyal ağına hoş geldiniz. Komşularınızla bağlantı kurun,
             birlikte alışveriş yapın ve etkinliklere katılın.
@@ -136,7 +136,7 @@ export function WelcomeModal() {
               Keşfetmeye Hazır mısın?
             </h3>
             <p className="text-gray-600">
-              KomşuApp'ı keşfetmeye ve mahallenizdeki insanlar ve işletmelerle
+              Mahallem'i keşfetmeye ve mahallenizdeki insanlar ve işletmelerle
               bağlantı kurmaya başla.
             </p>
           </div>

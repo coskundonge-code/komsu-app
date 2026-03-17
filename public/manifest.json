@@ -1,6 +1,6 @@
 {
-  "name": "KomşuApp - Mahallende Birlikte",
-  "short_name": "KomşuApp",
+  "name": "Mahallem - Mahallende Birlikte",
+  "short_name": "Mahallem",
   "description": "Türkiye'nin mahalle sosyal ağı. Komşularınızla bağlanın, haberleşin ve birlikte etkinlikler düzenleyin.",
   "start_url": "/",
   "display": "standalone",

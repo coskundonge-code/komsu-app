@@ -2,10 +2,10 @@ export function JsonLd() {
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "KomşuApp",
-    url: "https://komsuapp.com",
+    name: "Mahallem",
+    url: "https://mahallem.com",
     description:
-      "Türkiye'nin mahalle sosyal ağı. KomşuApp ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın, etkinliklere katılın ve yerel işletmeleri keşfedin.",
+      "Türkiye'nin mahalle sosyal ağı. Mahallem ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın, etkinliklere katılın ve yerel işletmeleri keşfedin.",
     applicationCategory: "SocialNetworkingApplication",
     operatingSystem: "Web",
     inLanguage: "tr",
@@ -16,7 +16,7 @@ export function JsonLd() {
     },
     author: {
       "@type": "Organization",
-      name: "KomşuApp",
+      name: "Mahallem",
     },
   };
 

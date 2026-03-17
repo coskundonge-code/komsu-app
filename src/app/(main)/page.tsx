@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Camera, MoreHorizontal, Globe, ThumbsUp, MessageCircle, Share2, ChevronRight, Download, Building2, X, Send, MapPin, AlertTriangle, Heart, Pin } from 'lucide-react';
+import { Camera, MoreHorizontal, Globe, ThumbsUp, MessageCircle, Share2, ChevronRight, Download, Building2, X, Send, MapPin, AlertTriangle, Heart, Pin, Newspaper, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -305,7 +305,7 @@ export default function FeedPage() {
               <div className="w-16 h-16 bg-[#00833e] rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">🏘️</span>
               </div>
-              <h3 className="text-xl font-bold text-[#333] mb-2">KomşuApp Mobil</h3>
+              <h3 className="text-xl font-bold text-[#333] mb-2">Mahallem Mobil</h3>
               <p className="text-sm text-[#8f8f8f] mb-6">Mobil uygulamamız yakında App Store ve Google Play&apos;de!</p>
               <div className="space-y-3">
                 <button className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition-colors">
@@ -333,16 +333,65 @@ export default function FeedPage() {
         </div>
       )}
       <div className="max-w-[680px] mx-auto px-4 py-4">
-        {/* Safety Alert Banner */}
+        {/* Uyarılar Section - Always on top */}
         {hasSafetyAlert && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4 rounded-r-lg flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-            <div className="flex-1">
-              <p className="font-bold text-red-900 text-sm">Mahallede Aktif Güvenlik Uyarısı</p>
-              <p className="text-red-700 text-xs mt-1">Lütfen dikkat edin ve yetkililerine bildirin. Detaylar için aşağı kaydırın.</p>
+          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] mb-4 overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[#e0e0e0]">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-red-600" />
+                <h2 className="text-base font-bold text-[#333]">Uyarılar</h2>
+              </div>
+              <Link href="/uyarilar" className="text-sm text-[#00833e] font-medium hover:underline flex items-center gap-1">
+                Tümü <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
+            {posts.filter(p => p.category === 'guvenlik').slice(0, 2).map((alert) => (
+              <div key={alert.id} className="px-4 py-3 border-b border-[#f0f2f5] last:border-b-0 hover:bg-[#fafafa] transition-colors">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <AlertTriangle className="w-5 h-5 text-red-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-[#333]">{alert.title}</p>
+                    <p className="text-xs text-[#8f8f8f] mt-0.5 line-clamp-2">{alert.body}</p>
+                    <p className="text-xs text-[#8f8f8f] mt-1">{alert.author.name} · {alert.timeAgo}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
+
+        {/* Yerel Haberler Section */}
+        <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] mb-4 overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-[#e0e0e0]">
+            <div className="flex items-center gap-2">
+              <Newspaper className="w-5 h-5 text-[#00833e]" />
+              <h2 className="text-base font-bold text-[#333]">Yerel Haberler</h2>
+            </div>
+            <Link href="/kesfet" className="text-sm text-[#00833e] font-medium hover:underline flex items-center gap-1">
+              Tümü <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+          {posts.filter(p => p.category === 'genel' || p.category === 'oneriler').slice(0, 3).map((news) => (
+            <div key={news.id} className="px-4 py-3 border-b border-[#f0f2f5] last:border-b-0 hover:bg-[#fafafa] transition-colors">
+              <div className="flex items-start gap-3">
+                {news.image ? (
+                  <img src={news.image} alt="" className="w-16 h-16 rounded-lg object-cover flex-shrink-0" />
+                ) : (
+                  <div className="w-16 h-16 bg-[#f0f2f5] rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Newspaper className="w-6 h-6 text-[#8f8f8f]" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-[#333] line-clamp-1">{news.title}</p>
+                  <p className="text-xs text-[#8f8f8f] mt-0.5 line-clamp-2">{news.body}</p>
+                  <p className="text-xs text-[#8f8f8f] mt-1">{news.author.neighborhood} · {news.timeAgo}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
 
         {/* Search Bar */}
         <div className="mb-4">
@@ -507,7 +556,7 @@ export default function FeedPage() {
         {showOnboarding && (
           <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-4 mb-4">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-bold text-[#333]">KomşuApp&apos;a Başla</h2>
+              <h2 className="text-lg font-bold text-[#333]">Mahallem&apos;a Başla</h2>
               <button
                 onClick={() => setShowOnboarding(false)}
                 className="p-1 hover:bg-[#f0f2f5] rounded-full"

@@ -32,7 +32,7 @@ export default function KVKKPage() {
             {/* Giriş */}
             <section>
               <p className="text-[#404040] leading-relaxed">
-                KomşuApp ("Uygulama"), kullanıcılarının kişisel verilerinin korunmasına büyük önem
+                Mahallem ("Uygulama"), kullanıcılarının kişisel verilerinin korunmasına büyük önem
                 vermektedir. Bu aydınlatma metni, uygulamayı kullanan tüm kişileri, Kişisel
                 Verilerin Korunması Kanunu ("KVKK") uyarınca, kişisel verilerinin nasıl
                 işlendiği, korunduğu ve kullanıldığı hakkında bilgilendirmektedir.
@@ -53,10 +53,10 @@ export default function KVKKPage() {
                   <strong>Adres:</strong> İstanbul, Türkiye
                 </p>
                 <p>
-                  <strong>Email:</strong> destek@komsuapp.com
+                  <strong>Email:</strong> destek@mahallem.com
                 </p>
                 <p>
-                  <strong>Web:</strong> www.komsuapp.com
+                  <strong>Web:</strong> www.mahallem.com
                 </p>
               </div>
             </section>
@@ -68,7 +68,7 @@ export default function KVKKPage() {
                 Kişisel Verilerin İşlenme Amacı
               </h2>
               <p className="text-[#404040] leading-relaxed mb-4">
-                KomşuApp, kullanıcılardan toplanan kişisel verileri aşağıda belirtilen meşru
+                Mahallem, kullanıcılardan toplanan kişisel verileri aşağıda belirtilen meşru
                 amaçlarla işlemektedir:
               </p>
               <div className="space-y-3">
@@ -99,7 +99,7 @@ export default function KVKKPage() {
                 Toplanan Kişisel Veriler
               </h2>
               <p className="text-[#404040] leading-relaxed mb-4">
-                KomşuApp aşağıdaki kategorilerde kişisel veri toplamaktadır:
+                Mahallem aşağıdaki kategorilerde kişisel veri toplamaktadır:
               </p>
               <div className="grid gap-4">
                 {[
@@ -253,7 +253,7 @@ export default function KVKKPage() {
               </h2>
               <div className="bg-[#f0f2f5] p-6 rounded-lg border border-[#e0e0e0] text-[#404040] leading-relaxed space-y-3">
                 <p>
-                  KomşuApp, kişisel verilerinizin korunması için aşağıdaki önlemleri almaktadır:
+                  Mahallem, kişisel verilerinizin korunması için aşağıdaki önlemleri almaktadır:
                 </p>
                 <ul className="space-y-2 ml-4">
                   <li className="flex items-start gap-2">
@@ -292,8 +292,8 @@ export default function KVKKPage() {
               <div className="bg-white border border-[#e0e0e0] rounded-lg p-6 space-y-3 text-[#404040]">
                 <p>
                   <strong>Email:</strong>{' '}
-                  <a href="mailto:kvkk@komsuapp.com" className="text-[#00833e] hover:text-[#006b32] underline">
-                    kvkk@komsuapp.com
+                  <a href="mailto:kvkk@mahallem.com" className="text-[#00833e] hover:text-[#006b32] underline">
+                    kvkk@mahallem.com
                   </a>
                 </p>
                 <p>
@@ -346,7 +346,7 @@ export default function KVKKPage() {
           {/* Footer */}
           <div className="border-t border-[#e0e0e0] bg-[#f0f2f5] py-6 px-8 text-center">
             <p className="text-sm text-[#8f8f8f] mb-4">
-              © 2026 KomşuApp — Trendex Lojistik tarafından geliştirilmiştir.
+              © 2026 Mahallem — Trendex Lojistik tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link

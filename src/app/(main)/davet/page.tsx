@@ -33,13 +33,13 @@ export default function ReferralPage() {
   };
 
   const handleShareWhatsApp = () => {
-    const message = `KomşuApp'a davet ediyorum! Kodumu kullan: ${referralCode}`;
+    const message = `Mahallem'e davet ediyorum! Kodumu kullan: ${referralCode}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
   const handleShareSMS = () => {
-    const message = `KomşuApp'a davet ediyorum! Kodumu kullan: ${referralCode}`;
+    const message = `Mahallem'e davet ediyorum! Kodumu kullan: ${referralCode}`;
     const smsUrl = `sms:?body=${encodeURIComponent(message)}`;
     window.location.href = smsUrl;
   };
@@ -53,7 +53,7 @@ export default function ReferralPage() {
             ← Ana Sayfaya Dön
           </Link>
           <h1 className="text-3xl font-bold text-[#333] mb-2">Komşularını Davet Et</h1>
-          <p className="text-[#666]">Mahallende yaşayan arkadaşlarını KomşuApp'a davet et ve birlikte komşu topluluğunu büyüt.</p>
+          <p className="text-[#666]">Mahallende yaşayan arkadaşlarını Mahallem'e davet et ve birlikte komşu topluluğunu büyüt.</p>
         </div>
 
         {/* Info Box */}

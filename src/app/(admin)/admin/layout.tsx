@@ -81,7 +81,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <div className="flex items-center justify-between gap-2">
             {sidebarOpen && (
               <div className="flex-1">
-                <h1 className="text-lg font-bold text-[#00833e]">KomşuApp</h1>
+                <h1 className="text-lg font-bold text-[#00833e]">Mahallem</h1>
                 <p className="text-xs text-[#a7dbb8] mt-1">Yönetici Paneli</p>
               </div>
             )}

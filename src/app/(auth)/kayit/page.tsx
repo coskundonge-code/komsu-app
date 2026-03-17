@@ -175,7 +175,7 @@ export default function KayitPage() {
           <div className="w-8 h-8 bg-[#00833e] rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-sm">K</span>
           </div>
-          <span className="text-lg font-bold text-[#333]">KomşuApp</span>
+          <span className="text-lg font-bold text-[#333]">Mahallem</span>
         </Link>
       </div>
 

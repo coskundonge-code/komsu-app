@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import { generatePageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "İletişim | KomşuApp",
+  title: "İletişim | Mahallem",
   description:
-    "KomşuApp ile iletişime geçin. Sorular, öneriler ve destek için bize yazın.",
+    "Mahallem ile iletişime geçin. Sorular, öneriler ve destek için bize yazın.",
   openGraph: {
-    url: "https://komsuapp.com/iletisim",
-    title: "İletişim | KomşuApp",
+    url: "https://mahallem.com/iletisim",
+    title: "İletişim | Mahallem",
     description:
-      "KomşuApp ile iletişime geçin. Sorular, öneriler ve destek için bize yazın.",
+      "Mahallem ile iletişime geçin. Sorular, öneriler ve destek için bize yazın.",
   },
   twitter: {
-    title: "İletişim | KomşuApp",
+    title: "İletişim | Mahallem",
     description:
-      "KomşuApp ile iletişime geçin. Sorular, öneriler ve destek için bize yazın.",
+      "Mahallem ile iletişime geçin. Sorular, öneriler ve destek için bize yazın.",
   },
 });
 

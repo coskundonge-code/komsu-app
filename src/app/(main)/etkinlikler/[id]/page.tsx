@@ -155,7 +155,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
     const icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//KomşuApp//KomşuApp//EN
+PRODID:-//Mahallem//Mahallem//EN
 BEGIN:VEVENT
 UID:${event.id}@komsuu.app
 DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z

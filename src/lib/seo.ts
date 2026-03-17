@@ -1,21 +1,21 @@
 import { Metadata } from "next";
 
-export const BASE_URL = "https://komsuapp.com";
+export const BASE_URL = "https://mahallem.com";
 
 export const DEFAULT_OG_IMAGE = {
   url: `${BASE_URL}/icon-512.png`,
   width: 512,
   height: 512,
-  alt: "KomşuApp Logo",
+  alt: "Mahallem Logo",
 };
 
 export const SEO_DEFAULTS = {
   title: {
-    default: "KomşuApp - Mahalleni Keşfet",
-    template: "%s | KomşuApp",
+    default: "Mahallem - Mahalleni Keşfet",
+    template: "%s | Mahallem",
   },
   description:
-    "KomşuApp ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın ve birlikte etkinlikler düzenleyin. Türkiye'nin mahalle sosyal ağı.",
+    "Mahallem ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın ve birlikte etkinlikler düzenleyin. Türkiye'nin mahalle sosyal ağı.",
   keywords: [
     "komşu",
     "mahalle",
@@ -31,11 +31,11 @@ export const SEO_DEFAULTS = {
   openGraph: {
     type: "website" as const,
     locale: "tr_TR",
-    siteName: "KomşuApp",
+    siteName: "Mahallem",
   },
   twitter: {
     card: "summary_large_image" as const,
-    creator: "@komsuapp",
+    creator: "@mahallem",
   },
 };
 
@@ -78,98 +78,113 @@ export function getPageUrl(path: string): string {
  */
 export const PAGE_METADATA = {
   home: {
-    title: "KomşuApp - Mahalleni Keşfet",
+    title: "Mahallem - Mahalleni Keşfet",
     description:
-      "KomşuApp ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın ve birlikte etkinlikler düzenleyin.",
+      "Mahallem ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın ve birlikte etkinlikler düzenleyin.",
   },
   about: {
-    title: "Hakkında | KomşuApp",
+    title: "Hakkında | Mahallem",
     description:
-      "KomşuApp hakkında, misyonumuz, vizyonumuz ve değerlerimiz hakkında bilgi edinin. Mahalle topluluklarını güçlendiren platform.",
+      "Mahallem hakkında, misyonumuz, vizyonumuz ve değerlerimiz hakkında bilgi edinin. Mahalle topluluklarını güçlendiren platform.",
   },
   marketplace: {
-    title: "Pazar | KomşuApp",
+    title: "Pazar | Mahallem",
     description:
-      "KomşuApp Pazar'da yerel ürün ve hizmetleri bulun. Komşularınızdan güvenilir ilan ve alışveriş imkanları.",
+      "Mahallem Pazar'da yerel ürün ve hizmetleri bulun. Komşularınızdan güvenilir ilan ve alışveriş imkanları.",
   },
   events: {
-    title: "Etkinlikler | KomşuApp",
+    title: "Etkinlikler | Mahallem",
     description:
       "Mahallenizdeki etkinlikleri keşfedin ve katılın. Komşularınızla birlikte yapılacak etkinlikleri planlayın.",
   },
   groups: {
-    title: "Gruplar | KomşuApp",
+    title: "Gruplar | Mahallem",
     description:
-      "KomşuApp Grupları ile ilgi alanlarına göre komşuları birleştirin. Mahalle bazlı grup oluşturun ve yönetin.",
+      "Mahallem Grupları ile ilgi alanlarına göre komşuları birleştirin. Mahalle bazlı grup oluşturun ve yönetin.",
   },
   businesses: {
-    title: "İşletmeler | KomşuApp",
+    title: "İşletmeler | Mahallem",
     description:
       "Mahallenizdeki yerel işletmeleri keşfedin. Dükkân, resepsiyon, salon ve çok daha fazlası.",
   },
   search: {
-    title: "Ara | KomşuApp",
+    title: "Ara | Mahallem",
     description:
-      "KomşuApp'da komşuları, grupları, etkinlikleri ve ürünleri arayın.",
+      "Mahallem'de komşuları, grupları, etkinlikleri ve ürünleri arayın.",
   },
   terms: {
-    title: "Kullanım Koşulları | KomşuApp",
+    title: "Kullanım Koşulları | Mahallem",
     description:
-      "KomşuApp Kullanım Koşulları. Hizmetlerimizi kullanırken uymanız gereken kuralları öğrenin.",
+      "Mahallem Kullanım Koşulları. Hizmetlerimizi kullanırken uymanız gereken kuralları öğrenin.",
   },
   privacy: {
-    title: "Gizlilik Politikası | KomşuApp",
+    title: "Gizlilik Politikası | Mahallem",
     description:
-      "KomşuApp Gizlilik Politikası. Verileriniz nasıl korunduğunu ve kullanıldığını öğrenin.",
+      "Mahallem Gizlilik Politikası. Verileriniz nasıl korunduğunu ve kullanıldığını öğrenin.",
   },
   cookies: {
-    title: "Çerez Politikası | KomşuApp",
+    title: "Çerez Politikası | Mahallem",
     description:
-      "KomşuApp Çerez Politikası. Çerezlerin nasıl kullanıldığını ve ayarlarınızı nasıl yönetebileceğinizi öğrenin.",
+      "Mahallem Çerez Politikası. Çerezlerin nasıl kullanıldığını ve ayarlarınızı nasıl yönetebileceğinizi öğrenin.",
   },
   help: {
-    title: "Yardım Merkezi | KomşuApp",
+    title: "Yardım Merkezi | Mahallem",
     description:
-      "KomşuApp Yardım Merkezi. Sık sorulan sorulara ve destek kaynağına erişin.",
+      "Mahallem Yardım Merkezi. Sık sorulan sorulara ve destek kaynağına erişin.",
   },
   contact: {
-    title: "İletişim | KomşuApp",
+    title: "İletişim | Mahallem",
     description:
-      "KomşuApp ile iletişime geçin. Sorular, öneriler ve destek için bize yazın.",
+      "Mahallem ile iletişime geçin. Sorular, öneriler ve destek için bize yazın.",
   },
   howitworks: {
-    title: "Nasıl Çalışır? | KomşuApp",
+    title: "Nasıl Çalışır? | Mahallem",
     description:
-      "KomşuApp nasıl çalışıyor öğrenin. Adım adım rehberimizi izleyin ve başlayın.",
+      "Mahallem nasıl çalışıyor öğrenin. Adım adım rehberimizi izleyin ve başlayın.",
   },
   communityRules: {
-    title: "Topluluk Kuralları | KomşuApp",
+    title: "Topluluk Kuralları | Mahallem",
     description:
-      "KomşuApp Topluluk Kuralları. Güvenli ve saygılı bir topluluk oluşturmak için bizimle yapın.",
+      "Mahallem Topluluk Kuralları. Güvenli ve saygılı bir topluluk oluşturmak için bizimle yapın.",
   },
   security: {
-    title: "Güvenlik | KomşuApp",
+    title: "Güvenlik | Mahallem",
     description:
-      "KomşuApp Güvenlik. Hesabınızı nasıl koruyabileceğinizi ve güvenli kalabileceğinizi öğrenin.",
+      "Mahallem Güvenlik. Hesabınızı nasıl koruyabileceğinizi ve güvenli kalabileceğinizi öğrenin.",
   },
   careers: {
-    title: "Kariyer | KomşuApp",
+    title: "Kariyer | Mahallem",
     description:
-      "KomşuApp Kariyer. Ekibimize katılın ve mahalle topluluklarını güçlendirmeye yardımcı olun.",
+      "Mahallem Kariyer. Ekibimize katılın ve mahalle topluluklarını güçlendirmeye yardımcı olun.",
   },
   kvkk: {
-    title: "KVKK | KomşuApp",
+    title: "KVKK | Mahallem",
     description:
-      "KomşuApp KVKK Aydınlatma Metni. Kişisel verilerinizin korunması hakkında bilgi edinin.",
+      "Mahallem KVKK Aydınlatma Metni. Kişisel verilerinizin korunması hakkında bilgi edinin.",
   },
   blog: {
-    title: "Blog | KomşuApp",
+    title: "Blog | Mahallem",
     description:
-      "KomşuApp Blog. Mahalle hayatı, komşuluk ve yerel topluluklar hakkında yazılar.",
+      "Mahallem Blog. Mahalle hayatı, komşuluk ve yerel topluluklar hakkında yazılar.",
   },
   discover: {
-    title: "Keşfet | KomşuApp",
+    title: "Keşfet | Mahallem",
     description:
-      "KomşuApp Keşfet. Mahallenizdeki yeni komşuları, etkinlikleri ve fırsatları keşfedin.",
+      "Mahallem Keşfet. Mahallenizdeki yeni komşuları, etkinlikleri ve fırsatları keşfedin.",
+  },
+  oduncKirala: {
+    title: "Ödünç Ver & Kirala | Mahallem",
+    description:
+      "Mahallenizdeki komşularınızla eşya paylaşın. Matkap, testere, masa, sandalye gibi eşyaları ücretsiz ödünç verin veya saatlik/günlük kiralayın.",
+  },
+  mahallemKart: {
+    title: "Mahallem Kart | Mahallem",
+    description:
+      "Dijital mahalle kartınızla yerel esnaflardan indirim kazanın, puan biriktirin ve askıda bağış yapın.",
+  },
+  askidaBagis: {
+    title: "Askıda Bağış | Mahallem",
+    description:
+      "Askıda ekmek, et, süt, traş ve daha fazlası. Komşuna bir iyilik bırak, mahalleni güzelleştir.",
   },
 };

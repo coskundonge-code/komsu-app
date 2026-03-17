@@ -42,7 +42,7 @@ export default function CookiePolicyPage() {
                   Gerekli Çerezler
                 </h3>
                 <p className="text-[#404040] leading-relaxed">
-                  Bu çerezler, KomşuApp'ın düzgün şekilde işlemesi için gereklidir. Web sitesinin temel işlevlerini sağlarlar, örneğin:
+                  Bu çerezler, Mahallem'in düzgün şekilde işlemesi için gereklidir. Web sitesinin temel işlevlerini sağlarlar, örneğin:
                 </p>
                 <ul className="list-disc list-inside text-[#404040] mt-2 space-y-1">
                   <li>Kullanıcı oturum açma ve kimlik doğrulama</li>
@@ -123,7 +123,7 @@ export default function CookiePolicyPage() {
 
               <div>
                 <h3 className="text-lg font-semibold text-[#333] mb-2">
-                  KomşuApp Tercihlerinden
+                  Mahallem Tercihlerinden
                 </h3>
                 <p className="text-[#404040] leading-relaxed">
                   Hesap ayarlarınızdan çerez tercihlerinizi yönetebilirsiniz. Ancak, bazı çerezlerin devre dışı bırakılması web sitesinin düzgün şekilde çalışmasını etkileyebilir.
@@ -133,7 +133,7 @@ export default function CookiePolicyPage() {
 
             <div className="mt-6 p-4 bg-[#f0f2f5] border border-[#e0e0e0] rounded-lg">
               <p className="text-sm text-[#404040]">
-                <strong>Not:</strong> Çerezleri tamamen devre dışı bırakırsanız, KomşuApp'ın bazı özellikleri düzgün çalışmayabilir. Oturum açma, tercihler ve güvenlik ayarları etkilenebilir.
+                <strong>Not:</strong> Çerezleri tamamen devre dışı bırakırsanız, Mahallem'ın bazı özellikleri düzgün çalışmayabilir. Oturum açma, tercihler ve güvenlik ayarları etkilenebilir.
               </p>
             </div>
           </section>
@@ -144,7 +144,7 @@ export default function CookiePolicyPage() {
               Veri Gizliliği
             </h2>
             <p className="text-[#404040] leading-relaxed mb-4">
-              KomşuApp, Kişisel Verilerin Korunması Kanunu (KVKK) ve Avrupa Birliği'nin Genel Veri Koruma Yönetmeliği (GDPR) ile uyumlu olarak çalışır.
+              Mahallem, Kişisel Verilerin Korunması Kanunu (KVKK) ve Avrupa Birliği'nin Genel Veri Koruma Yönetmeliği (GDPR) ile uyumlu olarak çalışır.
             </p>
             <p className="text-[#404040] leading-relaxed mb-4">
               Çerezlerin ve web sitesi kullanımınızın analiz edilmesi sırasında toplanan kişisel veriler, işbu politika ve gizlilik politikamız uyarınca korunmaktadır.
@@ -166,21 +166,21 @@ export default function CookiePolicyPage() {
               <p>
                 <strong>E-posta:</strong>{' '}
                 <a
-                  href="mailto:privacy@komsuapp.com"
+                  href="mailto:privacy@mahallem.com"
                   className="text-[#00833e] hover:text-[#006b32] transition-colors"
                 >
-                  privacy@komsuapp.com
+                  privacy@mahallem.com
                 </a>
               </p>
               <p>
                 <strong>Web Sitesi:</strong>{' '}
                 <a
-                  href="https://komsuapp.com"
+                  href="https://mahallem.com"
                   className="text-[#00833e] hover:text-[#006b32] transition-colors"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  komsuapp.com
+                  mahallem.com
                 </a>
               </p>
             </div>

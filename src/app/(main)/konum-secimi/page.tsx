@@ -115,7 +115,7 @@ export default function KonumSecimi() {
         setIsLoading(false)
         if (err.code === err.PERMISSION_DENIED) {
           setPermissionDenied(true)
-          setError('Konum izni reddedildi. KomşuApp\'i kullanabilmek için konum izni vermeniz gerekmektedir.')
+          setError('Konum izni reddedildi. Mahallem\'i kullanabilmek için konum izni vermeniz gerekmektedir.')
         } else if (err.code === err.POSITION_UNAVAILABLE) {
           setError('Konumunuz belirlenemedi. Lütfen il/ilçe seçerek devam edin.')
           setStep('select')
@@ -267,7 +267,7 @@ export default function KonumSecimi() {
             <div className="w-8 h-8 bg-[#00833e] rounded-lg flex items-center justify-center">
               <span className="text-sm font-bold text-white">K</span>
             </div>
-            <span className="text-lg font-bold text-[#333]">KomşuApp</span>
+            <span className="text-lg font-bold text-[#333]">Mahallem</span>
           </div>
           <div className="flex items-center gap-2 text-xs text-[#8f8f8f]">
             <MapPin className="w-3.5 h-3.5" />
@@ -310,7 +310,7 @@ export default function KonumSecimi() {
               </div>
               <h1 className="text-2xl font-bold text-[#333] mb-2">Konum İzni Gerekli</h1>
               <p className="text-[#8f8f8f] text-sm mb-6 max-w-md mx-auto">
-                KomşuApp, size en yakın mahalle topluluğunu gösterebilmek için konum bilginize ihtiyaç duyar.
+                Mahallem, size en yakın mahalle topluluğunu gösterebilmek için konum bilginize ihtiyaç duyar.
                 Konum izni vermeden üyelik işleminizi tamamlayamazsınız.
               </p>
 
@@ -355,7 +355,7 @@ export default function KonumSecimi() {
                       <p className="font-semibold mb-1">Konum izni reddedildi</p>
                       <p className="text-amber-700">
                         Tarayıcınızın adres çubuğundaki kilit/konum simgesine tıklayarak konum iznini etkinleştirin ve sayfayı yenileyin.
-                        KomşuApp, konum izni olmadan kullanılamaz.
+                        Mahallem, konum izni olmadan kullanılamaz.
                       </p>
                       <button
                         onClick={requestLocation}

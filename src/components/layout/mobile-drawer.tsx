@@ -4,8 +4,9 @@ import React from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
-  X, Home, Compass, ShoppingBag, Calendar, Users, Building2,
-  MessageCircle, Bell, Heart, Settings, User, LogOut
+  X, Home, ShoppingBag, Calendar, Users,
+  MessageCircle, Bell, Heart, Settings, User, LogOut, Repeat, CreditCard,
+  AlertTriangle, Newspaper
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
@@ -23,22 +24,24 @@ const mockUser = {
   avatar: getAvatarUrl('Ahmet Yılmaz', 0),
 }
 
-// Primary navigation items
+// Primary navigation items - clean Nextdoor-like structure
 const primaryNavItems = [
   { icon: Home, label: 'Ana Sayfa', href: '/' },
-  { icon: Compass, label: 'Keşfet', href: '/kesfet' },
-  { icon: ShoppingBag, label: 'Pazar Yeri', href: '/pazar' },
-  { icon: Calendar, label: 'Etkinlikler', href: '/etkinlikler' },
+  { icon: Newspaper, label: 'Yerel Haberler', href: '/kesfet' },
+  { icon: AlertTriangle, label: 'Uyarılar', href: '/uyarilar' },
+  { icon: ShoppingBag, label: 'Satılık & Ücretsiz', href: '/pazar' },
+  { icon: Repeat, label: 'Kirala & Ödünç Ver', href: '/odunc-kirala' },
   { icon: Users, label: 'Gruplar', href: '/gruplar' },
-  { icon: Building2, label: 'İşletmeler', href: '/isletmeler' },
-  { icon: MessageCircle, label: 'Mesajlar', href: '/mesajlar' },
-  { icon: Bell, label: 'Bildirimler', href: '/bildirimler' },
-  { icon: Heart, label: 'Favoriler', href: '/favoriler' },
+  { icon: Calendar, label: 'Etkinlikler', href: '/etkinlikler' },
+  { icon: CreditCard, label: 'Mahallem Kart', href: '/mahallem-kart' },
+  { icon: Heart, label: 'Askıda Bağış', href: '/askida-bagis' },
 ]
 
 // Secondary navigation items
 const secondaryNavItems = [
-  { icon: User, label: 'Profil', href: '/profil/me' },
+  { icon: User, label: 'Profilim', href: '/profil/me' },
+  { icon: MessageCircle, label: 'Mesajlar', href: '/mesajlar' },
+  { icon: Bell, label: 'Bildirimler', href: '/bildirimler' },
   { icon: Settings, label: 'Ayarlar', href: '/ayarlar' },
 ]
 

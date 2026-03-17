@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import { generatePageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "Kariyer | KomşuApp",
+  title: "Kariyer | Mahallem",
   description:
-    "KomşuApp Kariyer. Ekibimize katılın ve mahalle topluluklarını güçlendirmeye yardımcı olun.",
+    "Mahallem Kariyer. Ekibimize katılın ve mahalle topluluklarını güçlendirmeye yardımcı olun.",
   openGraph: {
-    url: "https://komsuapp.com/kariyer",
-    title: "Kariyer | KomşuApp",
+    url: "https://mahallem.com/kariyer",
+    title: "Kariyer | Mahallem",
     description:
-      "KomşuApp Kariyer. Ekibimize katılın ve mahalle topluluklarını güçlendirmeye yardımcı olun.",
+      "Mahallem Kariyer. Ekibimize katılın ve mahalle topluluklarını güçlendirmeye yardımcı olun.",
   },
   twitter: {
-    title: "Kariyer | KomşuApp",
+    title: "Kariyer | Mahallem",
     description:
-      "KomşuApp Kariyer. Ekibimize katılın ve mahalle topluluklarını güçlendirmeye yardımcı olun.",
+      "Mahallem Kariyer. Ekibimize katılın ve mahalle topluluklarını güçlendirmeye yardımcı olun.",
   },
 });
 

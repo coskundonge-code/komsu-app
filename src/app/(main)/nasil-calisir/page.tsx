@@ -9,7 +9,7 @@ export default function HowItWorksPage() {
       number: 1,
       title: "Kayıt Ol",
       icon: Users,
-      description: "KomşuApp'e katılmak için hızlı ve kolay bir kayıt işlemi. Sadece e-posta ve şifreniz yeterli.",
+      description: "Mahallem'e katılmak için hızlı ve kolay bir kayıt işlemi. Sadece e-posta ve şifreniz yeterli.",
       details: [
         "E-posta adresiniz ve güçlü bir şifre seçin",
         "Koşulları okuyup kabul edin",
@@ -65,7 +65,7 @@ export default function HowItWorksPage() {
     {
       name: "Ayşe Yılmaz",
       role: "Mahalle Sakinesi",
-      quote: "KomşuApp sayesinde komşularımı tanıdım ve çok yakın arkadaşlar yaptım. Mahalle çok daha güvenli hissettiriyor.",
+      quote: "Mahallem sayesinde komşularımı tanıdım ve çok yakın arkadaşlar yaptım. Mahalle çok daha güvenli hissettiriyor.",
     },
     {
       name: "Mehmet Kara",
@@ -75,7 +75,7 @@ export default function HowItWorksPage() {
     {
       name: "Zeynep Demir",
       role: "Mahalle Sakinesi",
-      quote: "Mahalle etkinlikleri KomşuApp'in en hoş tarafı. Herkes birbirini tanıyor ve yardımlaşıyor.",
+      quote: "Mahalle etkinlikleri Mahallem'in en hoş tarafı. Herkes birbirini tanıyor ve yardımlaşıyor.",
     },
   ];
 
@@ -94,7 +94,7 @@ export default function HowItWorksPage() {
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full -ml-16 -mb-16"></div>
 
           <div className="relative z-10">
-            <h1 className="text-4xl md:text-5xl font-bold mb-3">KomşuApp Nasıl Çalışır?</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-3">Mahallem Nasıl Çalışır?</h1>
             <p className="text-green-100 text-lg md:text-xl">4 basit adımda mahallenizle bağlantı kurun ve güçlü bir topluluk oluşturun</p>
           </div>
         </div>
@@ -151,7 +151,7 @@ export default function HowItWorksPage() {
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-[#333] mb-8 flex items-center gap-3">
             <span className="w-1 h-10 bg-[#00833e] rounded-full"></span>
-            KomşuApp'in Özellikleri
+            Mahallem'in Özellikleri
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, idx) => {
@@ -224,9 +224,9 @@ export default function HowItWorksPage() {
 
           <div className="space-y-4">
             {[
-              { q: "KomşuApp tamamen ücretsiz mi?", a: "Evet, KomşuApp temel özellikler tamamen ücretsizdir. Bazı ek premium özellikleri ileride sunabiliriz, ancak sosyal ağ özellikleri her zaman ücretsiz kalacak." },
+              { q: "Mahallem tamamen ücretsiz mi?", a: "Evet, Mahallem temel özellikler tamamen ücretsizdir. Bazı ek premium özellikleri ileride sunabiliriz, ancak sosyal ağ özellikleri her zaman ücretsiz kalacak." },
               { q: "Eğer taşırsam hesabımı taşıyabilir miyim?", a: "Evet. Yeni adresinizi doğruladığınızda hesabınız otomatik olarak yeni mahallele eşleştirilecektir. Eski mahalle verileriniz bu sebeple erişilemez hale gelir." },
-              { q: "Mahalle dışındaki insanlarla iletişim kurabilirim?", a: "Hayır, KomşuApp mahalle içi iletişime odaklanır. Alanın ve mahalle topluluğunun korunması için bilerek bu tasarımı seçtik." },
+              { q: "Mahalle dışındaki insanlarla iletişim kurabilirim?", a: "Hayır, Mahallem mahalle içi iletişime odaklanır. Alanın ve mahalle topluluğunun korunması için bilerek bu tasarımı seçtik." },
               { q: "Uygulamayı ne zaman başlayabilirim?", a: "Hemen! Aşağıdaki 'Hemen Başla' düğmesine tıklayarak kayıt olabilirsiniz. İşlem 5 dakikadan az sürer." },
             ].map((faq, idx) => (
               <details key={idx} className="group bg-white border border-[#e0e0e0] rounded-lg overflow-hidden hover:border-[#00833e] transition-colors">
@@ -247,7 +247,7 @@ export default function HowItWorksPage() {
 
           <div className="relative z-10">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Mahallenin Parçası Olun</h2>
-            <p className="text-green-100 mb-8 max-w-2xl mx-auto leading-relaxed">KomşuApp ile mahallenizin yaşam kalitesini iyileştirin, yeni arkadaşlar edinin ve birlikte güçlü bir topluluk oluşturun.</p>
+            <p className="text-green-100 mb-8 max-w-2xl mx-auto leading-relaxed">Mahallem ile mahallenizin yaşam kalitesini iyileştirin, yeni arkadaşlar edinin ve birlikte güçlü bir topluluk oluşturun.</p>
             <Link href="/kaydol" className="inline-block px-8 py-4 bg-white text-[#00833e] font-bold rounded-lg hover:bg-gray-100 transition-colors shadow-lg">
               Hemen Başla
             </Link>
@@ -256,7 +256,7 @@ export default function HowItWorksPage() {
 
         {/* Footer */}
         <div className="border-t border-[#e0e0e0] bg-[#f0f2f5] py-8 px-8 rounded-lg text-center">
-          <p className="text-sm text-[#8f8f8f] mb-4">© 2026 KomşuApp — Trendex Lojistik tarafından geliştirilmiştir.</p>
+          <p className="text-sm text-[#8f8f8f] mb-4">© 2026 Mahallem — Trendex Lojistik tarafından geliştirilmiştir.</p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <Link href="/gizlilik" className="text-sm text-[#00833e] hover:text-[#006b32] font-medium transition-colors">
               Gizlilik Politikası

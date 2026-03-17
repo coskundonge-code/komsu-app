@@ -55,7 +55,7 @@ export default function BusinessLayout({ children }: BusinessLayoutProps) {
           <div className="flex items-center justify-between">
             {sidebarOpen && (
               <div>
-                <h1 className="text-lg font-bold text-white">KomşuApp</h1>
+                <h1 className="text-lg font-bold text-white">Mahallem</h1>
                 <p className="text-xs text-[#d1fae5] mt-1">İşletme Paneli</p>
               </div>
             )}

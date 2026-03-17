@@ -148,7 +148,7 @@ export default function AddressVerificationPage() {
             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg">
               <span className="text-3xl font-bold text-[#00833e]">K</span>
             </div>
-            <h2 className="text-4xl font-bold text-white mb-2">KomşuApp</h2>
+            <h2 className="text-4xl font-bold text-white mb-2">Mahallem</h2>
             <p className="text-green-50 text-lg">Mahalle Bağlantısı</p>
           </div>
 
@@ -197,7 +197,7 @@ export default function AddressVerificationPage() {
             <div className="w-14 h-14 bg-[#00833e] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-md">
               <span className="text-2xl font-bold text-white">K</span>
             </div>
-            <h1 className="text-2xl font-bold text-[#333]">KomşuApp</h1>
+            <h1 className="text-2xl font-bold text-[#333]">Mahallem</h1>
           </div>
 
           {/* Step Indicator */}
