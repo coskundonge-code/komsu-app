@@ -16,10 +16,10 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 // Primary navigation items - clean Nextdoor-like structure
 const primaryNavItems = [
   { icon: Home, label: 'Ana Sayfa', href: '/' },
-  { icon: ShoppingBag, label: 'Satılık & Ücretsiz', href: '/pazar' },
-  { icon: Repeat, label: 'Kirala & Ödünç Ver', href: '/odunc-kirala' },
   { icon: Newspaper, label: 'Yerel Haberler', href: '/kesfet' },
   { icon: AlertTriangle, label: 'Uyarılar', href: '/uyarilar' },
+  { icon: ShoppingBag, label: 'Satılık & Ücretsiz', href: '/pazar' },
+  { icon: Repeat, label: 'Kirala & Ödünç Ver', href: '/odunc-kirala' },
   { icon: Users, label: 'Gruplar', href: '/gruplar' },
   { icon: Calendar, label: 'Etkinlikler', href: '/etkinlikler' },
   { icon: CreditCard, label: 'Mahallem Kart', href: '/mahallem-kart' },
