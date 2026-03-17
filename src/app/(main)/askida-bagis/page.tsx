@@ -6,7 +6,7 @@ import {
   Heart,
   Gift,
   Store,
-  Bread,
+  Wheat,
   Utensils,
   Droplet,
   Scissors,
@@ -78,7 +78,7 @@ const categories: Category[] = [
     id: 'bread',
     name: 'Askıda Ekmek',
     emoji: '🍞',
-    icon: <Bread className="w-5 h-5" />,
+    icon: <Wheat className="w-5 h-5" />,
     label: 'Ekmek',
   },
   {
