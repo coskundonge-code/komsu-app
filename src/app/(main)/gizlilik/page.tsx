@@ -66,7 +66,7 @@ export default function PrivacyPage() {
                 {/* Intro */}
                 <div className="mb-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
                   <p className="text-sm text-[#404040]">
-                    KomşuApp, verilerinizin gizliliğini çok ciddiye almaktadır. Bu politika, verilerinizi nasıl topladığımız, kullandığımız, korumadığımız ve haklarınız hakkında tam bilgi sağlamak için hazırlanmıştır.
+                    Mahallem, verilerinizin gizliliğini çok ciddiye almaktadır. Bu politika, verilerinizi nasıl topladığımız, kullandığımız, korumadığımız ve haklarınız hakkında tam bilgi sağlamak için hazırlanmıştır.
                   </p>
                 </div>
 
@@ -77,7 +77,7 @@ export default function PrivacyPage() {
                       <span className="w-1 h-6 bg-[#00833e] rounded-full"></span>
                       Toplanan Bilgiler
                     </h2>
-                    <p>KomşuApp, hizmetlerimizi sunmak ve iyileştirmek amacıyla belirli kişisel bilgilerinizi toplar:</p>
+                    <p>Mahallem, hizmetlerimizi sunmak ve iyileştirmek amacıyla belirli kişisel bilgilerinizi toplar:</p>
                     <div className="mt-4 space-y-3">
                       <div className="flex gap-3 p-3 bg-[#f0f2f5] rounded-lg">
                         <Check className="w-4 h-4 text-[#00833e] flex-shrink-0 mt-0.5" />
@@ -163,7 +163,7 @@ export default function PrivacyPage() {
                       Çerezler ve Takip Teknolojileri
                     </h2>
                     <p>
-                      KomşuApp, çerezler ve benzer takip teknolojileri kullanarak deneyiminizi geliştirmektedir. Tarayıcı ayarlarından çerezleri kontrol edebilirsiniz. Çerezleri devre dışı bırakmanız bazı özelikleri kullanmanızı engelliyebilir.
+                      Mahallem, çerezler ve benzer takip teknolojileri kullanarak deneyiminizi geliştirmektedir. Tarayıcı ayarlarından çerezleri kontrol edebilirsiniz. Çerezleri devre dışı bırakmanız bazı özelikleri kullanmanızı engelliyebilir.
                     </p>
                   </section>
 
@@ -260,7 +260,7 @@ export default function PrivacyPage() {
                       Gizlilik politikamız hakkında sorularınız veya endişeleriniz varsa, lütfen bize ulaşın:
                     </p>
                     <div className="mt-4 p-4 bg-[#f0f2f5] rounded-lg">
-                      <p className="text-sm text-[#404040]"><span className="font-semibold">Email:</span> gizlilik@komsuapp.com</p>
+                      <p className="text-sm text-[#404040]"><span className="font-semibold">Email:</span> gizlilik@mahallem.com</p>
                       <p className="text-sm text-[#404040] mt-2"><span className="font-semibold">Adres:</span> Trendex Lojistik, İstanbul, Türkiye</p>
                     </div>
                   </section>
@@ -268,7 +268,7 @@ export default function PrivacyPage() {
                   {/* Contact Button */}
                   <section className="mt-12 pt-8 border-t border-[#e0e0e0]">
                     <Link
-                      href="/mesajlar"
+                      href="/iletisim"
                       className="inline-flex items-center gap-2 px-4 py-2 bg-[#00833e] hover:bg-[#006b32] text-white rounded-lg font-medium transition-colors"
                     >
                       <Lock className="w-4 h-4" />

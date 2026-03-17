@@ -39,7 +39,7 @@ export default function AboutPage() {
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full -ml-16 -mb-16"></div>
 
           <div className="relative z-10">
-            <h1 className="text-4xl md:text-5xl font-bold mb-3">KomşuApp Hakkında</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-3">Mahallem Hakkında</h1>
             <p className="text-green-100 text-lg md:text-xl max-w-2xl mx-auto">
               Mahalle sakinlerini birbirleriyle bağlayan, güvenli ve dayanışmacı topluluklara katkı sağlayan sosyal platform
             </p>
@@ -69,13 +69,13 @@ export default function AboutPage() {
             Hikayemiz
           </h2>
           <p className="text-[#404040] leading-relaxed text-lg mb-6">
-            KomşuApp, Türkiye'deki mahalleler arasında gittikçe zayıflayan bağlantıları yeniden güçlendirmek amacıyla kuruldu. Modern teknolojinin hızlı dünyasında, komşularımızı tanımanın ve birbirimize yardım etmenin ne kadar zor hale geldiğini gördük.
+            Mahallem, Türkiye'deki mahalleler arasında gittikçe zayıflayan bağlantıları yeniden güçlendirmek amacıyla kuruldu. Modern teknolojinin hızlı dünyasında, komşularımızı tanımanın ve birbirimize yardım etmenin ne kadar zor hale geldiğini gördük.
           </p>
           <p className="text-[#404040] leading-relaxed text-lg mb-6">
-            Bu sorunun çözümü için KomşuApp'i tasarladık: mahalle sakinlerinin birbirleriyle bağlantı kurması, bilgi paylaşması, etkinlikler düzenlemesi ve güçlü topluluklar oluşturmasını sağlayan bir platform.
+            Bu sorunun çözümü için Mahallem'i tasarladık: mahalle sakinlerinin birbirleriyle bağlantı kurması, bilgi paylaşması, etkinlikler düzenlemesi ve güçlü topluluklar oluşturmasını sağlayan bir platform.
           </p>
           <p className="text-[#404040] leading-relaxed text-lg">
-            Bugün, 500+ mahallede 50.000+ kullanıcı KomşuApp aracılığıyla bağlantıda, birbirlerine güveniyor ve birlikte gelişiyor. Amacımız, her mahallede bu güven ve dayanışma kültürünü yaygınlaştırmak.
+            Bugün, 500+ mahallede 50.000+ kullanıcı Mahallem aracılığıyla bağlantıda, birbirlerine güveniyor ve birlikte gelişiyor. Amacımız, her mahallede bu güven ve dayanışma kültürünü yaygınlaştırmak.
           </p>
         </div>
 
@@ -112,7 +112,7 @@ export default function AboutPage() {
             Ekibimiz
           </h2>
           <p className="text-[#404040] leading-relaxed mb-8">
-            KomşuApp, yazılım geliştirme, ürün tasarımı ve topluluk yönetiminde uzman bir ekip tarafından geliştirilir. Trendex Lojistik tarafından desteklenen projemiz, her gün mahalle sakinlerinin yaşamını daha iyi hale getirmek için çalışmaktadır.
+            Mahallem, yazılım geliştirme, ürün tasarımı ve topluluk yönetiminde uzman bir ekip tarafından geliştirilir. Trendex Lojistik tarafından desteklenen projemiz, her gün mahalle sakinlerinin yaşamını daha iyi hale getirmek için çalışmaktadır.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -129,7 +129,7 @@ export default function AboutPage() {
 
           <div className="text-center text-sm text-[#8f8f8f]">
             Sorularınız veya önerileriniz için bize{" "}
-            <Link href="/mesajlar" className="text-[#00833e] font-semibold hover:underline">
+            <Link href="/iletisim" className="text-[#00833e] font-semibold hover:underline">
               ulaşabilirsiniz
             </Link>
           </div>
@@ -139,7 +139,7 @@ export default function AboutPage() {
         <div className="bg-white border border-[#e0e0e0] rounded-lg p-8 md:p-12 text-center mb-12">
           <h2 className="text-3xl font-bold text-[#333] mb-4">Mahallene Katıl</h2>
           <p className="text-[#404040] mb-8 max-w-2xl mx-auto leading-relaxed">
-            KomşuApp'e katılarak mahallenizle bağlantı kurun, yeni arkadaşlar edinin ve güçlü bir topluluk oluşturun.
+            Mahallem'e katılarak mahallenizle bağlantı kurun, yeni arkadaşlar edinin ve güçlü bir topluluk oluşturun.
           </p>
           <Link
             href="/kaydol"
@@ -151,7 +151,7 @@ export default function AboutPage() {
 
         {/* Footer */}
         <div className="border-t border-[#e0e0e0] bg-[#f0f2f5] py-8 px-8 rounded-lg text-center">
-          <p className="text-sm text-[#8f8f8f] mb-4">© 2026 KomşuApp — Trendex Lojistik tarafından geliştirilmiştir.</p>
+          <p className="text-sm text-[#8f8f8f] mb-4">© 2026 Mahallem — Trendex Lojistik tarafından geliştirilmiştir.</p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <Link href="/gizlilik" className="text-sm text-[#00833e] hover:text-[#006b32] font-medium transition-colors">
               Gizlilik Politikası

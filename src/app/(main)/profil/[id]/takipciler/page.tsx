@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Image from 'next/image';
 import {
   Search,
-  MessageCircle,
   MapPin,
   Users,
   ChevronLeft,
@@ -248,11 +247,11 @@ export default function FollowersPage({ params }: { params: { id: string } }) {
                   </p>
                 </div>
 
-                {/* Message Button */}
-                <button className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-colors">
-                  <MessageCircle size={16} />
-                  Mesaj Gönder
-                </button>
+                {/* Profile Button */}
+                <Link href={`/profil/${neighbor.id}`} className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-colors">
+                  <Users size={16} />
+                  Profili Gör
+                </Link>
               </div>
             ))}
           </div>

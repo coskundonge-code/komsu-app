@@ -43,25 +43,19 @@ const faqs = {
     { q: 'Uygunsuz içeriği nasıl bildiririm?', a: 'Gönderi veya profil üzerine tıklayıp "Raporla" seçeneğini kullanabilirsiniz. Ekibimiz raporu inceleyip gerekli işlemi alacaktır.' },
     { q: 'Yorum yapabilir miyim?', a: 'Evet, kimin yorum yapabileceğini Ayarlar > Gizlilik bölümünden kontrol edebilirsiniz.' },
   ],
-  'Mesajlaşma': [
-    { q: 'Mesaj gönderdim ama cevap almıyorum?', a: 'Alıcının bildirimleri kapalı olabilir. Sabrınız için bekleyin, genellikle 24 saatte yanıt alırsınız.' },
-    { q: 'Sohbeti arşivleyebilir miyim?', a: 'Evet, sohbet listesinde konuşmaya sağ tıklayıp "Arşive Al" seçeneğini seçebilirsiniz.' },
-    { q: 'Medya dosyasını nasıl gönderim?', a: 'Sohbet penceresinde "+" ikonuna tıklayıp fotoğraf veya video seçebilirsiniz.' },
-    { q: 'Mesajı silebilir miyim?', a: 'Evet, mesaja uzun basarak veya tıklayarak "Sil" seçeneğini kullanabilirsiniz. Sadece sizin tarafınızdan silinir.' },
-  ],
   'Bildirim Ayarları': [
     { q: 'Bildirimleri nasıl kapatırım?', a: 'Ayarlar > Bildirimler bölümünden istediğiniz bildirim türünü devre dışı bırakabilirsiniz.' },
     { q: 'Yalnızca önemli bildirimleri almak istiyorum?', a: 'Ayarlar > Bildirimler > Önemli Yalnızca seçeneğini açabilirsiniz.' },
     { q: 'E-posta bildirimleri almıyor musunuz?', a: 'Spam klasörünü kontrol edin veya Ayarlar > E-posta Bildirimleri seçeneğini yeniden etkinleştirin.' },
     { q: 'Sessiz saatleri ayarlayabilir miyim?', a: 'Evet, Ayarlar > Sessiz Saatler seçeneğinden bildirim almak istemediğiniz saatler belirleyebilirsiniz.' },
-    { q: 'Push bildirimlerini kapatabilir miyim?', a: 'Telefonunuzun ayarlarından veya KomşuApp ayarlarından Push bildirimlerini devre dışı bırakabilirsiniz.' },
+    { q: 'Push bildirimlerini kapatabilir miyim?', a: 'Telefonunuzun ayarlarından veya Mahallem ayarlarından Push bildirimlerini devre dışı bırakabilirsiniz.' },
   ],
   'Genel Sorular': [
-    { q: 'KomşuApp ne için kullanılır?', a: 'KomşuApp, mahallenizdeki insanlarla bağlantı kurmanız, haberleri paylaşmanız, etkinlikler organize etmeniz ve yardımlaşmanız için tasarlanmıştır.' },
-    { q: 'KomşuApp ücretsiz mi?', a: 'Evet, temel özellikler tamamen ücretsizdir. İlerde bazı premium özellikler sunulabilir.' },
-    { q: 'Başka mahallede arkadaşım var, bağlantı kurabilir miyiz?', a: 'KomşuApp, yerel topluluklar oluşturmak için tasarlandığından, sadece kendi mahallenizle etkileşime girebilirsiniz.' },
+    { q: 'Mahallem ne için kullanılır?', a: 'Mahallem, mahallenizdeki insanlarla bağlantı kurmanız, haberleri paylaşmanız, etkinlikler organize etmeniz ve yardımlaşmanız için tasarlanmıştır.' },
+    { q: 'Mahallem ücretsiz mi?', a: 'Evet, temel özellikler tamamen ücretsizdir. İlerde bazı premium özellikler sunulabilir.' },
+    { q: 'Başka mahallede arkadaşım var, bağlantı kurabilir miyiz?', a: 'Mahallem, yerel topluluklar oluşturmak için tasarlandığından, sadece kendi mahallenizle etkileşime girebilirsiniz.' },
     { q: 'Hesabımı nasıl silerim?', a: 'Ayarlar > Hesap > Hesabı Sil seçeneğini seçerek hesabınızı kalıcı olarak silebilirsiniz.' },
-    { q: 'KomşuApp hangi dillerde mevcut?', a: 'Şu anda Türkçe ve İngilizce dillerinde mevcuttur. Daha fazla dil desteği yakında eklenecektir.' },
+    { q: 'Mahallem hangi dillerde mevcut?', a: 'Şu anda Türkçe ve İngilizce dillerinde mevcuttur. Daha fazla dil desteği yakında eklenecektir.' },
     { q: 'Hata buldum, nasıl bildiririm?', a: 'Ayarlar > Hata Bildir seçeneğini kullanarak veya destek ekibine mesaj göndererek hatayı bildirebilirsiniz.' },
   ],
 };
@@ -206,7 +200,7 @@ export default function HelpPage() {
             <h3 className="text-2xl font-bold mb-3">Hâlâ Yardıma İhtiyacınız Var mı?</h3>
             <p className="text-green-100 mb-8 max-w-lg mx-auto">Sorunuzu bulamadıysanız, destek ekibimiz size 2 dakika içinde yanıt vermeye hazırdır.</p>
             <Link
-              href="/mesajlar"
+              href="/iletisim"
               className="inline-block px-8 py-4 bg-white text-[#00833e] font-bold rounded-lg hover:bg-gray-100 transition-colors shadow-lg"
             >
               Destek ile İletişime Geç

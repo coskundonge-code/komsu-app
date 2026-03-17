@@ -50,7 +50,7 @@ export default function TermsPage() {
               {/* Header */}
               <div className="bg-gradient-to-br from-[#00833e] to-[#006b32] p-8 text-white">
                 <h1 className="text-3xl font-bold mb-2">Kullanım Koşulları</h1>
-                <p className="text-green-100">KomşuApp Platformunun Hukuki Anlaşması</p>
+                <p className="text-green-100">Mahallem Platformunun Hukuki Anlaşması</p>
               </div>
 
               <div className="p-8">
@@ -68,7 +68,7 @@ export default function TermsPage() {
                       Hizmet Tanımı
                     </h2>
                     <p>
-                      KomşuApp ("Platform"), komşuların birbirleriyle bağlantı kurmasını, bilgi paylaşmasını, etkinlikler organize etmesini ve yerel toplulukları güçlendirmesini sağlayan bir sosyal ağ platformudur. Platform, Trendex Lojistik tarafından işletilir.
+                      Mahallem ("Platform"), komşuların birbirleriyle bağlantı kurmasını, bilgi paylaşmasını, etkinlikler organize etmesini ve yerel toplulukları güçlendirmesini sağlayan bir sosyal ağ platformudur. Platform, Trendex Lojistik tarafından işletilir.
                     </p>
                   </section>
 
@@ -137,7 +137,7 @@ export default function TermsPage() {
                       Fikri Mülkiyet
                     </h2>
                     <p>
-                      KomşuApp platformu, tasarımı, logosu, yazılımı ve diğer tüm unsurları Trendex Lojistik'e aittir. Bu öğelerin hiçbir bölümünü izinsiz kullanamazsınız. İzinsiz kullanım yasal işlem başlatılmasına neden olabilir.
+                      Mahallem platformu, tasarımı, logosu, yazılımı ve diğer tüm unsurları Trendex Lojistik'e aittir. Bu öğelerin hiçbir bölümünü izinsiz kullanamazsınız. İzinsiz kullanım yasal işlem başlatılmasına neden olabilir.
                     </p>
                   </section>
 
@@ -203,7 +203,7 @@ export default function TermsPage() {
                     <h3 className="font-bold text-[#333] mb-3">Sorularınız mı var?</h3>
                     <p className="text-sm text-[#8f8f8f] mb-4">Bu koşullarla ilgili sorularınız için lütfen destek ekibimize ulaşın.</p>
                     <Link
-                      href="/mesajlar"
+                      href="/iletisim"
                       className="inline-flex items-center gap-2 px-4 py-2 bg-[#00833e] hover:bg-[#006b32] text-white rounded-lg font-medium transition-colors"
                     >
                       <Shield className="w-4 h-4" />

@@ -829,8 +829,8 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
               <h3 className="font-bold text-[#333] mb-4">Hızlı İşlemler</h3>
               <div className="space-y-3">
                 <button className="w-full px-4 py-3 bg-[#f0f2f5] hover:bg-[#e0e0e0] text-[#00833e] font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">
-                  <MessageCircle className="w-4 h-4" />
-                  Mesaj Gönder
+                  <Share2 className="w-4 h-4" />
+                  Grubu Paylaş
                 </button>
                 {mockGroupDetail.isAdmin && (
                   <button className="w-full px-4 py-3 bg-[#f0f2f5] hover:bg-[#e0e0e0] text-[#333] font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">

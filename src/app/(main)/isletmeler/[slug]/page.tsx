@@ -837,10 +837,10 @@ export default function BusinessDetailPage({ params }: PageProps) {
                 Web Sitesi
               </a>
 
-              <button className="w-full flex items-center justify-center gap-2 bg-white border border-[#00833e] text-[#00833e] font-medium py-3 px-4 rounded-lg hover:bg-[#f0f2f5] transition-colors">
-                <MessageSquare size={18} />
-                Mesaj Gönder
-              </button>
+              <Link href="/iletisim" className="w-full flex items-center justify-center gap-2 bg-white border border-[#00833e] text-[#00833e] font-medium py-3 px-4 rounded-lg hover:bg-[#f0f2f5] transition-colors">
+                <Phone size={18} />
+                İletişime Geç
+              </Link>
             </div>
 
             {/* Recommend Button */}

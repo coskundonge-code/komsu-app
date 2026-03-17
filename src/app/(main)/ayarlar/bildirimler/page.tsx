@@ -65,15 +65,6 @@ export default function BildirimlerPage() {
       push: true,
     },
     {
-      id: "messages",
-      label: "Mesajlar",
-      description: "Yeni doğrudan mesajlar aldığınızda bildirim alın",
-      icon: <Mail className="w-5 h-5" />,
-      email: true,
-      inApp: true,
-      push: true,
-    },
-    {
       id: "events",
       label: "Etkinlikler",
       description: "Mahallenizdeki yeni etkinlikler hakkında bildir kalın",

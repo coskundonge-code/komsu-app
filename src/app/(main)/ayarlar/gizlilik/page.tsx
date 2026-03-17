@@ -5,7 +5,6 @@ import Link from "next/link";
 import {
   Lock,
   Eye,
-  MessageSquare,
   MapPin,
   Users,
   Search,
@@ -23,13 +22,10 @@ interface BlockedUser {
 }
 
 type VisibilityOption = "everyone" | "neighborhood" | "private";
-type MessageOption = "everyone" | "neighborhood" | "nobody";
 
 export default function GizlilikPage() {
   const [profileVisibility, setProfileVisibility] =
     useState<VisibilityOption>("neighborhood");
-  const [messagePermission, setMessagePermission] =
-    useState<MessageOption>("neighborhood");
   const [showLocationOnMap, setShowLocationOnMap] = useState(true);
   const [showInMembersList, setShowInMembersList] = useState(true);
   const [showInSearch, setShowInSearch] = useState(true);
@@ -61,23 +57,6 @@ export default function GizlilikPage() {
     { value: "private" as VisibilityOption, label: "Gizli", description: "Profiliniz tamamen gizli" },
   ];
 
-  const messageOptions = [
-    {
-      value: "everyone" as MessageOption,
-      label: "Herkes",
-      description: "Tüm kullanıcılar size mesaj gönderebilir",
-    },
-    {
-      value: "neighborhood" as MessageOption,
-      label: "Sadece Mahalle",
-      description: "Yalnızca mahallenizdeki kişiler mesaj gönderebilir",
-    },
-    {
-      value: "nobody" as MessageOption,
-      label: "Hiçkimse",
-      description: "Kimse size mesaj gönderemez",
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-[#f0f2f5]">
@@ -151,50 +130,6 @@ export default function GizlilikPage() {
           </div>
         </div>
 
-        {/* Message Permissions */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-[#f0f2f5] rounded-lg">
-              <MessageSquare className="w-5 h-5 text-[#00833e]" />
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold text-[#333]">
-                Bana Mesaj Gönderebilecekler
-              </h2>
-              <p className="text-sm text-[#8f8f8f]">
-                Kime mesaj yazmasına izin vereceğinizi seçin
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            {messageOptions.map((option) => (
-              <label
-                key={option.value}
-                className="flex items-start gap-3 p-4 rounded-lg hover:bg-[#f0f2f5] cursor-pointer transition-colors border border-transparent hover:border-[#e0e0e0]"
-              >
-                <input
-                  type="radio"
-                  name="messagePermission"
-                  value={option.value}
-                  checked={messagePermission === option.value}
-                  onChange={(e) =>
-                    setMessagePermission(e.target.value as MessageOption)
-                  }
-                  className="w-4 h-4 accent-[#00833e] mt-1 flex-shrink-0"
-                />
-                <div>
-                  <span className="text-[#404040] font-medium block">
-                    {option.label}
-                  </span>
-                  <span className="text-sm text-[#8f8f8f]">
-                    {option.description}
-                  </span>
-                </div>
-              </label>
-            ))}
-          </div>
-        </div>
 
         {/* Privacy Toggle Options */}
         <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-6">
