@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Compass, Plus, MessageCircle, User } from 'lucide-react'
+import { Home, Compass, Plus, Bell, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
@@ -10,13 +10,13 @@ export function BottomBar() {
   const pathname = usePathname()
   const [activeLink, setActiveLink] = useState<string | null>(null)
 
-  // Mock unread messages count
+  // Mock unread notifications count
   const unreadCount = 3
 
   const items = [
     { icon: Home, label: 'Ana Sayfa', href: '/' },
     { icon: Compass, label: 'Keşfet', href: '/kesfet' },
-    { icon: MessageCircle, label: 'Mesajlar', href: '/mesajlar' },
+    { icon: Bell, label: 'Bildirimler', href: '/bildirimler' },
     { icon: User, label: 'Profil', href: '/profil/me' },
   ]
 
@@ -84,12 +84,12 @@ export function BottomBar() {
           <span className="text-[10px] font-semibold text-[#00833e]">Oluştur</span>
         </Link>
 
-        {/* Last two items with message badge */}
+        {/* Last two items with notification badge */}
         {items.slice(2).map((item) => {
           const Icon = item.icon
           const active = isActive(item.href)
           const isPressed = activeLink === item.href
-          const isMessages = item.href === '/mesajlar'
+          const isNotifications = item.href === '/bildirimler'
 
           return (
             <Link
@@ -108,8 +108,8 @@ export function BottomBar() {
             >
               <div className="relative">
                 <Icon className={cn('transition-all duration-150', active ? 'w-6 h-6' : 'w-5 h-5')} strokeWidth={active ? 2.5 : 2} />
-                {/* Notification badge for messages */}
-                {isMessages && unreadCount > 0 && (
+                {/* Notification badge */}
+                {isNotifications && unreadCount > 0 && (
                   <div className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">
                     {unreadCount}
                   </div>
