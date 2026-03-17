@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import { generatePageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "Gizlilik Politikası | KomşuApp",
+  title: "Gizlilik Politikası | Mahallem",
   description:
-    "KomşuApp Gizlilik Politikası. Verileriniz nasıl korunduğunu ve kullanıldığını öğrenin.",
+    "Mahallem Gizlilik Politikası. Verileriniz nasıl korunduğunu ve kullanıldığını öğrenin.",
   openGraph: {
-    url: "https://komsuapp.com/gizlilik",
-    title: "Gizlilik Politikası | KomşuApp",
+    url: "https://mahallem.com/gizlilik",
+    title: "Gizlilik Politikası | Mahallem",
     description:
-      "KomşuApp Gizlilik Politikası. Verileriniz nasıl korunduğunu ve kullanıldığını öğrenin.",
+      "Mahallem Gizlilik Politikası. Verileriniz nasıl korunduğunu ve kullanıldığını öğrenin.",
   },
   twitter: {
-    title: "Gizlilik Politikası | KomşuApp",
+    title: "Gizlilik Politikası | Mahallem",
     description:
-      "KomşuApp Gizlilik Politikası. Verileriniz nasıl korunduğunu ve kullanıldığını öğrenin.",
+      "Mahallem Gizlilik Politikası. Verileriniz nasıl korunduğunu ve kullanıldığını öğrenin.",
   },
 });
 

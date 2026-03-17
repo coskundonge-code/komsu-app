@@ -99,7 +99,7 @@ export default function ContactPage() {
       a: "Gönderi altındaki \"⋮\" menüsünü açıp \"İhbar Et\" seçeneğini tıklayın. Sorunun türünü ve detaylı açıklamasını belirtin.",
     },
     {
-      q: "KomşuApp mobil uygulaması ne zaman çıkacak?",
+      q: "Mahallem mobil uygulaması ne zaman çıkacak?",
       a: "Mobil uygulamalar (iOS ve Android) 2026 Q2 içinde yayınlanacak. Bildirim almak için bize abone olabilirsiniz.",
     },
     {
@@ -112,13 +112,13 @@ export default function ContactPage() {
     {
       icon: Mail,
       title: "E-posta",
-      value: "destek@komsuapp.com",
+      value: "destek@mahallem.com",
       description: "Genel sorular ve destek için",
     },
     {
       icon: Mail,
       title: "KVKK Soruları",
-      value: "kvkk@komsuapp.com",
+      value: "kvkk@mahallem.com",
       description: "Veri koruması ile ilgili başvurular",
     },
     {
@@ -136,9 +136,9 @@ export default function ContactPage() {
   ];
 
   const socialLinks = [
-    { icon: Instagram, name: "Instagram", url: "https://instagram.com/komsuapp", color: "hover:text-pink-600" },
-    { icon: Twitter, name: "Twitter", url: "https://twitter.com/komsuapp", color: "hover:text-blue-400" },
-    { icon: Linkedin, name: "LinkedIn", url: "https://linkedin.com/company/komsuapp", color: "hover:text-blue-700" },
+    { icon: Instagram, name: "Instagram", url: "https://instagram.com/mahallem", color: "hover:text-pink-600" },
+    { icon: Twitter, name: "Twitter", url: "https://twitter.com/mahallem", color: "hover:text-blue-400" },
+    { icon: Linkedin, name: "LinkedIn", url: "https://linkedin.com/company/mahallem", color: "hover:text-blue-700" },
   ];
 
   return (
@@ -409,7 +409,7 @@ export default function ContactPage() {
           {/* Footer */}
           <div className="border-t border-[#e0e0e0] bg-[#f0f2f5] py-6 px-8 text-center">
             <p className="text-sm text-[#8f8f8f] mb-4">
-              © 2026 KomşuApp — Trendex Lojistik tarafından geliştirilmiştir.
+              © 2026 Mahallem — Trendex Lojistik tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link

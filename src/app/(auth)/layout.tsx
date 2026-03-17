@@ -13,7 +13,7 @@ export default function AuthLayout({
         <div className="px-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <Home className="w-6 h-6 text-[#00833e]" />
-            <span className="text-xl font-bold text-[#00833e]">KomşuApp</span>
+            <span className="text-xl font-bold text-[#00833e]">Mahallem</span>
           </Link>
         </div>
       </div>
@@ -26,7 +26,7 @@ export default function AuthLayout({
           <div>
             <Link href="/" className="flex items-center gap-3 mb-12 hover:opacity-90 transition-opacity">
               <Home className="w-10 h-10" />
-              <span className="text-3xl font-bold">KomşuApp</span>
+              <span className="text-3xl font-bold">Mahallem</span>
             </Link>
 
             <div className="mb-12">
@@ -76,7 +76,7 @@ export default function AuthLayout({
 
           {/* Footer on left panel */}
           <div className="text-green-100 text-sm">
-            <p>© 2026 KomşuApp - Mahalleni Keşfet</p>
+            <p>© 2026 Mahallem - Mahalleni Keşfet</p>
           </div>
         </div>
 
@@ -97,7 +97,7 @@ export default function AuthLayout({
               <a href="#" className="hover:text-[#404040] transition-colors">Hakkında</a>
               <a href="#" className="hover:text-[#404040] transition-colors">Yardım</a>
             </div>
-            <p className="text-xs text-[#8f8f8f] mt-2 text-center">© 2026 KomşuApp</p>
+            <p className="text-xs text-[#8f8f8f] mt-2 text-center">© 2026 Mahallem</p>
           </div>
         </div>
       </div>

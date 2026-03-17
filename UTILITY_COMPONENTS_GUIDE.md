@@ -1,6 +1,6 @@
-# KomşuApp Utility Components Guide
+# Mahallem Utility Components Guide
 
-This guide covers the three new utility components created for KomşuApp.
+This guide covers the three new utility components created for Mahallem.
 
 ---
 

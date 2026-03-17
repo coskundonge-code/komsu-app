@@ -94,7 +94,7 @@ const faqData: FAQ[] = [
   {
     category: 'Teknik Sorunlar',
     q: 'Bildirimler neden gelmiyorum?',
-    a: 'Ayarlar > Bildirimler bölümünde bildirimlerin etkinleştirildiğini kontrol edin. Ayrıca cihazınızın ayarlarından KomşuApp için bildirimleri etkinleştirmeniz gerekebilir.'
+    a: 'Ayarlar > Bildirimler bölümünde bildirimlerin etkinleştirildiğini kontrol edin. Ayrıca cihazınızın ayarlarından Mahallem için bildirimleri etkinleştirmeniz gerekebilir.'
   },
   {
     category: 'Teknik Sorunlar',

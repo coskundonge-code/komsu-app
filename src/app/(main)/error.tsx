@@ -83,7 +83,7 @@ export default function MainError({ error, reset }: ErrorProps) {
           <p className="text-gray-500 text-sm">
             Bu sorun devam ederse, lütfen{' '}
             <a
-              href="mailto:support@komsuapp.com"
+              href="mailto:support@mahallem.com"
               className="text-[#00833e] font-semibold hover:text-[#006b32] underline transition-colors"
             >
               destek

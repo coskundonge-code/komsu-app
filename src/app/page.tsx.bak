@@ -214,7 +214,7 @@ export default function LandingPage() {
                         <div className="w-7 h-7 bg-[#00965b] rounded-lg flex items-center justify-center">
                           <Home className="w-4 h-4 text-white" />
                         </div>
-                        <span className="font-bold text-gray-900 text-sm">KomşuApp</span>
+                        <span className="font-bold text-gray-900 text-sm">Mahallem</span>
                       </div>
                       <div className="flex items-center gap-3">
                         <Search className="w-4 h-4 text-gray-400" />
@@ -374,7 +374,7 @@ export default function LandingPage() {
       {/* TRUSTED BY */}
       <section className="py-12 border-y border-gray-100 bg-gray-50/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-sm text-gray-400 mb-6 font-medium uppercase tracking-wider">Medyada KomşuApp</p>
+          <p className="text-center text-sm text-gray-400 mb-6 font-medium uppercase tracking-wider">Medyada Mahallem</p>
           <div className="flex items-center justify-center gap-8 sm:gap-16 opacity-40 grayscale">
             {['Hürriyet', 'NTV', 'Sabah', 'TRT', 'CNN Türk'].map((name) => (
               <span key={name} className="text-lg sm:text-xl font-bold text-gray-600">{name}</span>
@@ -394,7 +394,7 @@ export default function LandingPage() {
               Mahalleniz için her şey tek yerde
             </h2>
             <p className="text-lg text-gray-500">
-              Güvenlik, alışveriş, etkinlikler ve daha fazlası — hepsi KomşuApp&apos;ta.
+              Güvenlik, alışveriş, etkinlikler ve daha fazlası — hepsi Mahallem&apos;ta.
             </p>
           </div>
 
@@ -467,7 +467,7 @@ export default function LandingPage() {
                 Güvenliğiniz bizim önceliğimiz
               </h2>
               <p className="text-lg text-gray-500 mb-8 leading-relaxed">
-                KomşuApp, mahalle güvenliğini artırmak için tasarlanmıştır. Adres doğrulama sistemi sayesinde sadece gerçek komşularınızla etkileşimde bulunursunuz.
+                Mahallem, mahalle güvenliğini artırmak için tasarlanmıştır. Adres doğrulama sistemi sayesinde sadece gerçek komşularınızla etkileşimde bulunursunuz.
               </p>
 
               <div className="space-y-4">
@@ -536,7 +536,7 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { name: 'Ayşe Kaya', loc: 'Kadıköy, Moda', text: 'Kayıp kedimi KomşuApp sayesinde 2 saat içinde buldum! Komşularım hemen paylaşımı görüp yardım etti. Harika bir topluluk.', avatar: 'AK', bg: 'bg-orange-100', tc: 'text-orange-600' },
+              { name: 'Ayşe Kaya', loc: 'Kadıköy, Moda', text: 'Kayıp kedimi Mahallem sayesinde 2 saat içinde buldum! Komşularım hemen paylaşımı görüp yardım etti. Harika bir topluluk.', avatar: 'AK', bg: 'bg-orange-100', tc: 'text-orange-600' },
               { name: 'Mehmet Yıldız', loc: 'Beşiktaş, Etiler', text: 'Mahalledeki güvenlik sorunlarını birlikte çözüyoruz. Muhtar bile kullanıyor artık. Güvenlik uyarıları çok işe yarıyor.', avatar: 'MY', bg: 'bg-blue-100', tc: 'text-blue-600' },
               { name: 'Zeynep Demir', loc: 'Bakırköy, Ataköy', text: 'Pazar yerinden harika fırsatlar buluyorum. Komşularla alışveriş yapınca güven oluyor. İkinci el eşyalar için birebir.', avatar: 'ZD', bg: 'bg-teal-100', tc: 'text-[#00833e]' },
             ].map((t) => (
@@ -619,7 +619,7 @@ export default function LandingPage() {
           </div>
 
           <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm">&copy; 2026 KomşuApp. Tüm hakları saklıdır.</p>
+            <p className="text-sm">&copy; 2026 Mahallem. Tüm hakları saklıdır.</p>
             <div className="flex items-center gap-2 text-sm">
               <Globe className="w-4 h-4" />
               <span>Türkçe</span>

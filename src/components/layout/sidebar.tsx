@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import {
   Home, Search, ShoppingBag, Calendar, Users, Building2,
   MessageCircle, Bell, AlertTriangle, Settings, HelpCircle, User,
-  ChevronRight, X, UserPlus, PlusCircle
+  ChevronRight, X, UserPlus, PlusCircle, Repeat, CreditCard, Heart
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getAvatarUrl } from '@/lib/demo-images'
@@ -21,6 +21,9 @@ const primaryNavItems = [
   { icon: Users, label: 'Gruplar', href: '/gruplar' },
   { icon: Calendar, label: 'Etkinlikler', href: '/etkinlikler' },
   { icon: Building2, label: 'Yerel İşletmeler', href: '/isletmeler' },
+  { icon: Repeat, label: 'Ödünç Ver & Kirala', href: '/odunc-kirala' },
+  { icon: CreditCard, label: 'Mahallem Kart', href: '/mahallem-kart' },
+  { icon: Heart, label: 'Askıda Bağış', href: '/askida-bagis' },
 ]
 
 // Items with badge counters

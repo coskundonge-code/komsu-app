@@ -8,4 +8,4 @@ Disallow: /api/
 Disallow: /auth/
 
 # Sitemap
-Sitemap: https://komsuapp.com/sitemap.xml
+Sitemap: https://mahallem.com/sitemap.xml

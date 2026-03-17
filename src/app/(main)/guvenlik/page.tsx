@@ -58,7 +58,7 @@ const securityTips = [
       },
       {
         title: "Ödeme Bilgilerinizi Koruyun",
-        desc: "Asla para göndermek veya ödemeleri KomşuApp aracılığıyla kabul etmeyin.",
+        desc: "Asla para göndermek veya ödemeleri Mahallem aracılığıyla kabul etmeyin.",
       },
       {
         title: "Sosyal Mühendislik Hilelerine Karşı Dikkat",
@@ -72,7 +72,7 @@ const securityTips = [
     tips: [
       {
         title: "Komşularınızı Tanıyın",
-        desc: "KomşuApp aracılığıyla mahallenizdeki insanları tanıyın ve güven oluşturun.",
+        desc: "Mahallem aracılığıyla mahallenizdeki insanları tanıyın ve güven oluşturun.",
       },
       {
         title: "Güvenlik Gözlemlerinizi Paylaşın",
@@ -270,7 +270,7 @@ export default function SecurityPage() {
               </h2>
               <div className="bg-[#f0f2f5] p-6 rounded-lg border border-[#e0e0e0]">
                 <p className="text-[#404040] leading-relaxed text-base">
-                  KomşuApp'ta güvenli olmak, hem çevrimiçi güvenlik hem de mahalle güvenliği hakkında
+                  Mahallem'de güvenli olmak, hem çevrimiçi güvenlik hem de mahalle güvenliği hakkında
                   bilinçli olmak demektir. Bu rehber, seni ve mahalleni daha güvenli hale getirmek için tasarlanmış pratik ipuçları ve kaynaklarla dolu.
                 </p>
               </div>
@@ -392,7 +392,7 @@ export default function SecurityPage() {
                   <div className="flex-1">
                     <h3 className="font-bold text-[#333] text-base mb-1">Destek Ekibiyle İletişime Geçin</h3>
                     <p className="text-sm text-[#8f8f8f]">
-                      Ciddi güvenlik sorunu için: destek@komsuapp.com veya Yardım Merkezi'nden ticket açın.
+                      Ciddi güvenlik sorunu için: destek@mahallem.com veya Yardım Merkezi'nden ticket açın.
                     </p>
                   </div>
                 </div>
@@ -425,7 +425,7 @@ export default function SecurityPage() {
               </h2>
 
               <p className="text-[#404040] leading-relaxed mb-8">
-                KomşuApp, herkesin güvende ve saygılı hissetmesi için tasarlanmıştır. Bu kurallar platformumuzun
+                Mahallem, herkesin güvende ve saygılı hissetmesi için tasarlanmıştır. Bu kurallar platformumuzun
                 ve mahallelerimizin güvenli, saygılı ve faydalı kalmasını sağlar.
               </p>
 
@@ -499,7 +499,7 @@ export default function SecurityPage() {
           {/* Footer */}
           <div className="border-t border-[#e0e0e0] bg-[#f0f2f5] py-8 px-8 text-center">
             <p className="text-sm text-[#8f8f8f] mb-6">
-              © 2026 KomşuApp — Trendex Lojistik tarafından geliştirilmiştir.
+              © 2026 Mahallem — Trendex Lojistik tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-6 flex-wrap">
               <Link
@@ -524,7 +524,7 @@ export default function SecurityPage() {
               </Link>
             </div>
             <p className="text-xs text-[#8f8f8f] mt-6">
-              Sorularınız veya endişeleriniz varsa lütfen destek@komsuapp.com ile iletişime geçin.
+              Sorularınız veya endişeleriniz varsa lütfen destek@mahallem.com ile iletişime geçin.
             </p>
           </div>
         </div>

@@ -42,7 +42,7 @@ const positions = [
     location: "İstanbul",
     type: "Tam Zamanlı",
     description:
-      "KomşuApp topluluğunu yönetin, kullanıcı etkileşimini teşvik edin ve mahalle sakinlerinin bağlantıda kalmasını sağlayın. İletişim ve liderlik becerileriniz ön planda olmalı.",
+      "Mahallem topluluğunu yönetin, kullanıcı etkileşimini teşvik edin ve mahalle sakinlerinin bağlantıda kalmasını sağlayın. İletişim ve liderlik becerileriniz ön planda olmalı.",
     icon: MessageSquare,
   },
   {
@@ -52,7 +52,7 @@ const positions = [
     location: "İstanbul",
     type: "Tam Zamanlı",
     description:
-      "KomşuApp'ın markasını güçlendirin ve hedef kitleye ulaşın. Dijital pazarlama, sosyal medya ve reklam kampanyaları konusunda deneyimli bir profesyonel arıyoruz.",
+      "Mahallem'in markasını güçlendirin ve hedef kitleye ulaşın. Dijital pazarlama, sosyal medya ve reklam kampanyaları konusunda deneyimli bir profesyonel arıyoruz.",
     icon: TrendingUp,
   },
   {
@@ -105,7 +105,7 @@ export default function CareersPage() {
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full -ml-24 -mb-24"></div>
 
             <div className="relative z-10">
-              <h1 className="text-4xl font-bold mb-3">KomşuApp Ailesi'ne Katıl</h1>
+              <h1 className="text-4xl font-bold mb-3">Mahallem Ailesi'ne Katıl</h1>
               <p className="text-lg text-green-100 max-w-2xl mx-auto">
                 Mahalleler ve topluluklar yönetmek için bizimle bir ekibin parçası olun. Anlamlı işler yapan, tutkulu bir takımda kendi potansiyelini keşfet.
               </p>
@@ -231,7 +231,7 @@ export default function CareersPage() {
                         </div>
 
                         <Link
-                          href={`mailto:kariyer@komsuapp.com?subject=Başvuru: ${position.title}`}
+                          href={`mailto:kariyer@mahallem.com?subject=Başvuru: ${position.title}`}
                           className="px-6 py-2 bg-[#00833e] text-white rounded-lg font-semibold hover:bg-[#006b32] transition-colors whitespace-nowrap text-center"
                         >
                           Başvur
@@ -281,7 +281,7 @@ export default function CareersPage() {
             <section className="mb-12 p-8 bg-gradient-to-br from-[#00833e]/10 to-[#006b32]/10 rounded-lg border border-[#00833e]/20">
               <h2 className="text-2xl font-bold text-[#333] mb-6 flex items-center gap-2">
                 <Users size={24} />
-                Neden KomşuApp'a Katılmalısınız?
+                Neden Mahallem'e Katılmalısınız?
               </h2>
               <ul className="space-y-4 text-[#404040]">
                 <li className="flex items-start gap-3">
@@ -318,7 +318,7 @@ export default function CareersPage() {
                 Eğer diğer pozisyonlar arasında uygun bir fırsat bulamadıysan, yine de bize CV'nizi ve motivasyon mektubunuzu gönderebilirsin. Gelen başvuruları düzenli olarak inceliyor ve uygun fırsatlar için seni işe almayı düşünüyoruz.
               </p>
               <Link
-                href="mailto:kariyer@komsuapp.com?subject=Genel Başvuru"
+                href="mailto:kariyer@mahallem.com?subject=Genel Başvuru"
                 className="inline-flex items-center gap-2 px-6 py-2 bg-[#00833e]/20 text-[#00833e] rounded-lg font-semibold hover:bg-[#00833e]/30 transition-colors"
               >
                 <Send size={16} />
@@ -333,11 +333,11 @@ export default function CareersPage() {
                 Kariyer fırsatları hakkında daha fazla bilgi almak veya sorularınız varsa, bize doğrudan iletişime geçin. Takımımız seninle konuşmak için hevesli!
               </p>
               <Link
-                href="mailto:kariyer@komsuapp.com"
+                href="mailto:kariyer@mahallem.com"
                 className="inline-flex items-center gap-2 px-8 py-3 bg-white text-[#00833e] rounded-lg font-bold hover:bg-green-50 transition-colors"
               >
                 <Send size={20} />
-                kariyer@komsuapp.com
+                kariyer@mahallem.com
               </Link>
             </section>
           </div>
@@ -345,7 +345,7 @@ export default function CareersPage() {
           {/* Footer */}
           <div className="border-t border-[#e0e0e0] bg-[#f0f2f5] py-6 px-8 text-center">
             <p className="text-sm text-[#8f8f8f] mb-4">
-              © 2026 KomşuApp — Trendex Lojistik tarafından geliştirilmiştir.
+              © 2026 Mahallem — Trendex Lojistik tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link

@@ -148,7 +148,7 @@ export function RightSidebar() {
             Hakkında
           </Link>
         </div>
-        <p className="text-[11px] text-[#8f8f8f] mt-1">© 2026 KomşuApp</p>
+        <p className="text-[11px] text-[#8f8f8f] mt-1">© 2026 Mahallem</p>
       </div>
 
       {/* Chats Widget - Bottom Right */}

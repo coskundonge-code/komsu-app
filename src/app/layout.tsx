@@ -15,11 +15,11 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "KomşuApp - Mahalleni Keşfet, Komşularınla Bağlan",
-    template: "%s | KomşuApp",
+    default: "Mahallem - Mahalleni Keşfet, Komşularınla Bağlan",
+    template: "%s | Mahallem",
   },
   description:
-    "Türkiye'nin mahalle sosyal ağı. KomşuApp ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın, etkinliklere katılın ve yerel işletmeleri keşfedin.",
+    "Türkiye'nin mahalle sosyal ağı. Mahallem ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın, etkinliklere katılın ve yerel işletmeleri keşfedin.",
   keywords: [
     "komşu",
     "mahalle",
@@ -39,35 +39,35 @@ export const metadata: Metadata = {
   ],
   authors: [
     {
-      name: "KomşuApp",
-      url: "https://komsuapp.com",
+      name: "Mahallem",
+      url: "https://mahallem.com",
     },
   ],
-  creator: "KomşuApp",
-  publisher: "KomşuApp",
+  creator: "Mahallem",
+  publisher: "Mahallem",
   openGraph: {
-    title: "KomşuApp - Mahalleni Keşfet, Komşularınla Bağlan",
+    title: "Mahallem - Mahalleni Keşfet, Komşularınla Bağlan",
     description:
-      "Türkiye'nin mahalle sosyal ağı. KomşuApp ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın ve etkinliklere katılın.",
+      "Türkiye'nin mahalle sosyal ağı. Mahallem ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın ve etkinliklere katılın.",
     type: "website",
-    siteName: "KomşuApp",
+    siteName: "Mahallem",
     locale: "tr_TR",
-    url: "https://komsuapp.com",
+    url: "https://mahallem.com",
     images: [
       {
         url: "/icon-512.png",
         width: 512,
         height: 512,
-        alt: "KomşuApp Logo",
+        alt: "Mahallem Logo",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    site: "@komsuapp",
-    creator: "@komsuapp",
-    title: "KomşuApp - Mahalleni Keşfet, Komşularınla Bağlan",
+    site: "@mahallem",
+    creator: "@mahallem",
+    title: "Mahallem - Mahalleni Keşfet, Komşularınla Bağlan",
     description:
       "Türkiye'nin mahalle sosyal ağı. Komşularınızla bağlanın, etkinliklere katılın, alışveriş yapın.",
     images: ["/icon-512.png"],
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "KomşuApp",
+    title: "Mahallem",
     startupImage: "/icon-192.png",
   },
   robots: {

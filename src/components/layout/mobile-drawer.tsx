@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   X, Home, Compass, ShoppingBag, Calendar, Users, Building2,
-  MessageCircle, Bell, Heart, Settings, User, LogOut
+  MessageCircle, Bell, Heart, Settings, User, LogOut, Repeat, CreditCard
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
@@ -34,6 +34,9 @@ const primaryNavItems = [
   { icon: MessageCircle, label: 'Mesajlar', href: '/mesajlar' },
   { icon: Bell, label: 'Bildirimler', href: '/bildirimler' },
   { icon: Heart, label: 'Favoriler', href: '/favoriler' },
+  { icon: Repeat, label: 'Ödünç Ver & Kirala', href: '/odunc-kirala' },
+  { icon: CreditCard, label: 'Mahallem Kart', href: '/mahallem-kart' },
+  { icon: Heart, label: 'Askıda Bağış', href: '/askida-bagis' },
 ]
 
 // Secondary navigation items

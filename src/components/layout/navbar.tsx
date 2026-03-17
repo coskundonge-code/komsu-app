@@ -44,7 +44,7 @@ export function Navbar() {
             <svg viewBox="0 0 24 24" className="w-7 h-7 text-[#00833e]" fill="currentColor">
               <path d="M12 3L4 9v12h5v-7h6v7h5V9l-8-6z" />
             </svg>
-            <span className="hidden lg:inline text-xl font-bold text-[#00833e]">KomşuApp</span>
+            <span className="hidden lg:inline text-xl font-bold text-[#00833e]">Mahallem</span>
           </Link>
         </div>
 

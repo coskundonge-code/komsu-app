@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import { generatePageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "KVKK | KomşuApp",
+  title: "KVKK | Mahallem",
   description:
-    "KomşuApp KVKK Aydınlatma Metni. Kişisel verilerinizin korunması hakkında bilgi edinin.",
+    "Mahallem KVKK Aydınlatma Metni. Kişisel verilerinizin korunması hakkında bilgi edinin.",
   openGraph: {
-    url: "https://komsuapp.com/kvkk",
-    title: "KVKK | KomşuApp",
+    url: "https://mahallem.com/kvkk",
+    title: "KVKK | Mahallem",
     description:
-      "KomşuApp KVKK Aydınlatma Metni. Kişisel verilerinizin korunması hakkında bilgi edinin.",
+      "Mahallem KVKK Aydınlatma Metni. Kişisel verilerinizin korunması hakkında bilgi edinin.",
   },
   twitter: {
-    title: "KVKK | KomşuApp",
+    title: "KVKK | Mahallem",
     description:
-      "KomşuApp KVKK Aydınlatma Metni. Kişisel verilerinizin korunması hakkında bilgi edinin.",
+      "Mahallem KVKK Aydınlatma Metni. Kişisel verilerinizin korunması hakkında bilgi edinin.",
   },
 });
 

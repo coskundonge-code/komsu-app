@@ -1,6 +1,6 @@
-# KomsuApp - Mahalle Sosyal Agi
+# Mahallem - Mahalle Sosyal Agi
 
-Komsuapp, mahallenizde yaşayan komşularınızla bağlantı kurmak, ilan paylaşmak, etkinliklere katılmak ve yerel işletmeleri keşfetmek için tasarlanmış bir mahalle sosyal ağı uygulamasıdır. Nextdoor benzeri bir platform olarak, topluluğu bir araya getirmek ve mahalle yaşamını kolaylaştırmayı amaçlar.
+Mahallem, mahallenizde yaşayan komşularınızla bağlantı kurmak, ilan paylaşmak, etkinliklere katılmak ve yerel işletmeleri keşfetmek için tasarlanmış bir mahalle sosyal ağı uygulamasıdır. Nextdoor benzeri bir platform olarak, topluluğu bir araya getirmek ve mahalle yaşamını kolaylaştırmayı amaçlar.
 
 ## Özellikler
 
@@ -43,8 +43,8 @@ Komsuapp, mahallenizde yaşayan komşularınızla bağlantı kurmak, ilan payla�
 
 1. **Projeyi klonlayın:**
    ```bash
-   git clone https://github.com/yourusername/komsu-app-dev.git
-   cd komsu-app-dev
+   git clone https://github.com/yourusername/mahallem-app-dev.git
+   cd mahallem-app-dev
    ```
 
 2. **Bağımlılıkları yükleyin:**
@@ -92,7 +92,7 @@ Komsuapp, mahallenizde yaşayan komşularınızla bağlantı kurmak, ilan payla�
 ## Proje Yapısı
 
 ```
-komsu-app-dev/
+mahallem-app-dev/
 ├── src/
 │   ├── app/                    # Next.js App Router uygulaması
 │   │   ├── (admin)/            # Admin paneli sayfaları

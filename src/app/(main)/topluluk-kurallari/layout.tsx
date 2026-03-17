@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import { generatePageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "Topluluk Kuralları | KomşuApp",
+  title: "Topluluk Kuralları | Mahallem",
   description:
-    "KomşuApp Topluluk Kuralları. Güvenli ve saygılı bir topluluk oluşturmak için bizimle yapın.",
+    "Mahallem Topluluk Kuralları. Güvenli ve saygılı bir topluluk oluşturmak için bizimle yapın.",
   openGraph: {
-    url: "https://komsuapp.com/topluluk-kurallari",
-    title: "Topluluk Kuralları | KomşuApp",
+    url: "https://mahallem.com/topluluk-kurallari",
+    title: "Topluluk Kuralları | Mahallem",
     description:
-      "KomşuApp Topluluk Kuralları. Güvenli ve saygılı bir topluluk oluşturmak için bizimle yapın.",
+      "Mahallem Topluluk Kuralları. Güvenli ve saygılı bir topluluk oluşturmak için bizimle yapın.",
   },
   twitter: {
-    title: "Topluluk Kuralları | KomşuApp",
+    title: "Topluluk Kuralları | Mahallem",
     description:
-      "KomşuApp Topluluk Kuralları. Güvenli ve saygılı bir topluluk oluşturmak için bizimle yapın.",
+      "Mahallem Topluluk Kuralları. Güvenli ve saygılı bir topluluk oluşturmak için bizimle yapın.",
   },
 });
 

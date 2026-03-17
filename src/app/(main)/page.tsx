@@ -305,7 +305,7 @@ export default function FeedPage() {
               <div className="w-16 h-16 bg-[#00833e] rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">🏘️</span>
               </div>
-              <h3 className="text-xl font-bold text-[#333] mb-2">KomşuApp Mobil</h3>
+              <h3 className="text-xl font-bold text-[#333] mb-2">Mahallem Mobil</h3>
               <p className="text-sm text-[#8f8f8f] mb-6">Mobil uygulamamız yakında App Store ve Google Play&apos;de!</p>
               <div className="space-y-3">
                 <button className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition-colors">
@@ -507,7 +507,7 @@ export default function FeedPage() {
         {showOnboarding && (
           <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-4 mb-4">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-bold text-[#333]">KomşuApp&apos;a Başla</h2>
+              <h2 className="text-lg font-bold text-[#333]">Mahallem&apos;a Başla</h2>
               <button
                 onClick={() => setShowOnboarding(false)}
                 className="p-1 hover:bg-[#f0f2f5] rounded-full"

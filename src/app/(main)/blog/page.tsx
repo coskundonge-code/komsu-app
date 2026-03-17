@@ -37,7 +37,7 @@ const blogPosts: BlogPost[] = [
   },
   {
     id: 2,
-    title: "KomşuApp Yeni Topluluk Özellikleri: Daha İyi Bağlantılar",
+    title: "Mahallem Yeni Topluluk Özellikleri: Daha İyi Bağlantılar",
     excerpt:
       "Mahalle gruplarını etkili bir şekilde yönetmek ve aktif bir topluluk oluşturmak için yeni araçlarımızı keşfedin.",
     image: getFeedImageUrl(2, 600, 400),
@@ -50,7 +50,7 @@ const blogPosts: BlogPost[] = [
     id: 3,
     title: "Mahallede Komşu Yardım Ağını Etkin Kullanma",
     excerpt:
-      "Komşularınızla yardımlaşmak ve birbirini desteklemek için KomşuApp'ın yardım ağı özelliğini nasıl kullanacağınızı öğrenin.",
+      "Komşularınızla yardımlaşmak ve birbirini desteklemek için Mahallem'in yardım ağı özelliğini nasıl kullanacağınızı öğrenin.",
     image: getFeedImageUrl(3, 600, 400),
     author: "Zeynep Aydın",
     date: "2026-03-04",
@@ -63,7 +63,7 @@ const blogPosts: BlogPost[] = [
     excerpt:
       "Mahalle sakinlerinin birbirlerine yardım etmesi için tasarlanmış yeni güvenlik ve gizlilik özelliklerini keşfet.",
     image: getFeedImageUrl(4, 600, 400),
-    author: "KomşuApp Ekibi",
+    author: "Mahallem Ekibi",
     date: "2026-03-01",
     category: "Güncellemeler",
     readTime: "4 dk okuma",
@@ -72,7 +72,7 @@ const blogPosts: BlogPost[] = [
     id: 5,
     title: "Cihangir Mahallesi: Topluluk Birliği Başarı Hikayesi",
     excerpt:
-      "Nasıl bir mahalle KomşuApp sayesinde daha güvenli ve bağlı bir topluluk haline geldiğini gördük.",
+      "Nasıl bir mahalle Mahallem sayesinde daha güvenli ve bağlı bir topluluk haline geldiğini gördük.",
     image: getFeedImageUrl(5, 600, 400),
     author: "Ali Yılmaz",
     date: "2026-02-28",
@@ -81,7 +81,7 @@ const blogPosts: BlogPost[] = [
   },
   {
     id: 6,
-    title: "KomşuApp'ta Çevrimiçi Güvenlik ve Gizlilik Rehberi",
+    title: "Mahallem'de Çevrimiçi Güvenlik ve Gizlilik Rehberi",
     excerpt:
       "Platformda güvenli kalmanın ve mahallenizdeki mevcut tehditleri tanımanın pratik yolları.",
     image: getFeedImageUrl(6, 600, 400),
@@ -103,7 +103,7 @@ const blogPosts: BlogPost[] = [
   },
   {
     id: 8,
-    title: "KomşuApp Mobilini Verimli Kullanma: Pro İpuçları",
+    title: "Mahallem Mobilini Verimli Kullanma: Pro İpuçları",
     excerpt:
       "Mobil uygulamayı en etkili şekilde kullanarak mahalle bağlantılarınızı yoğunlaştırın.",
     image: getFeedImageUrl(8, 600, 400),
@@ -147,7 +147,7 @@ const blogPosts: BlogPost[] = [
   },
   {
     id: 12,
-    title: "KomşuApp İpuçları: Daha Etkili İçerik Paylaşımı",
+    title: "Mahallem İpuçları: Daha Etkili İçerik Paylaşımı",
     excerpt:
       "Mahalle haberlerinizi nasıl daha geniş bir kitleye ulaştıracağınızı ve katılımı nasıl artıracağınızı öğrenin.",
     image: getFeedImageUrl(12, 600, 400),
@@ -190,7 +190,7 @@ export default function BlogPage() {
 
           <div className="flex items-center gap-3 mb-4">
             <BookOpen size={32} />
-            <h1 className="text-5xl font-bold">KomşuApp Blog</h1>
+            <h1 className="text-5xl font-bold">Mahallem Blog</h1>
           </div>
           <p className="text-green-100 text-lg max-w-2xl">
             Mahalleler, güvenlik ve topluluk hakkında ilham verici hikayeler, ipuçları ve güncellemeler
@@ -367,7 +367,7 @@ export default function BlogPage() {
         {/* Footer */}
         <div className="border-t border-[#e0e0e0] bg-white rounded-t-lg py-8 px-8 text-center">
           <p className="text-sm text-[#8f8f8f] mb-6">
-            © 2026 KomşuApp — Trendex Lojistik tarafından geliştirilmiştir.
+            © 2026 Mahallem — Trendex Lojistik tarafından geliştirilmiştir.
           </p>
           <div className="flex items-center justify-center gap-6 flex-wrap">
             <Link
