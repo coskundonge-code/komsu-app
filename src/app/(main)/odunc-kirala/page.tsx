@@ -352,9 +352,9 @@ export default function OduncKiralaPage() {
       <div className="max-w-7xl mx-auto py-6 px-4 space-y-6">
         {/* Header Section */}
         <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             {/* Title and Action Button */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-6">
               <h1 className="text-2xl font-bold text-[#333]">Ödünç Ver & Kirala</h1>
               <Link
                 href="/odunc-kirala/ilan-ver"
@@ -378,13 +378,13 @@ export default function OduncKiralaPage() {
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-0 border-b border-[#e0e0e0] -mx-6 px-6">
+            <div className="flex gap-0 border-b border-[#e0e0e0] -mx-6 px-6 overflow-x-auto">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    'px-5 py-4 text-sm font-medium border-b-[3px] transition-colors',
+                    'px-5 py-4 text-sm font-medium border-b-[3px] transition-colors whitespace-nowrap flex-shrink-0',
                     activeTab === tab.id
                       ? 'text-[#00833e] border-[#00833e]'
                       : 'text-[#8f8f8f] border-transparent hover:text-[#404040]'
@@ -646,7 +646,7 @@ export default function OduncKiralaPage() {
 
           {/* Right Sidebar - Info Widget */}
           <div className="lg:col-span-1">
-            <div className="sticky top-6 bg-white rounded-lg shadow-md border border-[#e0e0e0] overflow-hidden">
+            <div className="lg:sticky lg:top-6 bg-white rounded-lg shadow-md border border-[#e0e0e0] overflow-hidden">
               <div className="bg-gradient-to-br from-[#00833e] to-[#006b32] p-6 text-white">
                 <div className="flex items-start gap-3 mb-4">
                   <Zap className="w-6 h-6 flex-shrink-0 mt-0.5" />

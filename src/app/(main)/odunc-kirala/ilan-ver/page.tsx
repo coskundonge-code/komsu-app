@@ -165,8 +165,8 @@ export default function NewListingPage() {
         </Link>
 
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6 mb-6">
-          <h1 className="text-2xl font-bold text-[#333] mb-2">Yeni İlan Ver</h1>
+        <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-4 sm:p-6 mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-[#333] mb-2">Yeni İlan Ver</h1>
           <p className="text-sm text-[#8f8f8f]">
             Adım {step} / 3
           </p>
@@ -193,7 +193,7 @@ export default function NewListingPage() {
 
         {/* Step 1: Bilgiler */}
         {step === 1 && (
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6 space-y-6">
+          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-4 sm:p-6 space-y-6">
             <div>
               <h2 className="text-xl font-bold text-[#333] mb-1">Bilgiler</h2>
               <p className="text-sm text-[#8f8f8f]">
@@ -348,7 +348,7 @@ export default function NewListingPage() {
 
         {/* Step 2: Fotoğraflar */}
         {step === 2 && (
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6 space-y-6">
+          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-4 sm:p-6 space-y-6">
             <div>
               <h2 className="text-xl font-bold text-[#333] mb-1">Fotoğraflar</h2>
               <p className="text-sm text-[#8f8f8f]">
@@ -452,7 +452,7 @@ export default function NewListingPage() {
 
         {/* Step 3: Koşullar */}
         {step === 3 && (
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6 space-y-6">
+          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-4 sm:p-6 space-y-6">
             <div>
               <h2 className="text-xl font-bold text-[#333] mb-1">Koşullar ve Kurallar</h2>
               <p className="text-sm text-[#8f8f8f]">

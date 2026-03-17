@@ -162,12 +162,12 @@ export default function ListingDetailPage({ params }: { params: { id: string } }
     <div className="min-h-screen bg-[#f0f2f5]">
       <div className="max-w-6xl mx-auto py-6 px-4 space-y-6">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-[#8f8f8f]">
+        <div className="flex items-center gap-2 text-sm text-[#8f8f8f] overflow-hidden">
           <Link href="/odunc-kirala" className="hover:text-[#00833e]">
             Ödünç Ver & Kirala
           </Link>
           <span>/</span>
-          <span className="text-[#333]">{listing.title}</span>
+          <span className="text-[#333] truncate">{listing.title}</span>
         </div>
 
         {/* Main Content Grid */}
@@ -175,7 +175,7 @@ export default function ListingDetailPage({ params }: { params: { id: string } }
           {/* Image Gallery - Left */}
           <div className="lg:col-span-2">
             {/* Main Image */}
-            <div className="relative aspect-square overflow-hidden rounded-lg shadow-sm border border-[#e0e0e0] mb-4 bg-[#f0f2f5]">
+            <div className="relative aspect-[4/3] sm:aspect-square overflow-hidden rounded-lg shadow-sm border border-[#e0e0e0] mb-4 bg-[#f0f2f5]">
               <Image
                 src={listing.images[currentImageIndex]}
                 alt={listing.title}
@@ -263,7 +263,7 @@ export default function ListingDetailPage({ params }: { params: { id: string } }
                   )}>
                     {typeLabel(listing.type)}
                   </span>
-                  <h1 className="text-2xl font-bold text-[#333]">{listing.title}</h1>
+                  <h1 className="text-xl sm:text-2xl font-bold text-[#333]">{listing.title}</h1>
                 </div>
                 <button className="p-2 hover:bg-[#f0f2f5] rounded-lg transition-colors">
                   <Share2 className="w-5 h-5 text-[#8f8f8f]" />
@@ -271,7 +271,7 @@ export default function ListingDetailPage({ params }: { params: { id: string } }
               </div>
 
               <div className="mb-4 pb-4 border-b border-[#e0e0e0]">
-                <p className="text-3xl font-bold text-[#00833e] mb-1">
+                <p className="text-2xl sm:text-3xl font-bold text-[#00833e] mb-1">
                   {priceLabel(listing)}
                 </p>
                 <p className="text-sm text-[#8f8f8f]">{listing.category}</p>
@@ -372,13 +372,13 @@ export default function ListingDetailPage({ params }: { params: { id: string } }
           <div className="grid grid-cols-7 gap-2">
             {['Pzr', 'Pzt', 'Salı', 'Çar', 'Per', 'Cum', 'Cmt'].map((day) => (
               <div key={day} className="text-center">
-                <p className="text-xs text-[#8f8f8f] font-semibold mb-1">{day}</p>
+                <p className="text-[10px] sm:text-xs text-[#8f8f8f] font-semibold mb-1">{day}</p>
                 <div className="space-y-1">
                   {[1, 2, 3, 4].map((week) => (
                     <div
                       key={week}
                       className={cn(
-                        'h-8 rounded border-2 transition-colors',
+                        'h-6 sm:h-8 rounded border-2 transition-colors',
                         Math.random() > 0.3
                           ? 'bg-[#e8f5e9] border-[#00833e]'
                           : 'bg-[#f5f5f5] border-[#e0e0e0] opacity-50'

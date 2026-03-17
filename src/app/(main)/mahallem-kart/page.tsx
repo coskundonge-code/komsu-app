@@ -254,7 +254,7 @@ export default function MahallemKartPage() {
             <div className="absolute -inset-1 bg-gradient-to-r from-[#00833e] to-[#006b32] rounded-3xl blur-xl opacity-30 animate-pulse"></div>
 
             {/* Main Card */}
-            <div className="relative bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-3xl p-8 text-white shadow-2xl overflow-hidden">
+            <div className="relative bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-3xl p-5 sm:p-8 text-white shadow-2xl overflow-hidden">
               {/* Card background pattern */}
               <div className="absolute inset-0 opacity-10">
                 <div className="absolute top-0 right-0 w-40 h-40 bg-white rounded-full -mr-20 -mt-20"></div>
@@ -264,7 +264,7 @@ export default function MahallemKartPage() {
               {/* Card content */}
               <div className="relative z-10">
                 {/* Header with card number and badge */}
-                <div className="flex justify-between items-start mb-8">
+                <div className="flex justify-between items-start mb-6 sm:mb-8">
                   <div>
                     <p className="text-sm font-semibold opacity-90">Mahallem Kartı</p>
                     <p className="text-xs opacity-75 mt-1">MK-2024-00847</p>
@@ -276,8 +276,8 @@ export default function MahallemKartPage() {
                 </div>
 
                 {/* User Info and QR Code */}
-                <div className="grid grid-cols-3 gap-6 mb-8">
-                  <div className="col-span-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8">
+                  <div className="col-span-1 sm:col-span-2">
                     <div className="flex items-center gap-4 mb-4">
                       <div className="relative w-16 h-16 rounded-full border-2 border-white overflow-hidden">
                         <Image
@@ -334,51 +334,51 @@ export default function MahallemKartPage() {
       {/* Stats Section */}
       <section className="px-4 md:px-6 py-8">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl font-bold text-[#333] mb-6">İstatistiklerim</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-[#333] mb-6">İstatistiklerim</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#e0e0e0]">
+            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-[#e0e0e0]">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[#8f8f8f] text-sm font-medium mb-2">
                     Toplam Puan
                   </p>
-                  <p className="text-3xl font-bold text-[#333]">1.250</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-[#333]">1.250</p>
                 </div>
                 <Star className="w-8 h-8 text-[#00833e]" />
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#e0e0e0]">
+            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-[#e0e0e0]">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[#8f8f8f] text-sm font-medium mb-2">
                     Kullanılan İndirimler
                   </p>
-                  <p className="text-3xl font-bold text-[#333]">23</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-[#333]">23</p>
                 </div>
                 <Percent className="w-8 h-8 text-[#00833e]" />
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#e0e0e0]">
+            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-[#e0e0e0]">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[#8f8f8f] text-sm font-medium mb-2">
                     Askıda Bağışlar
                   </p>
-                  <p className="text-3xl font-bold text-[#333]">8</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-[#333]">8</p>
                 </div>
                 <Gift className="w-8 h-8 text-[#00833e]" />
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#e0e0e0]">
+            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-[#e0e0e0]">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[#8f8f8f] text-sm font-medium mb-2">
                     Üye Süresi
                   </p>
-                  <p className="text-3xl font-bold text-[#333]">2 yıl</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-[#333]">2 yıl</p>
                 </div>
                 <Clock className="w-8 h-8 text-[#00833e]" />
               </div>
@@ -391,7 +391,7 @@ export default function MahallemKartPage() {
       <section className="px-4 md:px-6 py-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-[#333]">Yakındaki İndirimler</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-[#333]">Yakındaki İndirimler</h2>
             <button className="flex items-center gap-2 text-[#00833e] hover:text-[#006b32] font-semibold">
               Tümünü Gör
               <ChevronRight className="w-4 h-4" />
@@ -412,7 +412,7 @@ export default function MahallemKartPage() {
             </div>
 
             {/* Category Filter */}
-            <div className="flex gap-2 overflow-x-auto pb-2">
+            <div className="flex gap-2 overflow-x-auto pb-2 -webkit-overflow-scrolling: touch">
               {CATEGORIES.map((category) => (
                 <button
                   key={category}
@@ -489,7 +489,7 @@ export default function MahallemKartPage() {
       <section className="px-4 md:px-6 py-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-[#333]">Kart Geçmişi</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-[#333]">Kart Geçmişi</h2>
             <button className="flex items-center gap-2 text-[#00833e] hover:text-[#006b32] font-semibold">
               Tümünü Gör
               <ChevronRight className="w-4 h-4" />
@@ -529,7 +529,7 @@ export default function MahallemKartPage() {
       {/* Earn Points Section */}
       <section className="px-4 md:px-6 py-8">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl font-bold text-[#333] mb-6">Puan Kazan</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-[#333] mb-6">Puan Kazan</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {EARN_METHODS.map((method) => (
@@ -556,14 +556,14 @@ export default function MahallemKartPage() {
 
       {/* CTA Section */}
       <section className="px-4 md:px-6 py-12">
-        <div className="max-w-6xl mx-auto bg-gradient-to-r from-[#00833e] to-[#006b32] rounded-3xl p-8 md:p-12 text-white text-center">
+        <div className="max-w-6xl mx-auto bg-gradient-to-r from-[#00833e] to-[#006b32] rounded-3xl p-6 sm:p-8 md:p-12 text-white text-center">
           <div className="flex justify-center mb-4">
             <Sparkles className="w-8 h-8" />
           </div>
           <h2 className="text-2xl md:text-3xl font-bold mb-4">
             Daha Fazla Indirim Kazan
           </h2>
-          <p className="text-lg opacity-90 mb-8">
+          <p className="text-base sm:text-lg opacity-90 mb-8">
             Mahalle esnaflarında harcama yap ve puan biriktir, ödünü al!
           </p>
           <button className="bg-white hover:bg-gray-100 text-[#00833e] font-bold py-3 px-8 rounded-xl transition-colors">

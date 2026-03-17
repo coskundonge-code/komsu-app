@@ -70,7 +70,7 @@ export function Navbar() {
         </div>
 
         {/* Right: Icons + Avatar */}
-        <div className="flex items-center gap-1 min-w-[180px] justify-end">
+        <div className="flex items-center gap-1 min-w-fit lg:min-w-[180px] justify-end">
           <div className="relative">
             <button
               onClick={() => setIsNotificationDropdownOpen(!isNotificationDropdownOpen)}
