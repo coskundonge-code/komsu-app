@@ -4,43 +4,34 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
-  Home, Search, ShoppingBag, Calendar, Users, Building2,
+  Home, ShoppingBag, Calendar, Users,
   MessageCircle, Bell, AlertTriangle, Settings, HelpCircle, User,
-  ChevronRight, X, UserPlus, PlusCircle, Repeat, CreditCard, Heart
+  ChevronRight, UserPlus, PlusCircle, Repeat, CreditCard, Heart, Newspaper
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getAvatarUrl } from '@/lib/demo-images'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-// Primary navigation items (matches Nextdoor.com structure)
+// Primary navigation items - clean Nextdoor-like structure
 const primaryNavItems = [
   { icon: Home, label: 'Ana Sayfa', href: '/' },
-  { icon: Search, label: 'Keşfet', href: '/kesfet' },
   { icon: ShoppingBag, label: 'Satılık & Ücretsiz', href: '/pazar' },
+  { icon: Repeat, label: 'Kirala & Ödünç Ver', href: '/odunc-kirala' },
+  { icon: Newspaper, label: 'Yerel Haberler', href: '/kesfet' },
+  { icon: AlertTriangle, label: 'Uyarılar', href: '/uyarilar' },
   { icon: Users, label: 'Gruplar', href: '/gruplar' },
   { icon: Calendar, label: 'Etkinlikler', href: '/etkinlikler' },
-  { icon: Building2, label: 'Yerel İşletmeler', href: '/isletmeler' },
-  { icon: Repeat, label: 'Ödünç Ver & Kirala', href: '/odunc-kirala' },
   { icon: CreditCard, label: 'Mahallem Kart', href: '/mahallem-kart' },
   { icon: Heart, label: 'Askıda Bağış', href: '/askida-bagis' },
-]
-
-// Items with badge counters
-const interactiveItems = [
-  { icon: Bell, label: 'Uyarılar', href: '/bildirimler', badge: 'notifications' },
-  { icon: MessageCircle, label: 'Mesajlar', href: '/mesajlar', badge: 'messages' },
-  { icon: AlertTriangle, label: 'Güvenlik', href: '/uyarilar', badge: null },
 ]
 
 // Secondary navigation items
 const secondaryNavItems = [
   { icon: User, label: 'Profilim', href: '/profil/me' },
-  { icon: UserPlus, label: 'Komşularını Davet Et', href: '/davet' },
-  { icon: PlusCircle, label: 'İşletme Sayfası Ekle', href: '/isletme-ekle' },
+  { icon: MessageCircle, label: 'Mesajlar', href: '/mesajlar' },
+  { icon: Bell, label: 'Bildirimler', href: '/bildirimler' },
   { icon: Settings, label: 'Ayarlar', href: '/ayarlar' },
-  { icon: HelpCircle, label: 'Yardım Merkezi', href: '/yardim' },
-  { icon: AlertTriangle, label: 'Yönetici Paneli', href: '/admin' },
 ]
 
 // Mock user data - replace with actual user context in production
@@ -59,14 +50,6 @@ export function Sidebar({ className, ...props }: SidebarProps) {
   // Check if route is active
   const isActive = (href: string) => {
     return pathname === href || (href !== '/' && pathname?.startsWith(href))
-  }
-
-  // Get badge count
-  const getBadgeCount = (badgeKey: string | null) => {
-    if (!badgeKey) return null
-    if (badgeKey === 'messages') return mockUser.unreadMessages
-    if (badgeKey === 'notifications') return mockUser.unreadNotifications
-    return null
   }
 
   return (
@@ -173,56 +156,6 @@ export function Sidebar({ className, ...props }: SidebarProps) {
                     </span>
                   )}
                 </>
-              )}
-            </Link>
-          )
-        })}
-      </nav>
-
-      {/* Interactive Items with Badges */}
-      <nav className={cn(
-        'flex flex-col gap-1 px-2 mb-4',
-        isCollapsed && 'px-1'
-      )} aria-label="İnteraktif sayfalar">
-        {interactiveItems.map((item) => {
-          const Icon = item.icon
-          const active = isActive(item.href)
-          const badgeCount = getBadgeCount(item.badge)
-
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 relative group focus:outline-none focus:ring-2 focus:ring-[#00833e] focus:ring-offset-0',
-                'text-[15px] font-medium',
-                active
-                  ? 'bg-[#00833e] text-white shadow-md'
-                  : 'text-[#333] hover:bg-gray-50 hover:text-[#00833e]',
-                isCollapsed && 'justify-center px-2'
-              )}
-              title={isCollapsed ? item.label : undefined}
-              aria-current={active ? 'page' : undefined}
-            >
-              <div className="relative flex-shrink-0">
-                <Icon className={cn(
-                  'w-5 h-5 transition-colors duration-200',
-                  active && 'text-white'
-                )} />
-
-                {/* Badge */}
-                {badgeCount && badgeCount > 0 && (
-                  <span className={cn(
-                    'absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold',
-                    active ? 'bg-white text-[#00833e]' : 'bg-red-500 text-white'
-                  )}>
-                    {badgeCount > 9 ? '9+' : badgeCount}
-                  </span>
-                )}
-              </div>
-
-              {!isCollapsed && (
-                <span className="flex-1">{item.label}</span>
               )}
             </Link>
           )
