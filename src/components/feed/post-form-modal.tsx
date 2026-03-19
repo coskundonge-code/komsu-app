@@ -188,15 +188,15 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
       />
 
       {/* Modal Container */}
-      <div className="relative bg-white rounded-lg shadow-2xl w-full max-w-[600px] max-h-[90vh] flex flex-col mx-4 animate-in fade-in scale-in duration-300">
+      <div className="relative bg-surface rounded-lg shadow-2xl w-full max-w-[600px] max-h-[90vh] flex flex-col mx-4 animate-in fade-in scale-in duration-300">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[#e0e0e0]">
-          <h2 className="text-lg font-bold text-[#333]">Gönderi Oluştur</h2>
+        <div className="flex items-center justify-between p-4 border-b border-border">
+          <h2 className="text-lg font-bold text-text-primary">Gönderi Oluştur</h2>
           <button
             onClick={handleClose}
-            className="p-1 hover:bg-[#f0f2f5] rounded-full transition-colors"
+            className="p-1 hover:bg-background rounded-full transition-colors"
           >
-            <X className="w-5 h-5 text-[#8f8f8f]" />
+            <X className="w-5 h-5 text-text-muted" />
           </button>
         </div>
 
@@ -204,7 +204,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {/* Post Type Selector */}
           <div>
-            <p className="text-xs font-semibold text-[#8f8f8f] mb-2">GÖNDERİ TİPİ</p>
+            <p className="text-xs font-semibold text-text-muted mb-2">GÖNDERİ TİPİ</p>
             <div className="flex gap-2 flex-wrap">
               {POST_TYPES.map((type) => {
                 const Icon = type.icon;
@@ -215,8 +215,8 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
                     className={cn(
                       'flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium transition-colors border',
                       postType === type.id
-                        ? 'bg-[#00833e] text-white border-[#00833e]'
-                        : 'bg-white text-[#333] border-[#e0e0e0] hover:border-[#00833e] hover:text-[#00833e]'
+                        ? 'bg-primary text-white border-primary'
+                        : 'bg-surface text-text-primary border-border hover:border-primary hover:text-primary'
                     )}
                   >
                     <Icon className="w-4 h-4" />
@@ -228,13 +228,13 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
           </div>
 
           {/* Author Info */}
-          <div className="flex items-center gap-3 p-3 bg-[#f0f2f5] rounded-lg">
+          <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
             <div className="w-10 h-10 bg-[#404040] rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
               S
             </div>
             <div>
-              <p className="text-sm font-bold text-[#333]">Siz</p>
-              <p className="text-xs text-[#8f8f8f]">Kadıköy, Moda</p>
+              <p className="text-sm font-bold text-text-primary">Siz</p>
+              <p className="text-xs text-text-muted">Kadıköy, Moda</p>
             </div>
           </div>
 
@@ -244,7 +244,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Başlık ekleyin (isteğe bağlı)"
-            className="w-full px-3 py-2 bg-[#f0f2f5] border border-[#e0e0e0] rounded-lg text-[15px] text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e] transition-colors"
+            className="w-full px-3 py-2 bg-background border border-border rounded-lg text-[15px] text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
           />
 
           {/* Body Textarea */}
@@ -253,10 +253,10 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
               value={body}
               onChange={(e) => setBody(e.target.value)}
               placeholder={getPlaceholderText(postType)}
-              className="w-full min-h-[120px] p-3 bg-[#f0f2f5] border border-[#e0e0e0] rounded-lg text-[15px] text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e] resize-none transition-colors"
+              className="w-full min-h-[120px] p-3 bg-background border border-border rounded-lg text-[15px] text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none transition-colors"
             />
             {/* Character count */}
-            <div className="absolute bottom-2 right-3 text-xs text-[#8f8f8f]">
+            <div className="absolute bottom-2 right-3 text-xs text-text-muted">
               {body.length}/5000
             </div>
           </div>
@@ -267,7 +267,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
               onDragOver={handleDragOver}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-[#e0e0e0] rounded-lg p-6 text-center cursor-pointer hover:border-[#00833e] hover:bg-[#f0f2f5] transition-colors"
+              className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-primary hover:bg-background transition-colors"
             >
               <input
                 ref={fileInputRef}
@@ -279,11 +279,11 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
               />
               <div className="flex flex-col items-center gap-2">
                 <div className="flex gap-2">
-                  <ImagePlus className="w-6 h-6 text-[#8f8f8f]" />
-                  <Video className="w-6 h-6 text-[#8f8f8f]" />
+                  <ImagePlus className="w-6 h-6 text-text-muted" />
+                  <Video className="w-6 h-6 text-text-muted" />
                 </div>
-                <p className="text-sm font-medium text-[#333]">Fotoğraf veya video ekle</p>
-                <p className="text-xs text-[#8f8f8f]">Tıkla ya da sürükle ve bırak</p>
+                <p className="text-sm font-medium text-text-primary">Fotoğraf veya video ekle</p>
+                <p className="text-xs text-text-muted">Tıkla ya da sürükle ve bırak</p>
               </div>
             </div>
           )}
@@ -306,26 +306,26 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
           )}
 
           {/* Location Tag */}
-          <div className="flex items-center justify-between p-3 bg-[#f0f2f5] rounded-lg">
+          <div className="flex items-center justify-between p-3 bg-background rounded-lg">
             <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-[#8f8f8f]" />
+              <MapPin className="w-4 h-4 text-text-muted" />
               {location ? (
-                <span className="text-sm text-[#333] font-medium">{location}</span>
+                <span className="text-sm text-text-primary font-medium">{location}</span>
               ) : (
-                <span className="text-sm text-[#8f8f8f]">Konum eklenmedi</span>
+                <span className="text-sm text-text-muted">Konum eklenmedi</span>
               )}
             </div>
             {location ? (
               <button
                 onClick={handleRemoveLocation}
-                className="text-xs font-medium text-[#00833e] hover:underline"
+                className="text-xs font-medium text-primary hover:underline"
               >
                 Kaldır
               </button>
             ) : (
               <button
                 onClick={handleAddLocation}
-                className="text-xs font-medium text-[#00833e] hover:underline"
+                className="text-xs font-medium text-primary hover:underline"
               >
                 Ekle
               </button>
@@ -336,19 +336,19 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
           <div className="relative">
             <button
               onClick={() => setShowVisibilityMenu(!showVisibilityMenu)}
-              className="w-full flex items-center justify-between p-3 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0] hover:border-[#00833e] transition-colors"
+              className="w-full flex items-center justify-between p-3 bg-background rounded-lg border border-border hover:border-primary transition-colors"
             >
               <div className="flex items-center gap-2">
-                <Globe className="w-4 h-4 text-[#8f8f8f]" />
-                <span className="text-sm text-[#333] font-medium">
+                <Globe className="w-4 h-4 text-text-muted" />
+                <span className="text-sm text-text-primary font-medium">
                   {VISIBILITY_OPTIONS.find((opt) => opt.id === visibility)?.label}
                 </span>
               </div>
-              <ChevronDown className="w-4 h-4 text-[#8f8f8f]" />
+              <ChevronDown className="w-4 h-4 text-text-muted" />
             </button>
 
             {showVisibilityMenu && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-10">
+              <div className="absolute top-full left-0 right-0 mt-1 bg-surface border border-border rounded-lg shadow-lg z-10">
                 {VISIBILITY_OPTIONS.map((option) => (
                   <button
                     key={option.id}
@@ -359,8 +359,8 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
                     className={cn(
                       'w-full text-left px-4 py-2.5 text-sm transition-colors first:rounded-t-lg last:rounded-b-lg',
                       visibility === option.id
-                        ? 'bg-[#e6f4ec] text-[#00833e] font-medium'
-                        : 'text-[#333] hover:bg-[#f0f2f5]'
+                        ? 'bg-primary-light text-primary font-medium'
+                        : 'text-text-primary hover:bg-background'
                     )}
                   >
                     {option.label}
@@ -372,15 +372,15 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
 
           {/* Poll Section - Show when poll type is selected */}
           {postType === 'poll' && (
-            <div className="space-y-3 p-3 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0]">
-              <p className="text-xs font-semibold text-[#8f8f8f]">ANKET DETAYLARI</p>
+            <div className="space-y-3 p-3 bg-background rounded-lg border border-border">
+              <p className="text-xs font-semibold text-text-muted">ANKET DETAYLARI</p>
 
               <input
                 type="text"
                 value={pollQuestion}
                 onChange={(e) => setPollQuestion(e.target.value)}
                 placeholder="Anket sorusu yazınız"
-                className="w-full px-3 py-2 bg-white border border-[#e0e0e0] rounded-lg text-[14px] text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e] transition-colors"
+                className="w-full px-3 py-2 bg-surface border border-border rounded-lg text-[14px] text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
               />
 
               <div className="space-y-2">
@@ -391,14 +391,14 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
                       value={option}
                       onChange={(e) => handlePollOptionChange(index, e.target.value)}
                       placeholder={`Seçenek ${index + 1}`}
-                      className="flex-1 px-3 py-2 bg-white border border-[#e0e0e0] rounded-lg text-[14px] text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e] transition-colors"
+                      className="flex-1 px-3 py-2 bg-surface border border-border rounded-lg text-[14px] text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                     />
                     {pollOptions.length > 2 && (
                       <button
                         onClick={() => handleRemovePollOption(index)}
-                        className="p-1 hover:bg-white rounded transition-colors"
+                        className="p-1 hover:bg-surface rounded transition-colors"
                       >
-                        <X className="w-4 h-4 text-[#8f8f8f]" />
+                        <X className="w-4 h-4 text-text-muted" />
                       </button>
                     )}
                   </div>
@@ -408,7 +408,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
               {pollOptions.length < 6 && (
                 <button
                   onClick={handleAddPollOption}
-                  className="text-sm font-medium text-[#00833e] hover:underline"
+                  className="text-sm font-medium text-primary hover:underline"
                 >
                   + Seçenek ekle
                 </button>
@@ -418,11 +418,11 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
         </div>
 
         {/* Footer with Buttons */}
-        <div className="flex items-center justify-between gap-2 p-4 border-t border-[#e0e0e0] bg-[#f9f9f9]">
+        <div className="flex items-center justify-between gap-2 p-4 border-t border-border bg-[#f9f9f9]">
           <button
             onClick={handleClose}
             disabled={isSubmitting}
-            className="px-5 py-2 text-sm font-medium text-[#333] bg-white border border-[#e0e0e0] rounded-full hover:bg-[#f0f2f5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-5 py-2 text-sm font-medium text-text-primary bg-surface border border-border rounded-full hover:bg-background transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             İptal
           </button>
@@ -432,8 +432,8 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
             className={cn(
               'flex items-center gap-2 px-5 py-2 text-sm font-semibold rounded-full transition-colors',
               body.trim() && (postType !== 'poll' || (pollQuestion.trim() && pollOptions.filter((o) => o.trim()).length >= 2)) && !isSubmitting
-                ? 'bg-[#00833e] text-white hover:bg-[#006b32]'
-                : 'bg-[#e0e0e0] text-[#8f8f8f] cursor-not-allowed'
+                ? 'bg-primary text-white hover:bg-primary-hover'
+                : 'bg-[#e0e0e0] text-text-muted cursor-not-allowed'
             )}
           >
             <Send className="w-4 h-4" />

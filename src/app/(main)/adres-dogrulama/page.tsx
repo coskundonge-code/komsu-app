@@ -278,14 +278,14 @@ export default function AddressVerificationPage() {
   const needsManualTc = !userTcKimlikNo && !extractedTc;
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5] py-8 px-4">
+    <div className="min-h-screen bg-background py-8 px-4">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/" className="text-[#00833e] hover:text-[#006b32] font-medium mb-4 inline-flex items-center gap-2">
+          <Link href="/" className="text-primary hover:text-primary-hover font-medium mb-4 inline-flex items-center gap-2">
             ← Ana Sayfaya Dön
           </Link>
-          <h1 className="text-3xl font-bold text-[#333] mb-2">Adres Doğrulaması</h1>
+          <h1 className="text-3xl font-bold text-text-primary mb-2">Adres Doğrulaması</h1>
           <p className="text-[#666]">e-Devlet adres belgenizi yükleyin, doğrulama otomatik olarak yapılsın.</p>
         </div>
 
@@ -305,13 +305,13 @@ export default function AddressVerificationPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-[#e0e0e0] p-6">
+            <div className="bg-surface rounded-xl border border-border p-6">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-[#00833e]/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <FileText className="w-6 h-6 text-[#00833e]" />
+                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <FileText className="w-6 h-6 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-lg font-bold text-[#333] mb-2">1. e-Devlet&apos;ten Belge Alın</h2>
+                  <h2 className="text-lg font-bold text-text-primary mb-2">1. e-Devlet&apos;ten Belge Alın</h2>
                   <p className="text-[#666] text-sm mb-4">
                     &quot;Yerleşim Yeri ve Diğer Adres Belgesi&quot; hizmetinden belgenizi indirin veya ekran görüntüsü alın.
                   </p>
@@ -319,7 +319,7 @@ export default function AddressVerificationPage() {
                     href="https://www.turkiye.gov.tr/nvi-yerlesim-yeri-ve-diger-adres-belgesi-sorgulama"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#00833e] text-white font-medium rounded-lg hover:bg-[#006b32] transition-colors"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors"
                   >
                     e-Devlet&apos;e Git
                     <ExternalLink className="w-4 h-4" />
@@ -328,13 +328,13 @@ export default function AddressVerificationPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-[#e0e0e0] p-6">
+            <div className="bg-surface rounded-xl border border-border p-6">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
                   <Upload className="w-6 h-6 text-blue-600" />
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-lg font-bold text-[#333] mb-2">2. Belgeyi Yükleyin</h2>
+                  <h2 className="text-lg font-bold text-text-primary mb-2">2. Belgeyi Yükleyin</h2>
                   <p className="text-[#666] text-sm mb-4">
                     PDF belgenizi veya fotoğrafını yükleyin. Barkod numarasını otomatik okuyacağız.
                   </p>
@@ -347,16 +347,16 @@ export default function AddressVerificationPage() {
                     onClick={() => fileInputRef.current?.click()}
                     className={`border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer ${
                       dragActive
-                        ? 'border-[#00833e] bg-[#00833e]/5 scale-[1.02]'
-                        : 'border-[#e0e0e0] hover:border-[#00833e]/50 hover:bg-gray-50'
+                        ? 'border-primary bg-primary/5 scale-[1.02]'
+                        : 'border-border hover:border-primary/50 hover:bg-gray-50'
                     }`}
                   >
-                    <ScanBarcode className="w-10 h-10 text-[#8f8f8f] mx-auto mb-3" />
-                    <p className="font-semibold text-[#333] mb-1">Belgeyi Sürükleyip Bırakın</p>
+                    <ScanBarcode className="w-10 h-10 text-text-muted mx-auto mb-3" />
+                    <p className="font-semibold text-text-primary mb-1">Belgeyi Sürükleyip Bırakın</p>
                     <p className="text-sm text-[#666] mb-2">
-                      veya <span className="text-[#00833e] font-medium">tıklayarak seçin</span>
+                      veya <span className="text-primary font-medium">tıklayarak seçin</span>
                     </p>
-                    <p className="text-xs text-[#8f8f8f]">PDF, PNG, JPG — En fazla 10 MB</p>
+                    <p className="text-xs text-text-muted">PDF, PNG, JPG — En fazla 10 MB</p>
                     <input
                       ref={fileInputRef}
                       type="file"
@@ -369,22 +369,22 @@ export default function AddressVerificationPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-[#e0e0e0] p-5">
+            <div className="bg-surface rounded-xl border border-border p-5">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-[#666]">Barkod numarasını kendiniz girmek ister misiniz?</span>
                 <button
                   onClick={goToManualEntry}
-                  className="text-sm font-medium text-[#00833e] hover:text-[#006b32] flex items-center gap-1"
+                  className="text-sm font-medium text-primary hover:text-primary-hover flex items-center gap-1"
                 >
                   Manuel Giriş <ArrowRight className="w-3 h-3" />
                 </button>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-[#e0e0e0] p-5">
+            <div className="bg-surface rounded-xl border border-border p-5">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-[#666]">Alternatif: Komşu referans kodu ile doğrulama</span>
-                <Link href="/referans-kullan" className="text-sm font-medium text-[#00833e] hover:text-[#006b32] flex items-center gap-1">
+                <Link href="/referans-kullan" className="text-sm font-medium text-primary hover:text-primary-hover flex items-center gap-1">
                   Referans Kullan <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
@@ -394,8 +394,8 @@ export default function AddressVerificationPage() {
 
         {/* ========== PROCESSING ========== */}
         {currentStep === 'processing' && (
-          <div className="bg-white rounded-xl border border-[#e0e0e0] overflow-hidden">
-            <div className="bg-gradient-to-r from-[#00833e] to-[#006b32] px-6 py-5 text-white">
+          <div className="bg-surface rounded-xl border border-border overflow-hidden">
+            <div className="bg-gradient-to-r from-primary to-primary-hover px-6 py-5 text-white">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                   <Shield className="w-5 h-5" />
@@ -407,7 +407,7 @@ export default function AddressVerificationPage() {
               </div>
               <div className="w-full bg-white/20 rounded-full h-2.5">
                 <div
-                  className="bg-white rounded-full h-2.5 transition-all duration-700 ease-out"
+                  className="bg-surface rounded-full h-2.5 transition-all duration-700 ease-out"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -415,11 +415,11 @@ export default function AddressVerificationPage() {
             </div>
 
             {uploadedFile && (
-              <div className="px-6 py-3 bg-[#f9f9f9] border-b border-[#e0e0e0]">
+              <div className="px-6 py-3 bg-[#f9f9f9] border-b border-border">
                 <div className="flex items-center gap-2 text-sm text-[#666]">
                   <FileText className="w-4 h-4" />
                   <span>{uploadedFile.name}</span>
-                  <span className="text-xs text-[#8f8f8f]">({(uploadedFile.size / 1024).toFixed(0)} KB)</span>
+                  <span className="text-xs text-text-muted">({(uploadedFile.size / 1024).toFixed(0)} KB)</span>
                 </div>
               </div>
             )}
@@ -435,7 +435,7 @@ export default function AddressVerificationPage() {
         {/* ========== MANUEL GİRİŞ ========== */}
         {currentStep === 'manual-entry' && (
           <div className="space-y-6">
-            <div className="bg-white rounded-xl border border-[#e0e0e0] overflow-hidden">
+            <div className="bg-surface rounded-xl border border-border overflow-hidden">
               <div className="bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-5 text-white">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
@@ -457,7 +457,7 @@ export default function AddressVerificationPage() {
 
               {/* Tamamlanan adımlar */}
               {processSteps.length > 0 && (
-                <div className="px-6 py-4 space-y-3 border-b border-[#e0e0e0]">
+                <div className="px-6 py-4 space-y-3 border-b border-border">
                   {processSteps.map((step) => (
                     <ProcessStepRow key={step.id} step={step} />
                   ))}
@@ -488,7 +488,7 @@ export default function AddressVerificationPage() {
                       </div>
                     </div>
 
-                    <label htmlFor="manual-barcode" className="block text-sm font-semibold text-[#333] mb-2">
+                    <label htmlFor="manual-barcode" className="block text-sm font-semibold text-text-primary mb-2">
                       Barkod / Doğrulama Numarası
                     </label>
                     <input
@@ -497,10 +497,10 @@ export default function AddressVerificationPage() {
                       value={manualCode}
                       onChange={(e) => setManualCode(e.target.value.toUpperCase())}
                       placeholder="Örn: NV02-ILLE-G5U8-RLN9"
-                      className="w-full px-4 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-[#fafafa] focus:bg-white focus:outline-none focus:ring-2 focus:border-[#00833e] focus:ring-[#00833e]/20 font-mono text-base tracking-wider"
+                      className="w-full px-4 py-3 border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted bg-[#fafafa] focus:bg-surface focus:outline-none focus:ring-2 focus:border-primary focus:ring-primary/20 font-mono text-base tracking-wider"
                       autoFocus
                     />
-                    <p className="text-xs text-[#8f8f8f] mt-1">
+                    <p className="text-xs text-text-muted mt-1">
                       Tire ile veya tiresiz girebilirsiniz.
                     </p>
                   </div>
@@ -522,7 +522,7 @@ export default function AddressVerificationPage() {
                 {/* TC Kimlik No alanı */}
                 {needsManualTc && (
                   <div>
-                    <label htmlFor="manual-tc" className="block text-sm font-semibold text-[#333] mb-2">
+                    <label htmlFor="manual-tc" className="block text-sm font-semibold text-text-primary mb-2">
                       TC Kimlik Numaranız
                     </label>
                     <input
@@ -531,11 +531,11 @@ export default function AddressVerificationPage() {
                       value={manualTc}
                       onChange={(e) => setManualTc(e.target.value.replace(/\D/g, '').slice(0, 11))}
                       placeholder="11 haneli TC Kimlik No"
-                      className="w-full px-4 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-[#fafafa] focus:bg-white focus:outline-none focus:ring-2 focus:border-[#00833e] focus:ring-[#00833e]/20 font-mono text-base tracking-wider"
+                      className="w-full px-4 py-3 border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted bg-[#fafafa] focus:bg-surface focus:outline-none focus:ring-2 focus:border-primary focus:ring-primary/20 font-mono text-base tracking-wider"
                       maxLength={11}
                       autoFocus={!needsManualBarcode}
                     />
-                    <p className="text-xs text-[#8f8f8f] mt-1">
+                    <p className="text-xs text-text-muted mt-1">
                       e-Devlet doğrulaması için TC Kimlik numaranız gereklidir.
                     </p>
                   </div>
@@ -558,13 +558,13 @@ export default function AddressVerificationPage() {
                       (needsManualBarcode && manualCode.replace(/[^A-Za-z0-9]/g, '').length < 10) ||
                       (needsManualTc && manualTc.length < 11)
                     }
-                    className="flex-1 px-6 py-3 bg-[#00833e] text-white font-semibold rounded-lg hover:bg-[#006b32] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="flex-1 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Doğrulamaya Devam Et
                   </button>
                   <button
                     onClick={resetProcess}
-                    className="px-6 py-3 border border-[#e0e0e0] text-[#666] font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                    className="px-6 py-3 border border-border text-[#666] font-medium rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     Baştan Başla
                   </button>
@@ -577,8 +577,8 @@ export default function AddressVerificationPage() {
         {/* ========== VERIFIED ========== */}
         {currentStep === 'verified' && verificationResult && (
           <div className="space-y-6">
-            <div className="bg-white rounded-xl border border-[#e0e0e0] overflow-hidden">
-              <div className="bg-gradient-to-r from-[#00833e] to-[#006b32] px-6 py-5 text-white">
+            <div className="bg-surface rounded-xl border border-border overflow-hidden">
+              <div className="bg-gradient-to-r from-primary to-primary-hover px-6 py-5 text-white">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
                     <CheckCircle2 className="w-6 h-6" />
@@ -597,20 +597,20 @@ export default function AddressVerificationPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-[#e0e0e0] p-6">
-              <div className="bg-[#e6f4ec] border border-[#00833e]/30 rounded-xl p-4 mb-5">
+            <div className="bg-surface rounded-xl border border-border p-6">
+              <div className="bg-primary-light border border-primary/30 rounded-xl p-4 mb-5">
                 <div className="flex items-center gap-3">
-                  <CheckCircle2 className="w-6 h-6 text-[#00833e] flex-shrink-0" />
+                  <CheckCircle2 className="w-6 h-6 text-primary flex-shrink-0" />
                   <div className="flex-1">
-                    <p className="font-semibold text-[#00833e] text-sm">e-Devlet ile Doğrulanmış Komşu</p>
+                    <p className="font-semibold text-primary text-sm">e-Devlet ile Doğrulanmış Komşu</p>
                     <p className="text-xs text-[#666] font-mono">Barkod: {extractedCode}</p>
                   </div>
                 </div>
               </div>
 
               {verificationResult.details && (
-                <div className="bg-[#f0f2f5] rounded-xl p-5 mb-5">
-                  <h3 className="font-semibold text-[#333] mb-3 flex items-center gap-2">
+                <div className="bg-background rounded-xl p-5 mb-5">
+                  <h3 className="font-semibold text-text-primary mb-3 flex items-center gap-2">
                     <FileText className="w-4 h-4" />
                     Belge Bilgileri
                   </h3>
@@ -633,7 +633,7 @@ export default function AddressVerificationPage() {
                   href="https://www.turkiye.gov.tr/belge-dogrulama"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm text-[#00833e] hover:text-[#006b32]"
+                  className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary-hover"
                 >
                   <Eye className="w-4 h-4" />
                   turkiye.gov.tr/belge-dogrulama
@@ -644,13 +644,13 @@ export default function AddressVerificationPage() {
               <div className="flex gap-3">
                 <Link
                   href="/"
-                  className="flex-1 px-6 py-3 bg-[#00833e] text-white font-semibold rounded-lg hover:bg-[#006b32] transition-colors text-center"
+                  className="flex-1 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-hover transition-colors text-center"
                 >
                   Ana Sayfaya Git
                 </Link>
                 <Link
                   href="/davet"
-                  className="flex-1 px-6 py-3 bg-white border-2 border-[#00833e] text-[#00833e] font-semibold rounded-lg hover:bg-[#e6f4ec] transition-colors text-center"
+                  className="flex-1 px-6 py-3 bg-surface border-2 border-primary text-primary font-semibold rounded-lg hover:bg-primary-light transition-colors text-center"
                 >
                   Komşularını Davet Et
                 </Link>
@@ -662,7 +662,7 @@ export default function AddressVerificationPage() {
         {/* ========== FAILED ========== */}
         {currentStep === 'failed' && (
           <div className="space-y-6">
-            <div className="bg-white rounded-xl border border-[#e0e0e0] overflow-hidden">
+            <div className="bg-surface rounded-xl border border-border overflow-hidden">
               <div className="bg-gradient-to-r from-red-500 to-red-600 px-6 py-5 text-white">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
@@ -684,12 +684,12 @@ export default function AddressVerificationPage() {
               )}
             </div>
 
-            <div className="bg-white rounded-xl border border-[#e0e0e0] p-6">
-              <h3 className="font-semibold text-[#333] mb-4">Ne yapabilirsiniz?</h3>
+            <div className="bg-surface rounded-xl border border-border p-6">
+              <h3 className="font-semibold text-text-primary mb-4">Ne yapabilirsiniz?</h3>
               <div className="space-y-3">
                 <button
                   onClick={resetProcess}
-                  className="w-full flex items-center gap-3 px-5 py-3.5 bg-[#00833e] text-white font-medium rounded-lg hover:bg-[#006b32] transition-colors"
+                  className="w-full flex items-center gap-3 px-5 py-3.5 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors"
                 >
                   <RefreshCw className="w-5 h-5" />
                   Tekrar Dene
@@ -698,7 +698,7 @@ export default function AddressVerificationPage() {
                   href="https://www.turkiye.gov.tr/nvi-yerlesim-yeri-ve-diger-adres-belgesi-sorgulama"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center gap-3 px-5 py-3.5 border border-[#e0e0e0] text-[#666] font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                  className="w-full flex items-center gap-3 px-5 py-3.5 border border-border text-[#666] font-medium rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   <ExternalLink className="w-5 h-5" />
                   e-Devlet&apos;ten Yeni Belge Al
@@ -706,10 +706,10 @@ export default function AddressVerificationPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-[#e0e0e0] p-5">
+            <div className="bg-surface rounded-xl border border-border p-5">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-[#666]">Alternatif: Komşu referans kodu ile doğrulama</span>
-                <Link href="/referans-kullan" className="text-sm font-medium text-[#00833e] hover:text-[#006b32] flex items-center gap-1">
+                <Link href="/referans-kullan" className="text-sm font-medium text-primary hover:text-primary-hover flex items-center gap-1">
                   Referans Kullan <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
@@ -728,7 +728,7 @@ function ProcessStepRow({ step }: { step: ProcessStep }) {
     }`}>
       <div className="flex-shrink-0 mt-0.5">
         {step.status === 'done' && (
-          <div className="w-6 h-6 bg-[#00833e] rounded-full flex items-center justify-center">
+          <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
             <CheckCircle2 className="w-4 h-4 text-white" />
           </div>
         )}
@@ -747,10 +747,10 @@ function ProcessStepRow({ step }: { step: ProcessStep }) {
         )}
       </div>
       <p className={`text-sm leading-relaxed ${
-        step.status === 'done' ? 'text-[#333] font-medium' :
+        step.status === 'done' ? 'text-text-primary font-medium' :
         step.status === 'active' ? 'text-amber-700 font-medium' :
         step.status === 'error' ? 'text-red-600 font-medium' :
-        'text-[#8f8f8f]'
+        'text-text-muted'
       }`}>
         {step.label}
       </p>
@@ -763,7 +763,7 @@ function DetailRow({ label, value }: { label: string; value?: string }) {
   return (
     <div className="flex justify-between text-sm">
       <span className="text-[#666]">{label}:</span>
-      <span className="text-[#333] font-medium">{value}</span>
+      <span className="text-text-primary font-medium">{value}</span>
     </div>
   );
 }

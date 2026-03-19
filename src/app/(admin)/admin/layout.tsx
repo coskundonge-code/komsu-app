@@ -61,7 +61,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   };
 
   return (
-    <div className="flex h-screen bg-[#f0f2f5]">
+    <div className="flex h-screen bg-background">
       {/* Mobile Menu Overlay */}
       {sidebarOpen && (
         <div
@@ -81,13 +81,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <div className="flex items-center justify-between gap-2">
             {sidebarOpen && (
               <div className="flex-1">
-                <h1 className="text-lg font-bold text-[#00833e]">Mahallem</h1>
+                <h1 className="text-lg font-bold text-primary">Mahallem</h1>
                 <p className="text-xs text-[#a7dbb8] mt-1">Yönetici Paneli</p>
               </div>
             )}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 hover:bg-[#006b32] rounded-lg transition-colors flex-shrink-0"
+              className="p-2 hover:bg-primary-hover rounded-lg transition-colors flex-shrink-0"
               aria-label="Toggle sidebar"
             >
               {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
@@ -105,8 +105,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                   isActive
-                    ? 'bg-[#00833e] text-white shadow-md'
-                    : 'text-[#d1fae5] hover:bg-[#006b32]'
+                    ? 'bg-primary text-white shadow-md'
+                    : 'text-[#d1fae5] hover:bg-primary-hover'
                 }`}
                 title={!sidebarOpen ? item.label : ''}
                 onClick={() => {
@@ -129,8 +129,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             href="/admin/ayarlar"
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
               pathname === '/admin/ayarlar'
-                ? 'bg-[#00833e] text-white'
-                : 'text-[#d1fae5] hover:bg-[#006b32]'
+                ? 'bg-primary text-white'
+                : 'text-[#d1fae5] hover:bg-primary-hover'
             }`}
             title={!sidebarOpen ? 'Ayarlar' : ''}
           >
@@ -151,22 +151,22 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden w-full">
         {/* Top Bar */}
-        <div className="bg-white border-b border-[#e0e0e0] px-4 sm:px-8 py-4 flex items-center justify-between shadow-sm">
+        <div className="bg-surface border-b border-border px-4 sm:px-8 py-4 flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:hidden p-2 hover:bg-[#f0f2f5] rounded-lg transition-colors"
+              className="lg:hidden p-2 hover:bg-surface-hover rounded-lg transition-colors"
               aria-label="Toggle sidebar"
             >
-              <Menu size={24} className="text-[#333]" />
+              <Menu size={24} className="text-text-primary" />
             </button>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#333]">Yönetim Paneli</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-text-primary">Yönetim Paneli</h2>
           </div>
           <div className="flex items-center gap-3 sm:gap-4">
-            <div className="w-10 h-10 bg-[#00833e] rounded-full flex items-center justify-center text-white font-bold text-sm">
+            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold text-sm">
               A
             </div>
-            <span className="hidden sm:inline text-sm font-medium text-[#404040]">Admin User</span>
+            <span className="hidden sm:inline text-sm font-medium text-text-secondary">Admin User</span>
           </div>
         </div>
 

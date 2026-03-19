@@ -173,9 +173,9 @@ export default function BlogPage() {
   const displayedPosts = filteredPosts.slice(0, 6);
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       {/* Hero Section with Gradient */}
-      <div className="bg-gradient-to-br from-[#00833e] via-[#00833e] to-[#006b32] text-white relative overflow-hidden">
+      <div className="bg-gradient-to-br from-primary via-[#00833e] to-primary-hover text-white relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -mr-48 -mt-48"></div>
         <div className="absolute bottom-0 left-0 w-72 h-72 bg-white/5 rounded-full -ml-36 -mb-36"></div>
 
@@ -202,7 +202,7 @@ export default function BlogPage() {
         {/* Featured Post - Large Card */}
         <section className="mb-16">
           <Link href={`#post-${featuredPost.id}`}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-white rounded-xl border border-[#e0e0e0] p-8 hover:border-[#00833e] hover:shadow-lg transition-all duration-300 group cursor-pointer">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-surface rounded-xl border border-border p-8 hover:border-primary hover:shadow-lg transition-all duration-300 group cursor-pointer">
               {/* Image */}
               <div className="relative h-64 md:h-96 rounded-lg overflow-hidden">
                 <img
@@ -211,7 +211,7 @@ export default function BlogPage() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute top-4 right-4">
-                  <span className="bg-[#00833e] text-white px-4 py-2 rounded-full text-sm font-bold">
+                  <span className="bg-primary text-white px-4 py-2 rounded-full text-sm font-bold">
                     Öne Çıkan
                   </span>
                 </div>
@@ -220,33 +220,33 @@ export default function BlogPage() {
               {/* Content */}
               <div className="flex flex-col justify-between">
                 <div>
-                  <span className="inline-block bg-[#00833e]/15 text-[#00833e] px-3 py-1 rounded-full text-xs font-bold mb-4 uppercase tracking-wider">
+                  <span className="inline-block bg-primary/15 text-primary px-3 py-1 rounded-full text-xs font-bold mb-4 uppercase tracking-wider">
                     {featuredPost.category}
                   </span>
-                  <h2 className="text-3xl md:text-4xl font-bold text-[#333] mb-4 group-hover:text-[#00833e] transition-colors leading-tight">
+                  <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-4 group-hover:text-primary transition-colors leading-tight">
                     {featuredPost.title}
                   </h2>
-                  <p className="text-[#404040] leading-relaxed mb-6 text-lg">
+                  <p className="text-text-secondary leading-relaxed mb-6 text-lg">
                     {featuredPost.excerpt}
                   </p>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex flex-wrap items-center gap-6 text-sm text-[#8f8f8f]">
+                  <div className="flex flex-wrap items-center gap-6 text-sm text-text-muted">
                     <div className="flex items-center gap-2">
-                      <User size={16} className="text-[#00833e]" />
+                      <User size={16} className="text-primary" />
                       <span className="font-medium">{featuredPost.author}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Calendar size={16} className="text-[#00833e]" />
+                      <Calendar size={16} className="text-primary" />
                       {new Date(featuredPost.date).toLocaleDateString("tr-TR")}
                     </div>
                     <div className="flex items-center gap-2">
-                      <BookOpen size={16} className="text-[#00833e]" />
+                      <BookOpen size={16} className="text-primary" />
                       {featuredPost.readTime}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 text-[#00833e] font-bold group-hover:gap-3 transition-all text-lg">
+                  <div className="flex items-center gap-2 text-primary font-bold group-hover:gap-3 transition-all text-lg">
                     Yazıyı Oku
                     <ArrowRight size={20} />
                   </div>
@@ -259,8 +259,8 @@ export default function BlogPage() {
         {/* Category Filter Chips */}
         <section className="mb-12">
           <div className="flex items-center gap-3 mb-6">
-            <Filter size={24} className="text-[#00833e]" />
-            <h3 className="text-xl font-bold text-[#333]">Kategorilere Göre Filtrele</h3>
+            <Filter size={24} className="text-primary" />
+            <h3 className="text-xl font-bold text-text-primary">Kategorilere Göre Filtrele</h3>
           </div>
           <div className="flex flex-wrap gap-3">
             {categories.map((category) => (
@@ -269,8 +269,8 @@ export default function BlogPage() {
                 onClick={() => setSelectedCategory(category)}
                 className={`px-6 py-2 rounded-full font-semibold text-sm transition-all duration-200 border ${
                   selectedCategory === category
-                    ? "bg-[#00833e] text-white border-[#00833e]"
-                    : "bg-white text-[#404040] border-[#e0e0e0] hover:border-[#00833e] hover:text-[#00833e]"
+                    ? "bg-primary text-white border-primary"
+                    : "bg-surface text-text-secondary border-border hover:border-primary hover:text-primary"
                 }`}
               >
                 {category}
@@ -281,8 +281,8 @@ export default function BlogPage() {
 
         {/* Blog Posts Grid - 6 Posts */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-[#333] mb-8 flex items-center gap-3">
-            <span className="w-1 h-10 bg-[#00833e] rounded-full"></span>
+          <h2 className="text-3xl font-bold text-text-primary mb-8 flex items-center gap-3">
+            <span className="w-1 h-10 bg-primary rounded-full"></span>
             {selectedCategory === "Tümü" ? "Son Yazılar" : `${selectedCategory} Yazıları`}
           </h2>
 
@@ -290,7 +290,7 @@ export default function BlogPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {displayedPosts.map((post) => (
                 <Link key={post.id} href={`#post-${post.id}`}>
-                  <div className="h-full bg-white rounded-xl border border-[#e0e0e0] overflow-hidden hover:border-[#00833e] hover:shadow-lg transition-all duration-200 group">
+                  <div className="h-full bg-surface rounded-xl border border-border overflow-hidden hover:border-primary hover:shadow-lg transition-all duration-200 group">
                     {/* Image */}
                     <div className="relative h-48 overflow-hidden bg-gray-100">
                       <img
@@ -299,7 +299,7 @@ export default function BlogPage() {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       <div className="absolute top-3 right-3">
-                        <span className="bg-white text-[#00833e] px-3 py-1 rounded-full text-xs font-bold">
+                        <span className="bg-surface text-primary px-3 py-1 rounded-full text-xs font-bold">
                           {post.category}
                         </span>
                       </div>
@@ -307,19 +307,19 @@ export default function BlogPage() {
 
                     {/* Content */}
                     <div className="p-6 flex flex-col h-auto">
-                      <h3 className="text-lg font-bold text-[#333] mb-3 line-clamp-2 group-hover:text-[#00833e] transition-colors">
+                      <h3 className="text-lg font-bold text-text-primary mb-3 line-clamp-2 group-hover:text-primary transition-colors">
                         {post.title}
                       </h3>
-                      <p className="text-sm text-[#8f8f8f] mb-5 line-clamp-2 leading-relaxed">
+                      <p className="text-sm text-text-muted mb-5 line-clamp-2 leading-relaxed">
                         {post.excerpt}
                       </p>
 
-                      <div className="border-t border-[#e0e0e0] pt-4 space-y-3 mt-auto">
-                        <div className="flex items-center gap-2 text-xs text-[#8f8f8f]">
+                      <div className="border-t border-border pt-4 space-y-3 mt-auto">
+                        <div className="flex items-center gap-2 text-xs text-text-muted">
                           <User size={14} className="flex-shrink-0" />
                           <span className="font-medium truncate">{post.author}</span>
                         </div>
-                        <div className="flex items-center justify-between text-xs text-[#8f8f8f]">
+                        <div className="flex items-center justify-between text-xs text-text-muted">
                           <div className="flex items-center gap-1">
                             <Calendar size={14} />
                             {new Date(post.date).toLocaleDateString("tr-TR")}
@@ -336,28 +336,28 @@ export default function BlogPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 bg-white rounded-lg border border-[#e0e0e0]">
-              <p className="text-[#8f8f8f] text-lg">Bu kategoride yazı bulunamadı.</p>
+            <div className="text-center py-12 bg-surface rounded-lg border border-border">
+              <p className="text-text-muted text-lg">Bu kategoride yazı bulunamadı.</p>
             </div>
           )}
         </section>
 
         {/* Newsletter Section */}
-        <section className="mb-16 p-10 bg-gradient-to-br from-[#00833e]/10 to-[#006b32]/10 rounded-xl border border-[#00833e]/20">
+        <section className="mb-16 p-10 bg-gradient-to-br from-primary/10 to-primary-hover/10 rounded-xl border border-primary/20">
           <div className="max-w-2xl">
-            <h3 className="text-3xl font-bold text-[#333] mb-3">
+            <h3 className="text-3xl font-bold text-text-primary mb-3">
               En Son Yazılarımızdan Haberdar Olun
             </h3>
-            <p className="text-[#404040] mb-6 text-lg">
+            <p className="text-text-secondary mb-6 text-lg">
               E-postanızı bırakın ve her hafta yeni blog yazılarını doğrudan aldığınız kutuya alın.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="email"
                 placeholder="E-posta adresiniz..."
-                className="flex-1 px-4 py-3 rounded-lg border border-[#e0e0e0] focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20 bg-white"
+                className="flex-1 px-4 py-3 rounded-lg border border-border focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 bg-surface"
               />
-              <button className="px-8 py-3 bg-[#00833e] text-white rounded-lg font-bold hover:bg-[#006b32] transition-colors whitespace-nowrap">
+              <button className="px-8 py-3 bg-primary text-white rounded-lg font-bold hover:bg-primary-hover transition-colors whitespace-nowrap">
                 Abone Ol
               </button>
             </div>
@@ -365,28 +365,28 @@ export default function BlogPage() {
         </section>
 
         {/* Footer */}
-        <div className="border-t border-[#e0e0e0] bg-white rounded-t-lg py-8 px-8 text-center">
-          <p className="text-sm text-[#8f8f8f] mb-6">
+        <div className="border-t border-border bg-surface rounded-t-lg py-8 px-8 text-center">
+          <p className="text-sm text-text-muted mb-6">
             © 2026 Mahallem — Trendex Lojistik tarafından geliştirilmiştir.
           </p>
           <div className="flex items-center justify-center gap-6 flex-wrap">
             <Link
               href="/gizlilik"
-              className="text-sm text-[#00833e] hover:text-[#006b32] font-medium transition-colors"
+              className="text-sm text-primary hover:text-primary-hover font-medium transition-colors"
             >
               Gizlilik Politikası
             </Link>
             <span className="text-[#e0e0e0]">•</span>
             <Link
               href="/kosullar"
-              className="text-sm text-[#00833e] hover:text-[#006b32] font-medium transition-colors"
+              className="text-sm text-primary hover:text-primary-hover font-medium transition-colors"
             >
               Kullanım Koşulları
             </Link>
             <span className="text-[#e0e0e0]">•</span>
             <Link
               href="/yardim"
-              className="text-sm text-[#00833e] hover:text-[#006b32] font-medium transition-colors"
+              className="text-sm text-primary hover:text-primary-hover font-medium transition-colors"
             >
               Yardım Merkezi
             </Link>

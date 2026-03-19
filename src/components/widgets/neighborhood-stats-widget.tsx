@@ -7,7 +7,7 @@ const stats = [
     label: 'Aktif Üyeler',
     value: 1248,
     icon: Users,
-    color: 'text-[#00833e]',
+    color: 'text-primary',
     percentage: 92,
   },
   {
@@ -28,16 +28,16 @@ const stats = [
     label: 'Güvenlik Puanı',
     value: '8.7/10',
     icon: Shield,
-    color: 'text-[#00833e]',
+    color: 'text-primary',
     percentage: 87,
   },
 ]
 
 export function NeighborhoodStatsWidget() {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
-      <div className="p-4 border-b border-[#e0e0e0]">
-        <p className="text-sm font-semibold text-[#333]">Mahalle İstatistikleri</p>
+    <div className="bg-surface rounded-lg shadow-sm border border-border overflow-hidden">
+      <div className="p-4 border-b border-border">
+        <p className="text-sm font-semibold text-text-primary">Mahalle İstatistikleri</p>
       </div>
       <div className="divide-y divide-[#e0e0e0]">
         {stats.map((stat, idx) => {
@@ -47,21 +47,21 @@ export function NeighborhoodStatsWidget() {
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <Icon className={`w-4 h-4 ${stat.color}`} />
-                  <p className="text-xs text-[#8f8f8f] font-medium">{stat.label}</p>
+                  <p className="text-xs text-text-muted font-medium">{stat.label}</p>
                 </div>
                 <p className={`text-sm font-bold ${stat.color}`}>{stat.value}</p>
               </div>
               {/* Progress bar */}
-              <div className="w-full h-1.5 bg-[#f0f2f5] rounded-full overflow-hidden">
+              <div className="w-full h-1.5 bg-background rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-300 ${
-                    stat.color === 'text-[#00833e]'
-                      ? 'bg-[#00833e]'
+                    stat.color === 'text-primary'
+                      ? 'bg-primary'
                       : stat.color === 'text-blue-500'
                         ? 'bg-blue-500'
                         : stat.color === 'text-green-500'
                           ? 'bg-green-500'
-                          : 'bg-[#00833e]'
+                          : 'bg-primary'
                   }`}
                   style={{ width: `${stat.percentage}%` }}
                 />
@@ -70,7 +70,7 @@ export function NeighborhoodStatsWidget() {
           )
         })}
       </div>
-      <div className="p-4 bg-[#f9f9f9] text-[11px] text-[#8f8f8f]">
+      <div className="p-4 bg-[#f9f9f9] text-[11px] text-text-muted">
         <p>Son güncelleme: Bugün 14:32</p>
       </div>
     </div>

@@ -11,6 +11,7 @@ interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
     onClick: () => void;
     variant?: "primary" | "secondary" | "outline" | "ghost" | "destructive";
   };
+  compact?: boolean;
 }
 
 const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(
@@ -21,6 +22,7 @@ const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(
       title,
       description,
       action,
+      compact = false,
       ...props
     },
     ref
@@ -29,25 +31,27 @@ const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(
       <div
         ref={ref}
         className={cn(
-          "flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed border-gray-300 px-6 py-12 text-center sm:px-8 sm:py-16",
+          "flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border px-6 text-center",
+          compact ? "py-8" : "py-12 sm:py-16",
           className
         )}
         {...props}
       >
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#d1fae5] text-[#00833e]">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-light text-primary">
           {icon}
         </div>
-        <div className="flex flex-col gap-2">
-          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+        <div className="flex flex-col gap-1">
+          <h3 className="text-base font-semibold text-text-primary">{title}</h3>
           {description && (
-            <p className="text-sm text-gray-600">{description}</p>
+            <p className="text-sm text-text-muted max-w-sm">{description}</p>
           )}
         </div>
         {action && (
           <Button
             variant={action.variant || "primary"}
+            size="sm"
             onClick={action.onClick}
-            className="mt-2"
+            className="mt-1"
           >
             {action.label}
           </Button>

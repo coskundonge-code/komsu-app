@@ -108,7 +108,7 @@ export default function CreateGroupPage() {
     <div className="min-h-screen" style={{ backgroundColor: '#f0f2f5' }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Back Button */}
-        <Link href="/gruplar" className="flex items-center gap-2 mb-8 text-[#00833e] hover:text-[#006b32] transition-colors">
+        <Link href="/gruplar" className="flex items-center gap-2 mb-8 text-primary hover:text-primary-hover transition-colors">
           <ArrowLeft className="w-4 h-4" />
           <span className="font-medium">Gruplara Geri Dön</span>
         </Link>
@@ -116,7 +116,7 @@ export default function CreateGroupPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Form Section */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-md p-8">
+            <div className="bg-surface rounded-lg shadow-md p-8">
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 Yeni Grup Oluştur
               </h1>
@@ -128,7 +128,7 @@ export default function CreateGroupPage() {
                 {/* Cover Image Upload */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                    <ImagePlus className="w-4 h-4 text-[#00833e]" />
+                    <ImagePlus className="w-4 h-4 text-primary" />
                     Kapak Resmi
                   </label>
                   <div className="relative">
@@ -141,7 +141,7 @@ export default function CreateGroupPage() {
                     />
                     <label
                       htmlFor="cover-image"
-                      className="block border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-all hover:border-[#00833e] hover:bg-[#f9f9f9]"
+                      className="block border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-all hover:border-primary hover:bg-surface-hover"
                       style={{ borderColor: '#e0e0e0' }}
                     >
                       {coverImagePreview ? (
@@ -151,13 +151,13 @@ export default function CreateGroupPage() {
                             alt="Kapak Resmi Önizleme"
                             className="w-full h-64 object-cover rounded-lg"
                           />
-                          <p className="text-sm font-medium text-[#00833e]">
+                          <p className="text-sm font-medium text-primary">
                             Değiştirmek için tıklayın
                           </p>
                         </div>
                       ) : (
                         <div className="space-y-3">
-                          <ImagePlus className="w-16 h-16 mx-auto text-[#00833e]" />
+                          <ImagePlus className="w-16 h-16 mx-auto text-primary" />
                           <p className="font-semibold text-gray-900 text-lg">
                             Resim yüklemek için tıklayın
                           </p>
@@ -232,7 +232,7 @@ export default function CreateGroupPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, category: e.target.value })
                     }
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] text-gray-900"
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-gray-900"
                     style={{ borderColor: '#e0e0e0' }}
                   >
                     {categories.map((cat) => (
@@ -265,7 +265,7 @@ export default function CreateGroupPage() {
                       />
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <Globe className="w-4 h-4 text-[#00833e]" />
+                          <Globe className="w-4 h-4 text-primary" />
                           <span className="font-semibold text-gray-900">
                             Açık Grup
                           </span>
@@ -291,7 +291,7 @@ export default function CreateGroupPage() {
                       />
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <Lock className="w-4 h-4 text-[#00833e]" />
+                          <Lock className="w-4 h-4 text-primary" />
                           <span className="font-semibold text-gray-900">
                             Kapalı Grup
                           </span>
@@ -307,7 +307,7 @@ export default function CreateGroupPage() {
                 {/* Rules */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-[#00833e]" />
+                    <FileText className="w-4 h-4 text-primary" />
                     Grup Kuralları
                   </label>
                   <Textarea
@@ -328,7 +328,7 @@ export default function CreateGroupPage() {
                 {/* Invite Members */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                    <Users className="w-4 h-4 text-[#00833e]" />
+                    <Users className="w-4 h-4 text-primary" />
                     Üye Davet Et
                   </label>
                   <div className="relative">
@@ -352,7 +352,7 @@ export default function CreateGroupPage() {
 
                     {/* Member Suggestions */}
                     {showMemberSuggestions && memberSearch && filteredMembers.length > 0 && (
-                      <div className="absolute top-full left-0 right-0 mt-2 bg-white border rounded-lg shadow-lg z-10" style={{ borderColor: '#e0e0e0' }}>
+                      <div className="absolute top-full left-0 right-0 mt-2 bg-surface border rounded-lg shadow-lg z-10" style={{ borderColor: '#e0e0e0' }}>
                         {filteredMembers.map((member) => (
                           <button
                             key={member.id}
@@ -365,7 +365,7 @@ export default function CreateGroupPage() {
                             <span className="font-medium text-gray-900">
                               {member.name}
                             </span>
-                            <Plus className="w-4 h-4 ml-auto text-[#00833e]" />
+                            <Plus className="w-4 h-4 ml-auto text-primary" />
                           </button>
                         ))}
                       </div>
@@ -439,7 +439,7 @@ export default function CreateGroupPage() {
               <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase">
                 Önizleme
               </h3>
-              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="bg-surface rounded-lg shadow-md overflow-hidden">
                 {/* Group Card Preview */}
                 <div className="aspect-video overflow-hidden bg-gray-200">
                   {coverImagePreview ? (
@@ -480,12 +480,12 @@ export default function CreateGroupPage() {
                   <div className="flex items-center gap-2 mb-4 text-xs font-semibold text-gray-700">
                     {formData.privacy === 'public' ? (
                       <>
-                        <Globe className="w-4 h-4 text-[#00833e]" />
+                        <Globe className="w-4 h-4 text-primary" />
                         Açık Grup
                       </>
                     ) : (
                       <>
-                        <Lock className="w-4 h-4 text-[#00833e]" />
+                        <Lock className="w-4 h-4 text-primary" />
                         Kapalı Grup
                       </>
                     )}

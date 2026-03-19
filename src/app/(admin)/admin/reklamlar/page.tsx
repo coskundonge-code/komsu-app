@@ -221,33 +221,33 @@ export default function ReklamlarPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5] p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#333] mb-2">Reklam Kampanyaları</h1>
-          <p className="text-[#8f8f8f]">Tüm reklam kampanyalarını yönet ve izle</p>
+          <h1 className="text-3xl font-bold text-text-primary mb-2">Reklam Kampanyaları</h1>
+          <p className="text-text-muted">Tüm reklam kampanyalarını yönet ve izle</p>
         </div>
 
         {/* Stats Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-border p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[#8f8f8f] text-sm font-medium mb-1">Aktif Kampanya</p>
-                <p className="text-2xl font-bold text-[#333]">{stats.activeCampaigns}</p>
+                <p className="text-text-muted text-sm font-medium mb-1">Aktif Kampanya</p>
+                <p className="text-2xl font-bold text-text-primary">{stats.activeCampaigns}</p>
               </div>
               <div className="bg-green-100 rounded-lg p-3">
-                <TrendingUp size={24} className="text-[#00833e]" />
+                <TrendingUp size={24} className="text-primary" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-border p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[#8f8f8f] text-sm font-medium mb-1">Toplam Bütçe</p>
-                <p className="text-2xl font-bold text-[#333]">{formatCurrency(stats.totalBudget)}</p>
+                <p className="text-text-muted text-sm font-medium mb-1">Toplam Bütçe</p>
+                <p className="text-2xl font-bold text-text-primary">{formatCurrency(stats.totalBudget)}</p>
               </div>
               <div className="bg-blue-100 rounded-lg p-3">
                 <Wallet size={24} className="text-blue-600" />
@@ -255,11 +255,11 @@ export default function ReklamlarPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-border p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[#8f8f8f] text-sm font-medium mb-1">Toplam Harcama</p>
-                <p className="text-2xl font-bold text-[#333]">{formatCurrency(stats.totalSpent)}</p>
+                <p className="text-text-muted text-sm font-medium mb-1">Toplam Harcama</p>
+                <p className="text-2xl font-bold text-text-primary">{formatCurrency(stats.totalSpent)}</p>
               </div>
               <div className="bg-orange-100 rounded-lg p-3">
                 <Zap size={24} className="text-orange-600" />
@@ -267,11 +267,11 @@ export default function ReklamlarPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-border p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[#8f8f8f] text-sm font-medium mb-1">Tıklama Oranı</p>
-                <p className="text-2xl font-bold text-[#333]">{stats.ctr}%</p>
+                <p className="text-text-muted text-sm font-medium mb-1">Tıklama Oranı</p>
+                <p className="text-2xl font-bold text-text-primary">{stats.ctr}%</p>
               </div>
               <div className="bg-purple-100 rounded-lg p-3">
                 <BarChart3 size={24} className="text-purple-600" />
@@ -281,7 +281,7 @@ export default function ReklamlarPage() {
         </div>
 
         {/* Filter Tabs */}
-        <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] mb-6 p-4">
+        <div className="bg-surface rounded-lg shadow-sm border border-border mb-6 p-4">
           <div className="flex gap-2 flex-wrap">
             {(['tumu', 'aktif', 'beklemede', 'duraklatilmis', 'tamamlandi'] as const).map((status) => (
               <button
@@ -289,8 +289,8 @@ export default function ReklamlarPage() {
                 onClick={() => setFilter(status)}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   filter === status
-                    ? 'bg-[#00833e] text-white'
-                    : 'bg-[#f0f2f5] text-[#333] hover:bg-[#e0e0e0]'
+                    ? 'bg-primary text-white'
+                    : 'bg-background text-text-primary hover:bg-[#e0e0e0]'
                 }`}
               >
                 {status === 'tumu'
@@ -308,39 +308,39 @@ export default function ReklamlarPage() {
         </div>
 
         {/* Campaigns Table */}
-        <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
+        <div className="bg-surface rounded-lg shadow-sm border border-border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-[#f0f2f5] border-b border-[#e0e0e0]">
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#333]">
+                <tr className="bg-background border-b border-border">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-text-primary">
                     Kampanya Adı
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#333]">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-text-primary">
                     İşletme Adı
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#333]">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-text-primary">
                     Durum
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#333]">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-text-primary">
                     Bütçe
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#333]">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-text-primary">
                     Harcama
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#333]">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-text-primary">
                     Gösterim
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#333]">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-text-primary">
                     Tıklamalar
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#333]">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-text-primary">
                     CTR
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-[#333]">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-text-primary">
                     Tarih Aralığı
                   </th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-[#333]">
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-text-primary">
                     İşlemler
                   </th>
                 </tr>
@@ -355,11 +355,11 @@ export default function ReklamlarPage() {
                   return (
                     <tr
                       key={campaign.id}
-                      className={`border-b border-[#e0e0e0] hover:bg-[#f9f9f9] transition-colors ${
-                        index % 2 === 0 ? 'bg-white' : 'bg-[#fafafa]'
+                      className={`border-b border-border hover:bg-surface-hover transition-colors ${
+                        index % 2 === 0 ? 'bg-surface' : 'bg-[#fafafa]'
                       }`}
                     >
-                      <td className="px-6 py-4 text-sm text-[#333] font-medium">
+                      <td className="px-6 py-4 text-sm text-text-primary font-medium">
                         {campaign.name}
                       </td>
                       <td className="px-6 py-4 text-sm text-[#666]">{campaign.businessName}</td>
@@ -372,10 +372,10 @@ export default function ReklamlarPage() {
                           {getStatusLabel(campaign.status)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm font-semibold text-[#333]">
+                      <td className="px-6 py-4 text-sm font-semibold text-text-primary">
                         {formatCurrency(campaign.budget)}
                       </td>
-                      <td className="px-6 py-4 text-sm font-semibold text-[#333]">
+                      <td className="px-6 py-4 text-sm font-semibold text-text-primary">
                         {formatCurrency(campaign.spent)}
                       </td>
                       <td className="px-6 py-4 text-sm text-[#666]">
@@ -384,7 +384,7 @@ export default function ReklamlarPage() {
                       <td className="px-6 py-4 text-sm text-[#666]">
                         {formatNumber(campaign.clicks)}
                       </td>
-                      <td className="px-6 py-4 text-sm font-semibold text-[#00833e]">
+                      <td className="px-6 py-4 text-sm font-semibold text-primary">
                         {ctr}%
                       </td>
                       <td className="px-6 py-4 text-sm text-[#666]">
@@ -396,7 +396,7 @@ export default function ReklamlarPage() {
                             <>
                               <button
                                 onClick={() => handleApprove(campaign.id)}
-                                className="p-2 hover:bg-green-100 rounded-lg transition-colors text-green-600 hover:text-[#00833e]"
+                                className="p-2 hover:bg-green-100 rounded-lg transition-colors text-green-600 hover:text-primary"
                                 title="Onayla"
                               >
                                 <CheckCircle size={18} />
@@ -430,30 +430,30 @@ export default function ReklamlarPage() {
 
           {filteredCampaigns.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-[#8f8f8f] text-base">Bu filtreye uygun kampanya bulunamadı</p>
+              <p className="text-text-muted text-base">Bu filtreye uygun kampanya bulunamadı</p>
             </div>
           )}
         </div>
 
         {/* Footer Stats */}
         <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center p-4 bg-white rounded-lg border border-[#e0e0e0]">
-            <p className="text-[#8f8f8f] text-sm mb-1">Toplam Kampanya</p>
-            <p className="text-xl font-bold text-[#333]">{campaigns.length}</p>
+          <div className="text-center p-4 bg-surface rounded-lg border border-border">
+            <p className="text-text-muted text-sm mb-1">Toplam Kampanya</p>
+            <p className="text-xl font-bold text-text-primary">{campaigns.length}</p>
           </div>
-          <div className="text-center p-4 bg-white rounded-lg border border-[#e0e0e0]">
-            <p className="text-[#8f8f8f] text-sm mb-1">Kullanılan Bütçe</p>
-            <p className="text-xl font-bold text-[#333]">
+          <div className="text-center p-4 bg-surface rounded-lg border border-border">
+            <p className="text-text-muted text-sm mb-1">Kullanılan Bütçe</p>
+            <p className="text-xl font-bold text-text-primary">
               {stats.totalBudget > 0 ? (((stats.totalSpent / stats.totalBudget) * 100).toFixed(1) + '%') : '0%'}
             </p>
           </div>
-          <div className="text-center p-4 bg-white rounded-lg border border-[#e0e0e0]">
-            <p className="text-[#8f8f8f] text-sm mb-1">Ortalama CTR</p>
-            <p className="text-xl font-bold text-[#333]">{stats.ctr}%</p>
+          <div className="text-center p-4 bg-surface rounded-lg border border-border">
+            <p className="text-text-muted text-sm mb-1">Ortalama CTR</p>
+            <p className="text-xl font-bold text-text-primary">{stats.ctr}%</p>
           </div>
-          <div className="text-center p-4 bg-white rounded-lg border border-[#e0e0e0]">
-            <p className="text-[#8f8f8f] text-sm mb-1">Kalan Bütçe</p>
-            <p className="text-xl font-bold text-[#00833e]">
+          <div className="text-center p-4 bg-surface rounded-lg border border-border">
+            <p className="text-text-muted text-sm mb-1">Kalan Bütçe</p>
+            <p className="text-xl font-bold text-primary">
               {formatCurrency(stats.totalBudget - stats.totalSpent)}
             </p>
           </div>

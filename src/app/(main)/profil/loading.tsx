@@ -4,9 +4,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProfileLoading() {
   return (
-    <div className="flex min-h-screen flex-col bg-[#f0f2f5]">
+    <div className="flex min-h-screen flex-col bg-background">
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-white border-b border-[#e0e0e0] p-4">
+      <div className="sticky top-0 z-30 bg-surface border-b border-border p-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Skeleton className="w-40 h-6 rounded" />
           <Skeleton className="w-8 h-8 rounded" />
@@ -16,7 +16,7 @@ export default function ProfileLoading() {
       {/* Main content */}
       <main className="flex-1 max-w-4xl mx-auto w-full p-4">
         {/* Profile header section */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden mb-4">
+        <div className="bg-surface rounded-lg border border-border overflow-hidden mb-4">
           {/* Cover image */}
           <Skeleton className="w-full h-40 rounded-none" />
 
@@ -46,7 +46,7 @@ export default function ProfileLoading() {
             </div>
 
             {/* Bio/Description */}
-            <div className="space-y-2 pt-4 border-t border-[#e0e0e0]">
+            <div className="space-y-2 pt-4 border-t border-border">
               <Skeleton className="w-full h-3 rounded" />
               <Skeleton className="w-4/5 h-3 rounded" />
               <Skeleton className="w-3/4 h-3 rounded" />
@@ -55,8 +55,8 @@ export default function ProfileLoading() {
         </div>
 
         {/* Tabs section */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden mb-4">
-          <div className="border-b border-[#e0e0e0] p-4 flex gap-4">
+        <div className="bg-surface rounded-lg border border-border overflow-hidden mb-4">
+          <div className="border-b border-border p-4 flex gap-4">
             <Skeleton className="w-20 h-4 rounded" />
             <Skeleton className="w-20 h-4 rounded" />
             <Skeleton className="w-20 h-4 rounded" />
@@ -66,7 +66,7 @@ export default function ProfileLoading() {
           <div className="p-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-[#f0f2f5] rounded-lg overflow-hidden">
+                <div key={i} className="bg-background rounded-lg overflow-hidden">
                   <Skeleton className="w-full h-32 rounded-none" />
                   <div className="p-3 space-y-2">
                     <Skeleton className="w-full h-3 rounded" />
@@ -81,7 +81,7 @@ export default function ProfileLoading() {
         {/* Info cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* About section */}
-          <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
+          <div className="bg-surface rounded-lg border border-border p-4">
             <Skeleton className="w-24 h-6 rounded mb-4" />
             <div className="space-y-3">
               {[1, 2, 3].map((i) => (
@@ -94,7 +94,7 @@ export default function ProfileLoading() {
           </div>
 
           {/* Joined section */}
-          <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
+          <div className="bg-surface rounded-lg border border-border p-4">
             <Skeleton className="w-20 h-6 rounded mb-4" />
             <div className="space-y-3">
               {[1, 2].map((i) => (

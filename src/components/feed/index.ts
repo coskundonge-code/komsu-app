@@ -1,8 +1,8 @@
 export { ReactionBar } from './reaction-bar';
 export type { ReactionBarProps } from './reaction-bar';
 
-export { PostCard } from './post-card';
-export type { PostCardProps, PostType } from './post-card';
+export { FeedPostCard, POST_CATEGORIES, getCategoryInfo } from './post-card';
+export type { FeedPostData } from './post-card';
 
 export { PostFilters } from './post-filters';
 export type { PostFiltersProps, FilterType } from './post-filters';

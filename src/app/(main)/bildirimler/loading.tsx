@@ -4,9 +4,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function NotificationsLoading() {
   return (
-    <div className="flex min-h-screen flex-col bg-[#f0f2f5]">
+    <div className="flex min-h-screen flex-col bg-background">
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-white border-b border-[#e0e0e0] p-4">
+      <div className="sticky top-0 z-30 bg-surface border-b border-border p-4">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between">
             <Skeleton className="w-40 h-8 rounded" />
@@ -32,7 +32,7 @@ export default function NotificationsLoading() {
           {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
             <div
               key={i}
-              className="bg-white rounded-lg border border-[#e0e0e0] p-4 hover:bg-[#f9f9f9] transition-colors cursor-pointer"
+              className="bg-surface rounded-lg border border-border p-4 hover:bg-surface-hover transition-colors cursor-pointer"
             >
               <div className="flex gap-4">
                 {/* Avatar */}

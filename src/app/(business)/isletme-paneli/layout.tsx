@@ -43,15 +43,15 @@ export default function BusinessLayout({ children }: BusinessLayoutProps) {
   };
 
   return (
-    <div className="flex h-screen bg-[#f0f2f5]">
+    <div className="flex h-screen bg-background">
       {/* Sidebar */}
       <div
         className={`${
           sidebarOpen ? 'w-64' : 'w-20'
-        } bg-white text-[#333] transition-all duration-300 flex flex-col overflow-hidden border-r border-[#e0e0e0] shadow-sm`}
+        } bg-surface text-text-primary transition-all duration-300 flex flex-col overflow-hidden border-r border-border shadow-sm`}
       >
         {/* Logo & Branding */}
-        <div className="p-4 border-b border-[#e0e0e0] bg-gradient-to-r from-[#00833e] to-[#006b32]">
+        <div className="p-4 border-b border-border bg-gradient-to-r from-primary to-primary-hover">
           <div className="flex items-center justify-between">
             {sidebarOpen && (
               <div>
@@ -61,7 +61,7 @@ export default function BusinessLayout({ children }: BusinessLayoutProps) {
             )}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-1.5 hover:bg-[#006b32] rounded-md transition-colors text-white"
+              className="p-1.5 hover:bg-primary-hover rounded-md transition-colors text-white"
               aria-label="Toggle sidebar"
             >
               {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
@@ -71,14 +71,14 @@ export default function BusinessLayout({ children }: BusinessLayoutProps) {
 
         {/* Business Info */}
         {sidebarOpen && (
-          <div className="p-4 border-b border-[#e0e0e0] bg-[#f0f2f5]">
+          <div className="p-4 border-b border-border bg-background">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-lg flex items-center justify-center text-white font-bold text-base shadow-sm">
+              <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary-hover rounded-lg flex items-center justify-center text-white font-bold text-base shadow-sm">
                 K
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-sm text-[#333] line-clamp-1">Kahvehane Keyif</p>
-                <p className="text-xs text-[#00833e] font-medium mt-0.5">Aktif</p>
+                <p className="font-semibold text-sm text-text-primary line-clamp-1">Kahvehane Keyif</p>
+                <p className="text-xs text-primary font-medium mt-0.5">Aktif</p>
               </div>
             </div>
           </div>
@@ -94,8 +94,8 @@ export default function BusinessLayout({ children }: BusinessLayoutProps) {
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                   isActive
-                    ? 'bg-[#00833e] text-white shadow-sm'
-                    : 'text-[#404040] hover:bg-[#f0f2f5]'
+                    ? 'bg-primary text-white shadow-sm'
+                    : 'text-text-secondary hover:bg-surface-hover'
                 }`}
                 title={!sidebarOpen ? item.label : ''}
               >
@@ -107,10 +107,10 @@ export default function BusinessLayout({ children }: BusinessLayoutProps) {
         </nav>
 
         {/* Action Buttons */}
-        <div className="p-4 border-t border-[#e0e0e0] space-y-2">
+        <div className="p-4 border-t border-border space-y-2">
           <Link
             href="/"
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-[#404040] hover:bg-[#f0f2f5]`}
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-text-secondary hover:bg-surface-hover`}
             title={!sidebarOpen ? 'Ana Sayfaya Dön' : ''}
           >
             <Home size={20} className="flex-shrink-0" />
@@ -118,7 +118,7 @@ export default function BusinessLayout({ children }: BusinessLayoutProps) {
           </Link>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 text-[#404040] hover:bg-red-50 hover:text-red-600 rounded-lg transition-all duration-200"
+            className="w-full flex items-center gap-3 px-4 py-3 text-text-secondary hover:bg-red-50 hover:text-red-600 rounded-lg transition-all duration-200"
             title={!sidebarOpen ? 'Çıkış Yap' : ''}
           >
             <LogOut size={20} className="flex-shrink-0" />
@@ -130,28 +130,28 @@ export default function BusinessLayout({ children }: BusinessLayoutProps) {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Bar */}
-        <div className="bg-white border-b border-[#e0e0e0] px-8 py-4 flex items-center justify-between shadow-sm">
+        <div className="bg-surface border-b border-border px-8 py-4 flex items-center justify-between shadow-sm">
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-[#333]">İşletme Paneli</h2>
-            <p className="text-sm text-[#8f8f8f] mt-1">
+            <h2 className="text-2xl font-bold text-text-primary">İşletme Paneli</h2>
+            <p className="text-sm text-text-muted mt-1">
               İşletmenizi yönetin ve istatistiklerini izleyin
             </p>
           </div>
           <div className="flex items-center gap-4 ml-8">
             <Link
               href="/isletmeler/kahvehane-keyif"
-              className="px-4 py-2 bg-[#00833e] hover:bg-[#006b32] text-white rounded-lg font-medium text-sm transition-colors duration-200 shadow-sm"
+              className="px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg font-medium text-sm transition-colors duration-200 shadow-sm"
             >
               İşletme Sayfasını Gör
             </Link>
-            <div className="w-10 h-10 bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-hover rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">
               K
             </div>
           </div>
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-auto bg-[#f0f2f5]">
+        <div className="flex-1 overflow-auto bg-background">
           <div className="p-8">{children}</div>
         </div>
       </div>

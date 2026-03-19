@@ -282,7 +282,7 @@ export default function DogrulamaPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {stats.map((stat, idx) => (
-          <div key={idx} className="bg-white p-6 rounded-lg border border-[#e0e0e0]">
+          <div key={idx} className="bg-surface p-6 rounded-lg border border-border">
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-gray-600 text-sm">{stat.title}</p>
@@ -297,7 +297,7 @@ export default function DogrulamaPage() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white p-6 rounded-lg border border-[#e0e0e0] mb-6">
+      <div className="bg-surface p-6 rounded-lg border border-border mb-6">
         <div className="flex gap-4 flex-wrap">
           <div className="flex-1 min-w-64">
             <div className="relative">
@@ -310,7 +310,7 @@ export default function DogrulamaPage() {
                   setSearchTerm(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full pl-10 pr-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
@@ -320,7 +320,7 @@ export default function DogrulamaPage() {
               setStatusFilter(e.target.value);
               setCurrentPage(1);
             }}
-            className="px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+            className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <option value="">Tüm Durumlar</option>
             {Object.entries(STATUS_CONFIG).map(([key, val]) => (
@@ -333,11 +333,11 @@ export default function DogrulamaPage() {
       </div>
 
       {/* Verifications Table */}
-      <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden">
+      <div className="bg-surface rounded-lg border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#e0e0e0] bg-[#f0f2f5]">
+              <tr className="border-b border-border bg-background">
                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
                   Kullanıcı
                 </th>
@@ -364,7 +364,7 @@ export default function DogrulamaPage() {
                 return (
                   <tr
                     key={entry.id}
-                    className="border-b border-[#e0e0e0] hover:bg-[#f0f2f5]"
+                    className="border-b border-border hover:bg-background"
                   >
                     <td className="px-6 py-4">
                       <div>
@@ -391,7 +391,7 @@ export default function DogrulamaPage() {
                     <td className="px-6 py-4">
                       <button
                         onClick={() => setSelectedEntry(entry)}
-                        className="text-[#00833e] hover:text-[#006b32] font-medium text-sm"
+                        className="text-primary hover:text-primary-hover font-medium text-sm"
                       >
                         Detay
                       </button>
@@ -404,7 +404,7 @@ export default function DogrulamaPage() {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between px-6 py-4 border-t border-[#e0e0e0]">
+        <div className="flex items-center justify-between px-6 py-4 border-t border-border">
           <span className="text-sm text-gray-600">
             {filteredEntries.length === 0 ? (
               'Sonuç bulunamadı'
@@ -418,14 +418,14 @@ export default function DogrulamaPage() {
             <button
               onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
-              className="p-2 hover:bg-[#f0f2f5] rounded-lg disabled:opacity-50 transition"
+              className="p-2 hover:bg-background rounded-lg disabled:opacity-50 transition"
             >
               <ChevronLeft size={20} />
             </button>
             <button
               onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
               disabled={currentPage === totalPages}
-              className="p-2 hover:bg-[#f0f2f5] rounded-lg disabled:opacity-50 transition"
+              className="p-2 hover:bg-background rounded-lg disabled:opacity-50 transition"
             >
               <ChevronRight size={20} />
             </button>
@@ -436,8 +436,8 @@ export default function DogrulamaPage() {
       {/* Detail Modal */}
       {selectedEntry && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto">
-            <div className="p-6 border-b border-[#e0e0e0] flex justify-between items-start">
+          <div className="bg-surface rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto">
+            <div className="p-6 border-b border-border flex justify-between items-start">
               <h2 className="text-xl font-bold text-gray-900">Doğrulama Detayı</h2>
               <button
                 onClick={() => {
@@ -453,7 +453,7 @@ export default function DogrulamaPage() {
             <div className="p-6 space-y-4">
               <div>
                 <p className="text-sm text-gray-500 font-semibold">Belge Önizlemesi</p>
-                <div className="mt-2 p-4 border-2 border-dashed border-[#e0e0e0] rounded-lg bg-[#f0f2f5] text-center text-gray-600">
+                <div className="mt-2 p-4 border-2 border-dashed border-border rounded-lg bg-background text-center text-gray-600">
                   {selectedEntry.documentPreview}
                 </div>
               </div>
@@ -481,7 +481,7 @@ export default function DogrulamaPage() {
               </div>
 
               {actionModal.open && actionModal.action === 'reject' && (
-                <div className="mt-4 p-4 border border-[#e0e0e0] rounded-lg bg-[#f0f2f5]">
+                <div className="mt-4 p-4 border border-border rounded-lg bg-background">
                   <label className="block text-sm font-semibold text-gray-900 mb-2">
                     Red Nedeni
                   </label>
@@ -489,21 +489,21 @@ export default function DogrulamaPage() {
                     value={rejectReason}
                     onChange={(e) => setRejectReason(e.target.value)}
                     placeholder="Red nedenini açıklayın..."
-                    className="w-full p-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                    className="w-full p-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     rows={3}
                   />
                 </div>
               )}
             </div>
 
-            <div className="p-6 border-t border-[#e0e0e0] flex gap-3">
+            <div className="p-6 border-t border-border flex gap-3">
               <button
                 onClick={() => {
                   setSelectedEntry(null);
                   setActionModal({ open: false, entry: null, action: null });
                   setRejectReason('');
                 }}
-                className="flex-1 px-4 py-2 border border-[#e0e0e0] rounded-lg text-gray-900 font-medium hover:bg-[#f0f2f5]"
+                className="flex-1 px-4 py-2 border border-border rounded-lg text-gray-900 font-medium hover:bg-background"
               >
                 {actionModal.open ? 'İptal' : 'Kapat'}
               </button>
@@ -518,7 +518,7 @@ export default function DogrulamaPage() {
                         action: 'approve',
                       })
                     }
-                    className="flex-1 px-4 py-2 bg-[#00833e] text-white rounded-lg font-medium hover:bg-[#006b32]"
+                    className="flex-1 px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-hover"
                   >
                     Onayla
                   </button>
@@ -543,7 +543,7 @@ export default function DogrulamaPage() {
                     setSelectedEntry(null);
                     setActionModal({ open: false, entry: null, action: null });
                   }}
-                  className="flex-1 px-4 py-2 bg-[#00833e] text-white rounded-lg font-medium hover:bg-[#006b32]"
+                  className="flex-1 px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-hover"
                 >
                   Onayla
                 </button>

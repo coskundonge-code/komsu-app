@@ -7,13 +7,13 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       {/* Mobile: Top bar (hidden on desktop) */}
-      <div className="lg:hidden bg-white border-b border-[#e0e0e0] py-4 sticky top-0 z-10">
+      <div className="lg:hidden bg-surface border-b border-border py-4 sticky top-0 z-10">
         <div className="px-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <Home className="w-6 h-6 text-[#00833e]" />
-            <span className="text-xl font-bold text-[#00833e]">Mahallem</span>
+            <Home className="w-6 h-6 text-primary" />
+            <span className="text-xl font-bold text-primary">Mahallem</span>
           </Link>
         </div>
       </div>
@@ -21,7 +21,7 @@ export default function AuthLayout({
       {/* Desktop split layout + Mobile centered */}
       <div className="flex min-h-[calc(100vh-60px)] lg:min-h-screen">
         {/* Left Panel - Brand Panel (hidden on mobile) */}
-        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#00833e] to-[#006b32] flex-col justify-between p-12 text-white">
+        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary to-primary-hover flex-col justify-between p-12 text-white">
           {/* Brand Section */}
           <div>
             <Link href="/" className="flex items-center gap-3 mb-12 hover:opacity-90 transition-opacity">
@@ -90,14 +90,14 @@ export default function AuthLayout({
           </div>
 
           {/* Footer (mobile and desktop) */}
-          <div className="border-t border-[#e0e0e0] bg-white py-6">
-            <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-[#8f8f8f] px-4">
-              <a href="#" className="hover:text-[#404040] transition-colors">Gizlilik</a>
-              <a href="#" className="hover:text-[#404040] transition-colors">Koşullar</a>
-              <a href="#" className="hover:text-[#404040] transition-colors">Hakkında</a>
-              <a href="#" className="hover:text-[#404040] transition-colors">Yardım</a>
+          <div className="border-t border-border bg-surface py-6">
+            <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-text-muted px-4">
+              <a href="#" className="hover:text-text-secondary transition-colors">Gizlilik</a>
+              <a href="#" className="hover:text-text-secondary transition-colors">Koşullar</a>
+              <a href="#" className="hover:text-text-secondary transition-colors">Hakkında</a>
+              <a href="#" className="hover:text-text-secondary transition-colors">Yardım</a>
             </div>
-            <p className="text-xs text-[#8f8f8f] mt-2 text-center">© 2026 Mahallem</p>
+            <p className="text-xs text-text-muted mt-2 text-center">© 2026 Mahallem</p>
           </div>
         </div>
       </div>

@@ -4,9 +4,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function DiscoverLoading() {
   return (
-    <div className="flex min-h-screen flex-col bg-[#f0f2f5]">
+    <div className="flex min-h-screen flex-col bg-background">
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-white border-b border-[#e0e0e0] p-4">
+      <div className="sticky top-0 z-30 bg-surface border-b border-border p-4">
         <div className="max-w-7xl mx-auto">
           {/* Title and search */}
           <div className="mb-4">
@@ -30,7 +30,7 @@ export default function DiscoverLoading() {
           <Skeleton className="w-40 h-6 rounded mb-4" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Large featured item */}
-            <div className="md:row-span-2 bg-white rounded-lg shadow-md border border-[#e0e0e0] overflow-hidden">
+            <div className="md:row-span-2 bg-surface rounded-lg shadow-md border border-border overflow-hidden">
               <Skeleton className="w-full h-80 rounded-none" />
               <div className="p-4 space-y-2">
                 <Skeleton className="w-full h-4 rounded" />
@@ -40,7 +40,7 @@ export default function DiscoverLoading() {
 
             {/* Small featured items */}
             {[1, 2].map((i) => (
-              <div key={i} className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
+              <div key={i} className="bg-surface rounded-lg shadow-sm border border-border overflow-hidden">
                 <Skeleton className="w-full h-32 rounded-none" />
                 <div className="p-3 space-y-1">
                   <Skeleton className="w-full h-3 rounded" />
@@ -56,7 +56,7 @@ export default function DiscoverLoading() {
           <Skeleton className="w-40 h-6 rounded mb-4" />
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <div key={i} className="bg-white rounded-lg border border-[#e0e0e0] p-4 text-center hover:shadow-md transition-shadow">
+              <div key={i} className="bg-surface rounded-lg border border-border p-4 text-center hover:shadow-md transition-shadow">
                 <Skeleton className="w-16 h-16 rounded-full mx-auto mb-3" />
                 <Skeleton className="w-full h-4 rounded" />
                 <Skeleton className="w-20 h-3 rounded mx-auto mt-2" />
@@ -70,7 +70,7 @@ export default function DiscoverLoading() {
           <Skeleton className="w-40 h-6 rounded mb-4" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-md transition-shadow">
+              <div key={i} className="bg-surface rounded-lg shadow-sm border border-border overflow-hidden hover:shadow-md transition-shadow">
                 {/* Post image with trending badge */}
                 <div className="relative">
                   <Skeleton className="w-full h-40 rounded-none" />
@@ -95,7 +95,7 @@ export default function DiscoverLoading() {
                   </div>
 
                   {/* Engagement metrics */}
-                  <div className="flex gap-3 pt-3 border-t border-[#e0e0e0]">
+                  <div className="flex gap-3 pt-3 border-t border-border">
                     <Skeleton className="w-16 h-3 rounded" />
                     <Skeleton className="w-16 h-3 rounded" />
                     <Skeleton className="w-16 h-3 rounded" />
@@ -111,7 +111,7 @@ export default function DiscoverLoading() {
           <Skeleton className="w-48 h-6 rounded mb-4" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="bg-white rounded-lg border border-[#e0e0e0] p-4 text-center">
+              <div key={i} className="bg-surface rounded-lg border border-border p-4 text-center">
                 <Skeleton className="w-16 h-16 rounded-full mx-auto mb-3" />
                 <Skeleton className="w-full h-4 rounded mb-1" />
                 <Skeleton className="w-24 h-3 rounded mx-auto mb-3" />

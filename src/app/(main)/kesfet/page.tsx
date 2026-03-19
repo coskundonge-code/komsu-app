@@ -394,50 +394,50 @@ export default function KesfetPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       {/* Header Section */}
-      <div className="bg-white border-b border-[#e0e0e0] sticky top-0 z-10">
+      <div className="bg-surface border-b border-border sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-4">
           {/* Search Bar */}
           <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8f8f8f]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
             <input
               type="text"
               placeholder="Mahallende etkinlik ve işletmeler ara..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-[#f0f2f5] border border-[#e0e0e0] rounded-full text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e]"
+              className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-full text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </div>
 
           {/* Title */}
-          <h1 className="text-2xl font-bold text-[#333]">Çevredekileri Keşfet</h1>
+          <h1 className="text-2xl font-bold text-text-primary">Çevredekileri Keşfet</h1>
         </div>
       </div>
 
       {/* Stats Banner */}
       <div className="max-w-7xl mx-auto px-4 py-4">
-        <div className="grid grid-cols-3 gap-3 bg-white rounded-lg border border-[#e0e0e0] p-4">
+        <div className="grid grid-cols-3 gap-3 bg-surface rounded-lg border border-border p-4">
           <div className="text-center">
             <div className="flex items-center justify-center mb-2">
-              <Users size={20} className="text-[#00833e]" />
+              <Users size={20} className="text-primary" />
             </div>
-            <p className="text-2xl font-bold text-[#333]">1,247</p>
-            <p className="text-xs text-[#8f8f8f]">Aktif Komşu</p>
+            <p className="text-2xl font-bold text-text-primary">1,247</p>
+            <p className="text-xs text-text-muted">Aktif Komşu</p>
           </div>
           <div className="text-center">
             <div className="flex items-center justify-center mb-2">
-              <Newspaper size={20} className="text-[#00833e]" />
+              <Newspaper size={20} className="text-primary" />
             </div>
-            <p className="text-2xl font-bold text-[#333]">34</p>
-            <p className="text-xs text-[#8f8f8f]">Bugünkü Paylaşımlar</p>
+            <p className="text-2xl font-bold text-text-primary">34</p>
+            <p className="text-xs text-text-muted">Bugünkü Paylaşımlar</p>
           </div>
           <div className="text-center">
             <div className="flex items-center justify-center mb-2">
-              <Calendar size={20} className="text-[#00833e]" />
+              <Calendar size={20} className="text-primary" />
             </div>
-            <p className="text-2xl font-bold text-[#333]">8</p>
-            <p className="text-xs text-[#8f8f8f]">Bu Haftaki Etkinlik</p>
+            <p className="text-2xl font-bold text-text-primary">8</p>
+            <p className="text-xs text-text-muted">Bu Haftaki Etkinlik</p>
           </div>
         </div>
       </div>
@@ -445,8 +445,8 @@ export default function KesfetPage() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Fullscreen Map Placeholder Section */}
-        <div className="mb-6 rounded-lg overflow-hidden border border-[#e0e0e0] bg-white">
-          <div className="relative h-80 md:h-96 bg-gradient-to-br from-[#00833e] to-[#004d23] overflow-hidden">
+        <div className="mb-6 rounded-lg overflow-hidden border border-border bg-surface">
+          <div className="relative h-80 md:h-96 bg-gradient-to-br from-primary to-[#004d23] overflow-hidden">
             {/* Grid pattern background */}
             <svg className="absolute inset-0 w-full h-full opacity-5" viewBox="0 0 100 100" preserveAspectRatio="none">
               <defs>
@@ -492,8 +492,8 @@ export default function KesfetPage() {
           {/* Main Content - Left Side */}
           <div className="lg:col-span-2 space-y-6">
             {/* Filter Chips */}
-            <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
-              <p className="text-sm font-semibold text-[#333] mb-3">Filtrele:</p>
+            <div className="bg-surface rounded-lg border border-border p-4">
+              <p className="text-sm font-semibold text-text-primary mb-3">Filtrele:</p>
               <div className="flex gap-2 overflow-x-auto pb-2 -mx-2 px-2">
                 {filterCategories.map((chip) => (
                   <button
@@ -501,8 +501,8 @@ export default function KesfetPage() {
                     onClick={() => setActiveTab(chip.id)}
                     className={`px-4 py-1.5 font-medium whitespace-nowrap rounded-full transition-all duration-200 border text-sm ${
                       activeTab === chip.id
-                        ? "bg-[#00833e] text-white border-[#00833e]"
-                        : "bg-white text-[#333] border-[#e0e0e0] hover:border-[#00833e]"
+                        ? "bg-primary text-white border-primary"
+                        : "bg-surface text-text-primary border-border hover:border-primary"
                     }`}
                   >
                     {chip.label}
@@ -512,8 +512,8 @@ export default function KesfetPage() {
             </div>
 
             {/* Distance Filter */}
-            <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
-              <p className="text-sm font-semibold text-[#333] mb-3">Mesafe Filtresi</p>
+            <div className="bg-surface rounded-lg border border-border p-4">
+              <p className="text-sm font-semibold text-text-primary mb-3">Mesafe Filtresi</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {distanceOptions.map((option) => (
                   <button
@@ -521,8 +521,8 @@ export default function KesfetPage() {
                     onClick={() => setDistanceFilter(option.value)}
                     className={`px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 border ${
                       distanceFilter === option.value
-                        ? "bg-[#00833e] text-white border-[#00833e]"
-                        : "bg-white text-[#333] border-[#e0e0e0] hover:border-[#00833e]"
+                        ? "bg-primary text-white border-primary"
+                        : "bg-surface text-text-primary border-border hover:border-primary"
                     }`}
                   >
                     {option.label}
@@ -533,10 +533,10 @@ export default function KesfetPage() {
 
             {/* Activity Feed */}
             {filteredActivities.length === 0 ? (
-              <div className="bg-white rounded-lg border border-[#e0e0e0] p-12 text-center">
-                <Newspaper size={48} className="mx-auto text-[#8f8f8f] mb-3" />
-                <p className="text-[#333] font-medium">Etkinlik bulunamadı</p>
-                <p className="text-[#8f8f8f] text-sm mt-1">Arama kriterlerinize eşleşen etkinlik yok</p>
+              <div className="bg-surface rounded-lg border border-border p-12 text-center">
+                <Newspaper size={48} className="mx-auto text-text-muted mb-3" />
+                <p className="text-text-primary font-medium">Etkinlik bulunamadı</p>
+                <p className="text-text-muted text-sm mt-1">Arama kriterlerinize eşleşen etkinlik yok</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -544,26 +544,26 @@ export default function KesfetPage() {
                   <Link
                     key={item.id}
                     href={`/kesfet/${item.id}`}
-                    className="block bg-white border border-[#e0e0e0] rounded-lg p-4 transition-all duration-200 hover:shadow-lg hover:border-[#00833e] cursor-pointer"
+                    className="block bg-surface border border-border rounded-lg p-4 transition-all duration-200 hover:shadow-lg hover:border-primary cursor-pointer"
                   >
                     <div className="flex gap-4">
                       {/* Icon */}
-                      <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-[#f0f2f5] flex items-center justify-center text-[#00833e]">
+                      <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-background flex items-center justify-center text-primary">
                         {categoryIcons[item.categoryId] || <MapPin size={16} />}
                       </div>
 
                       {/* Content */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2 mb-1">
-                          <h3 className="font-semibold text-[#333] line-clamp-2">{item.title}</h3>
+                          <h3 className="font-semibold text-text-primary line-clamp-2">{item.title}</h3>
                           <span className={`flex-shrink-0 text-xs font-medium px-2.5 py-1 rounded-full border whitespace-nowrap ${getCategoryColor(item.categoryId)}`}>
                             {item.category}
                           </span>
                         </div>
 
-                        <p className="text-sm text-[#404040] line-clamp-1 mb-2">{item.description}</p>
+                        <p className="text-sm text-text-secondary line-clamp-1 mb-2">{item.description}</p>
 
-                        <div className="flex items-center gap-4 text-xs text-[#8f8f8f]">
+                        <div className="flex items-center gap-4 text-xs text-text-muted">
                           <div className="flex items-center gap-1">
                             <Navigation size={14} />
                             <span>{item.distance}</span>
@@ -576,7 +576,7 @@ export default function KesfetPage() {
                       </div>
 
                       {/* Arrow */}
-                      <div className="flex-shrink-0 flex items-center text-[#8f8f8f]">
+                      <div className="flex-shrink-0 flex items-center text-text-muted">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
@@ -591,40 +591,40 @@ export default function KesfetPage() {
           {/* Sidebar - Right Side */}
           <div className="space-y-6">
             {/* Activity Feed Sidebar */}
-            <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
+            <div className="bg-surface rounded-lg border border-border p-4">
               <div className="flex items-center gap-2 mb-4">
-                <Flame size={20} className="text-[#00833e]" />
-                <h2 className="font-bold text-[#333]">Son Aktiviteler</h2>
+                <Flame size={20} className="text-primary" />
+                <h2 className="font-bold text-text-primary">Son Aktiviteler</h2>
               </div>
 
               <div className="space-y-2">
                 {recentActivityFeed.map((activity) => (
-                  <div key={activity.id} className="pb-2 border-b border-[#e0e0e0] last:border-0 cursor-pointer hover:bg-[#f0f2f5] p-2 -mx-2 rounded transition-colors">
-                    <p className="text-xs text-[#333]">
+                  <div key={activity.id} className="pb-2 border-b border-border last:border-0 cursor-pointer hover:bg-surface-hover p-2 -mx-2 rounded transition-colors">
+                    <p className="text-xs text-text-primary">
                       <span className="font-semibold">{activity.user}</span>{" "}
-                      <span className="text-[#8f8f8f]">{activity.action}</span>
+                      <span className="text-text-muted">{activity.action}</span>
                     </p>
-                    <p className="text-xs text-[#8f8f8f] mt-1">{activity.time}</p>
+                    <p className="text-xs text-text-muted mt-1">{activity.time}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Trending Topics */}
-            <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
+            <div className="bg-surface rounded-lg border border-border p-4">
               <div className="flex items-center gap-2 mb-4">
-                <TrendingUp size={20} className="text-[#00833e]" />
-                <h2 className="font-bold text-[#333]">Trend Konular</h2>
+                <TrendingUp size={20} className="text-primary" />
+                <h2 className="font-bold text-text-primary">Trend Konular</h2>
               </div>
 
               <div className="space-y-2">
                 {trendingTopics.map((topic, index) => (
-                  <div key={topic.id} className="cursor-pointer hover:bg-[#f0f2f5] p-2 -mx-2 rounded transition-colors">
+                  <div key={topic.id} className="cursor-pointer hover:bg-surface-hover p-2 -mx-2 rounded transition-colors">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-[#00833e] min-w-6">{index + 1}</span>
+                      <span className="text-sm font-bold text-primary min-w-6">{index + 1}</span>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-[#333] truncate">{topic.title}</p>
-                        <p className="text-xs text-[#8f8f8f]">{topic.count} konu</p>
+                        <p className="text-sm font-medium text-text-primary truncate">{topic.title}</p>
+                        <p className="text-xs text-text-muted">{topic.count} konu</p>
                       </div>
                     </div>
                   </div>
@@ -633,20 +633,20 @@ export default function KesfetPage() {
             </div>
 
             {/* Nearby Businesses Section */}
-            <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
+            <div className="bg-surface rounded-lg border border-border p-4">
               <div className="flex items-center gap-2 mb-4">
-                <Store size={20} className="text-[#00833e]" />
-                <h2 className="font-bold text-[#333]">Yakında İşletmeler</h2>
+                <Store size={20} className="text-primary" />
+                <h2 className="font-bold text-text-primary">Yakında İşletmeler</h2>
               </div>
 
               <div className="space-y-3">
                 {nearbyBusinesses.map((business) => (
-                  <div key={business.id} className="p-3 bg-[#f0f2f5] rounded-lg hover:bg-[#e0e0e0] transition-colors cursor-pointer">
+                  <div key={business.id} className="p-3 bg-background rounded-lg hover:bg-surface-active transition-colors cursor-pointer">
                     <div className="flex justify-between items-start gap-2 mb-1">
-                      <h3 className="font-semibold text-sm text-[#333] line-clamp-1">{business.name}</h3>
-                      <span className="flex-shrink-0 text-xs font-medium text-[#8f8f8f]">{business.distance}</span>
+                      <h3 className="font-semibold text-sm text-text-primary line-clamp-1">{business.name}</h3>
+                      <span className="flex-shrink-0 text-xs font-medium text-text-muted">{business.distance}</span>
                     </div>
-                    <p className="text-xs text-[#8f8f8f] mb-2">{business.category}</p>
+                    <p className="text-xs text-text-muted mb-2">{business.category}</p>
                     <div className="flex items-center gap-2">
                       <div className="flex items-center gap-0.5">
                         {[...Array(5)].map((_, i) => (
@@ -657,8 +657,8 @@ export default function KesfetPage() {
                           />
                         ))}
                       </div>
-                      <span className="text-xs text-[#8f8f8f]">{business.rating}</span>
-                      <span className="text-xs text-[#8f8f8f]">({business.reviews})</span>
+                      <span className="text-xs text-text-muted">{business.rating}</span>
+                      <span className="text-xs text-text-muted">({business.reviews})</span>
                     </div>
                   </div>
                 ))}
@@ -666,17 +666,17 @@ export default function KesfetPage() {
             </div>
 
             {/* Safety Alerts Section */}
-            <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
+            <div className="bg-surface rounded-lg border border-border p-4">
               <div className="flex items-center gap-2 mb-4">
-                <AlertCircle size={20} className="text-[#00833e]" />
-                <h2 className="font-bold text-[#333]">Mahallenin Durumu</h2>
+                <AlertCircle size={20} className="text-primary" />
+                <h2 className="font-bold text-text-primary">Mahallenin Durumu</h2>
               </div>
 
-              <div className="space-y-2 mb-4 p-3 bg-[#f0f2f5] rounded-lg">
-                <p className="text-xs font-semibold text-[#333]">Güvenlik Durumu</p>
+              <div className="space-y-2 mb-4 p-3 bg-background rounded-lg">
+                <p className="text-xs font-semibold text-text-primary">Güvenlik Durumu</p>
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-[#00833e] rounded-full" />
-                  <span className="text-sm text-[#333] font-medium">Güvenli</span>
+                  <div className="w-2 h-2 bg-primary rounded-full" />
+                  <span className="text-sm text-text-primary font-medium">Güvenli</span>
                 </div>
               </div>
 
@@ -699,9 +699,9 @@ export default function KesfetPage() {
                         {alert.type === "outage" && <Zap size={14} className="text-red-600" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-[#333]">{alert.title}</p>
-                        <p className="text-xs text-[#404040] mt-1">{alert.description}</p>
-                        <p className="text-xs text-[#8f8f8f] mt-1">{alert.time}</p>
+                        <p className="text-xs font-semibold text-text-primary">{alert.title}</p>
+                        <p className="text-xs text-text-secondary mt-1">{alert.description}</p>
+                        <p className="text-xs text-text-muted mt-1">{alert.time}</p>
                       </div>
                     </div>
                   </div>

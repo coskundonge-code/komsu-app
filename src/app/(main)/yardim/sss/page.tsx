@@ -135,9 +135,9 @@ export default function FAQPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#00833e] to-[#006b32] text-white py-12 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-primary to-primary-hover text-white py-12 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -mr-20 -mt-20"></div>
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full -ml-16 -mb-16"></div>
 
@@ -153,7 +153,7 @@ export default function FAQPage() {
               placeholder="SSS'de arayın..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-white text-[#333] rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 shadow-sm"
+              className="w-full pl-12 pr-4 py-3 bg-surface text-text-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 shadow-sm"
             />
           </div>
         </div>
@@ -161,25 +161,25 @@ export default function FAQPage() {
 
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-[#8f8f8f] mb-6">
-          <Link href="/yardim" className="hover:text-[#00833e] transition-colors">
+        <div className="flex items-center gap-2 text-sm text-text-muted mb-6">
+          <Link href="/yardim" className="hover:text-primary transition-colors">
             Yardım Merkezi
           </Link>
           <span>/</span>
-          <span className="text-[#00833e] font-medium">Sıkça Sorulan Sorular</span>
+          <span className="text-primary font-medium">Sıkça Sorulan Sorular</span>
         </div>
 
         {/* Category Filter */}
         <div className="mb-8">
-          <h3 className="text-sm font-bold text-[#333] mb-3">Kategorilere göre filtrele:</h3>
+          <h3 className="text-sm font-bold text-text-primary mb-3">Kategorilere göre filtrele:</h3>
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setSelectedCategory(null)}
               className={cn(
                 'px-4 py-2 rounded-full text-sm font-medium transition-all',
                 selectedCategory === null
-                  ? 'bg-[#00833e] text-white'
-                  : 'bg-white border border-[#e0e0e0] text-[#333] hover:border-[#00833e]'
+                  ? 'bg-primary text-white'
+                  : 'bg-surface border border-border text-text-primary hover:border-primary'
               )}
             >
               Tümü ({faqData.length})
@@ -191,8 +191,8 @@ export default function FAQPage() {
                 className={cn(
                   'px-4 py-2 rounded-full text-sm font-medium transition-all',
                   selectedCategory === cat
-                    ? 'bg-[#00833e] text-white'
-                    : 'bg-white border border-[#e0e0e0] text-[#333] hover:border-[#00833e]'
+                    ? 'bg-primary text-white'
+                    : 'bg-surface border border-border text-text-primary hover:border-primary'
                 )}
               >
                 {cat} ({faqData.filter(f => f.category === cat).length})
@@ -203,8 +203,8 @@ export default function FAQPage() {
 
         {/* Results Count */}
         {searchQuery && (
-          <p className="text-sm text-[#8f8f8f] mb-4">
-            <span className="font-semibold text-[#00833e]">{filteredFAQs.length}</span> sonuç bulundu
+          <p className="text-sm text-text-muted mb-4">
+            <span className="font-semibold text-primary">{filteredFAQs.length}</span> sonuç bulundu
           </p>
         )}
 
@@ -218,38 +218,38 @@ export default function FAQPage() {
               return (
                 <div
                   key={globalIdx}
-                  className="bg-white border border-[#e0e0e0] rounded-lg overflow-hidden hover:border-[#00833e] transition-all"
+                  className="bg-surface border border-border rounded-lg overflow-hidden hover:border-primary transition-all"
                 >
                   <button
                     onClick={() => toggleExpanded(globalIdx)}
-                    className="w-full flex items-center justify-between px-5 py-4 cursor-pointer select-none hover:bg-[#f0f2f5] transition-colors"
+                    className="w-full flex items-center justify-between px-5 py-4 cursor-pointer select-none hover:bg-background transition-colors"
                   >
                     <div className="flex-1 text-left">
-                      <p className="text-xs text-[#00833e] font-semibold mb-1">{faq.category}</p>
-                      <h3 className="font-bold text-[#333] text-sm">{faq.q}</h3>
+                      <p className="text-xs text-primary font-semibold mb-1">{faq.category}</p>
+                      <h3 className="font-bold text-text-primary text-sm">{faq.q}</h3>
                     </div>
                     <ChevronDown
                       className={cn(
-                        'w-5 h-5 text-[#8f8f8f] flex-shrink-0 ml-3 transition-transform',
+                        'w-5 h-5 text-text-muted flex-shrink-0 ml-3 transition-transform',
                         isExpanded && 'rotate-180'
                       )}
                     />
                   </button>
 
                   {isExpanded && (
-                    <div className="px-5 pb-4 border-t border-[#e0e0e0] bg-[#f0f2f5]">
-                      <p className="text-sm text-[#404040] mb-4">{faq.a}</p>
+                    <div className="px-5 pb-4 border-t border-border bg-background">
+                      <p className="text-sm text-text-secondary mb-4">{faq.a}</p>
 
                       {/* Feedback */}
-                      <div className="flex items-center gap-3 pt-3 border-t border-[#e0e0e0]">
-                        <span className="text-xs text-[#8f8f8f]">Bu yanıt faydalı oldu mu?</span>
+                      <div className="flex items-center gap-3 pt-3 border-t border-border">
+                        <span className="text-xs text-text-muted">Bu yanıt faydalı oldu mu?</span>
                         <button
                           onClick={() => handleFeedback(globalIdx, true)}
                           className={cn(
                             'flex items-center gap-1 px-3 py-1 rounded text-xs font-medium transition-colors',
                             feedbacks[globalIdx] === true
-                              ? 'bg-green-100 text-[#00833e]'
-                              : 'bg-gray-100 text-[#8f8f8f] hover:bg-gray-200'
+                              ? 'bg-green-100 text-primary'
+                              : 'bg-gray-100 text-text-muted hover:bg-gray-200'
                           )}
                         >
                           <ThumbsUp className="w-4 h-4" />
@@ -261,7 +261,7 @@ export default function FAQPage() {
                             'flex items-center gap-1 px-3 py-1 rounded text-xs font-medium transition-colors',
                             feedbacks[globalIdx] === false
                               ? 'bg-red-100 text-red-600'
-                              : 'bg-gray-100 text-[#8f8f8f] hover:bg-gray-200'
+                              : 'bg-gray-100 text-text-muted hover:bg-gray-200'
                           )}
                         >
                           <ThumbsDown className="w-4 h-4" />
@@ -274,10 +274,10 @@ export default function FAQPage() {
               );
             })
           ) : (
-            <div className="text-center py-12 bg-white rounded-lg border border-[#e0e0e0]">
-              <AlertCircle className="w-12 h-12 text-[#8f8f8f] mx-auto mb-3" />
-              <h3 className="text-lg font-bold text-[#333] mb-2">Sonuç bulunamadı</h3>
-              <p className="text-[#8f8f8f] mb-6">
+            <div className="text-center py-12 bg-surface rounded-lg border border-border">
+              <AlertCircle className="w-12 h-12 text-text-muted mx-auto mb-3" />
+              <h3 className="text-lg font-bold text-text-primary mb-2">Sonuç bulunamadı</h3>
+              <p className="text-text-muted mb-6">
                 {searchQuery
                   ? `"${searchQuery}" için bir sonuç bulamadık.`
                   : 'Bu kategoride soru bulunamadı.'}
@@ -285,7 +285,7 @@ export default function FAQPage() {
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="px-4 py-2 bg-[#00833e] text-white rounded-lg font-medium hover:bg-[#006b32] transition-colors"
+                  className="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-hover transition-colors"
                 >
                   Aramayı Temizle
                 </button>
@@ -295,14 +295,14 @@ export default function FAQPage() {
         </div>
 
         {/* Help Section */}
-        <div className="mt-12 p-6 bg-gradient-to-br from-[#00833e]/10 to-[#006b32]/10 border border-[#00833e]/20 rounded-lg text-center">
-          <Lightbulb className="w-10 h-10 text-[#00833e] mx-auto mb-3" />
-          <h3 className="text-lg font-bold text-[#333] mb-2">Sorunuzu bulamadınız mı?</h3>
-          <p className="text-sm text-[#8f8f8f] mb-4">Diğer yardım kategorilerimizi keşfedin veya destek ekibimize ulaşın.</p>
+        <div className="mt-12 p-6 bg-gradient-to-br from-primary/10 to-primary-hover/10 border border-primary/20 rounded-lg text-center">
+          <Lightbulb className="w-10 h-10 text-primary mx-auto mb-3" />
+          <h3 className="text-lg font-bold text-text-primary mb-2">Sorunuzu bulamadınız mı?</h3>
+          <p className="text-sm text-text-muted mb-4">Diğer yardım kategorilerimizi keşfedin veya destek ekibimize ulaşın.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/yardim"
-              className="px-6 py-2 bg-white border border-[#00833e] text-[#00833e] font-medium rounded-lg hover:bg-[#f0f2f5] transition-colors"
+              className="px-6 py-2 bg-surface border border-primary text-primary font-medium rounded-lg hover:bg-background transition-colors"
             >
               Yardım Merkezi'ne Dön
             </Link>

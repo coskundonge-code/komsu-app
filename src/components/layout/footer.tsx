@@ -11,8 +11,8 @@ export function Footer({ className, ...props }: FooterProps) {
     {
       title: "Mahallem",
       links: [
-        { label: "Hakkında", href: "/hakkinda" },
-        { label: "Nasıl Çalışır", href: "/nasil-calisir" },
+        { label: "Hakkinda", href: "/hakkinda" },
+        { label: "Nasil Calisir", href: "/nasil-calisir" },
         { label: "Blog", href: "/blog" },
         { label: "Kariyer", href: "/kariyer" },
       ],
@@ -20,63 +20,51 @@ export function Footer({ className, ...props }: FooterProps) {
     {
       title: "Destek",
       links: [
-        { label: "Yardım Merkezi", href: "/yardim" },
-        { label: "Güvenlik", href: "/guvenlik" },
-        { label: "Topluluk Kuralları", href: "/topluluk-kurallari" },
-        { label: "İletişim", href: "/iletisim" },
+        { label: "Yardim Merkezi", href: "/yardim" },
+        { label: "Guvenlik", href: "/guvenlik" },
+        { label: "Topluluk Kurallari", href: "/topluluk-kurallari" },
+        { label: "Iletisim", href: "/iletisim" },
       ],
     },
     {
       title: "Yasal",
       links: [
-        { label: "Kullanım Koşulları", href: "/kosullar" },
-        { label: "Gizlilik Politikası", href: "/gizlilik" },
-        { label: "Çerez Politikası", href: "/cerez-politikasi" },
+        { label: "Kullanim Kosullari", href: "/kosullar" },
+        { label: "Gizlilik Politikasi", href: "/gizlilik" },
+        { label: "Cerez Politikasi", href: "/cerez-politikasi" },
         { label: "KVKK", href: "/kvkk" },
       ],
     },
     {
-      title: "İndir",
+      title: "Indir",
       links: [
-        { label: "App Store", href: "https://apps.apple.com/mahallem" },
-        { label: "Google Play", href: "https://play.google.com/store/apps/mahallem" },
+        { label: "App Store", href: "#" },
+        { label: "Google Play", href: "#" },
       ],
     },
   ];
 
   const socialLinks = [
-    { icon: Twitter, href: "https://twitter.com/mahallem", label: "Twitter" },
-    {
-      icon: Instagram,
-      href: "https://instagram.com/mahallem",
-      label: "Instagram",
-    },
-    {
-      icon: Facebook,
-      href: "https://facebook.com/mahallem",
-      label: "Facebook",
-    },
+    { icon: Twitter, href: "#", label: "Twitter" },
+    { icon: Instagram, href: "#", label: "Instagram" },
+    { icon: Facebook, href: "#", label: "Facebook" },
   ];
 
   return (
-    <footer
-      className={cn("border-t border-[#e0e0e0] bg-[#f0f2f5]", className)}
-      {...props}
-    >
-      <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        {/* Links Grid */}
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4 mb-12">
+    <footer className={cn("border-t border-border bg-background", className)} {...props}>
+      <div className="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-4 mb-8">
           {footerSections.map((section) => (
             <div key={section.title}>
-              <h3 className="text-sm font-semibold text-[#333] mb-4">
+              <h3 className="text-sm font-semibold text-text-primary mb-3">
                 {section.title}
               </h3>
-              <ul className="flex flex-col gap-3">
+              <ul className="flex flex-col gap-2">
                 {section.links.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-[#404040] hover:text-[#00833e] transition-colors duration-200"
+                      className="text-sm text-text-muted hover:text-primary transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -87,17 +75,12 @@ export function Footer({ className, ...props }: FooterProps) {
           ))}
         </div>
 
-        {/* Divider */}
-        <div className="border-t border-[#e0e0e0] pt-8">
-          {/* Bottom Bar */}
+        <div className="border-t border-border pt-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            {/* Copyright */}
-            <p className="text-xs text-[#8f8f8f]">
-              © {currentYear} Mahallem. Tüm hakları saklıdır.
+            <p className="text-xs text-text-muted">
+              © {currentYear} Mahallem. Tum haklari saklidir.
             </p>
-
-            {/* Social Links */}
-            <div className="flex gap-4">
+            <div className="flex gap-3">
               {socialLinks.map((social) => {
                 const IconComponent = social.icon;
                 return (
@@ -107,9 +90,9 @@ export function Footer({ className, ...props }: FooterProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="text-[#404040] hover:text-[#00833e] transition-colors duration-200"
+                    className="p-2 text-text-muted hover:text-primary hover:bg-surface-hover rounded-full transition-colors"
                   >
-                    <IconComponent size={18} />
+                    <IconComponent size={16} />
                   </a>
                 );
               })}

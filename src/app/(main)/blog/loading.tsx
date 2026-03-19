@@ -4,9 +4,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function BlogLoading() {
   return (
-    <div className="flex min-h-screen flex-col bg-[#f0f2f5]">
+    <div className="flex min-h-screen flex-col bg-background">
       {/* Header with search and filters */}
-      <div className="sticky top-0 z-30 bg-white border-b border-[#e0e0e0] p-4">
+      <div className="sticky top-0 z-30 bg-surface border-b border-border p-4">
         <div className="max-w-7xl mx-auto">
           {/* Title */}
           <Skeleton className="w-48 h-8 rounded mb-4" />
@@ -32,7 +32,7 @@ export default function BlogLoading() {
           {/* Featured article - full width on left */}
           <div className="lg:col-span-2 space-y-4">
             {/* Featured post */}
-            <div className="bg-white rounded-lg shadow-md border border-[#e0e0e0] overflow-hidden">
+            <div className="bg-surface rounded-lg shadow-md border border-border overflow-hidden">
               {/* Featured image */}
               <Skeleton className="w-full h-64 rounded-none" />
 
@@ -53,7 +53,7 @@ export default function BlogLoading() {
                 </div>
 
                 {/* Meta */}
-                <div className="flex gap-4 pt-4 border-t border-[#e0e0e0]">
+                <div className="flex gap-4 pt-4 border-t border-border">
                   <Skeleton className="w-20 h-3 rounded" />
                   <Skeleton className="w-20 h-3 rounded" />
                   <Skeleton className="w-20 h-3 rounded" />
@@ -67,7 +67,7 @@ export default function BlogLoading() {
             {/* More recent articles */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[1, 2].map((i) => (
-                <div key={i} className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-md transition-shadow">
+                <div key={i} className="bg-surface rounded-lg shadow-sm border border-border overflow-hidden hover:shadow-md transition-shadow">
                   <Skeleton className="w-full h-40 rounded-none" />
                   <div className="p-4 space-y-2">
                     <Skeleton className="w-16 h-4 rounded" />
@@ -87,11 +87,11 @@ export default function BlogLoading() {
           {/* Sidebar */}
           <aside className="lg:col-span-2 space-y-4">
             {/* Popular articles */}
-            <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
+            <div className="bg-surface rounded-lg border border-border p-4">
               <Skeleton className="w-32 h-6 rounded mb-4" />
               <div className="space-y-4">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="pb-4 border-b border-[#e0e0e0] last:border-0">
+                  <div key={i} className="pb-4 border-b border-border last:border-0">
                     <Skeleton className="w-full h-4 rounded mb-2" />
                     <Skeleton className="w-3/4 h-3 rounded mb-2" />
                     <Skeleton className="w-20 h-2 rounded" />
@@ -101,7 +101,7 @@ export default function BlogLoading() {
             </div>
 
             {/* Categories */}
-            <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
+            <div className="bg-surface rounded-lg border border-border p-4">
               <Skeleton className="w-28 h-6 rounded mb-4" />
               <div className="space-y-2">
                 {[1, 2, 3, 4, 5].map((i) => (
@@ -124,7 +124,7 @@ export default function BlogLoading() {
           <Skeleton className="w-32 h-6 rounded mb-4" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-md transition-shadow">
+              <div key={i} className="bg-surface rounded-lg shadow-sm border border-border overflow-hidden hover:shadow-md transition-shadow">
                 <Skeleton className="w-full h-40 rounded-none" />
                 <div className="p-4 space-y-2">
                   <Skeleton className="w-16 h-4 rounded" />

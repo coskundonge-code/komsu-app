@@ -42,7 +42,7 @@ export function EventForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Back Button */}
-      <Link href="/etkinlikler" className="flex items-center gap-2 text-[#00833e] hover:text-[#006b32]">
+      <Link href="/etkinlikler" className="flex items-center gap-2 text-primary hover:text-primary-hover">
         <ArrowLeft className="w-4 h-4" />
         <span>Geri Dön</span>
       </Link>
@@ -84,7 +84,7 @@ export function EventForm() {
       <div className="grid md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-[#00833e]" />
+            <Calendar className="w-4 h-4 text-primary" />
             Tarih
           </label>
           <Input
@@ -129,7 +129,7 @@ export function EventForm() {
 
       {/* Online Toggle */}
       <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-        <Globe className="w-5 h-5 text-[#00833e]" />
+        <Globe className="w-5 h-5 text-primary" />
         <label className="flex items-center gap-3 cursor-pointer flex-1">
           <input
             type="checkbox"
@@ -137,7 +137,7 @@ export function EventForm() {
             onChange={(e) =>
               setFormData({ ...formData, isOnline: e.target.checked })
             }
-            className="w-4 h-4 rounded border-gray-300 text-[#00833e]"
+            className="w-4 h-4 rounded border-gray-300 text-primary"
           />
           <span className="text-gray-700 font-medium">
             Çevrimiçi Etkinlik
@@ -149,7 +149,7 @@ export function EventForm() {
       {!formData.isOnline && (
         <div>
           <label className="block text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-[#00833e]" />
+            <MapPin className="w-4 h-4 text-primary" />
             Konum
           </label>
           <Input
@@ -167,7 +167,7 @@ export function EventForm() {
       {/* Cover Image Upload */}
       <div>
         <label className="block text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-          <ImageIcon className="w-4 h-4 text-[#00833e]" />
+          <ImageIcon className="w-4 h-4 text-primary" />
           Kapak Resmi
         </label>
         <div className="relative">
@@ -180,7 +180,7 @@ export function EventForm() {
           />
           <label
             htmlFor="cover-image"
-            className="block border-2 border-dashed border-[#34d399] rounded-lg p-8 text-center cursor-pointer hover:border-[#00833e] hover:bg-[#e6f4ec] transition-colors"
+            className="block border-2 border-dashed border-[#34d399] rounded-lg p-8 text-center cursor-pointer hover:border-primary hover:bg-primary-light transition-colors"
           >
             {preview ? (
               <div className="space-y-2">
@@ -189,7 +189,7 @@ export function EventForm() {
                   alt="Preview"
                   className="w-full h-48 object-cover rounded-lg"
                 />
-                <p className="text-sm text-[#00833e] font-medium">
+                <p className="text-sm text-primary font-medium">
                   Değiştirmek için tıklayın
                 </p>
               </div>
@@ -217,7 +217,7 @@ export function EventForm() {
         </Link>
         <button
           type="submit"
-          className="flex-1 bg-[#00833e] hover:bg-[#006b32] text-white py-2 px-4 rounded-lg font-semibold transition-colors"
+          className="flex-1 bg-primary hover:bg-primary-hover text-white py-2 px-4 rounded-lg font-semibold transition-colors"
         >
           Etkinlik Oluştur
         </button>

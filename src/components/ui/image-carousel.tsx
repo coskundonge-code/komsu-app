@@ -172,7 +172,7 @@ const ImageCarousel = React.forwardRef<HTMLDivElement, ImageCarouselProps>(
                 className={cn(
                   "h-2 rounded-full transition-all duration-300",
                   currentIndex === index
-                    ? "w-8 bg-[#00833e]"
+                    ? "w-8 bg-primary"
                     : "w-2 bg-[#e0e0e0] hover:bg-gray-400"
                 )}
                 aria-label={`Go to slide ${index + 1}`}

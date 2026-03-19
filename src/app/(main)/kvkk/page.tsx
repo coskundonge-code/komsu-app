@@ -9,19 +9,19 @@ export default function KVKKPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 py-6">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm text-[#00833e] hover:text-[#006b32] font-medium mb-6 transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary-hover font-medium mb-6 transition-colors"
         >
           <ArrowLeft size={16} />
           Ana Sayfaya Dön
         </Link>
 
-        <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden shadow-sm">
+        <div className="bg-surface rounded-lg border border-border overflow-hidden shadow-sm">
           {/* Header */}
-          <div className="bg-gradient-to-br from-[#00833e] to-[#006b32] p-8 text-white">
+          <div className="bg-gradient-to-br from-primary to-primary-hover p-8 text-white">
             <h1 className="text-3xl font-bold mb-2">KVKK Aydınlatma Metni</h1>
             <p className="text-green-100">Kişisel Verilerin Korunması Hakkında Bilgilendirme</p>
             <p className="text-green-100 text-sm mt-4">Yürürlük Tarihi: {currentDate}</p>
@@ -31,7 +31,7 @@ export default function KVKKPage() {
           <div className="p-8 md:p-12 space-y-8">
             {/* Giriş */}
             <section>
-              <p className="text-[#404040] leading-relaxed">
+              <p className="text-text-secondary leading-relaxed">
                 Mahallem ("Uygulama"), kullanıcılarının kişisel verilerinin korunmasına büyük önem
                 vermektedir. Bu aydınlatma metni, uygulamayı kullanan tüm kişileri, Kişisel
                 Verilerin Korunması Kanunu ("KVKK") uyarınca, kişisel verilerinin nasıl
@@ -41,11 +41,11 @@ export default function KVKKPage() {
 
             {/* Veri Sorumlusu */}
             <section>
-              <h2 className="text-2xl font-bold text-[#333] mb-4 flex items-center gap-2">
-                <span className="w-1 h-8 bg-[#00833e] rounded-full"></span>
+              <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
+                <span className="w-1 h-8 bg-primary rounded-full"></span>
                 Veri Sorumlusu
               </h2>
-              <div className="bg-[#f0f2f5] p-6 rounded-lg border border-[#e0e0e0] space-y-2 text-[#404040]">
+              <div className="bg-background p-6 rounded-lg border border-border space-y-2 text-text-secondary">
                 <p>
                   <strong>Şirket Adı:</strong> Trendex Lojistik ve Teknoloji A.Ş.
                 </p>
@@ -63,11 +63,11 @@ export default function KVKKPage() {
 
             {/* Kişisel Verilerin İşlenme Amacı */}
             <section>
-              <h2 className="text-2xl font-bold text-[#333] mb-4 flex items-center gap-2">
-                <span className="w-1 h-8 bg-[#00833e] rounded-full"></span>
+              <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
+                <span className="w-1 h-8 bg-primary rounded-full"></span>
                 Kişisel Verilerin İşlenme Amacı
               </h2>
-              <p className="text-[#404040] leading-relaxed mb-4">
+              <p className="text-text-secondary leading-relaxed mb-4">
                 Mahallem, kullanıcılardan toplanan kişisel verileri aşağıda belirtilen meşru
                 amaçlarla işlemektedir:
               </p>
@@ -82,11 +82,11 @@ export default function KVKKPage() {
                   'Müşteri desteği ve sorun giderme',
                   'Anonim istatistiksel analiz ve raporlama',
                 ].map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-3 p-3 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0]">
-                    <span className="flex-shrink-0 w-6 h-6 bg-[#00833e] text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  <div key={idx} className="flex items-start gap-3 p-3 bg-background rounded-lg border border-border">
+                    <span className="flex-shrink-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
                       ✓
                     </span>
-                    <span className="text-[#404040]">{item}</span>
+                    <span className="text-text-secondary">{item}</span>
                   </div>
                 ))}
               </div>
@@ -94,11 +94,11 @@ export default function KVKKPage() {
 
             {/* Toplanan Kişisel Veriler */}
             <section>
-              <h2 className="text-2xl font-bold text-[#333] mb-4 flex items-center gap-2">
-                <span className="w-1 h-8 bg-[#00833e] rounded-full"></span>
+              <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
+                <span className="w-1 h-8 bg-primary rounded-full"></span>
                 Toplanan Kişisel Veriler
               </h2>
-              <p className="text-[#404040] leading-relaxed mb-4">
+              <p className="text-text-secondary leading-relaxed mb-4">
                 Mahallem aşağıdaki kategorilerde kişisel veri toplamaktadır:
               </p>
               <div className="grid gap-4">
@@ -124,9 +124,9 @@ export default function KVKKPage() {
                     items: 'Tarayıcı türü, işletim sistemi, çerez ve benzeri teknolojiler',
                   },
                 ].map((item) => (
-                  <div key={item.category} className="border border-[#e0e0e0] rounded-lg p-4 bg-white">
-                    <h3 className="font-bold text-[#333] mb-2">{item.category}</h3>
-                    <p className="text-[#404040] text-sm">{item.items}</p>
+                  <div key={item.category} className="border border-border rounded-lg p-4 bg-surface">
+                    <h3 className="font-bold text-text-primary mb-2">{item.category}</h3>
+                    <p className="text-text-secondary text-sm">{item.items}</p>
                   </div>
                 ))}
               </div>
@@ -134,37 +134,37 @@ export default function KVKKPage() {
 
             {/* Kişisel Verilerin Aktarılması */}
             <section>
-              <h2 className="text-2xl font-bold text-[#333] mb-4 flex items-center gap-2">
-                <span className="w-1 h-8 bg-[#00833e] rounded-full"></span>
+              <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
+                <span className="w-1 h-8 bg-primary rounded-full"></span>
                 Kişisel Verilerin Aktarılması
               </h2>
-              <p className="text-[#404040] leading-relaxed mb-4">
+              <p className="text-text-secondary leading-relaxed mb-4">
                 Kişisel verileriniz aşağıdaki durumlar haricinde üçüncü kişilere aktarılmaz:
               </p>
-              <ul className="space-y-3 text-[#404040]">
+              <ul className="space-y-3 text-text-secondary">
                 <li className="flex items-start gap-3">
-                  <span className="text-[#00833e] font-bold mt-1">•</span>
+                  <span className="text-primary font-bold mt-1">•</span>
                   <span>Yasal zorunluluklar ve mahkeme kararları</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-[#00833e] font-bold mt-1">•</span>
+                  <span className="text-primary font-bold mt-1">•</span>
                   <span>Ödeme işlemi için ödeme sağlayıcıları</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-[#00833e] font-bold mt-1">•</span>
+                  <span className="text-primary font-bold mt-1">•</span>
                   <span>Teknik altyapı ve barındırma hizmet sağlayıcıları</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-[#00833e] font-bold mt-1">•</span>
+                  <span className="text-primary font-bold mt-1">•</span>
                   <span>Bilgisayar güvenliği ve dolandırıcılık önleme hizmetleri</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-[#00833e] font-bold mt-1">•</span>
+                  <span className="text-primary font-bold mt-1">•</span>
                   <span>Analitik ve raporlama hizmetleri (anonim veri olarak)</span>
                 </li>
               </ul>
               <div className="mt-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                <p className="text-sm text-[#404040]">
+                <p className="text-sm text-text-secondary">
                   <strong>Not:</strong> Tüm veri işleme anlaşmaları KVKK uyarınca yürütülmektedir ve
                   veri sorumlusu olarak sorumlulukları devam etmektedir.
                 </p>
@@ -173,11 +173,11 @@ export default function KVKKPage() {
 
             {/* Veri Saklama Süresi */}
             <section>
-              <h2 className="text-2xl font-bold text-[#333] mb-4 flex items-center gap-2">
-                <span className="w-1 h-8 bg-[#00833e] rounded-full"></span>
+              <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
+                <span className="w-1 h-8 bg-primary rounded-full"></span>
                 Veri Saklama Süresi
               </h2>
-              <div className="bg-[#f0f2f5] p-6 rounded-lg border border-[#e0e0e0] text-[#404040] leading-relaxed">
+              <div className="bg-background p-6 rounded-lg border border-border text-text-secondary leading-relaxed">
                 <p className="mb-3">
                   Kişisel veriler, toplandığı amacın gerçekleştirilmesi için gerekli olan süre kadar
                   saklanmaktadır. Hesap silme işleminden sonra veriler, yasal yükümlülükler dışında
@@ -192,11 +192,11 @@ export default function KVKKPage() {
 
             {/* Haklarınız */}
             <section>
-              <h2 className="text-2xl font-bold text-[#333] mb-4 flex items-center gap-2">
-                <span className="w-1 h-8 bg-[#00833e] rounded-full"></span>
+              <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
+                <span className="w-1 h-8 bg-primary rounded-full"></span>
                 Haklarınız (KVKK Madde 12)
               </h2>
-              <p className="text-[#404040] leading-relaxed mb-4">
+              <p className="text-text-secondary leading-relaxed mb-4">
                 KVKK uyarınca, aşağıdaki haklara sahipsiniz:
               </p>
               <div className="space-y-3">
@@ -236,10 +236,10 @@ export default function KVKKPage() {
                 ].map((right, idx) => (
                   <div
                     key={idx}
-                    className="border border-[#e0e0e0] rounded-lg p-4 bg-white hover:border-[#00833e] transition-colors"
+                    className="border border-border rounded-lg p-4 bg-surface hover:border-primary transition-colors"
                   >
-                    <h3 className="font-bold text-[#333] text-sm">{right.title}</h3>
-                    <p className="text-[#404040] text-sm mt-2">{right.desc}</p>
+                    <h3 className="font-bold text-text-primary text-sm">{right.title}</h3>
+                    <p className="text-text-secondary text-sm mt-2">{right.desc}</p>
                   </div>
                 ))}
               </div>
@@ -247,33 +247,33 @@ export default function KVKKPage() {
 
             {/* Güvenlik Önlemleri */}
             <section>
-              <h2 className="text-2xl font-bold text-[#333] mb-4 flex items-center gap-2">
-                <span className="w-1 h-8 bg-[#00833e] rounded-full"></span>
+              <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
+                <span className="w-1 h-8 bg-primary rounded-full"></span>
                 Güvenlik Önlemleri
               </h2>
-              <div className="bg-[#f0f2f5] p-6 rounded-lg border border-[#e0e0e0] text-[#404040] leading-relaxed space-y-3">
+              <div className="bg-background p-6 rounded-lg border border-border text-text-secondary leading-relaxed space-y-3">
                 <p>
                   Mahallem, kişisel verilerinizin korunması için aşağıdaki önlemleri almaktadır:
                 </p>
                 <ul className="space-y-2 ml-4">
                   <li className="flex items-start gap-2">
-                    <span className="text-[#00833e] font-bold">▪</span>
+                    <span className="text-primary font-bold">▪</span>
                     <span>SSL/TLS şifreleme teknolojisi</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#00833e] font-bold">▪</span>
+                    <span className="text-primary font-bold">▪</span>
                     <span>Güvenli sunucu altyapısı ve düzenli yedekleme</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#00833e] font-bold">▪</span>
+                    <span className="text-primary font-bold">▪</span>
                     <span>Erişim kontrolleri ve kimlik doğrulama mekanizmaları</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#00833e] font-bold">▪</span>
+                    <span className="text-primary font-bold">▪</span>
                     <span>Düzenli güvenlik denetimleri ve güncellemeler</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#00833e] font-bold">▪</span>
+                    <span className="text-primary font-bold">▪</span>
                     <span>Personel eğitimi ve gizlilik politikaları</span>
                   </li>
                 </ul>
@@ -282,17 +282,17 @@ export default function KVKKPage() {
 
             {/* İletişim */}
             <section>
-              <h2 className="text-2xl font-bold text-[#333] mb-4 flex items-center gap-2">
-                <span className="w-1 h-8 bg-[#00833e] rounded-full"></span>
+              <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
+                <span className="w-1 h-8 bg-primary rounded-full"></span>
                 İletişim
               </h2>
-              <p className="text-[#404040] leading-relaxed mb-4">
+              <p className="text-text-secondary leading-relaxed mb-4">
                 KVKK kapsamında haklarınızı kullanmak için aşağıdaki yollarla bize ulaşabilirsiniz:
               </p>
-              <div className="bg-white border border-[#e0e0e0] rounded-lg p-6 space-y-3 text-[#404040]">
+              <div className="bg-surface border border-border rounded-lg p-6 space-y-3 text-text-secondary">
                 <p>
                   <strong>Email:</strong>{' '}
-                  <a href="mailto:kvkk@mahallem.com" className="text-[#00833e] hover:text-[#006b32] underline">
+                  <a href="mailto:kvkk@mahallem.com" className="text-primary hover:text-primary-hover underline">
                     kvkk@mahallem.com
                   </a>
                 </p>
@@ -309,11 +309,11 @@ export default function KVKKPage() {
 
             {/* Şikayetler */}
             <section>
-              <h2 className="text-2xl font-bold text-[#333] mb-4 flex items-center gap-2">
-                <span className="w-1 h-8 bg-[#00833e] rounded-full"></span>
+              <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
+                <span className="w-1 h-8 bg-primary rounded-full"></span>
                 Şikayetler
               </h2>
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-[#404040]">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-text-secondary">
                 <p className="leading-relaxed mb-3">
                   Kişisel verilerinizin işlenmesiyle ilgili şikayetleriniz için, haklarınızın ihlal
                   edildiğini düşünüyorsanız Kişisel Verileri Koruma Kurulu'na başvuru yapabilirsiniz.
@@ -324,7 +324,7 @@ export default function KVKKPage() {
                     href="https://www.kvkk.gov.tr"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#00833e] hover:text-[#006b32] underline"
+                    className="text-primary hover:text-primary-hover underline"
                   >
                     www.kvkk.gov.tr
                   </a>
@@ -333,8 +333,8 @@ export default function KVKKPage() {
             </section>
 
             {/* Son Not */}
-            <section className="border-t border-[#e0e0e0] pt-8">
-              <p className="text-[#8f8f8f] text-sm leading-relaxed">
+            <section className="border-t border-border pt-8">
+              <p className="text-text-muted text-sm leading-relaxed">
                 Bu KVKK Aydınlatma Metni, Trendex Lojistik tarafından hazırlanmış ve gerektiğinde
                 güncellenebilir. Değişiklikler, bu sayfada yayınlandığı tarihten itibaren
                 geçerlidir. Sizin tarafınızdan uygulamaya erişim devam ettirilmesi, güncellenmiş
@@ -344,28 +344,28 @@ export default function KVKKPage() {
           </div>
 
           {/* Footer */}
-          <div className="border-t border-[#e0e0e0] bg-[#f0f2f5] py-6 px-8 text-center">
-            <p className="text-sm text-[#8f8f8f] mb-4">
+          <div className="border-t border-border bg-background py-6 px-8 text-center">
+            <p className="text-sm text-text-muted mb-4">
               © 2026 Mahallem — Trendex Lojistik tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link
                 href="/gizlilik"
-                className="text-sm text-[#00833e] hover:text-[#006b32] font-medium transition-colors"
+                className="text-sm text-primary hover:text-primary-hover font-medium transition-colors"
               >
                 Gizlilik Politikası
               </Link>
               <span className="text-[#e0e0e0]">•</span>
               <Link
                 href="/topluluk-kurallari"
-                className="text-sm text-[#00833e] hover:text-[#006b32] font-medium transition-colors"
+                className="text-sm text-primary hover:text-primary-hover font-medium transition-colors"
               >
                 Topluluk Kuralları
               </Link>
               <span className="text-[#e0e0e0]">•</span>
               <Link
                 href="/kosullar"
-                className="text-sm text-[#00833e] hover:text-[#006b32] font-medium transition-colors"
+                className="text-sm text-primary hover:text-primary-hover font-medium transition-colors"
               >
                 Kullanım Koşulları
               </Link>

@@ -302,23 +302,23 @@ export default function ModerationPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-lg bg-[#00833e] flex items-center justify-center">
+          <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center">
             <Shield size={24} className="text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-[#333]">İçerik Moderasyonu</h1>
-            <p className="text-sm text-[#8f8f8f]">AI destekli içerik denetim sistemi</p>
+            <h1 className="text-2xl font-bold text-text-primary">İçerik Moderasyonu</h1>
+            <p className="text-sm text-text-muted">AI destekli içerik denetim sistemi</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={handleBulkApprove}
-            className="flex items-center gap-2 px-4 py-2 bg-[#00833e] text-white rounded-lg hover:bg-[#006b32] transition-colors text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors text-sm font-medium"
           >
             <Zap size={16} />
             Düşük Risklileri Toplu Onayla
           </button>
-          <button className="p-2 rounded-lg border border-[#e0e0e0] hover:bg-[#f0f2f5] transition-colors">
+          <button className="p-2 rounded-lg border border-border hover:bg-surface-hover transition-colors">
             <RefreshCw size={18} className="text-[#666]" />
           </button>
         </div>
@@ -337,7 +337,7 @@ export default function ModerationPage() {
           <div key={stat.label} className={`${stat.bg} rounded-lg p-3 border border-opacity-20`}>
             <div className="flex items-center gap-2 mb-1">
               <stat.icon size={14} className={stat.color} />
-              <span className="text-xs text-[#8f8f8f]">{stat.label}</span>
+              <span className="text-xs text-text-muted">{stat.label}</span>
             </div>
             <p className={`text-xl font-bold ${stat.color}`}>{stat.value}</p>
           </div>
@@ -345,7 +345,7 @@ export default function ModerationPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-4 bg-[#f0f2f5] rounded-lg p-1">
+      <div className="flex gap-1 mb-4 bg-background rounded-lg p-1">
         {[
           { key: 'queue' as TabType, label: 'Onay Bekleyen', count: stats.pendingAdmin },
           { key: 'approved' as TabType, label: 'Onaylanan', count: stats.published },
@@ -357,14 +357,14 @@ export default function ModerationPage() {
             onClick={() => setActiveTab(tab.key)}
             className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
               activeTab === tab.key
-                ? 'bg-white text-[#00833e] shadow-sm'
-                : 'text-[#666] hover:text-[#333]'
+                ? 'bg-surface text-primary shadow-sm'
+                : 'text-[#666] hover:text-text-primary'
             }`}
           >
             {tab.label}
             {tab.count !== null && (
               <span className={`ml-1.5 px-1.5 py-0.5 rounded-full text-xs ${
-                activeTab === tab.key ? 'bg-[#00833e] text-white' : 'bg-[#e0e0e0] text-[#666]'
+                activeTab === tab.key ? 'bg-primary text-white' : 'bg-[#e0e0e0] text-[#666]'
               }`}>
                 {tab.count}
               </span>
@@ -376,18 +376,18 @@ export default function ModerationPage() {
       {/* Filters */}
       <div className="flex items-center gap-3 mb-4">
         <div className="relative flex-1">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8f8f8f]" />
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
           <input
             type="text"
             placeholder="İçerik veya yazar ara..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 border border-[#e0e0e0] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#00833e] focus:border-transparent"
+            className="w-full pl-9 pr-4 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           />
         </div>
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className="flex items-center gap-2 px-3 py-2 border border-[#e0e0e0] rounded-lg text-sm hover:bg-[#f0f2f5] transition-colors"
+          className="flex items-center gap-2 px-3 py-2 border border-border rounded-lg text-sm hover:bg-surface-hover transition-colors"
         >
           <Filter size={16} />
           Filtrele
@@ -396,13 +396,13 @@ export default function ModerationPage() {
       </div>
 
       {showFilters && (
-        <div className="flex gap-3 mb-4 p-3 bg-[#f9f9f9] rounded-lg border border-[#e0e0e0]">
+        <div className="flex gap-3 mb-4 p-3 bg-[#f9f9f9] rounded-lg border border-border">
           <div>
-            <label className="text-xs text-[#8f8f8f] mb-1 block">İçerik Tipi</label>
+            <label className="text-xs text-text-muted mb-1 block">İçerik Tipi</label>
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value as ContentType | 'all')}
-              className="px-3 py-1.5 border border-[#e0e0e0] rounded-md text-sm"
+              className="px-3 py-1.5 border border-border rounded-md text-sm"
             >
               <option value="all">Tümü</option>
               <option value="post">Paylaşım</option>
@@ -415,11 +415,11 @@ export default function ModerationPage() {
             </select>
           </div>
           <div>
-            <label className="text-xs text-[#8f8f8f] mb-1 block">Öncelik</label>
+            <label className="text-xs text-text-muted mb-1 block">Öncelik</label>
             <select
               value={filterPriority}
               onChange={(e) => setFilterPriority(e.target.value as Priority | 'all')}
-              className="px-3 py-1.5 border border-[#e0e0e0] rounded-md text-sm"
+              className="px-3 py-1.5 border border-border rounded-md text-sm"
             >
               <option value="all">Tümü</option>
               <option value="critical">Kritik</option>
@@ -433,13 +433,13 @@ export default function ModerationPage() {
 
       {/* Stats Tab */}
       {activeTab === 'stats' && (
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-          <h2 className="text-lg font-semibold text-[#333] mb-4">Moderasyon İstatistikleri</h2>
+        <div className="bg-surface rounded-lg border border-border p-6">
+          <h2 className="text-lg font-semibold text-text-primary mb-4">Moderasyon İstatistikleri</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* AI Performans */}
-            <div className="p-4 bg-[#f0f2f5] rounded-lg">
-              <h3 className="font-medium text-[#333] mb-3 flex items-center gap-2">
-                <Bot size={18} className="text-[#00833e]" />
+            <div className="p-4 bg-background rounded-lg">
+              <h3 className="font-medium text-text-primary mb-3 flex items-center gap-2">
+                <Bot size={18} className="text-primary" />
                 AI Filtre Performansı
               </h3>
               <div className="space-y-2 text-sm">
@@ -451,9 +451,9 @@ export default function ModerationPage() {
               </div>
             </div>
             {/* İçerik Dağılımı */}
-            <div className="p-4 bg-[#f0f2f5] rounded-lg">
-              <h3 className="font-medium text-[#333] mb-3 flex items-center gap-2">
-                <BarChart3 size={18} className="text-[#00833e]" />
+            <div className="p-4 bg-background rounded-lg">
+              <h3 className="font-medium text-text-primary mb-3 flex items-center gap-2">
+                <BarChart3 size={18} className="text-primary" />
                 İçerik Tipi Dağılımı
               </h3>
               <div className="space-y-2 text-sm">
@@ -464,7 +464,7 @@ export default function ModerationPage() {
                     <div key={type} className="flex items-center gap-2">
                       <span className="text-[#666] w-28">{getContentTypeLabel(type)}</span>
                       <div className="flex-1 h-2 bg-[#e0e0e0] rounded-full overflow-hidden">
-                        <div className="h-full bg-[#00833e] rounded-full" style={{ width: `${pct}%` }} />
+                        <div className="h-full bg-primary rounded-full" style={{ width: `${pct}%` }} />
                       </div>
                       <span className="text-xs font-medium w-8 text-right">{count}</span>
                     </div>
@@ -480,10 +480,10 @@ export default function ModerationPage() {
       {activeTab !== 'stats' && (
         <div className="space-y-3">
           {filteredQueue.length === 0 && (
-            <div className="text-center py-12 bg-white rounded-lg border border-[#e0e0e0]">
-              <CheckCircle size={48} className="mx-auto text-[#00833e] mb-3" />
-              <p className="text-lg font-medium text-[#333]">Tüm içerikler işlendi!</p>
-              <p className="text-sm text-[#8f8f8f] mt-1">Şu anda bekleyen içerik yok</p>
+            <div className="text-center py-12 bg-surface rounded-lg border border-border">
+              <CheckCircle size={48} className="mx-auto text-primary mb-3" />
+              <p className="text-lg font-medium text-text-primary">Tüm içerikler işlendi!</p>
+              <p className="text-sm text-text-muted mt-1">Şu anda bekleyen içerik yok</p>
             </div>
           )}
 
@@ -495,8 +495,8 @@ export default function ModerationPage() {
             return (
               <div
                 key={item.id}
-                className={`bg-white rounded-lg border transition-all ${
-                  isExpanded ? 'border-[#00833e] shadow-md' : 'border-[#e0e0e0] hover:border-[#ccc]'
+                className={`bg-surface rounded-lg border transition-all ${
+                  isExpanded ? 'border-primary shadow-md' : 'border-border hover:border-[#ccc]'
                 }`}
               >
                 {/* Compact Row */}
@@ -512,7 +512,7 @@ export default function ModerationPage() {
                   }`} />
 
                   {/* Type Icon */}
-                  <div className="w-9 h-9 rounded-lg bg-[#f0f2f5] flex items-center justify-center flex-shrink-0">
+                  <div className="w-9 h-9 rounded-lg bg-background flex items-center justify-center flex-shrink-0">
                     <Icon size={16} className="text-[#666]" />
                   </div>
 
@@ -526,9 +526,9 @@ export default function ModerationPage() {
                   {/* Content Preview */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-[#333]">{item.authorName}</span>
-                      <span className="text-xs text-[#8f8f8f]">·</span>
-                      <span className="text-xs text-[#8f8f8f]">{getContentTypeLabel(item.contentType)}</span>
+                      <span className="text-sm font-medium text-text-primary">{item.authorName}</span>
+                      <span className="text-xs text-text-muted">·</span>
+                      <span className="text-xs text-text-muted">{getContentTypeLabel(item.contentType)}</span>
                     </div>
                     <p className="text-sm text-[#666] truncate">
                       {item.title ? `${item.title}: ` : ''}{item.content}
@@ -541,7 +541,7 @@ export default function ModerationPage() {
                       <div className={`text-lg font-bold ${getAIScoreColor(item.aiScore)}`}>
                         {item.aiScore}
                       </div>
-                      <div className="text-[10px] text-[#8f8f8f]">AI Skor</div>
+                      <div className="text-[10px] text-text-muted">AI Skor</div>
                     </div>
                   </div>
 
@@ -551,12 +551,12 @@ export default function ModerationPage() {
                   </span>
 
                   {/* Time */}
-                  <span className="text-xs text-[#8f8f8f] flex-shrink-0 w-16 text-right">
+                  <span className="text-xs text-text-muted flex-shrink-0 w-16 text-right">
                     {timeAgo(item.createdAt)}
                   </span>
 
                   {/* Expand */}
-                  {isExpanded ? <ChevronUp size={16} className="text-[#8f8f8f]" /> : <ChevronDown size={16} className="text-[#8f8f8f]" />}
+                  {isExpanded ? <ChevronUp size={16} className="text-text-muted" /> : <ChevronDown size={16} className="text-text-muted" />}
                 </div>
 
                 {/* Expanded Detail */}
@@ -565,9 +565,9 @@ export default function ModerationPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                       {/* İçerik */}
                       <div>
-                        <h4 className="text-xs font-semibold text-[#8f8f8f] uppercase mb-2">İçerik</h4>
+                        <h4 className="text-xs font-semibold text-text-muted uppercase mb-2">İçerik</h4>
                         {item.title && (
-                          <p className="text-sm font-semibold text-[#333] mb-1">{item.title}</p>
+                          <p className="text-sm font-semibold text-text-primary mb-1">{item.title}</p>
                         )}
                         <p className="text-sm text-[#666] whitespace-pre-wrap">{item.content}</p>
                         {item.imageUrls && item.imageUrls.length > 0 && (
@@ -577,7 +577,7 @@ export default function ModerationPage() {
                                 key={i}
                                 src={url}
                                 alt={`Görsel ${i + 1}`}
-                                className="w-20 h-20 rounded-lg object-cover border border-[#e0e0e0]"
+                                className="w-20 h-20 rounded-lg object-cover border border-border"
                               />
                             ))}
                           </div>
@@ -586,7 +586,7 @@ export default function ModerationPage() {
 
                       {/* AI Analizi */}
                       <div>
-                        <h4 className="text-xs font-semibold text-[#8f8f8f] uppercase mb-2 flex items-center gap-1">
+                        <h4 className="text-xs font-semibold text-text-muted uppercase mb-2 flex items-center gap-1">
                           <Bot size={12} />
                           AI Analizi
                         </h4>
@@ -639,18 +639,18 @@ export default function ModerationPage() {
                       <div className="mt-4 pt-4 border-t border-[#f0f2f5]">
                         <div className="flex items-end gap-3">
                           <div className="flex-1">
-                            <label className="text-xs text-[#8f8f8f] mb-1 block">Admin Notu (red için zorunlu)</label>
+                            <label className="text-xs text-text-muted mb-1 block">Admin Notu (red için zorunlu)</label>
                             <input
                               type="text"
                               placeholder="Red gerekçesi veya not..."
                               value={adminNote}
                               onChange={(e) => setAdminNote(e.target.value)}
-                              className="w-full px-3 py-2 border border-[#e0e0e0] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                              className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                             />
                           </div>
                           <button
                             onClick={() => handleApprove(item.id)}
-                            className="flex items-center gap-2 px-5 py-2 bg-[#00833e] text-white rounded-lg hover:bg-[#006b32] transition-colors text-sm font-medium"
+                            className="flex items-center gap-2 px-5 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors text-sm font-medium"
                           >
                             <CheckCircle size={16} />
                             Onayla
@@ -674,21 +674,21 @@ export default function ModerationPage() {
           {/* Pagination */}
           {filteredQueue.length > 0 && (
             <div className="flex items-center justify-between py-3">
-              <span className="text-sm text-[#8f8f8f]">
+              <span className="text-sm text-text-muted">
                 Toplam {filteredQueue.length} içerik
               </span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="p-2 rounded-lg border border-[#e0e0e0] hover:bg-[#f0f2f5] disabled:opacity-50"
+                  className="p-2 rounded-lg border border-border hover:bg-surface-hover disabled:opacity-50"
                 >
                   <ArrowLeft size={16} />
                 </button>
                 <span className="text-sm text-[#666]">Sayfa {currentPage}</span>
                 <button
                   onClick={() => setCurrentPage(p => p + 1)}
-                  className="p-2 rounded-lg border border-[#e0e0e0] hover:bg-[#f0f2f5]"
+                  className="p-2 rounded-lg border border-border hover:bg-surface-hover"
                 >
                   <ArrowRight size={16} />
                 </button>

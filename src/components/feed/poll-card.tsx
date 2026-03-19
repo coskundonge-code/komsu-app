@@ -45,7 +45,7 @@ export function PollCard({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+    <div className="bg-surface rounded-lg shadow-sm border border-gray-200 p-4">
       <h3 className="text-base font-semibold text-gray-900 mb-4">{question}</h3>
 
       <div className="space-y-3">
@@ -70,7 +70,7 @@ export function PollCard({
                 className={cn(
                   'absolute inset-0 transition-all',
                   isSelected || isUserVote
-                    ? 'bg-[#d1fae5]'
+                    ? 'bg-primary-light'
                     : 'bg-gray-100'
                 )}
                 style={{ width: `${percentage}%` }}
@@ -84,7 +84,7 @@ export function PollCard({
                       className={cn(
                         'w-4 h-4 rounded border-2 flex-shrink-0',
                         isSelected
-                          ? 'bg-[#00833e] border-[#00833e]'
+                          ? 'bg-primary border-primary'
                           : 'border-gray-300'
                       )}
                     />
@@ -93,7 +93,7 @@ export function PollCard({
                     <div
                       className={cn(
                         'w-4 h-4 rounded-full flex-shrink-0',
-                        isUserVote ? 'bg-[#00833e]' : 'bg-gray-300'
+                        isUserVote ? 'bg-primary' : 'bg-gray-300'
                       )}
                     />
                   )}

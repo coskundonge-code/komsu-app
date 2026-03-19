@@ -120,13 +120,13 @@ export function ShareModal({ isOpen, onClose, title, url }: ShareModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-lg max-w-md w-full">
+      <div className="bg-surface rounded-lg shadow-lg max-w-md w-full">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-[#e0e0e0]">
-          <h2 className="text-lg font-semibold text-[#333]">Paylaş</h2>
+        <div className="flex items-center justify-between p-6 border-b border-border">
+          <h2 className="text-lg font-semibold text-text-primary">Paylaş</h2>
           <button
             onClick={onClose}
-            className="text-[#8f8f8f] hover:text-[#333] transition-colors"
+            className="text-text-muted hover:text-text-primary transition-colors"
           >
             <X size={24} />
           </button>
@@ -135,7 +135,7 @@ export function ShareModal({ isOpen, onClose, title, url }: ShareModalProps) {
         {/* Content */}
         <div className="p-6">
           {/* Title */}
-          <p className="text-sm text-[#8f8f8f] mb-4">{title}</p>
+          <p className="text-sm text-text-muted mb-4">{title}</p>
 
           {/* Share Options */}
           <div className="grid grid-cols-3 gap-4 mb-6">
@@ -143,19 +143,19 @@ export function ShareModal({ isOpen, onClose, title, url }: ShareModalProps) {
               <button
                 key={option.id}
                 onClick={option.action}
-                className="flex flex-col items-center justify-center p-4 rounded-lg border border-[#e0e0e0] hover:border-[#00833e] hover:bg-[#f0f2f5] transition-all duration-200"
+                className="flex flex-col items-center justify-center p-4 rounded-lg border border-border hover:border-primary hover:bg-background transition-all duration-200"
               >
-                <div className="text-[#00833e] mb-2">
+                <div className="text-primary mb-2">
                   {option.icon instanceof Function ? <option.icon /> : option.icon}
                 </div>
-                <span className="text-xs text-[#333] text-center">{option.label}</span>
+                <span className="text-xs text-text-primary text-center">{option.label}</span>
               </button>
             ))}
           </div>
 
           {/* Link Copy Section */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[#333] mb-2">
+            <label className="block text-sm font-medium text-text-primary mb-2">
               Bağlantı
             </label>
             <div className="flex gap-2">
@@ -163,11 +163,11 @@ export function ShareModal({ isOpen, onClose, title, url }: ShareModalProps) {
                 type="text"
                 value={url}
                 readOnly
-                className="flex-1 px-4 py-2 border border-[#e0e0e0] rounded-lg text-sm text-[#8f8f8f] bg-[#f0f2f5]"
+                className="flex-1 px-4 py-2 border border-border rounded-lg text-sm text-text-muted bg-background"
               />
               <button
                 onClick={handleCopyLink}
-                className="px-4 py-2 bg-[#00833e] hover:bg-[#006b32] text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg transition-colors"
               >
                 {copied ? (
                   <Check size={20} />
@@ -177,17 +177,17 @@ export function ShareModal({ isOpen, onClose, title, url }: ShareModalProps) {
               </button>
             </div>
             {copied && (
-              <p className="text-xs text-[#00833e] mt-2">Kopyalandı!</p>
+              <p className="text-xs text-primary mt-2">Kopyalandı!</p>
             )}
           </div>
 
           {/* QR Code Placeholder */}
-          <div className="bg-[#f0f2f5] rounded-lg p-8 flex items-center justify-center">
+          <div className="bg-background rounded-lg p-8 flex items-center justify-center">
             <div className="text-center">
               <div className="w-32 h-32 bg-[#e0e0e0] rounded-lg flex items-center justify-center mx-auto mb-2">
-                <span className="text-[#8f8f8f] text-sm">QR Kodu</span>
+                <span className="text-text-muted text-sm">QR Kodu</span>
               </div>
-              <p className="text-xs text-[#8f8f8f]">Telefon ile oku</p>
+              <p className="text-xs text-text-muted">Telefon ile oku</p>
             </div>
           </div>
         </div>

@@ -377,7 +377,7 @@ export default function SearchResultsPage() {
     <Link
       key={post.id}
       href={`/posts/${post.id}`}
-      className="bg-white border border-[#e0e0e0] rounded-lg p-4 hover:shadow-md transition-shadow"
+      className="bg-surface border border-border rounded-lg p-4 hover:shadow-md transition-shadow"
     >
       <div className="flex gap-3 mb-3">
         <Image
@@ -389,13 +389,13 @@ export default function SearchResultsPage() {
           unoptimized
         />
         <div className="flex-1">
-          <p className="font-semibold text-[#333] text-sm">{post.author}</p>
-          <p className="text-xs text-[#8f8f8f]">{post.date}</p>
+          <p className="font-semibold text-text-primary text-sm">{post.author}</p>
+          <p className="text-xs text-text-muted">{post.date}</p>
         </div>
       </div>
-      <p className="text-[#404040] text-sm mb-3">{post.excerpt}</p>
-      <div className="flex items-center gap-4 text-xs text-[#8f8f8f] pt-3 border-t border-[#e0e0e0]">
-        <button className="flex items-center gap-1.5 hover:text-[#00833e] transition-colors">
+      <p className="text-text-secondary text-sm mb-3">{post.excerpt}</p>
+      <div className="flex items-center gap-4 text-xs text-text-muted pt-3 border-t border-border">
+        <button className="flex items-center gap-1.5 hover:text-primary transition-colors">
           <MessageCircle className="w-4 h-4" />
           Yorumla
         </button>
@@ -408,22 +408,22 @@ export default function SearchResultsPage() {
     <Link
       key={business.id}
       href={`/businesses/${business.id}`}
-      className="bg-white border border-[#e0e0e0] rounded-lg p-4 hover:shadow-md transition-shadow"
+      className="bg-surface border border-border rounded-lg p-4 hover:shadow-md transition-shadow"
     >
       <div className="flex items-start justify-between mb-2">
         <div>
-          <h3 className="font-semibold text-[#333]">{business.name}</h3>
-          <p className="text-xs text-[#8f8f8f]">{business.category}</p>
+          <h3 className="font-semibold text-text-primary">{business.name}</h3>
+          <p className="text-xs text-text-muted">{business.category}</p>
         </div>
         <div className="text-right">
           <div className="flex items-center gap-1 justify-end">
             <Star className="w-4 h-4 fill-[#FFA500] text-[#FFA500]" />
-            <span className="font-semibold text-sm text-[#333]">{business.rating}</span>
+            <span className="font-semibold text-sm text-text-primary">{business.rating}</span>
           </div>
-          <p className="text-xs text-[#8f8f8f]">({business.reviews} yorum)</p>
+          <p className="text-xs text-text-muted">({business.reviews} yorum)</p>
         </div>
       </div>
-      <div className="flex items-center gap-2 text-sm text-[#8f8f8f]">
+      <div className="flex items-center gap-2 text-sm text-text-muted">
         <MapPin className="w-4 h-4" />
         <span>{business.distance}</span>
       </div>
@@ -434,7 +434,7 @@ export default function SearchResultsPage() {
     <Link
       key={person.id}
       href={`/profil/${person.id}`}
-      className="bg-white border border-[#e0e0e0] rounded-lg p-4 hover:shadow-md transition-shadow flex items-center gap-3"
+      className="bg-surface border border-border rounded-lg p-4 hover:shadow-md transition-shadow flex items-center gap-3"
     >
       <Image
         src={person.avatar}
@@ -445,13 +445,13 @@ export default function SearchResultsPage() {
         unoptimized
       />
       <div className="flex-1">
-        <p className="font-semibold text-[#333]">{person.name}</p>
-        <p className="text-sm text-[#8f8f8f]">{person.neighborhood}</p>
-        <p className="text-xs text-[#8f8f8f] mt-1">
+        <p className="font-semibold text-text-primary">{person.name}</p>
+        <p className="text-sm text-text-muted">{person.neighborhood}</p>
+        <p className="text-xs text-text-muted mt-1">
           {person.mutualConnections > 0 && `${person.mutualConnections} ortak bağlantı`}
         </p>
       </div>
-      <button className="px-4 py-2 bg-[#00833e] text-white rounded-full text-sm font-medium hover:bg-[#006b32] transition-colors whitespace-nowrap">
+      <button className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:bg-primary-hover transition-colors whitespace-nowrap">
         Bağlan
       </button>
     </Link>
@@ -461,10 +461,10 @@ export default function SearchResultsPage() {
     <Link
       key={event.id}
       href={`/events/${event.id}`}
-      className="bg-white border border-[#e0e0e0] rounded-lg p-4 hover:shadow-md transition-shadow"
+      className="bg-surface border border-border rounded-lg p-4 hover:shadow-md transition-shadow"
     >
-      <h3 className="font-semibold text-[#333] mb-2">{event.title}</h3>
-      <div className="space-y-2 text-sm text-[#8f8f8f]">
+      <h3 className="font-semibold text-text-primary mb-2">{event.title}</h3>
+      <div className="space-y-2 text-sm text-text-muted">
         <div className="flex items-center gap-2">
           <Clock className="w-4 h-4" />
           <span>{event.date}</span>
@@ -485,7 +485,7 @@ export default function SearchResultsPage() {
     <Link
       key={group.id}
       href={`/groups/${group.id}`}
-      className="bg-white border border-[#e0e0e0] rounded-lg p-4 hover:shadow-md transition-shadow"
+      className="bg-surface border border-border rounded-lg p-4 hover:shadow-md transition-shadow"
     >
       <div className="flex gap-3 mb-3">
         <Image
@@ -497,13 +497,13 @@ export default function SearchResultsPage() {
           unoptimized
         />
         <div className="flex-1">
-          <h3 className="font-semibold text-[#333]">{group.name}</h3>
-          <p className="text-sm text-[#8f8f8f]">{group.description}</p>
+          <h3 className="font-semibold text-text-primary">{group.name}</h3>
+          <p className="text-sm text-text-muted">{group.description}</p>
         </div>
       </div>
       <div className="flex items-center justify-between">
-        <span className="text-xs text-[#8f8f8f]">{group.members} üye</span>
-        <button className="px-4 py-2 bg-[#00833e] text-white rounded-full text-sm font-medium hover:bg-[#006b32] transition-colors">
+        <span className="text-xs text-text-muted">{group.members} üye</span>
+        <button className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:bg-primary-hover transition-colors">
           Katıl
         </button>
       </div>
@@ -514,10 +514,10 @@ export default function SearchResultsPage() {
     <Link
       key={listing.id}
       href={`/pazar/ilan/${listing.id}`}
-      className="bg-white border border-[#e0e0e0] rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+      className="bg-surface border border-border rounded-lg overflow-hidden hover:shadow-md transition-shadow"
     >
       <div className="flex gap-3">
-        <div className="relative w-24 h-24 flex-shrink-0 bg-[#f0f2f5]">
+        <div className="relative w-24 h-24 flex-shrink-0 bg-background">
           <Image
             src={listing.image}
             alt={listing.title}
@@ -526,17 +526,17 @@ export default function SearchResultsPage() {
             unoptimized
           />
           {listing.isFree && (
-            <span className="absolute top-2 left-2 bg-[#00833e] text-white text-xs font-bold px-2 py-1 rounded">
+            <span className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded">
               ÜCRETSİZ
             </span>
           )}
         </div>
         <div className="flex-1 p-3">
-          <h3 className="font-semibold text-[#333] text-sm mb-1 line-clamp-2">{listing.title}</h3>
+          <h3 className="font-semibold text-text-primary text-sm mb-1 line-clamp-2">{listing.title}</h3>
           {!listing.isFree && (
-            <p className="text-lg font-bold text-[#333] mb-2">₺{listing.price.toLocaleString('tr-TR')}</p>
+            <p className="text-lg font-bold text-text-primary mb-2">₺{listing.price.toLocaleString('tr-TR')}</p>
           )}
-          <div className="space-y-1 text-xs text-[#8f8f8f]">
+          <div className="space-y-1 text-xs text-text-muted">
             <p>{listing.condition}</p>
             <p>{listing.neighborhood}</p>
           </div>
@@ -546,9 +546,9 @@ export default function SearchResultsPage() {
   )
 
   const renderNoResults = (tabLabel: string) => (
-    <div className="bg-white border border-[#e0e0e0] rounded-lg p-12 text-center">
+    <div className="bg-surface border border-border rounded-lg p-12 text-center">
       <SearchIcon className="w-12 h-12 text-[#e0e0e0] mx-auto mb-4" />
-      <p className="text-[#8f8f8f] font-medium">
+      <p className="text-text-muted font-medium">
         "{query}" için {tabLabel.toLowerCase()} sonuç bulunamadı
       </p>
     </div>
@@ -623,9 +623,9 @@ export default function SearchResultsPage() {
 
         if (!hasAnyResults) {
           return (
-            <div className="bg-white border border-[#e0e0e0] rounded-lg p-12 text-center">
+            <div className="bg-surface border border-border rounded-lg p-12 text-center">
               <SearchIcon className="w-12 h-12 text-[#e0e0e0] mx-auto mb-4" />
-              <p className="text-[#8f8f8f] font-medium">
+              <p className="text-text-muted font-medium">
                 "{query}" için hiçbir sonuç bulunamadı
               </p>
             </div>
@@ -637,14 +637,14 @@ export default function SearchResultsPage() {
             {filteredPosts.length > 0 && (
               <section>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold text-[#333] flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-[#00833e]" />
+                  <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-primary" />
                     Gönderiler
                   </h2>
                   {filteredPosts.length > 3 && (
                     <Link
                       href={`/ara?q=${encodeURIComponent(query)}&tab=posts`}
-                      className="text-[#00833e] text-sm font-medium hover:underline"
+                      className="text-primary text-sm font-medium hover:underline"
                     >
                       Tümünü Gör →
                     </Link>
@@ -659,14 +659,14 @@ export default function SearchResultsPage() {
             {filteredBusinesses.length > 0 && (
               <section>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold text-[#333] flex items-center gap-2">
-                    <Store className="w-5 h-5 text-[#00833e]" />
+                  <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
+                    <Store className="w-5 h-5 text-primary" />
                     İşletmeler
                   </h2>
                   {filteredBusinesses.length > 3 && (
                     <Link
                       href={`/ara?q=${encodeURIComponent(query)}&tab=businesses`}
-                      className="text-[#00833e] text-sm font-medium hover:underline"
+                      className="text-primary text-sm font-medium hover:underline"
                     >
                       Tümünü Gör →
                     </Link>
@@ -681,14 +681,14 @@ export default function SearchResultsPage() {
             {filteredPeople.length > 0 && (
               <section>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold text-[#333] flex items-center gap-2">
-                    <Users className="w-5 h-5 text-[#00833e]" />
+                  <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
+                    <Users className="w-5 h-5 text-primary" />
                     Kişiler
                   </h2>
                   {filteredPeople.length > 3 && (
                     <Link
                       href={`/ara?q=${encodeURIComponent(query)}&tab=people`}
-                      className="text-[#00833e] text-sm font-medium hover:underline"
+                      className="text-primary text-sm font-medium hover:underline"
                     >
                       Tümünü Gör →
                     </Link>
@@ -703,14 +703,14 @@ export default function SearchResultsPage() {
             {filteredEvents.length > 0 && (
               <section>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold text-[#333] flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-[#00833e]" />
+                  <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
+                    <Calendar className="w-5 h-5 text-primary" />
                     Etkinlikler
                   </h2>
                   {filteredEvents.length > 3 && (
                     <Link
                       href={`/ara?q=${encodeURIComponent(query)}&tab=events`}
-                      className="text-[#00833e] text-sm font-medium hover:underline"
+                      className="text-primary text-sm font-medium hover:underline"
                     >
                       Tümünü Gör →
                     </Link>
@@ -725,14 +725,14 @@ export default function SearchResultsPage() {
             {filteredGroups.length > 0 && (
               <section>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold text-[#333] flex items-center gap-2">
-                    <Home className="w-5 h-5 text-[#00833e]" />
+                  <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
+                    <Home className="w-5 h-5 text-primary" />
                     Gruplar
                   </h2>
                   {filteredGroups.length > 3 && (
                     <Link
                       href={`/ara?q=${encodeURIComponent(query)}&tab=groups`}
-                      className="text-[#00833e] text-sm font-medium hover:underline"
+                      className="text-primary text-sm font-medium hover:underline"
                     >
                       Tümünü Gör →
                     </Link>
@@ -747,14 +747,14 @@ export default function SearchResultsPage() {
             {filteredListings.length > 0 && (
               <section>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold text-[#333] flex items-center gap-2">
-                    <Tag className="w-5 h-5 text-[#00833e]" />
+                  <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
+                    <Tag className="w-5 h-5 text-primary" />
                     Pazar
                   </h2>
                   {filteredListings.length > 3 && (
                     <Link
                       href={`/ara?q=${encodeURIComponent(query)}&tab=marketplace`}
-                      className="text-[#00833e] text-sm font-medium hover:underline"
+                      className="text-primary text-sm font-medium hover:underline"
                     >
                       Tümünü Gör →
                     </Link>
@@ -771,21 +771,21 @@ export default function SearchResultsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5] py-6 px-4">
+    <div className="min-h-screen bg-background py-6 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-[#333] mb-2">Arama Sonuçları</h1>
+          <h1 className="text-3xl font-bold text-text-primary mb-2">Arama Sonuçları</h1>
           {query && (
-            <p className="text-[#8f8f8f]">
+            <p className="text-text-muted">
               "{query}" için sonuçlar
             </p>
           )}
         </div>
 
         {/* Tab Navigation */}
-        <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] mb-6 overflow-hidden">
-          <div className="flex gap-0 border-b border-[#e0e0e0] overflow-x-auto">
+        <div className="bg-surface rounded-lg shadow-sm border border-border mb-6 overflow-hidden">
+          <div className="flex gap-0 border-b border-border overflow-x-auto">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
@@ -793,14 +793,14 @@ export default function SearchResultsPage() {
                 className={cn(
                   'flex items-center gap-2 px-5 py-4 text-sm font-medium border-b-[3px] whitespace-nowrap transition-colors',
                   activeTab === tab.id
-                    ? 'text-[#00833e] border-[#00833e]'
-                    : 'text-[#8f8f8f] border-transparent hover:text-[#404040]'
+                    ? 'text-primary border-primary'
+                    : 'text-text-muted border-transparent hover:text-text-secondary'
                 )}
               >
                 {tab.icon}
                 {tab.label}
                 {tab.count > 0 && (
-                  <span className="ml-1 px-2 py-0.5 bg-[#f0f2f5] rounded-full text-xs font-semibold text-[#333]">
+                  <span className="ml-1 px-2 py-0.5 bg-background rounded-full text-xs font-semibold text-text-primary">
                     {tab.count}
                   </span>
                 )}

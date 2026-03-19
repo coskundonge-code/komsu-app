@@ -131,9 +131,9 @@ export function PaymentModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-surface rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+        <div className="sticky top-0 bg-surface border-b border-gray-200 p-4 flex items-center justify-between">
           <h2 className="text-lg font-bold text-gray-900">{title}</h2>
           <button
             onClick={onClose}
@@ -153,7 +153,7 @@ export function PaymentModal({
           {/* Amount */}
           <div className="bg-gray-50 rounded-lg p-4 text-center border border-gray-200">
             <p className="text-sm text-gray-600 mb-1">Ödeme Tutarı</p>
-            <p className="text-3xl font-bold text-[#00833e]">
+            <p className="text-3xl font-bold text-primary">
               {amount}
               {currency}
             </p>
@@ -180,7 +180,7 @@ export function PaymentModal({
           {state === 'processing' && (
             <div className="text-center py-6">
               <div className="flex justify-center mb-3">
-                <Loader2 className="w-8 h-8 text-[#00833e] animate-spin" />
+                <Loader2 className="w-8 h-8 text-primary animate-spin" />
               </div>
               <p className="text-gray-900 font-semibold">Ödemeniz işleniyor...</p>
               <p className="text-sm text-gray-600">Lütfen bekleyin</p>
@@ -259,7 +259,7 @@ export function PaymentModal({
                       placeholder="1234 5678 9012 3456"
                       value={cardData.cardNumber}
                       onChange={(e) => handleInputChange(e, 'cardNumber')}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                     />
                   </div>
 
@@ -272,7 +272,7 @@ export function PaymentModal({
                       placeholder="Ad Soyadı"
                       value={cardData.cardName}
                       onChange={(e) => handleInputChange(e, 'cardName')}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                     />
                   </div>
 
@@ -287,7 +287,7 @@ export function PaymentModal({
                         maxLength={2}
                         value={cardData.expiryMonth}
                         onChange={(e) => handleInputChange(e, 'expiryMonth')}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] text-sm"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                       />
                     </div>
                     <div>
@@ -300,7 +300,7 @@ export function PaymentModal({
                         maxLength={2}
                         value={cardData.expiryYear}
                         onChange={(e) => handleInputChange(e, 'expiryYear')}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] text-sm"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                       />
                     </div>
                   </div>
@@ -315,7 +315,7 @@ export function PaymentModal({
                       maxLength={3}
                       value={cardData.cvv}
                       onChange={(e) => handleInputChange(e, 'cvv')}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] text-sm"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                     />
                   </div>
                 </div>
@@ -337,7 +337,7 @@ export function PaymentModal({
                 <input type="checkbox" defaultChecked className="mt-1" />
                 <span>
                   Ödeme şartlarını kabul ediyorum ve Mahallem'in{' '}
-                  <a href="#" className="text-[#00833e] hover:underline">
+                  <a href="#" className="text-primary hover:underline">
                     gizlilik politikasını
                   </a>{' '}
                   okudum.
@@ -352,7 +352,7 @@ export function PaymentModal({
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-2.5 px-4 bg-[#00833e] text-white font-semibold rounded-lg hover:bg-[#006b2f] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-2.5 px-4 bg-primary text-white font-semibold rounded-lg hover:bg-[#006b2f] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? 'İşleniyor...' : 'Ödemeyi Tamamla'}
               </button>
@@ -372,7 +372,7 @@ export function PaymentModal({
               <button
                 type="button"
                 onClick={() => setState('form')}
-                className="w-full py-2.5 px-4 bg-[#00833e] text-white font-semibold rounded-lg hover:bg-[#006b2f] transition-colors"
+                className="w-full py-2.5 px-4 bg-primary text-white font-semibold rounded-lg hover:bg-[#006b2f] transition-colors"
               >
                 Tekrar Deneyin
               </button>

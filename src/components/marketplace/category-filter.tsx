@@ -53,7 +53,7 @@ export function CategoryFilter({
             className={cn(
               'px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all',
               activeCategory === category.value
-                ? 'bg-[#00833e] text-white'
+                ? 'bg-primary text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             )}
           >
@@ -66,7 +66,7 @@ export function CategoryFilter({
 
   // Sidebar variant
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+    <div className="bg-surface rounded-lg shadow-sm border border-gray-200 p-4">
       <h3 className="font-semibold text-gray-900 mb-4">Kategoriler</h3>
       <div className="space-y-2">
         {categories.map((category) => (
@@ -76,7 +76,7 @@ export function CategoryFilter({
             className={cn(
               'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm',
               activeCategory === category.value
-                ? 'bg-[#e6f4ec] text-[#006b32] font-semibold'
+                ? 'bg-primary-light text-primary-hover font-semibold'
                 : 'text-gray-700 hover:bg-gray-50'
             )}
           >
@@ -85,7 +85,7 @@ export function CategoryFilter({
                 className={cn(
                   'transition-colors',
                   activeCategory === category.value
-                    ? 'text-[#00833e]'
+                    ? 'text-primary'
                     : 'text-gray-400'
                 )}
               >

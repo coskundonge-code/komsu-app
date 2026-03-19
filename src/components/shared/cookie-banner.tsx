@@ -35,7 +35,7 @@ export function CookieBanner() {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-[#00833e] shadow-2xl transition-transform duration-300"
+      className="fixed bottom-0 left-0 right-0 z-50 bg-surface border-t-2 border-primary shadow-2xl transition-transform duration-300"
       role="banner"
     >
       <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
@@ -50,7 +50,7 @@ export function CookieBanner() {
               {' '}
               <Link
                 href="/cerez-politikasi"
-                className="text-[#00833e] hover:text-[#006b32] font-medium transition-colors underline"
+                className="text-primary hover:text-primary-hover font-medium transition-colors underline"
               >
                 Çerez Politikası
               </Link>
@@ -63,7 +63,7 @@ export function CookieBanner() {
           <div className="flex items-center gap-3 w-full sm:w-auto flex-shrink-0">
             <button
               onClick={handleAccept}
-              className="flex-1 sm:flex-none px-6 py-2.5 bg-[#00833e] text-white rounded-lg hover:bg-[#006b32] font-medium transition-colors text-sm shadow-md hover:shadow-lg"
+              className="flex-1 sm:flex-none px-6 py-2.5 bg-primary text-white rounded-lg hover:bg-primary-hover font-medium transition-colors text-sm shadow-md hover:shadow-lg"
             >
               Kabul Et
             </button>

@@ -36,11 +36,11 @@ export function FeaturedListingModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-surface rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+        <div className="sticky top-0 bg-surface border-b border-gray-200 p-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-[#00833e]" />
+            <Sparkles className="w-5 h-5 text-primary" />
             <h2 className="text-lg font-bold text-gray-900">Ön Plana Çıkart</h2>
           </div>
           <button
@@ -55,7 +55,7 @@ export function FeaturedListingModal({
           {/* Description */}
           <div className="bg-green-50 border border-green-200 rounded-lg p-3">
             <p className="text-sm text-gray-700">
-              <span className="font-semibold text-[#00833e]">"{listingTitle}"</span> ilanını
+              <span className="font-semibold text-primary">"{listingTitle}"</span> ilanını
               ana sayfa ve arama sonuçlarında öne çıkartın.
             </p>
           </div>
@@ -65,15 +65,15 @@ export function FeaturedListingModal({
             <h3 className="font-semibold text-gray-900 mb-3">Avantajlar:</h3>
             <ul className="space-y-2 text-sm text-gray-700">
               <li className="flex items-start gap-2">
-                <Eye className="w-4 h-4 text-[#00833e] mt-0.5 flex-shrink-0" />
+                <Eye className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                 <span>Daha fazla görüntüleme ve ilgi</span>
               </li>
               <li className="flex items-start gap-2">
-                <TrendingUp className="w-4 h-4 text-[#00833e] mt-0.5 flex-shrink-0" />
+                <TrendingUp className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                 <span>Arama sonuçlarının en üstünde görünün</span>
               </li>
               <li className="flex items-start gap-2">
-                <Sparkles className="w-4 h-4 text-[#00833e] mt-0.5 flex-shrink-0" />
+                <Sparkles className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                 <span>İlanınızda "Ön Plana Çıkmış" rozeti gösterilir</span>
               </li>
             </ul>
@@ -96,7 +96,7 @@ export function FeaturedListingModal({
                     className={cn(
                       'w-full p-3 rounded-lg border-2 transition-all text-left',
                       isSelected
-                        ? 'border-[#00833e] bg-green-50'
+                        ? 'border-primary bg-green-50'
                         : 'border-gray-200 hover:border-gray-300',
                       isLoading && 'opacity-50 cursor-not-allowed',
                       isPopular && !isSelected && 'ring-1 ring-[#00833e]'
@@ -112,11 +112,11 @@ export function FeaturedListingModal({
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-bold text-[#00833e]">
+                        <div className="font-bold text-primary">
                           {pricing.amount}₺
                         </div>
                         {isPopular && (
-                          <div className="text-xs font-semibold text-[#00833e] mt-1">
+                          <div className="text-xs font-semibold text-primary mt-1">
                             En Popüler
                           </div>
                         )}
@@ -134,7 +134,7 @@ export function FeaturedListingModal({
               İlanınız böyle görünecek:
             </h3>
             <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-              <div className="bg-white p-3 rounded border border-gray-200">
+              <div className="bg-surface p-3 rounded border border-gray-200">
                 <div className="flex items-start gap-2 mb-2">
                   <div className="w-12 h-12 bg-gray-200 rounded" />
                   <div className="flex-1">
@@ -166,7 +166,7 @@ export function FeaturedListingModal({
               className={cn(
                 'w-full py-2.5 px-4 rounded-lg font-semibold transition-colors',
                 selectedPlan && !isLoading
-                  ? 'bg-[#00833e] text-white hover:bg-[#006b2f]'
+                  ? 'bg-primary text-white hover:bg-[#006b2f]'
                   : 'bg-gray-200 text-gray-500 cursor-not-allowed'
               )}
             >

@@ -77,19 +77,19 @@ export default function GirisPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5] flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Üst Bar */}
-      <div className="w-full bg-white border-b border-[#e0e0e0] px-6 py-3">
+      <div className="w-full bg-surface border-b border-border px-6 py-3">
         <div className="max-w-[480px] mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#00833e] rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-sm font-bold text-white">K</span>
             </div>
-            <span className="text-lg font-bold text-[#333]">Mahallem</span>
+            <span className="text-lg font-bold text-text-primary">Mahallem</span>
           </Link>
           <Link
             href="/kayit"
-            className="text-sm font-semibold text-[#00833e] hover:text-[#006b32] transition"
+            className="text-sm font-semibold text-primary hover:text-primary-hover transition"
           >
             Kayıt Ol
           </Link>
@@ -100,11 +100,11 @@ export default function GirisPage() {
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-[480px]">
           {/* Kart */}
-          <div className="bg-white rounded-2xl shadow-sm border border-[#e0e0e0] overflow-hidden">
+          <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden">
             {/* Header */}
             <div className="px-8 pt-8 pb-4 text-center">
-              <h1 className="text-2xl font-bold text-[#333] mb-1">Tekrar Hoş Geldiniz</h1>
-              <p className="text-sm text-[#8f8f8f]">Mahallenizle bağlantıda kalın</p>
+              <h1 className="text-2xl font-bold text-text-primary mb-1">Tekrar Hoş Geldiniz</h1>
+              <p className="text-sm text-text-muted">Mahallenizle bağlantıda kalın</p>
             </div>
 
             <div className="px-8 pb-8">
@@ -120,7 +120,7 @@ export default function GirisPage() {
               <button
                 onClick={handleGoogleSignIn}
                 disabled={isLoading}
-                className="w-full flex items-center justify-center gap-3 border border-[#e0e0e0] hover:bg-[#f9f9f9] text-[#333] font-medium py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed bg-white hover:border-[#d0d0d0] active:bg-[#f5f5f5] mb-5"
+                className="w-full flex items-center justify-center gap-3 border border-border hover:bg-surface-hover text-text-primary font-medium py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed bg-surface hover:border-[#d0d0d0] active:bg-[#f5f5f5] mb-5"
               >
                 {isLoading ? (
                   <>
@@ -146,10 +146,10 @@ export default function GirisPage() {
               {/* Ayırıcı */}
               <div className="relative mb-5">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-[#e0e0e0]" />
+                  <div className="w-full border-t border-border" />
                 </div>
                 <div className="relative flex justify-center text-xs">
-                  <span className="px-3 bg-white text-[#8f8f8f]">ya da e-posta ile</span>
+                  <span className="px-3 bg-surface text-text-muted">ya da e-posta ile</span>
                 </div>
               </div>
 
@@ -157,11 +157,11 @@ export default function GirisPage() {
               <form onSubmit={handleSignIn} className="space-y-4" noValidate>
                 {/* E-posta */}
                 <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-[#333] mb-2">
+                  <label htmlFor="email" className="block text-sm font-semibold text-text-primary mb-2">
                     E-posta adresi
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#8f8f8f]" />
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-text-muted" />
                     <input
                       id="email"
                       type="email"
@@ -171,10 +171,10 @@ export default function GirisPage() {
                       disabled={isLoading}
                       aria-invalid={!!emailError}
                       aria-describedby={emailError ? 'email-error' : undefined}
-                      className={`w-full pl-11 pr-4 py-3 border rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-[#fafafa] focus:bg-white focus:outline-none focus:ring-2 transition disabled:bg-[#f0f2f5] disabled:cursor-not-allowed ${
+                      className={`w-full pl-11 pr-4 py-3 border rounded-xl text-sm text-text-primary placeholder:text-text-muted bg-[#fafafa] focus:bg-surface focus:outline-none focus:ring-2 transition disabled:bg-background disabled:cursor-not-allowed ${
                         emailError
                           ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
-                          : 'border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20'
+                          : 'border-border focus:border-primary focus:ring-primary/20'
                       }`}
                     />
                   </div>
@@ -189,18 +189,18 @@ export default function GirisPage() {
                 {/* Şifre */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label htmlFor="password" className="block text-sm font-semibold text-[#333]">
+                    <label htmlFor="password" className="block text-sm font-semibold text-text-primary">
                       Şifre
                     </label>
                     <Link
                       href="/sifre-sifirla"
-                      className="text-xs text-[#00833e] hover:text-[#006b32] font-semibold transition"
+                      className="text-xs text-primary hover:text-primary-hover font-semibold transition"
                     >
                       Şifremi unuttum
                     </Link>
                   </div>
                   <div className="relative">
-                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#8f8f8f]" />
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-text-muted" />
                     <input
                       id="password"
                       type={showPassword ? 'text' : 'password'}
@@ -210,17 +210,17 @@ export default function GirisPage() {
                       disabled={isLoading}
                       aria-invalid={!!passwordError}
                       aria-describedby={passwordError ? 'password-error' : undefined}
-                      className={`w-full pl-11 pr-12 py-3 border rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-[#fafafa] focus:bg-white focus:outline-none focus:ring-2 transition disabled:bg-[#f0f2f5] disabled:cursor-not-allowed ${
+                      className={`w-full pl-11 pr-12 py-3 border rounded-xl text-sm text-text-primary placeholder:text-text-muted bg-[#fafafa] focus:bg-surface focus:outline-none focus:ring-2 transition disabled:bg-background disabled:cursor-not-allowed ${
                         passwordError
                           ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
-                          : 'border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20'
+                          : 'border-border focus:border-primary focus:ring-primary/20'
                       }`}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       disabled={isLoading}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#8f8f8f] hover:text-[#404040] transition disabled:cursor-not-allowed"
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary transition disabled:cursor-not-allowed"
                       aria-label={showPassword ? 'Şifreyi gizle' : 'Şifreyi göster'}
                     >
                       {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
@@ -242,9 +242,9 @@ export default function GirisPage() {
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
                     disabled={isLoading}
-                    className="w-4 h-4 rounded border-[#e0e0e0] text-[#00833e] focus:ring-[#00833e] cursor-pointer accent-[#00833e]"
+                    className="w-4 h-4 rounded border-border text-primary focus:ring-primary cursor-pointer accent-[#00833e]"
                   />
-                  <label htmlFor="rememberMe" className="text-sm text-[#8f8f8f] cursor-pointer">
+                  <label htmlFor="rememberMe" className="text-sm text-text-muted cursor-pointer">
                     Beni hatırla
                   </label>
                 </div>
@@ -253,7 +253,7 @@ export default function GirisPage() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-[#00833e] hover:bg-[#006b32] text-white font-semibold py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md active:shadow-sm"
+                  className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md active:shadow-sm"
                 >
                   {isLoading ? (
                     <span className="flex items-center justify-center gap-2">
@@ -270,10 +270,10 @@ export default function GirisPage() {
               </form>
 
               {/* Kayıt linki */}
-              <div className="mt-6 pt-6 border-t border-[#e0e0e0] text-center">
-                <p className="text-sm text-[#8f8f8f]">
+              <div className="mt-6 pt-6 border-t border-border text-center">
+                <p className="text-sm text-text-muted">
                   Hesabınız yok mu?{' '}
-                  <Link href="/kayit" className="text-[#00833e] hover:text-[#006b32] font-semibold transition">
+                  <Link href="/kayit" className="text-primary hover:text-primary-hover font-semibold transition">
                     Kayıt olun
                   </Link>
                 </p>
@@ -282,7 +282,7 @@ export default function GirisPage() {
           </div>
 
           {/* Güvenlik rozetleri */}
-          <div className="flex items-center justify-center gap-6 mt-6 text-xs text-[#8f8f8f]">
+          <div className="flex items-center justify-center gap-6 mt-6 text-xs text-text-muted">
             <span className="flex items-center gap-1.5">
               <Shield className="w-3.5 h-3.5" />
               Güvenli bağlantı

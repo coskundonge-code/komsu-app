@@ -2,7 +2,6 @@ import { type NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
-// Routes that don't require authentication
 const publicRoutes = [
   '/',
   '/giris',
@@ -10,22 +9,6 @@ const publicRoutes = [
   '/sifre-sifirla',
   '/auth/callback',
   '/auth/signout',
-  '/api/auth',
-  '/pazar',
-  '/kesfet',
-  '/uyarilar',
-  '/gruplar',
-  '/etkinlikler',
-  '/bildirimler',
-  '/profil',
-  '/ayarlar',
-  '/isletmeler',
-  '/isletme-ekle',
-  '/yardim',
-  '/blog',
-  '/admin',
-  '/isletme-paneli',
-  '/favoriler',
   '/hakkinda',
   '/iletisim',
   '/kariyer',
@@ -36,19 +19,17 @@ const publicRoutes = [
   '/kvkk',
   '/cerez-politikasi',
   '/guvenlik',
-  '/gonderi',
-  '/ara',
-  '/davet',
-  '/referans-kullan',
-  '/adres-dogrulama',
-  '/konum-secimi',
-  '/api/verify-document',
-  '/odunc-kirala',
-  '/mahallem-kart',
-  '/askida-bagis',
+  '/blog',
 ]
 
-// Routes exempt from location check (user needs to access these even without location)
+const apiRoutes = [
+  '/api/',
+]
+
+const adminRoutes = [
+  '/admin',
+]
+
 const locationExemptRoutes = [
   '/konum-secimi',
   '/giris',
@@ -56,10 +37,9 @@ const locationExemptRoutes = [
   '/sifre-sifirla',
   '/auth/callback',
   '/auth/signout',
-  '/api/auth',
   '/hesap-kilitli',
   '/adres-dogrulama',
-  '/api/verify-document',
+  '/api/',
   '/hakkinda',
   '/iletisim',
   '/kosullar',
@@ -73,42 +53,30 @@ const locationExemptRoutes = [
   '/yardim',
 ]
 
+function matchesRoute(path: string, routes: string[]): boolean {
+  return routes.some(route => path === route || path.startsWith(route + '/'))
+}
+
 export async function middleware(request: NextRequest) {
   const { response, user } = await updateSession(request)
   const path = request.nextUrl.pathname
 
-  // Allow public routes without auth check
-  if (publicRoutes.some(route => path === route || path.startsWith(route + '/'))) {
-    // If user is logged in and on a non-exempt route, check location
-    if (user && !locationExemptRoutes.some(route => path === route || path.startsWith(route + '/'))) {
-      const metadata = user.user_metadata || {}
-      const locationConfirmedAt = metadata.location_confirmed_at
-      const edevletVerifiedAt = metadata.edevlet_verified_at
-      const edevletDeadline = metadata.edevlet_verification_deadline
-
-      // Check if location has been set
-      if (!locationConfirmedAt) {
-        const locationUrl = request.nextUrl.clone()
-        locationUrl.pathname = '/konum-secimi'
-        return NextResponse.redirect(locationUrl)
-      }
-
-      // Check 30-day e-Devlet verification deadline
-      if (edevletDeadline && !edevletVerifiedAt) {
-        const deadline = new Date(edevletDeadline)
-        if (deadline < new Date()) {
-          // Deadline passed without verification - redirect to locked page
-          const lockedUrl = request.nextUrl.clone()
-          lockedUrl.pathname = '/hesap-kilitli'
-          return NextResponse.redirect(lockedUrl)
-        }
-      }
-    }
-
+  if (apiRoutes.some(route => path.startsWith(route))) {
     return response
   }
 
-  // Redirect to login if not authenticated on protected routes
+  if (matchesRoute(path, publicRoutes)) {
+    if (user && !matchesRoute(path, locationExemptRoutes)) {
+      const metadata = user.user_metadata || {}
+      if (!metadata.location_confirmed_at) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/konum-secimi'
+        return NextResponse.redirect(url)
+      }
+    }
+    return response
+  }
+
   if (!user) {
     const loginUrl = request.nextUrl.clone()
     loginUrl.pathname = '/giris'
@@ -116,25 +84,31 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  // For authenticated users on protected routes, also check location
-  const metadata = user.user_metadata || {}
-  const locationConfirmedAt = metadata.location_confirmed_at
-  const edevletVerifiedAt = metadata.edevlet_verified_at
-  const edevletDeadline = metadata.edevlet_verification_deadline
+  if (matchesRoute(path, adminRoutes)) {
+    const metadata = user.user_metadata || {}
+    const role = metadata.role || 'member'
+    if (role !== 'admin') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/'
+      return NextResponse.redirect(url)
+    }
+  }
 
-  if (!locationExemptRoutes.some(route => path === route || path.startsWith(route + '/'))) {
-    if (!locationConfirmedAt) {
-      const locationUrl = request.nextUrl.clone()
-      locationUrl.pathname = '/konum-secimi'
-      return NextResponse.redirect(locationUrl)
+  if (!matchesRoute(path, locationExemptRoutes)) {
+    const metadata = user.user_metadata || {}
+
+    if (!metadata.location_confirmed_at) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/konum-secimi'
+      return NextResponse.redirect(url)
     }
 
-    if (edevletDeadline && !edevletVerifiedAt) {
-      const deadline = new Date(edevletDeadline)
+    if (metadata.edevlet_verification_deadline && !metadata.edevlet_verified_at) {
+      const deadline = new Date(metadata.edevlet_verification_deadline)
       if (deadline < new Date()) {
-        const lockedUrl = request.nextUrl.clone()
-        lockedUrl.pathname = '/hesap-kilitli'
-        return NextResponse.redirect(lockedUrl)
+        const url = request.nextUrl.clone()
+        url.pathname = '/hesap-kilitli'
+        return NextResponse.redirect(url)
       }
     }
   }
@@ -144,12 +118,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }

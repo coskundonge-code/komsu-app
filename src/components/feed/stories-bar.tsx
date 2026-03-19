@@ -183,26 +183,26 @@ export default function StoriesBar() {
   return (
     <>
       {/* Stories Bar Container */}
-      <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-4 mb-6">
+      <div className="bg-surface rounded-lg shadow-sm border border-border p-4 mb-6">
         <div className="relative">
           {/* Scroll Buttons */}
           {canScrollLeft && (
             <button
               onClick={() => scroll('left')}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full shadow-md border border-[#e0e0e0] p-2 hover:bg-[#f0f2f5] transition-colors"
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-surface rounded-full shadow-md border border-border p-2 hover:bg-background transition-colors"
               aria-label="Scroll left"
             >
-              <ChevronLeft size={20} className="text-[#333]" />
+              <ChevronLeft size={20} className="text-text-primary" />
             </button>
           )}
 
           {canScrollRight && (
             <button
               onClick={() => scroll('right')}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full shadow-md border border-[#e0e0e0] p-2 hover:bg-[#f0f2f5] transition-colors"
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-surface rounded-full shadow-md border border-border p-2 hover:bg-background transition-colors"
               aria-label="Scroll right"
             >
-              <ChevronRight size={20} className="text-[#333]" />
+              <ChevronRight size={20} className="text-text-primary" />
             </button>
           )}
 
@@ -217,10 +217,10 @@ export default function StoriesBar() {
                 onClick={handleAddStory}
                 className="w-full flex flex-col items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none"
               >
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#00833e] to-[#006b32] flex items-center justify-center shadow-sm border-2 border-[#e0e0e0] hover:shadow-md transition-shadow mx-auto">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center shadow-sm border-2 border-border hover:shadow-md transition-shadow mx-auto">
                   <Plus size={24} className="text-white" />
                 </div>
-                <span className="text-xs font-medium text-[#333] text-center w-full truncate">
+                <span className="text-xs font-medium text-text-primary text-center w-full truncate">
                   Yeni Paylaşım
                 </span>
               </button>
@@ -236,8 +236,8 @@ export default function StoriesBar() {
                   <div
                     className={`w-16 h-16 rounded-full flex items-center justify-center shadow-sm border-2 transition-colors overflow-hidden mx-auto ${
                       story.viewed
-                        ? 'border-[#e0e0e0] opacity-75'
-                        : 'border-[#00833e] shadow-md'
+                        ? 'border-border opacity-75'
+                        : 'border-primary shadow-md'
                     }`}
                   >
                     <Image
@@ -249,7 +249,7 @@ export default function StoriesBar() {
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="text-xs font-medium text-[#333] text-center w-full truncate block">
+                  <span className="text-xs font-medium text-text-primary text-center w-full truncate block">
                     {story.userName}
                   </span>
                 </button>
@@ -266,7 +266,7 @@ export default function StoriesBar() {
             {/* Close Button */}
             <button
               onClick={closeStory}
-              className="absolute top-4 right-4 z-10 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full p-2 transition-colors"
+              className="absolute top-4 right-4 z-10 bg-surface bg-opacity-20 hover:bg-opacity-30 rounded-full p-2 transition-colors"
               aria-label="Close story"
             >
               <X size={24} className="text-white" />
@@ -303,9 +303,9 @@ export default function StoriesBar() {
             </div>
 
             {/* Progress Bar */}
-            <div className="h-1 bg-white bg-opacity-30">
+            <div className="h-1 bg-surface bg-opacity-30">
               <div
-                className="h-full bg-[#00833e] transition-all"
+                className="h-full bg-primary transition-all"
                 style={{
                   animation: 'progress 5s linear forwards',
                 }}

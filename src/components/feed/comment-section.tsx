@@ -107,8 +107,8 @@ export function CommentSection({
               <button
                 onClick={() => toggleLike(comment.id)}
                 className={cn(
-                  'flex items-center gap-1 hover:text-[#00833e] transition-colors',
-                  isLiked && 'text-[#00833e]'
+                  'flex items-center gap-1 hover:text-primary transition-colors',
+                  isLiked && 'text-primary'
                 )}
               >
                 <Heart
@@ -119,7 +119,7 @@ export function CommentSection({
               </button>
               <button
                 onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
-                className="flex items-center gap-1 hover:text-[#00833e] transition-colors"
+                className="flex items-center gap-1 hover:text-primary transition-colors"
               >
                 <MessageCircle size={14} />
                 <span>Yanıtla</span>
@@ -140,7 +140,7 @@ export function CommentSection({
                     value={replyText}
                     onChange={(e) => setReplyText(e.target.value)}
                     placeholder="Yanıt yazın..."
-                    className="flex-1 px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                    className="flex-1 px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     onKeyPress={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
@@ -151,7 +151,7 @@ export function CommentSection({
                   <button
                     onClick={() => handleReplySubmit(comment.id)}
                     disabled={isLoading || !replyText.trim()}
-                    className="px-3 py-1.5 bg-[#00833e] text-white rounded-lg text-sm font-medium hover:bg-[#006b32] disabled:opacity-50 transition-colors"
+                    className="px-3 py-1.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-hover disabled:opacity-50 transition-colors"
                   >
                     Gönder
                   </button>
@@ -164,7 +164,7 @@ export function CommentSection({
               <div className="mt-2">
                 <button
                   onClick={() => toggleReplies(comment.id)}
-                  className="text-xs text-[#00833e] hover:text-[#006b32] font-medium"
+                  className="text-xs text-primary hover:text-primary-hover font-medium"
                 >
                   {isExpanded
                     ? `Yanıtları Gizle (${comment.replies.length})`
@@ -191,7 +191,7 @@ export function CommentSection({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+    <div className="bg-surface rounded-lg shadow-sm border border-gray-200 p-4">
       <h3 className="font-semibold text-gray-900 mb-4">
         Yorumlar ({comments.length})
       </h3>
@@ -207,7 +207,7 @@ export function CommentSection({
           <input
             type="text"
             placeholder="Bir yorum ekleyin..."
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             onKeyPress={(e) => {
               if (e.key === 'Enter' && !e.shiftKey && e.currentTarget.value.trim()) {
                 e.preventDefault();
@@ -216,7 +216,7 @@ export function CommentSection({
               }
             }}
           />
-          <button className="px-3 py-2 bg-[#00833e] text-white rounded-lg text-sm font-medium hover:bg-[#006b32] transition-colors disabled:opacity-50">
+          <button className="px-3 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-hover transition-colors disabled:opacity-50">
             Gönder
           </button>
         </div>

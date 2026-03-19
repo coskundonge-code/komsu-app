@@ -145,9 +145,9 @@ export default function GroupsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-[#00833e] to-[#006b32] text-white py-12 px-4">
+      <div className="bg-gradient-to-r from-primary to-primary-hover text-white py-12 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-start justify-between gap-6">
             <div>
@@ -156,7 +156,7 @@ export default function GroupsPage() {
             </div>
             <Link
               href="/gruplar/olustur"
-              className="flex items-center gap-2 px-6 py-3 bg-white text-[#00833e] rounded-lg hover:bg-gray-100 transition-colors font-bold text-sm whitespace-nowrap"
+              className="flex items-center gap-2 px-6 py-3 bg-surface text-primary rounded-lg hover:bg-gray-100 transition-colors font-bold text-sm whitespace-nowrap"
             >
               <Plus size={20} />
               Grup Oluştur
@@ -175,19 +175,19 @@ export default function GroupsPage() {
               placeholder="Grupları ara..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 border border-[#e0e0e0] rounded-full text-base focus:outline-none focus:ring-2 focus:ring-[#00833e] focus:border-transparent bg-white"
+              className="w-full pl-12 pr-4 py-3 border border-border rounded-full text-base focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-surface"
             />
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-4 mb-8 border-b border-[#e0e0e0]">
+        <div className="flex gap-4 mb-8 border-b border-border">
           <button
             onClick={() => setActiveTab('all')}
             className={`pb-3 font-bold text-lg transition-colors ${
               activeTab === 'all'
-                ? 'text-[#00833e] border-b-2 border-[#00833e]'
-                : 'text-[#8f8f8f] hover:text-[#333]'
+                ? 'text-primary border-b-2 border-primary'
+                : 'text-text-muted hover:text-text-primary'
             }`}
           >
             Keşfet
@@ -196,8 +196,8 @@ export default function GroupsPage() {
             onClick={() => { setActiveTab('mine'); setActiveCategory('all'); }}
             className={`pb-3 font-bold text-lg transition-colors ${
               activeTab === 'mine'
-                ? 'text-[#00833e] border-b-2 border-[#00833e]'
-                : 'text-[#8f8f8f] hover:text-[#333]'
+                ? 'text-primary border-b-2 border-primary'
+                : 'text-text-muted hover:text-text-primary'
             }`}
           >
             Gruplarım ({joinedGroups.size})
@@ -212,8 +212,8 @@ export default function GroupsPage() {
               onClick={() => setActiveCategory(category.id)}
               className={`px-4 py-2 font-medium whitespace-nowrap rounded-full transition-all text-sm ${
                 activeCategory === category.id
-                  ? 'bg-[#00833e] text-white'
-                  : 'bg-white text-[#333] border border-[#e0e0e0] hover:border-[#00833e]'
+                  ? 'bg-primary text-white'
+                  : 'bg-surface text-text-primary border border-border hover:border-primary'
               }`}
             >
               {category.label}
@@ -223,10 +223,10 @@ export default function GroupsPage() {
 
         {/* Groups Grid */}
         {filtered.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-lg border border-[#e0e0e0]">
+          <div className="text-center py-16 bg-surface rounded-lg border border-border">
             <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-[#333] font-medium mb-1">Grup bulunamadı</p>
-            <p className="text-[#8f8f8f] text-sm">Yeni bir grup oluşturabilirsiniz.</p>
+            <p className="text-text-primary font-medium mb-1">Grup bulunamadı</p>
+            <p className="text-text-muted text-sm">Yeni bir grup oluşturabilirsiniz.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -234,7 +234,7 @@ export default function GroupsPage() {
               <Link
                 key={group.id}
                 href={`/gruplar/${group.slug}`}
-                className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden hover:shadow-lg transition-all duration-200 hover:border-[#00833e]"
+                className="bg-surface rounded-lg border border-border overflow-hidden hover:shadow-lg transition-all duration-200 hover:border-primary"
               >
                 {/* Cover Image */}
                 <div className="h-32 overflow-hidden bg-gray-200">
@@ -258,33 +258,33 @@ export default function GroupsPage() {
                       unoptimized
                     />
                     <div className="flex-1">
-                      <h3 className="font-bold text-[#333] text-sm line-clamp-2">
+                      <h3 className="font-bold text-text-primary text-sm line-clamp-2">
                         {group.name}
                       </h3>
-                      <p className="text-xs text-[#00833e] font-medium">
+                      <p className="text-xs text-primary font-medium">
                         {group.category}
                       </p>
                     </div>
                   </div>
 
                   {/* Description */}
-                  <p className="text-sm text-[#404040] line-clamp-2 mb-3">
+                  <p className="text-sm text-text-secondary line-clamp-2 mb-3">
                     {group.description}
                   </p>
 
                   {/* Member Count and Privacy */}
-                  <div className="flex items-center justify-between mb-4 pb-4 border-b border-[#e0e0e0]">
+                  <div className="flex items-center justify-between mb-4 pb-4 border-b border-border">
                     <div className="flex items-center gap-1">
-                      <Users size={16} className="text-[#8f8f8f]" />
-                      <span className="text-xs text-[#8f8f8f] font-medium">
+                      <Users size={16} className="text-text-muted" />
+                      <span className="text-xs text-text-muted font-medium">
                         {group.memberCount}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1 px-2 py-1 bg-[#f0f2f5] rounded-full">
+                    <div className="flex items-center gap-1 px-2 py-1 bg-background rounded-full">
                       {group.privacy === 'Gizli' && (
-                        <Lock size={14} className="text-[#8f8f8f]" />
+                        <Lock size={14} className="text-text-muted" />
                       )}
-                      <span className="text-xs text-[#8f8f8f] font-medium">
+                      <span className="text-xs text-text-muted font-medium">
                         {group.privacy}
                       </span>
                     </div>
@@ -304,8 +304,8 @@ export default function GroupsPage() {
                     }}
                     className={`w-full py-2 px-4 border-2 rounded-lg font-bold text-sm transition-all ${
                       joinedGroups.has(group.id)
-                        ? 'bg-[#00833e] text-white border-[#00833e]'
-                        : 'border-[#00833e] text-[#00833e] hover:bg-[#f0f2f5]'
+                        ? 'bg-primary text-white border-primary'
+                        : 'border-primary text-primary hover:bg-background'
                     }`}
                   >
                     {joinedGroups.has(group.id) ? '✓ Katıldın' : 'Katıl'}

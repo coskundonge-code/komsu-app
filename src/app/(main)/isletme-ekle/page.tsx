@@ -228,9 +228,9 @@ export default function IsletmeEklePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#00833e] to-[#00a344] text-white py-8 px-4">
+      <div className="bg-gradient-to-r from-primary to-[#00a344] text-white py-8 px-4">
         <div className="max-w-5xl mx-auto">
           <Link
             href="/"
@@ -254,10 +254,10 @@ export default function IsletmeEklePage() {
               <div
                 className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${
                   num < step
-                    ? 'bg-[#00833e] text-white'
+                    ? 'bg-primary text-white'
                     : num === step
-                    ? 'bg-[#00833e] text-white'
-                    : 'bg-white text-[#8f8f8f] border-2 border-[#e0e0e0]'
+                    ? 'bg-primary text-white'
+                    : 'bg-surface text-text-muted border-2 border-border'
                 }`}
               >
                 {num < step ? <Check size={20} /> : num}
@@ -265,7 +265,7 @@ export default function IsletmeEklePage() {
               {num < 4 && (
                 <div
                   className={`flex-1 h-1 mx-3 rounded transition-colors ${
-                    num < step ? 'bg-[#00833e]' : 'bg-[#e0e0e0]'
+                    num < step ? 'bg-primary' : 'bg-[#e0e0e0]'
                   }`}
                 />
               )}
@@ -292,45 +292,45 @@ export default function IsletmeEklePage() {
 
         {/* Success Screen */}
         {step === 4 ? (
-          <div className="bg-white rounded-lg border border-[#e0e0e0] p-12 text-center max-w-2xl mx-auto">
-            <div className="w-20 h-20 bg-[#d1fae5] rounded-full flex items-center justify-center mx-auto mb-6">
-              <Check size={40} className="text-[#00833e]" />
+          <div className="bg-surface rounded-lg border border-border p-12 text-center max-w-2xl mx-auto">
+            <div className="w-20 h-20 bg-primary-light rounded-full flex items-center justify-center mx-auto mb-6">
+              <Check size={40} className="text-primary" />
             </div>
             <h2 className="text-3xl font-bold text-gray-900 mb-3">
               İşletme Başarıyla Oluşturuldu!
             </h2>
-            <p className="text-[#8f8f8f] mb-8 text-lg">
+            <p className="text-text-muted mb-8 text-lg">
               İşletmeniz moderasyon için gönderildi. Yakında yayınlanacaktır.
             </p>
             <div className="space-y-4 mb-8">
-              <p className="text-sm text-[#8f8f8f]">
+              <p className="text-sm text-text-muted">
                 Onay sürecinde e-posta adresinize bilgilendirme gönderilecektir.
               </p>
             </div>
             <div className="flex gap-3 justify-center flex-wrap">
               <Link
                 href="/"
-                className="bg-[#00833e] hover:bg-[#006b32] text-white font-medium py-3 px-8 rounded-lg transition-colors"
+                className="bg-primary hover:bg-primary-hover text-white font-medium py-3 px-8 rounded-lg transition-colors"
               >
                 Anasayfa
               </Link>
               <Link
                 href="/"
-                className="bg-[#f0f2f5] hover:bg-[#e0e0e0] text-[#333] font-medium py-3 px-8 rounded-lg transition-colors"
+                className="bg-background hover:bg-[#e0e0e0] text-text-primary font-medium py-3 px-8 rounded-lg transition-colors"
               >
                 Devam Et
               </Link>
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-[#e0e0e0] p-8 max-w-4xl mx-auto">
+          <form onSubmit={handleSubmit} className="bg-surface rounded-lg border border-border p-8 max-w-4xl mx-auto">
             {/* Step 1: Logo & Cover */}
             {step === 1 && (
               <div>
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">
                   Görsel Bilgileri
                 </h2>
-                <p className="text-[#8f8f8f] mb-8">
+                <p className="text-text-muted mb-8">
                   İşletmeniz için logo ve kapak fotoğrafı yükleyin
                 </p>
 
@@ -341,7 +341,7 @@ export default function IsletmeEklePage() {
                   </label>
                   <div
                     onClick={() => logoInputRef.current?.click()}
-                    className="w-32 h-32 mx-auto border-2 border-dashed border-[#e0e0e0] rounded-full flex flex-col items-center justify-center cursor-pointer hover:border-[#00833e] hover:bg-[#f0f2f5] transition-colors"
+                    className="w-32 h-32 mx-auto border-2 border-dashed border-border rounded-full flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-background transition-colors"
                   >
                     {formData.logo ? (
                       <img
@@ -351,14 +351,14 @@ export default function IsletmeEklePage() {
                       />
                     ) : (
                       <>
-                        <Camera size={32} className="text-[#00833e] mb-2" />
-                        <span className="text-xs text-[#8f8f8f] text-center">
+                        <Camera size={32} className="text-primary mb-2" />
+                        <span className="text-xs text-text-muted text-center">
                           Tıkla
                         </span>
                       </>
                     )}
                   </div>
-                  <p className="text-xs text-[#8f8f8f] text-center mt-2">
+                  <p className="text-xs text-text-muted text-center mt-2">
                     PNG, JPG - Max 5MB
                   </p>
                   <input
@@ -377,7 +377,7 @@ export default function IsletmeEklePage() {
                   </label>
                   <div
                     onClick={() => coverInputRef.current?.click()}
-                    className="w-full border-2 border-dashed border-[#e0e0e0] rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#00833e] hover:bg-[#f0f2f5] transition-colors"
+                    className="w-full border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-background transition-colors"
                     style={{ aspectRatio: '16/6' }}
                   >
                     {formData.cover ? (
@@ -388,11 +388,11 @@ export default function IsletmeEklePage() {
                       />
                     ) : (
                       <>
-                        <Upload size={40} className="text-[#00833e] mb-2" />
+                        <Upload size={40} className="text-primary mb-2" />
                         <span className="text-sm font-medium text-gray-900">
                           Kapak fotoğrafını sürükle veya tıkla
                         </span>
-                        <span className="text-xs text-[#8f8f8f] mt-1">
+                        <span className="text-xs text-text-muted mt-1">
                           PNG, JPG - Max 10MB
                         </span>
                       </>
@@ -415,7 +415,7 @@ export default function IsletmeEklePage() {
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">
                   Temel Bilgiler
                 </h2>
-                <p className="text-[#8f8f8f] mb-8">
+                <p className="text-text-muted mb-8">
                   İşletmenizin adı, kategorisi ve konumu
                 </p>
 
@@ -434,7 +434,7 @@ export default function IsletmeEklePage() {
                     value={formData.name}
                     onChange={handleInputChange}
                     placeholder="Örn: Kahvehane Keyif"
-                    className="w-full px-4 py-3 rounded-lg border border-[#e0e0e0] focus:border-[#00833e] focus:outline-none focus:ring-2 focus:ring-[#d1fae5] transition-colors"
+                    className="w-full px-4 py-3 rounded-lg border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-[#d1fae5] transition-colors"
                   />
                 </div>
 
@@ -451,7 +451,7 @@ export default function IsletmeEklePage() {
                     name="category"
                     value={formData.category}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 rounded-lg border border-[#e0e0e0] focus:border-[#00833e] focus:outline-none focus:ring-2 focus:ring-[#d1fae5] transition-colors appearance-none bg-white cursor-pointer"
+                    className="w-full px-4 py-3 rounded-lg border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-[#d1fae5] transition-colors appearance-none bg-surface cursor-pointer"
                   >
                     <option value="">Kategori Seç</option>
                     {CATEGORIES.map((cat) => (
@@ -473,7 +473,7 @@ export default function IsletmeEklePage() {
                   <div className="relative">
                     <MapPin
                       size={18}
-                      className="absolute left-4 top-3.5 text-[#8f8f8f] pointer-events-none"
+                      className="absolute left-4 top-3.5 text-text-muted pointer-events-none"
                     />
                     <input
                       type="text"
@@ -482,7 +482,7 @@ export default function IsletmeEklePage() {
                       value={formData.address}
                       onChange={handleInputChange}
                       placeholder="Mahalle, Sokak, No..."
-                      className="w-full pl-12 pr-4 py-3 rounded-lg border border-[#e0e0e0] focus:border-[#00833e] focus:outline-none focus:ring-2 focus:ring-[#d1fae5] transition-colors"
+                      className="w-full pl-12 pr-4 py-3 rounded-lg border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-[#d1fae5] transition-colors"
                     />
                   </div>
                 </div>
@@ -503,9 +503,9 @@ export default function IsletmeEklePage() {
                     placeholder="İşletmeniz hakkında kısaca bilgi verin..."
                     rows={4}
                     maxLength={500}
-                    className="w-full px-4 py-3 rounded-lg border border-[#e0e0e0] focus:border-[#00833e] focus:outline-none focus:ring-2 focus:ring-[#d1fae5] transition-colors resize-none"
+                    className="w-full px-4 py-3 rounded-lg border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-[#d1fae5] transition-colors resize-none"
                   />
-                  <div className="text-xs text-[#8f8f8f] mt-1 text-right">
+                  <div className="text-xs text-text-muted mt-1 text-right">
                     {formData.description.length}/500
                   </div>
                 </div>
@@ -518,7 +518,7 @@ export default function IsletmeEklePage() {
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">
                   İletişim ve Çalışma Saatleri
                 </h2>
-                <p className="text-[#8f8f8f] mb-8">
+                <p className="text-text-muted mb-8">
                   İletişim bilgileri ve işletmenizin açık olduğu saatler
                 </p>
 
@@ -533,7 +533,7 @@ export default function IsletmeEklePage() {
                   <div className="relative">
                     <Phone
                       size={18}
-                      className="absolute left-4 top-3.5 text-[#8f8f8f] pointer-events-none"
+                      className="absolute left-4 top-3.5 text-text-muted pointer-events-none"
                     />
                     <input
                       type="tel"
@@ -542,7 +542,7 @@ export default function IsletmeEklePage() {
                       value={formData.phone}
                       onChange={handlePhoneInput}
                       placeholder="(5XX) XXX XXXX"
-                      className="w-full pl-12 pr-4 py-3 rounded-lg border border-[#e0e0e0] focus:border-[#00833e] focus:outline-none focus:ring-2 focus:ring-[#d1fae5] transition-colors"
+                      className="w-full pl-12 pr-4 py-3 rounded-lg border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-[#d1fae5] transition-colors"
                     />
                   </div>
                 </div>
@@ -558,7 +558,7 @@ export default function IsletmeEklePage() {
                   <div className="relative">
                     <Globe
                       size={18}
-                      className="absolute left-4 top-3.5 text-[#8f8f8f] pointer-events-none"
+                      className="absolute left-4 top-3.5 text-text-muted pointer-events-none"
                     />
                     <input
                       type="url"
@@ -567,13 +567,13 @@ export default function IsletmeEklePage() {
                       value={formData.website}
                       onChange={handleInputChange}
                       placeholder="www.isletme.com"
-                      className="w-full pl-12 pr-4 py-3 rounded-lg border border-[#e0e0e0] focus:border-[#00833e] focus:outline-none focus:ring-2 focus:ring-[#d1fae5] transition-colors"
+                      className="w-full pl-12 pr-4 py-3 rounded-lg border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-[#d1fae5] transition-colors"
                     />
                   </div>
                 </div>
 
                 {/* Social Media */}
-                <div className="mb-8 p-6 bg-[#f0f2f5] rounded-lg">
+                <div className="mb-8 p-6 bg-background rounded-lg">
                   <h3 className="text-sm font-semibold text-gray-900 mb-4">
                     Sosyal Medya (İsteğe Bağlı)
                   </h3>
@@ -582,14 +582,14 @@ export default function IsletmeEklePage() {
                   <div className="mb-4">
                     <label
                       htmlFor="instagram"
-                      className="block text-xs font-semibold text-[#333] mb-2"
+                      className="block text-xs font-semibold text-text-primary mb-2"
                     >
                       Instagram
                     </label>
                     <div className="relative">
                       <Instagram
                         size={16}
-                        className="absolute left-4 top-3.5 text-[#8f8f8f] pointer-events-none"
+                        className="absolute left-4 top-3.5 text-text-muted pointer-events-none"
                       />
                       <input
                         type="text"
@@ -598,7 +598,7 @@ export default function IsletmeEklePage() {
                         value={formData.instagram}
                         onChange={handleInputChange}
                         placeholder="@isletmeniz"
-                        className="w-full pl-11 pr-4 py-2 rounded border border-[#e0e0e0] focus:border-[#00833e] focus:outline-none text-sm"
+                        className="w-full pl-11 pr-4 py-2 rounded border border-border focus:border-primary focus:outline-none text-sm"
                       />
                     </div>
                   </div>
@@ -607,14 +607,14 @@ export default function IsletmeEklePage() {
                   <div className="mb-4">
                     <label
                       htmlFor="facebook"
-                      className="block text-xs font-semibold text-[#333] mb-2"
+                      className="block text-xs font-semibold text-text-primary mb-2"
                     >
                       Facebook
                     </label>
                     <div className="relative">
                       <Facebook
                         size={16}
-                        className="absolute left-4 top-3.5 text-[#8f8f8f] pointer-events-none"
+                        className="absolute left-4 top-3.5 text-text-muted pointer-events-none"
                       />
                       <input
                         type="text"
@@ -623,7 +623,7 @@ export default function IsletmeEklePage() {
                         value={formData.facebook}
                         onChange={handleInputChange}
                         placeholder="isletmeniz"
-                        className="w-full pl-11 pr-4 py-2 rounded border border-[#e0e0e0] focus:border-[#00833e] focus:outline-none text-sm"
+                        className="w-full pl-11 pr-4 py-2 rounded border border-border focus:border-primary focus:outline-none text-sm"
                       />
                     </div>
                   </div>
@@ -632,14 +632,14 @@ export default function IsletmeEklePage() {
                   <div>
                     <label
                       htmlFor="twitter"
-                      className="block text-xs font-semibold text-[#333] mb-2"
+                      className="block text-xs font-semibold text-text-primary mb-2"
                     >
                       Twitter/X
                     </label>
                     <div className="relative">
                       <Twitter
                         size={16}
-                        className="absolute left-4 top-3.5 text-[#8f8f8f] pointer-events-none"
+                        className="absolute left-4 top-3.5 text-text-muted pointer-events-none"
                       />
                       <input
                         type="text"
@@ -648,7 +648,7 @@ export default function IsletmeEklePage() {
                         value={formData.twitter}
                         onChange={handleInputChange}
                         placeholder="@isletmeniz"
-                        className="w-full pl-11 pr-4 py-2 rounded border border-[#e0e0e0] focus:border-[#00833e] focus:outline-none text-sm"
+                        className="w-full pl-11 pr-4 py-2 rounded border border-border focus:border-primary focus:outline-none text-sm"
                       />
                     </div>
                   </div>
@@ -694,9 +694,9 @@ export default function IsletmeEklePage() {
                                   e.target.value
                                 )
                               }
-                              className="px-3 py-2 rounded border border-[#e0e0e0] text-sm focus:border-[#00833e] focus:outline-none"
+                              className="px-3 py-2 rounded border border-border text-sm focus:border-primary focus:outline-none"
                             />
-                            <span className="text-[#8f8f8f]">-</span>
+                            <span className="text-text-muted">-</span>
                             <input
                               type="time"
                               value={formData.workingHours[day].closeTime}
@@ -707,13 +707,13 @@ export default function IsletmeEklePage() {
                                   e.target.value
                                 )
                               }
-                              className="px-3 py-2 rounded border border-[#e0e0e0] text-sm focus:border-[#00833e] focus:outline-none"
+                              className="px-3 py-2 rounded border border-border text-sm focus:border-primary focus:outline-none"
                             />
                           </div>
                         )}
 
                         {!formData.workingHours[day].isOpen && (
-                          <span className="text-sm text-[#8f8f8f]">Kapalı</span>
+                          <span className="text-sm text-text-muted">Kapalı</span>
                         )}
                       </div>
                     ))}
@@ -724,11 +724,11 @@ export default function IsletmeEklePage() {
 
             {/* Preview Card */}
             {step === 3 && (
-              <div className="mb-8 p-6 bg-[#f0f2f5] rounded-lg">
+              <div className="mb-8 p-6 bg-background rounded-lg">
                 <h3 className="text-sm font-semibold text-gray-900 mb-4">
                   Ön İzleme
                 </h3>
-                <div className="bg-white rounded-lg overflow-hidden border border-[#e0e0e0]">
+                <div className="bg-surface rounded-lg overflow-hidden border border-border">
                   {formData.cover && (
                     <div
                       className="w-full object-cover"
@@ -753,7 +753,7 @@ export default function IsletmeEklePage() {
                         <h4 className="font-semibold text-gray-900">
                           {formData.name || 'İşletme Adı'}
                         </h4>
-                        <p className="text-xs text-[#8f8f8f]">
+                        <p className="text-xs text-text-muted">
                           {formData.category || 'Kategori'}
                         </p>
                       </div>
@@ -764,12 +764,12 @@ export default function IsletmeEklePage() {
             )}
 
             {/* Buttons */}
-            <div className="flex gap-4 mt-12 pt-8 border-t border-[#e0e0e0]">
+            <div className="flex gap-4 mt-12 pt-8 border-t border-border">
               {step > 1 && (
                 <button
                   type="button"
                   onClick={() => setStep(step - 1)}
-                  className="flex-1 bg-[#f0f2f5] hover:bg-[#e0e0e0] text-[#333] font-semibold py-3 px-4 rounded-lg transition-colors"
+                  className="flex-1 bg-background hover:bg-[#e0e0e0] text-text-primary font-semibold py-3 px-4 rounded-lg transition-colors"
                 >
                   Geri
                 </button>
@@ -782,8 +782,8 @@ export default function IsletmeEklePage() {
                 disabled={getStepButtonDisabled()}
                 className={`flex-1 font-semibold py-3 px-4 rounded-lg transition-colors ${
                   getStepButtonDisabled()
-                    ? 'bg-[#e0e0e0] text-[#8f8f8f] cursor-not-allowed'
-                    : 'bg-[#00833e] hover:bg-[#006b32] text-white'
+                    ? 'bg-[#e0e0e0] text-text-muted cursor-not-allowed'
+                    : 'bg-primary hover:bg-primary-hover text-white'
                 }`}
               >
                 {step === 4
@@ -795,8 +795,8 @@ export default function IsletmeEklePage() {
             </div>
 
             {submitted && (
-              <div className="mt-6 p-4 bg-[#d1fae5] border border-[#00833e] rounded-lg text-center">
-                <p className="text-[#006b32] font-semibold">
+              <div className="mt-6 p-4 bg-primary-light border border-primary rounded-lg text-center">
+                <p className="text-primary-hover font-semibold">
                   ✓ İşletme başarıyla oluşturuluyor...
                 </p>
               </div>

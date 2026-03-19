@@ -4,9 +4,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function BusinessListingsLoading() {
   return (
-    <div className="flex min-h-screen flex-col bg-[#f0f2f5]">
+    <div className="flex min-h-screen flex-col bg-background">
       {/* Header with filters */}
-      <div className="sticky top-0 z-30 bg-white border-b border-[#e0e0e0] p-4">
+      <div className="sticky top-0 z-30 bg-surface border-b border-border p-4">
         <div className="max-w-7xl mx-auto">
           {/* Title and search */}
           <div className="mb-4">
@@ -28,12 +28,12 @@ export default function BusinessListingsLoading() {
         {/* Grid layout for businesses */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-md transition-shadow">
+            <div key={i} className="bg-surface rounded-lg shadow-sm border border-border overflow-hidden hover:shadow-md transition-shadow">
               {/* Business image/banner */}
               <div className="relative">
                 <Skeleton className="w-full h-40 rounded-none" />
                 {/* Rating badge */}
-                <div className="absolute top-2 right-2 bg-[#00833e] bg-opacity-90 rounded p-2">
+                <div className="absolute top-2 right-2 bg-primary bg-opacity-90 rounded p-2">
                   <Skeleton className="w-12 h-8 rounded" />
                 </div>
               </div>
@@ -57,7 +57,7 @@ export default function BusinessListingsLoading() {
                 </div>
 
                 {/* Hours section */}
-                <div className="pt-3 border-t border-[#e0e0e0]">
+                <div className="pt-3 border-t border-border">
                   <Skeleton className="w-20 h-3 rounded mb-2" />
                   <Skeleton className="w-full h-3 rounded" />
                 </div>

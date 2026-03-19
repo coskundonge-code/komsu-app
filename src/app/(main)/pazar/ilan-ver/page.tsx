@@ -249,36 +249,36 @@ export default function CreateListingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5] py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#333] mb-2">
+          <h1 className="text-3xl font-bold text-text-primary mb-2">
             Yeni İlan Oluştur
           </h1>
-          <p className="text-[#8f8f8f]">
+          <p className="text-text-muted">
             Ürününüzü komşularınızla paylaşın ve satın alabilecek kişiler bulun. Fotoğraf eklemek ilanınıza daha fazla ilgi çeker.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Progress Bar */}
-          <div className="bg-white rounded-lg border border-[#e0e0e0] p-4">
-            <div className="flex justify-between text-xs font-medium text-[#8f8f8f] mb-2">
+          <div className="bg-surface rounded-lg border border-border p-4">
+            <div className="flex justify-between text-xs font-medium text-text-muted mb-2">
               <span>Adım 1/3 - Fotoğraflar</span>
               <span>{Math.round((100 / 3) * (formData.photos.length > 0 ? 1 : 0) + (100 / 3) * (formData.title ? 1 : 0) + (100 / 3) * (formData.category ? 1 : 0))}%</span>
             </div>
             <div className="w-full bg-[#e0e0e0] rounded-full h-2 overflow-hidden">
               <div
-                className="bg-[#00833e] h-full transition-all duration-300"
+                className="bg-primary h-full transition-all duration-300"
                 style={{ width: `${Math.round((100 / 3) * (formData.photos.length > 0 ? 1 : 0) + (100 / 3) * (formData.title ? 1 : 0) + (100 / 3) * (formData.category ? 1 : 0))}%` }}
               ></div>
             </div>
           </div>
 
           {/* Photo Upload Section */}
-          <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-            <label className="block text-sm font-semibold text-[#333] mb-4">
+          <div className="bg-surface rounded-lg border border-border p-6">
+            <label className="block text-sm font-semibold text-text-primary mb-4">
               Fotoğraflar <span className="text-red-500">*</span>
             </label>
 
@@ -290,8 +290,8 @@ export default function CreateListingPage() {
               onDrop={handleDrop}
               className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
                 dragActive
-                  ? 'border-[#00833e] bg-green-50'
-                  : 'border-[#e0e0e0] bg-[#f0f2f5]'
+                  ? 'border-primary bg-green-50'
+                  : 'border-border bg-background'
               } ${errors.photos ? 'border-red-500 bg-red-50' : ''}`}
             >
               <input
@@ -306,14 +306,14 @@ export default function CreateListingPage() {
                 <ImagePlus
                   className={`mx-auto h-12 w-12 mb-3 ${
                     dragActive || errors.photos
-                      ? 'text-[#00833e]'
-                      : 'text-[#8f8f8f]'
+                      ? 'text-primary'
+                      : 'text-text-muted'
                   }`}
                 />
-                <p className="text-sm font-semibold text-[#333]">
+                <p className="text-sm font-semibold text-text-primary">
                   Fotoğraf ekleyin
                 </p>
-                <p className="text-xs text-[#8f8f8f] mt-1">
+                <p className="text-xs text-text-muted mt-1">
                   Sürükle ve bırak ya da tıkla (max 10 fotoğraf)
                 </p>
               </label>
@@ -329,7 +329,7 @@ export default function CreateListingPage() {
                 {formData.photos.map((photo) => (
                   <div
                     key={photo.id}
-                    className="relative aspect-square rounded-lg overflow-hidden border border-[#e0e0e0] hover:border-[#00833e] transition-colors"
+                    className="relative aspect-square rounded-lg overflow-hidden border border-border hover:border-primary transition-colors"
                   >
                     <img
                       src={photo.preview}
@@ -349,22 +349,22 @@ export default function CreateListingPage() {
             )}
 
             <div className="flex justify-between items-center mt-4">
-              <p className="text-xs text-[#8f8f8f]">
+              <p className="text-xs text-text-muted">
                 {formData.photos.length > 0 ? (
                   <>İlk fotoğraf ilan resminde gösterilecek</>
                 ) : (
                   <>Daha fazla fotoğraf = daha fazla ilgi</>
                 )}
               </p>
-              <p className="text-xs font-medium text-[#8f8f8f]">
+              <p className="text-xs font-medium text-text-muted">
                 {formData.photos.length}/10
               </p>
             </div>
           </div>
 
           {/* Title Input */}
-          <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-            <label className="block text-sm font-semibold text-[#333] mb-2">
+          <div className="bg-surface rounded-lg border border-border p-6">
+            <label className="block text-sm font-semibold text-text-primary mb-2">
               İlan Başlığı <span className="text-red-500">*</span>
             </label>
             <input
@@ -375,18 +375,18 @@ export default function CreateListingPage() {
               className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
                 errors.title
                   ? 'border-red-500 focus:ring-red-500'
-                  : 'border-[#e0e0e0] focus:ring-[#00833e]'
+                  : 'border-border focus:ring-primary'
               }`}
             />
             <div className="flex justify-between items-center mt-2">
               <p
                 className={`text-xs ${
-                  errors.title ? 'text-red-600' : 'text-[#8f8f8f]'
+                  errors.title ? 'text-red-600' : 'text-text-muted'
                 }`}
               >
                 {errors.title || 'Ürünü açıklayan net bir başlık yazın'}
               </p>
-              <p className="text-xs font-medium text-[#8f8f8f]">
+              <p className="text-xs font-medium text-text-muted">
                 {formData.title.length}/100
               </p>
             </div>
@@ -395,8 +395,8 @@ export default function CreateListingPage() {
           {/* Category and Condition Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Category */}
-            <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-              <label className="block text-sm font-semibold text-[#333] mb-2">
+            <div className="bg-surface rounded-lg border border-border p-6">
+              <label className="block text-sm font-semibold text-text-primary mb-2">
                 Kategori <span className="text-red-500">*</span>
               </label>
               <div className="relative">
@@ -406,32 +406,32 @@ export default function CreateListingPage() {
                   className={`w-full px-4 py-3 border rounded-lg text-left flex justify-between items-center focus:outline-none focus:ring-2 transition-colors ${
                     errors.category
                       ? 'border-red-500 focus:ring-red-500'
-                      : 'border-[#e0e0e0] focus:ring-[#00833e]'
+                      : 'border-border focus:ring-primary'
                   }`}
                 >
                   <span
                     className={
                       formData.category
-                        ? 'text-[#333]'
-                        : 'text-[#8f8f8f]'
+                        ? 'text-text-primary'
+                        : 'text-text-muted'
                     }
                   >
                     {formData.category || 'Kategori seçin'}
                   </span>
-                  <ChevronDown className="h-4 w-4 text-[#8f8f8f]" />
+                  <ChevronDown className="h-4 w-4 text-text-muted" />
                 </button>
 
                 {showCategoryDropdown && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-10">
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-surface border border-border rounded-lg shadow-lg z-10">
                     {CATEGORIES.map((category) => (
                       <button
                         key={category}
                         type="button"
                         onClick={() => handleCategorySelect(category)}
-                        className={`w-full px-4 py-3 text-left hover:bg-[#f0f2f5] transition-colors ${
+                        className={`w-full px-4 py-3 text-left hover:bg-background transition-colors ${
                           formData.category === category
-                            ? 'bg-[#e6f4ec] text-[#00833e] font-medium'
-                            : 'text-[#404040]'
+                            ? 'bg-primary-light text-primary font-medium'
+                            : 'text-text-secondary'
                         }`}
                       >
                         {category}
@@ -446,8 +446,8 @@ export default function CreateListingPage() {
             </div>
 
             {/* Condition */}
-            <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-              <label className="block text-sm font-semibold text-[#333] mb-3">
+            <div className="bg-surface rounded-lg border border-border p-6">
+              <label className="block text-sm font-semibold text-text-primary mb-3">
                 Durum <span className="text-red-500">*</span>
               </label>
               <div className="space-y-2">
@@ -462,9 +462,9 @@ export default function CreateListingPage() {
                       value={condition.value}
                       checked={formData.condition === condition.value}
                       onChange={() => handleConditionChange(condition.value)}
-                      className="w-4 h-4 text-[#00833e] focus:ring-[#00833e]"
+                      className="w-4 h-4 text-primary focus:ring-primary"
                     />
-                    <span className="ml-3 text-[#404040]">
+                    <span className="ml-3 text-text-secondary">
                       {condition.label}
                     </span>
                   </label>
@@ -477,28 +477,28 @@ export default function CreateListingPage() {
           </div>
 
           {/* Price Section */}
-          <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-            <label className="block text-sm font-semibold text-[#333] mb-3">
+          <div className="bg-surface rounded-lg border border-border p-6">
+            <label className="block text-sm font-semibold text-text-primary mb-3">
               Fiyat <span className="text-red-500">*</span>
             </label>
 
             {/* Free Toggle */}
-            <div className="mb-4 p-3 bg-[#f0f2f5] rounded-lg">
+            <div className="mb-4 p-3 bg-background rounded-lg">
               <label className="flex items-center cursor-pointer">
                 <input
                   type="checkbox"
                   checked={formData.isFree}
                   onChange={handleFreeToggle}
-                  className="w-4 h-4 text-[#00833e] focus:ring-[#00833e] rounded"
+                  className="w-4 h-4 text-primary focus:ring-primary rounded"
                 />
-                <span className="ml-2 text-[#333] font-medium">Ücretsiz olarak veriyorum</span>
+                <span className="ml-2 text-text-primary font-medium">Ücretsiz olarak veriyorum</span>
               </label>
             </div>
 
             {/* Price Input */}
             {!formData.isFree && (
               <div className="relative">
-                <span className="absolute left-4 top-3.5 text-[#8f8f8f] font-semibold">
+                <span className="absolute left-4 top-3.5 text-text-muted font-semibold">
                   ₺
                 </span>
                 <input
@@ -511,7 +511,7 @@ export default function CreateListingPage() {
                   className={`w-full pl-8 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
                     errors.price
                       ? 'border-red-500 focus:ring-red-500'
-                      : 'border-[#e0e0e0] focus:ring-[#00833e]'
+                      : 'border-border focus:ring-primary'
                   }`}
                 />
               </div>
@@ -523,8 +523,8 @@ export default function CreateListingPage() {
           </div>
 
           {/* Description */}
-          <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-            <label className="block text-sm font-semibold text-[#333] mb-2">
+          <div className="bg-surface rounded-lg border border-border p-6">
+            <label className="block text-sm font-semibold text-text-primary mb-2">
               Açıklama <span className="text-red-500">*</span>
             </label>
             <textarea
@@ -535,31 +535,31 @@ export default function CreateListingPage() {
               className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors resize-none ${
                 errors.description
                   ? 'border-red-500 focus:ring-red-500'
-                  : 'border-[#e0e0e0] focus:ring-[#00833e]'
+                  : 'border-border focus:ring-primary'
               }`}
             />
             <div className="flex justify-between items-center mt-2">
               <p
                 className={`text-xs ${
-                  errors.description ? 'text-red-600' : 'text-[#8f8f8f]'
+                  errors.description ? 'text-red-600' : 'text-text-muted'
                 }`}
               >
                 {errors.description || 'Ürün hakkında detaylı bilgi sağlayanlar daha fazla satış yapar'}
               </p>
-              <p className="text-xs font-medium text-[#8f8f8f]">
+              <p className="text-xs font-medium text-text-muted">
                 {formData.description.length}/1000
               </p>
             </div>
           </div>
 
           {/* Location */}
-          <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-            <label className="block text-sm font-semibold text-[#333] mb-3">
+          <div className="bg-surface rounded-lg border border-border p-6">
+            <label className="block text-sm font-semibold text-text-primary mb-3">
               Konum
             </label>
-            <div className="flex items-center gap-3 bg-[#f0f2f5] p-3 rounded-lg">
-              <MapPin className="h-5 w-5 text-[#00833e] flex-shrink-0" />
-              <span className="text-[#333] font-medium flex-grow">
+            <div className="flex items-center gap-3 bg-background p-3 rounded-lg">
+              <MapPin className="h-5 w-5 text-primary flex-shrink-0" />
+              <span className="text-text-primary font-medium flex-grow">
                 {formData.location}
               </span>
               <button
@@ -569,7 +569,7 @@ export default function CreateListingPage() {
                     'Konum değiştirme özelliği henüz uygulanmadı.'
                   )
                 }
-                className="px-3 py-1.5 text-[#00833e] hover:bg-[#e6f4ec] rounded-lg transition-colors text-sm font-medium border border-[#e0e0e0]"
+                className="px-3 py-1.5 text-primary hover:bg-primary-light rounded-lg transition-colors text-sm font-medium border border-border"
               >
                 Değiştir
               </button>
@@ -577,8 +577,8 @@ export default function CreateListingPage() {
           </div>
 
           {/* Delivery Options */}
-          <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-            <label className="block text-sm font-semibold text-[#333] mb-3">
+          <div className="bg-surface rounded-lg border border-border p-6">
+            <label className="block text-sm font-semibold text-text-primary mb-3">
               Teslimat Seçenekleri <span className="text-red-500">*</span>
             </label>
             <div className="space-y-3">
@@ -589,9 +589,9 @@ export default function CreateListingPage() {
                   onChange={(e) =>
                     handleDeliveryChange('pickup', e.target.checked)
                   }
-                  className="w-4 h-4 text-[#00833e] focus:ring-[#00833e] rounded"
+                  className="w-4 h-4 text-primary focus:ring-primary rounded"
                 />
-                <span className="ml-3 text-[#404040]">Elden Teslim (Yüz Yüze)</span>
+                <span className="ml-3 text-text-secondary">Elden Teslim (Yüz Yüze)</span>
               </label>
               <label className="flex items-center cursor-pointer">
                 <input
@@ -600,9 +600,9 @@ export default function CreateListingPage() {
                   onChange={(e) =>
                     handleDeliveryChange('shipping', e.target.checked)
                   }
-                  className="w-4 h-4 text-[#00833e] focus:ring-[#00833e] rounded"
+                  className="w-4 h-4 text-primary focus:ring-primary rounded"
                 />
-                <span className="ml-3 text-[#404040]">Kargo ile Gönderim</span>
+                <span className="ml-3 text-text-secondary">Kargo ile Gönderim</span>
               </label>
             </div>
             {errors.delivery && (
@@ -611,16 +611,16 @@ export default function CreateListingPage() {
           </div>
 
           {/* Preview Section */}
-          <div className="bg-gradient-to-br from-[#f0f2f5] to-[#e6f4ec] rounded-lg border border-[#00833e] border-dashed p-6">
-            <h3 className="text-sm font-semibold text-[#333] mb-4 flex items-center gap-2">
-              <Check className="h-5 w-5 text-[#00833e]" />
+          <div className="bg-gradient-to-br from-[#f0f2f5] to-[#e6f4ec] rounded-lg border border-primary border-dashed p-6">
+            <h3 className="text-sm font-semibold text-text-primary mb-4 flex items-center gap-2">
+              <Check className="h-5 w-5 text-primary" />
               İlan Önizlemesi
             </h3>
 
-            <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-surface rounded-lg border border-border overflow-hidden shadow-sm hover:shadow-md transition-shadow">
               {/* Preview Image */}
               {formData.photos.length > 0 && (
-                <div className="h-48 bg-[#f0f2f5] overflow-hidden">
+                <div className="h-48 bg-background overflow-hidden">
                   <img
                     src={formData.photos[0].preview}
                     alt="Preview"
@@ -629,27 +629,27 @@ export default function CreateListingPage() {
                 </div>
               )}
               {formData.photos.length === 0 && (
-                <div className="h-48 bg-[#f0f2f5] flex items-center justify-center">
-                  <p className="text-[#8f8f8f]">Fotoğraf henüz eklenmedi</p>
+                <div className="h-48 bg-background flex items-center justify-center">
+                  <p className="text-text-muted">Fotoğraf henüz eklenmedi</p>
                 </div>
               )}
 
               {/* Preview Content */}
               <div className="p-4">
-                <h4 className="font-semibold text-[#333] text-lg mb-2 line-clamp-2">
+                <h4 className="font-semibold text-text-primary text-lg mb-2 line-clamp-2">
                   {formData.title || 'İlan Başlığı'}
                 </h4>
 
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <p className="text-2xl font-bold text-[#00833e] mb-0.5">
+                    <p className="text-2xl font-bold text-primary mb-0.5">
                       {formData.isFree ? 'Ücretsiz' : formData.price ? `₺${Number(formData.price).toLocaleString('tr-TR')}` : '₺0'}
                     </p>
-                    <p className="text-sm text-[#8f8f8f]">
+                    <p className="text-sm text-text-muted">
                       {formData.category || 'Kategori'}
                     </p>
                   </div>
-                  <span className="text-xs bg-[#f0f2f5] text-[#333] px-2 py-1 rounded border border-[#e0e0e0]">
+                  <span className="text-xs bg-background text-text-primary px-2 py-1 rounded border border-border">
                     {formData.condition
                       ? CONDITIONS.find((c) => c.value === formData.condition)
                         ?.label
@@ -657,11 +657,11 @@ export default function CreateListingPage() {
                   </span>
                 </div>
 
-                <p className="text-sm text-[#404040] line-clamp-2 mb-3">
+                <p className="text-sm text-text-secondary line-clamp-2 mb-3">
                   {formData.description || 'Açıklama yazın...'}
                 </p>
 
-                <div className="flex items-center gap-2 text-xs text-[#8f8f8f]">
+                <div className="flex items-center gap-2 text-xs text-text-muted">
                   <MapPin className="h-4 w-4" />
                   {formData.location}
                 </div>
@@ -670,11 +670,11 @@ export default function CreateListingPage() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-3 sticky bottom-0 bg-white py-4 px-4 -mx-4 sm:-mx-6 lg:-mx-8 border-t border-[#e0e0e0] shadow-lg">
+          <div className="flex gap-3 sticky bottom-0 bg-surface py-4 px-4 -mx-4 sm:-mx-6 lg:-mx-8 border-t border-border shadow-lg">
             <button
               type="button"
               onClick={handleCancel}
-              className="flex-1 px-4 py-3 border border-[#e0e0e0] text-[#404040] rounded-lg font-medium hover:bg-[#f0f2f5] transition-colors"
+              className="flex-1 px-4 py-3 border border-border text-text-secondary rounded-lg font-medium hover:bg-background transition-colors"
             >
               İptal
             </button>
@@ -683,8 +683,8 @@ export default function CreateListingPage() {
               disabled={!canSubmit()}
               className={`flex-1 px-4 py-3 rounded-lg font-semibold transition-colors ${
                 canSubmit()
-                  ? 'bg-[#00833e] text-white hover:bg-[#006b32] shadow-md'
-                  : 'bg-[#e0e0e0] text-[#8f8f8f] cursor-not-allowed'
+                  ? 'bg-primary text-white hover:bg-primary-hover shadow-md'
+                  : 'bg-[#e0e0e0] text-text-muted cursor-not-allowed'
               }`}
             >
               İlanı Yayınla

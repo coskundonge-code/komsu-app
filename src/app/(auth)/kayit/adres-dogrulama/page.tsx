@@ -139,7 +139,7 @@ export default function AddressVerificationPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left Panel - Brand Section */}
-      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-[#00833e] to-[#006b32] relative overflow-hidden">
+      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-primary to-primary-hover relative overflow-hidden">
         {/* Decorative elements */}
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#00a84d] rounded-full opacity-10" />
         <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-[#004d1f] rounded-full opacity-10" />
@@ -148,8 +148,8 @@ export default function AddressVerificationPage() {
         <div className="relative z-10 flex flex-col justify-center items-center w-full px-12 py-12">
           {/* Logo and Brand Name */}
           <div className="text-center mb-12">
-            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg">
-              <span className="text-3xl font-bold text-[#00833e]">K</span>
+            <div className="w-16 h-16 bg-surface rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg">
+              <span className="text-3xl font-bold text-primary">K</span>
             </div>
             <h2 className="text-4xl font-bold text-white mb-2">Mahallem</h2>
             <p className="text-green-50 text-lg">Mahalle Bağlantısı</p>
@@ -197,10 +197,10 @@ export default function AddressVerificationPage() {
         <div className="w-full max-w-sm mx-auto">
           {/* Logo on mobile */}
           <div className="md:hidden text-center mb-8">
-            <div className="w-14 h-14 bg-[#00833e] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-md">
+            <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-md">
               <span className="text-2xl font-bold text-white">K</span>
             </div>
-            <h1 className="text-2xl font-bold text-[#333]">Mahallem</h1>
+            <h1 className="text-2xl font-bold text-text-primary">Mahallem</h1>
           </div>
 
           {/* Step Indicator */}
@@ -208,21 +208,21 @@ export default function AddressVerificationPage() {
             <div className="flex items-center justify-between gap-2 mb-3">
               {/* Step 1 */}
               <div className="flex flex-col items-center flex-1">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#00833e] text-white text-sm font-semibold mb-2">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white text-sm font-semibold mb-2">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <span className="text-xs text-[#8f8f8f] text-center">Kayıt</span>
+                <span className="text-xs text-text-muted text-center">Kayıt</span>
               </div>
 
               {/* Connector */}
-              <div className="flex-1 h-1 bg-[#00833e] mb-6" />
+              <div className="flex-1 h-1 bg-primary mb-6" />
 
               {/* Step 2 */}
               <div className="flex flex-col items-center flex-1">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#00833e] text-white text-sm font-semibold mb-2">2</div>
-                <span className="text-xs text-[#333] font-semibold text-center">Adres</span>
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white text-sm font-semibold mb-2">2</div>
+                <span className="text-xs text-text-primary font-semibold text-center">Adres</span>
               </div>
 
               {/* Connector */}
@@ -230,16 +230,16 @@ export default function AddressVerificationPage() {
 
               {/* Step 3 */}
               <div className="flex flex-col items-center flex-1">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#e0e0e0] text-[#8f8f8f] text-sm font-semibold mb-2">3</div>
-                <span className="text-xs text-[#8f8f8f] text-center">Profil</span>
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#e0e0e0] text-text-muted text-sm font-semibold mb-2">3</div>
+                <span className="text-xs text-text-muted text-center">Profil</span>
               </div>
             </div>
           </div>
 
           {/* Header */}
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-[#333]">Adresinizi Doğrulayın</h2>
-            <p className="text-[#8f8f8f] text-sm mt-2">Doğru mahallede komşularınızla bağlanın</p>
+            <h2 className="text-3xl font-bold text-text-primary">Adresinizi Doğrulayın</h2>
+            <p className="text-text-muted text-sm mt-2">Doğru mahallede komşularınızla bağlanın</p>
           </div>
 
           {/* Error */}
@@ -253,7 +253,7 @@ export default function AddressVerificationPage() {
           <form onSubmit={handleContinue} className="space-y-5">
             {/* City Selector */}
             <div>
-              <label htmlFor="city" className="block text-sm font-semibold text-[#333] mb-2.5">
+              <label htmlFor="city" className="block text-sm font-semibold text-text-primary mb-2.5">
                 Şehir
               </label>
               <select
@@ -264,7 +264,7 @@ export default function AddressVerificationPage() {
                   setSelectedDistrict('')
                   setSelectedNeighborhood('')
                 }}
-                className="w-full px-4 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] bg-white focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20 transition appearance-none cursor-pointer"
+                className="w-full px-4 py-3 border border-border rounded-xl text-sm text-text-primary bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition appearance-none cursor-pointer"
                 style={{
                   backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238f8f8f' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
                   backgroundRepeat: 'no-repeat',
@@ -283,7 +283,7 @@ export default function AddressVerificationPage() {
 
             {/* District Selector */}
             <div>
-              <label htmlFor="district" className="block text-sm font-semibold text-[#333] mb-2.5">
+              <label htmlFor="district" className="block text-sm font-semibold text-text-primary mb-2.5">
                 İçe Düşen İçerik
               </label>
               <select
@@ -294,7 +294,7 @@ export default function AddressVerificationPage() {
                   setSelectedNeighborhood('')
                 }}
                 disabled={!selectedCity}
-                className="w-full px-4 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] bg-white focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20 transition appearance-none cursor-pointer disabled:bg-[#f0f2f5] disabled:text-[#8f8f8f] disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 border border-border rounded-xl text-sm text-text-primary bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition appearance-none cursor-pointer disabled:bg-background disabled:text-text-muted disabled:cursor-not-allowed"
                 style={{
                   backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238f8f8f' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
                   backgroundRepeat: 'no-repeat',
@@ -313,7 +313,7 @@ export default function AddressVerificationPage() {
 
             {/* Neighborhood Selector */}
             <div>
-              <label htmlFor="neighborhood" className="block text-sm font-semibold text-[#333] mb-2.5">
+              <label htmlFor="neighborhood" className="block text-sm font-semibold text-text-primary mb-2.5">
                 Mahalle
               </label>
               <select
@@ -321,7 +321,7 @@ export default function AddressVerificationPage() {
                 value={selectedNeighborhood}
                 onChange={(e) => setSelectedNeighborhood(e.target.value)}
                 disabled={!selectedDistrict}
-                className="w-full px-4 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] bg-white focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20 transition appearance-none cursor-pointer disabled:bg-[#f0f2f5] disabled:text-[#8f8f8f] disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 border border-border rounded-xl text-sm text-text-primary bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition appearance-none cursor-pointer disabled:bg-background disabled:text-text-muted disabled:cursor-not-allowed"
                 style={{
                   backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238f8f8f' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
                   backgroundRepeat: 'no-repeat',
@@ -340,7 +340,7 @@ export default function AddressVerificationPage() {
 
             {/* Address Detail Textarea */}
             <div>
-              <label htmlFor="addressDetail" className="block text-sm font-semibold text-[#333] mb-2.5">
+              <label htmlFor="addressDetail" className="block text-sm font-semibold text-text-primary mb-2.5">
                 Adres Detayı
               </label>
               <textarea
@@ -349,13 +349,13 @@ export default function AddressVerificationPage() {
                 onChange={(e) => setAddressDetail(e.target.value)}
                 placeholder="Sokak adı, bina numarası, daire numarası vb."
                 rows={4}
-                className="w-full px-4 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20 transition resize-none"
+                className="w-full px-4 py-3 border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition resize-none"
               />
             </div>
 
             {/* Postal Code Input */}
             <div>
-              <label htmlFor="postalCode" className="block text-sm font-semibold text-[#333] mb-2.5">
+              <label htmlFor="postalCode" className="block text-sm font-semibold text-text-primary mb-2.5">
                 Posta Kodu
               </label>
               <input
@@ -365,12 +365,12 @@ export default function AddressVerificationPage() {
                 value={postalCode}
                 onChange={(e) => setPostalCode(e.target.value.replace(/\D/g, ''))}
                 placeholder="34000"
-                className="w-full px-4 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20 transition"
+                className="w-full px-4 py-3 border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
               />
             </div>
 
             {/* Map */}
-            <div className="w-full h-48 rounded-xl overflow-hidden border border-[#e0e0e0]">
+            <div className="w-full h-48 rounded-xl overflow-hidden border border-border">
               <LeafletMap
                 center={[41.0370, 28.9850]}
                 zoom={13}
@@ -383,7 +383,7 @@ export default function AddressVerificationPage() {
             {/* Continue Button */}
             <button
               type="submit"
-              className="w-full bg-[#00833e] hover:bg-[#006b32] text-white font-semibold py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed mt-8 shadow-sm hover:shadow-md flex items-center justify-center gap-2"
+              className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed mt-8 shadow-sm hover:shadow-md flex items-center justify-center gap-2"
             >
               Devam Et
               <ChevronRight className="w-4 h-4" />
@@ -391,8 +391,8 @@ export default function AddressVerificationPage() {
           </form>
 
           {/* Back link */}
-          <div className="mt-8 pt-6 border-t border-[#e0e0e0] text-center">
-            <Link href="/kayit" className="text-sm text-[#00833e] hover:text-[#006b32] font-semibold transition inline-flex items-center gap-1">
+          <div className="mt-8 pt-6 border-t border-border text-center">
+            <Link href="/kayit" className="text-sm text-primary hover:text-primary-hover font-semibold transition inline-flex items-center gap-1">
               <span>← Geri dön</span>
             </Link>
           </div>

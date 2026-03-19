@@ -49,12 +49,12 @@ export default function BusinessPackages({
   };
 
   return (
-    <div className="bg-white rounded-lg border border-[#e0e0e0] p-8">
+    <div className="bg-surface rounded-lg border border-border p-8">
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">
           İşletme Paketleri
         </h2>
-        <p className="text-[#8f8f8f] mb-6">
+        <p className="text-text-muted mb-6">
           İşletmenize en uygun paketi seçin ve komşularınızla bağlantı kurun
         </p>
 
@@ -64,7 +64,7 @@ export default function BusinessPackages({
             className={`text-sm font-medium ${
               billingPeriod === 'monthly'
                 ? 'text-gray-900'
-                : 'text-[#8f8f8f]'
+                : 'text-text-muted'
             }`}
           >
             Aylık
@@ -77,7 +77,7 @@ export default function BusinessPackages({
             }}
           >
             <span
-              className="inline-block h-6 w-6 transform rounded-full bg-white transition-transform"
+              className="inline-block h-6 w-6 transform rounded-full bg-surface transition-transform"
               style={{
                 transform:
                   billingPeriod === 'yearly'
@@ -91,13 +91,13 @@ export default function BusinessPackages({
               className={`text-sm font-medium ${
                 billingPeriod === 'yearly'
                   ? 'text-gray-900'
-                  : 'text-[#8f8f8f]'
+                  : 'text-text-muted'
               }`}
             >
               Yıllık
             </span>
             {billingPeriod === 'yearly' && (
-              <span className="inline-block px-2 py-1 bg-[#d1fae5] text-[#006b32] text-xs font-bold rounded">
+              <span className="inline-block px-2 py-1 bg-primary-light text-primary-hover text-xs font-bold rounded">
                 %20 İndirim
               </span>
             )}
@@ -118,12 +118,12 @@ export default function BusinessPackages({
               className={`relative rounded-lg transition-all duration-300 ${
                 isMostPopular
                   ? 'ring-2 ring-[#00833e] shadow-lg scale-105 md:scale-110'
-                  : 'border border-[#e0e0e0]'
+                  : 'border border-border'
               } ${selectedPackage === pkg.id ? 'ring-2 ring-[#00833e]' : ''}`}
             >
               {isMostPopular && (
                 <div className="absolute -top-3 left-0 right-0 flex justify-center">
-                  <span className="inline-flex items-center gap-1 px-4 py-1 bg-[#00833e] text-white text-xs font-bold rounded-full">
+                  <span className="inline-flex items-center gap-1 px-4 py-1 bg-primary text-white text-xs font-bold rounded-full">
                     <Star className="w-3 h-3 fill-white" />
                     En Popüler
                   </span>
@@ -132,30 +132,30 @@ export default function BusinessPackages({
 
               <div
                 className={`p-6 rounded-lg ${
-                  isMostPopular ? 'bg-white' : 'bg-white'
+                  isMostPopular ? 'bg-surface' : 'bg-surface'
                 }`}
               >
                 {/* Package Header */}
                 <h3 className="text-xl font-bold text-gray-900 mb-2">
                   {pkg.name}
                 </h3>
-                <p className="text-sm text-[#8f8f8f] mb-6">
+                <p className="text-sm text-text-muted mb-6">
                   {pkg.description}
                 </p>
 
                 {/* Price */}
                 <div className="mb-6">
                   <div className="flex items-baseline gap-1 mb-2">
-                    <span className="text-4xl font-bold text-[#00833e]">
+                    <span className="text-4xl font-bold text-primary">
                       {price}
                     </span>
                     <span className="text-lg text-gray-900">₺</span>
-                    <span className="text-sm text-[#8f8f8f] ml-2">
+                    <span className="text-sm text-text-muted ml-2">
                       /{billingPeriod === 'monthly' ? 'ay' : 'yıl'}
                     </span>
                   </div>
                   {savings > 0 && (
-                    <p className="text-xs text-[#00833e] font-medium">
+                    <p className="text-xs text-primary font-medium">
                       ₺{savings} tasarruf edin
                     </p>
                   )}
@@ -171,7 +171,7 @@ export default function BusinessPackages({
                       <Check
                         className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
                           feature.included
-                            ? 'text-[#00833e]'
+                            ? 'text-primary'
                             : 'text-[#e0e0e0]'
                         }`}
                       />
@@ -193,8 +193,8 @@ export default function BusinessPackages({
                   onClick={() => handleSelectPackage(pkg.id)}
                   className={`w-full font-semibold py-3 px-4 rounded-lg transition-colors ${
                     selectedPackage === pkg.id
-                      ? 'bg-[#00833e] hover:bg-[#006b32] text-white'
-                      : 'bg-[#00833e] hover:bg-[#006b32] text-white'
+                      ? 'bg-primary hover:bg-primary-hover text-white'
+                      : 'bg-primary hover:bg-primary-hover text-white'
                   }`}
                 >
                   Seç
@@ -206,7 +206,7 @@ export default function BusinessPackages({
       </div>
 
       {/* Features Comparison Table */}
-      <div className="border-t border-[#e0e0e0] pt-8">
+      <div className="border-t border-border pt-8">
         <h3 className="text-lg font-bold text-gray-900 mb-6">
           Özellikleri Karşılaştır
         </h3>
@@ -214,7 +214,7 @@ export default function BusinessPackages({
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#e0e0e0]">
+              <tr className="border-b border-border">
                 <th className="text-left py-3 px-4 font-semibold text-gray-900">
                   Özellik
                 </th>
@@ -243,7 +243,7 @@ export default function BusinessPackages({
                         className="text-center py-3 px-4"
                       >
                         {pkgFeature?.included ? (
-                          <Check className="w-5 h-5 text-[#00833e] mx-auto" />
+                          <Check className="w-5 h-5 text-primary mx-auto" />
                         ) : (
                           <span className="text-[#e0e0e0] text-xl">–</span>
                         )}
@@ -254,14 +254,14 @@ export default function BusinessPackages({
               ))}
 
               {/* Price Row */}
-              <tr className="bg-[#f0f2f5]">
+              <tr className="bg-background">
                 <td className="py-3 px-4 font-semibold text-gray-900">
                   Fiyat ({billingPeriod === 'monthly' ? 'Aylık' : 'Yıllık'})
                 </td>
                 {packages.map((pkg) => (
                   <td
                     key={`price-${pkg.id}`}
-                    className="text-center py-3 px-4 font-bold text-[#00833e]"
+                    className="text-center py-3 px-4 font-bold text-primary"
                   >
                     {getPrice(pkg.id)}₺
                   </td>
@@ -273,15 +273,15 @@ export default function BusinessPackages({
       </div>
 
       {/* FAQ or Additional Info */}
-      <div className="mt-8 bg-[#f0f2f5] rounded-lg p-6">
+      <div className="mt-8 bg-background rounded-lg p-6">
         <h4 className="font-semibold text-gray-900 mb-3">
           Paket değiştirmek istiyorum?
         </h4>
-        <p className="text-sm text-[#8f8f8f] mb-3">
+        <p className="text-sm text-text-muted mb-3">
           Paketler arasında istediğiniz zaman geçiş yapabilirsiniz. Yükseltirseniz,
           gün olarak hesaplanan kısmı size iade edilecektir.
         </p>
-        <p className="text-xs text-[#8f8f8f]">
+        <p className="text-xs text-text-muted">
           Herhangi bir sorunuz varsa, destek ekibimiz size yardımcı olmaktan
           memnun olacaktır.
         </p>

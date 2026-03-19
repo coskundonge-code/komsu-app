@@ -83,30 +83,30 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
       {/* Mobile Drawer */}
       <div
         className={cn(
-          'fixed left-0 top-0 bottom-0 z-50 w-[280px] bg-white overflow-y-auto transition-transform duration-300 ease-in-out lg:hidden',
+          'fixed left-0 top-0 bottom-0 z-50 w-[280px] bg-surface overflow-y-auto transition-transform duration-300 ease-in-out lg:hidden',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         {/* Header with Close Button */}
-        <div className="sticky top-0 bg-white border-b border-[#e0e0e0] px-4 py-3 flex items-center justify-between">
-          <svg viewBox="0 0 24 24" className="w-6 h-6 text-[#00833e]" fill="currentColor">
+        <div className="sticky top-0 bg-surface border-b border-border px-4 py-3 flex items-center justify-between">
+          <svg viewBox="0 0 24 24" className="w-6 h-6 text-primary" fill="currentColor">
             <path d="M12 3L4 9v12h5v-7h6v7h5V9l-8-6z" />
           </svg>
           <button
             onClick={onClose}
-            className="p-1.5 hover:bg-[#f0f2f5] rounded-full transition-colors"
+            className="p-1.5 hover:bg-background rounded-full transition-colors"
             aria-label="Kapat"
           >
-            <X className="w-5 h-5 text-[#404040]" />
+            <X className="w-5 h-5 text-text-secondary" />
           </button>
         </div>
 
         {/* User Profile Section */}
-        <div className="px-4 py-5 border-b border-[#e0e0e0]">
+        <div className="px-4 py-5 border-b border-border">
           <Link
             href="/profil/me"
             onClick={onClose}
-            className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#f0f2f5] transition-colors"
+            className="flex items-center gap-3 p-3 rounded-lg hover:bg-background transition-colors"
           >
             {/* Avatar */}
             <div className="relative flex-shrink-0">
@@ -120,10 +120,10 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
 
             {/* User Info */}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-[#333] truncate">
+              <p className="text-sm font-semibold text-text-primary truncate">
                 {mockUser.name}
               </p>
-              <p className="text-xs text-[#8f8f8f] truncate">
+              <p className="text-xs text-text-muted truncate">
                 {mockUser.neighborhood}
               </p>
             </div>
@@ -145,8 +145,8 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                   'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200',
                   'text-[15px] font-medium',
                   active
-                    ? 'bg-[#00833e] text-white shadow-md'
-                    : 'text-[#333] hover:bg-[#f0f2f5] hover:text-[#00833e]'
+                    ? 'bg-primary text-white shadow-md'
+                    : 'text-text-primary hover:bg-background hover:text-primary'
                 )}
               >
                 <Icon className={cn(
@@ -160,7 +160,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
         </nav>
 
         {/* Divider */}
-        <div className="mx-2 border-t border-[#e0e0e0]" />
+        <div className="mx-2 border-t border-border" />
 
         {/* Secondary Navigation */}
         <nav className="flex flex-col gap-1 px-2 py-4">
@@ -177,8 +177,8 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                   'flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200',
                   'text-sm',
                   active
-                    ? 'text-[#00833e] font-semibold bg-green-50'
-                    : 'text-[#8f8f8f] hover:text-[#333] hover:bg-[#f0f2f5]'
+                    ? 'text-primary font-semibold bg-green-50'
+                    : 'text-text-muted hover:text-text-primary hover:bg-background'
                 )}
               >
                 <Icon className="w-4 h-4 flex-shrink-0" />
@@ -189,7 +189,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
         </nav>
 
         {/* Logout Button */}
-        <div className="mt-auto pt-4 px-2 pb-6 border-t border-[#e0e0e0]">
+        <div className="mt-auto pt-4 px-2 pb-6 border-t border-border">
           <button
             onClick={handleLogout}
             className={cn(

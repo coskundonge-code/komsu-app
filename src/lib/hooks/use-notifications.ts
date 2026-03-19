@@ -1,0 +1,53 @@
+'use client'
+
+import { createClient as createTypedClient } from '@/lib/supabase/client'
+const createClient = () => createTypedClient() as any
+import type { Database } from '@/lib/supabase/types'
+
+export async function getNotifications(userId: string, options?: { limit?: number; unreadOnly?: boolean }) {
+  const supabase = createClient()
+  let query = supabase
+    .from('notifications')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+
+  if (options?.unreadOnly) query = query.eq('is_read', false)
+  if (options?.limit) query = query.limit(options.limit)
+
+  const { data, error } = await query
+  return { data, error }
+}
+
+export async function markNotificationAsRead(id: string) {
+  const supabase = createClient()
+  const { error } = await supabase.from('notifications').update({ is_read: true } as any).eq('id', id)
+  return { error }
+}
+
+export async function markAllNotificationsAsRead(userId: string) {
+  const supabase = createClient()
+  const { error } = await supabase.from('notifications').update({ is_read: true } as any).eq('user_id', userId).eq('is_read', false)
+  return { error }
+}
+
+export async function getAlerts(neighborhoodId: string, options?: { limit?: number; severity?: string }) {
+  const supabase = createClient()
+  let query = supabase
+    .from('alerts')
+    .select('*, profiles!alerts_created_by_fkey(full_name)')
+    .eq('neighborhood_id', neighborhoodId)
+    .order('created_at', { ascending: false })
+
+  if (options?.severity) query = query.eq('alert_severity', options.severity)
+  if (options?.limit) query = query.limit(options.limit)
+
+  const { data, error } = await query
+  return { data, error }
+}
+
+export async function createAlert(alert: Database['public']['Tables']['alerts']['Insert']) {
+  const supabase = createClient()
+  const { data, error } = await supabase.from('alerts').insert(alert as any).select().single()
+  return { data, error }
+}

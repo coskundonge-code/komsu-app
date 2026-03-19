@@ -259,17 +259,17 @@ export default function KonumSecimi() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-white border-b border-[#e0e0e0] px-4 py-3 sticky top-0 z-50">
+      <div className="bg-surface border-b border-border px-4 py-3 sticky top-0 z-50">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#00833e] rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-sm font-bold text-white">K</span>
             </div>
-            <span className="text-lg font-bold text-[#333]">Mahallem</span>
+            <span className="text-lg font-bold text-text-primary">Mahallem</span>
           </div>
-          <div className="flex items-center gap-2 text-xs text-[#8f8f8f]">
+          <div className="flex items-center gap-2 text-xs text-text-muted">
             <MapPin className="w-3.5 h-3.5" />
             <span>Konum Doğrulama</span>
           </div>
@@ -282,13 +282,13 @@ export default function KonumSecimi() {
           {(['permission', 'select', 'confirm'] as Step[]).map((s, i) => (
             <div key={s} className="flex items-center gap-2">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                step === s ? 'bg-[#00833e] text-white' :
-                (['permission', 'select', 'confirm'].indexOf(step) > i) ? 'bg-[#00833e]/20 text-[#00833e]' :
-                'bg-[#e0e0e0] text-[#8f8f8f]'
+                step === s ? 'bg-primary text-white' :
+                (['permission', 'select', 'confirm'].indexOf(step) > i) ? 'bg-primary/20 text-primary' :
+                'bg-[#e0e0e0] text-text-muted'
               }`}>
                 {(['permission', 'select', 'confirm'].indexOf(step) > i) ? <Check className="w-4 h-4" /> : i + 1}
               </div>
-              {i < 2 && <div className={`w-12 h-0.5 ${(['permission', 'select', 'confirm'].indexOf(step) > i) ? 'bg-[#00833e]/40' : 'bg-[#e0e0e0]'}`} />}
+              {i < 2 && <div className={`w-12 h-0.5 ${(['permission', 'select', 'confirm'].indexOf(step) > i) ? 'bg-primary/40' : 'bg-[#e0e0e0]'}`} />}
             </div>
           ))}
         </div>
@@ -303,28 +303,28 @@ export default function KonumSecimi() {
 
         {/* STEP 1: Permission */}
         {step === 'permission' && (
-          <div className="bg-white rounded-2xl shadow-sm border border-[#e0e0e0] overflow-hidden">
+          <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden">
             <div className="px-6 py-8 text-center">
-              <div className="w-20 h-20 bg-[#00833e]/10 rounded-full flex items-center justify-center mx-auto mb-5">
-                <Navigation className="w-10 h-10 text-[#00833e]" />
+              <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-5">
+                <Navigation className="w-10 h-10 text-primary" />
               </div>
-              <h1 className="text-2xl font-bold text-[#333] mb-2">Konum İzni Gerekli</h1>
-              <p className="text-[#8f8f8f] text-sm mb-6 max-w-md mx-auto">
+              <h1 className="text-2xl font-bold text-text-primary mb-2">Konum İzni Gerekli</h1>
+              <p className="text-text-muted text-sm mb-6 max-w-md mx-auto">
                 Mahallem, size en yakın mahalle topluluğunu gösterebilmek için konum bilginize ihtiyaç duyar.
                 Konum izni vermeden üyelik işleminizi tamamlayamazsınız.
               </p>
 
               <div className="space-y-3 text-left max-w-sm mx-auto mb-8">
                 <div className="flex items-start gap-3 text-sm">
-                  <Shield className="w-5 h-5 text-[#00833e] flex-shrink-0 mt-0.5" />
+                  <Shield className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                   <span className="text-[#555]">Konum bilginiz sadece mahalle eşleştirmesi için kullanılır</span>
                 </div>
                 <div className="flex items-start gap-3 text-sm">
-                  <MapPin className="w-5 h-5 text-[#00833e] flex-shrink-0 mt-0.5" />
+                  <MapPin className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                   <span className="text-[#555]">Haritada konumunuzu doğrulayabilirsiniz</span>
                 </div>
                 <div className="flex items-start gap-3 text-sm">
-                  <Clock className="w-5 h-5 text-[#00833e] flex-shrink-0 mt-0.5" />
+                  <Clock className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                   <span className="text-[#555]">30 gün içinde e-Devlet ile adres doğrulaması yapmanız gerekir</span>
                 </div>
               </div>
@@ -332,7 +332,7 @@ export default function KonumSecimi() {
               <button
                 onClick={requestLocation}
                 disabled={isLoading}
-                className="w-full max-w-sm mx-auto bg-[#00833e] hover:bg-[#006b32] text-white font-semibold py-3.5 rounded-xl text-sm transition disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full max-w-sm mx-auto bg-primary hover:bg-primary-hover text-white font-semibold py-3.5 rounded-xl text-sm transition disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <>
@@ -359,7 +359,7 @@ export default function KonumSecimi() {
                       </p>
                       <button
                         onClick={requestLocation}
-                        className="mt-3 text-sm font-semibold text-[#00833e] hover:text-[#006b32] transition"
+                        className="mt-3 text-sm font-semibold text-primary hover:text-primary-hover transition"
                       >
                         Tekrar Dene
                       </button>
@@ -375,31 +375,31 @@ export default function KonumSecimi() {
         {step === 'select' && (
           <div className="space-y-4">
             {/* Dropdown row */}
-            <div className="bg-white rounded-2xl shadow-sm border border-[#e0e0e0] p-4">
+            <div className="bg-surface rounded-2xl shadow-sm border border-border p-4">
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Province dropdown */}
                 <div className="flex-1 relative" onClick={e => e.stopPropagation()}>
-                  <label className="block text-xs font-semibold text-[#8f8f8f] mb-1.5">İl</label>
+                  <label className="block text-xs font-semibold text-text-muted mb-1.5">İl</label>
                   <button
                     onClick={() => { setShowProvinceDropdown(!showProvinceDropdown); setShowDistrictDropdown(false) }}
-                    className="w-full flex items-center justify-between border border-[#e0e0e0] rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] hover:bg-white transition"
+                    className="w-full flex items-center justify-between border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] hover:bg-surface transition"
                   >
-                    <span className={selectedProvince ? 'text-[#333]' : 'text-[#8f8f8f]'}>
+                    <span className={selectedProvince ? 'text-text-primary' : 'text-text-muted'}>
                       {selectedProvince?.name || 'İl seçin'}
                     </span>
-                    <ChevronDown className="w-4 h-4 text-[#8f8f8f]" />
+                    <ChevronDown className="w-4 h-4 text-text-muted" />
                   </button>
                   {showProvinceDropdown && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#e0e0e0] rounded-xl shadow-lg z-30 max-h-64 overflow-hidden">
-                      <div className="p-2 border-b border-[#e0e0e0]">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-surface border border-border rounded-xl shadow-lg z-30 max-h-64 overflow-hidden">
+                      <div className="p-2 border-b border-border">
                         <div className="relative">
-                          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8f8f8f]" />
+                          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                           <input
                             type="text"
                             value={provinceSearch}
                             onChange={e => setProvinceSearch(e.target.value)}
                             placeholder="İl ara..."
-                            className="w-full pl-8 pr-3 py-2 text-sm border border-[#e0e0e0] rounded-lg focus:outline-none focus:border-[#00833e]"
+                            className="w-full pl-8 pr-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-primary"
                             autoFocus
                           />
                         </div>
@@ -409,8 +409,8 @@ export default function KonumSecimi() {
                           <button
                             key={p.name}
                             onClick={() => handleProvinceSelect(p)}
-                            className={`w-full text-left px-3.5 py-2.5 text-sm hover:bg-[#f0f2f5] transition ${
-                              selectedProvince?.name === p.name ? 'bg-[#00833e]/5 text-[#00833e] font-semibold' : 'text-[#333]'
+                            className={`w-full text-left px-3.5 py-2.5 text-sm hover:bg-background transition ${
+                              selectedProvince?.name === p.name ? 'bg-primary/5 text-primary font-semibold' : 'text-text-primary'
                             }`}
                           >
                             {p.name}
@@ -423,28 +423,28 @@ export default function KonumSecimi() {
 
                 {/* District dropdown */}
                 <div className="flex-1 relative" onClick={e => e.stopPropagation()}>
-                  <label className="block text-xs font-semibold text-[#8f8f8f] mb-1.5">İlçe</label>
+                  <label className="block text-xs font-semibold text-text-muted mb-1.5">İlçe</label>
                   <button
                     onClick={() => { if (selectedProvince) { setShowDistrictDropdown(!showDistrictDropdown); setShowProvinceDropdown(false) } }}
                     disabled={!selectedProvince}
-                    className="w-full flex items-center justify-between border border-[#e0e0e0] rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] hover:bg-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full flex items-center justify-between border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] hover:bg-surface transition disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <span className={selectedDistrict ? 'text-[#333]' : 'text-[#8f8f8f]'}>
+                    <span className={selectedDistrict ? 'text-text-primary' : 'text-text-muted'}>
                       {selectedDistrict?.name || 'İlçe seçin'}
                     </span>
-                    <ChevronDown className="w-4 h-4 text-[#8f8f8f]" />
+                    <ChevronDown className="w-4 h-4 text-text-muted" />
                   </button>
                   {showDistrictDropdown && selectedProvince && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#e0e0e0] rounded-xl shadow-lg z-30 max-h-64 overflow-hidden">
-                      <div className="p-2 border-b border-[#e0e0e0]">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-surface border border-border rounded-xl shadow-lg z-30 max-h-64 overflow-hidden">
+                      <div className="p-2 border-b border-border">
                         <div className="relative">
-                          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8f8f8f]" />
+                          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                           <input
                             type="text"
                             value={districtSearch}
                             onChange={e => setDistrictSearch(e.target.value)}
                             placeholder="İlçe ara..."
-                            className="w-full pl-8 pr-3 py-2 text-sm border border-[#e0e0e0] rounded-lg focus:outline-none focus:border-[#00833e]"
+                            className="w-full pl-8 pr-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-primary"
                             autoFocus
                           />
                         </div>
@@ -454,8 +454,8 @@ export default function KonumSecimi() {
                           <button
                             key={d.name}
                             onClick={() => handleDistrictSelect(d)}
-                            className={`w-full text-left px-3.5 py-2.5 text-sm hover:bg-[#f0f2f5] transition ${
-                              selectedDistrict?.name === d.name ? 'bg-[#00833e]/5 text-[#00833e] font-semibold' : 'text-[#333]'
+                            className={`w-full text-left px-3.5 py-2.5 text-sm hover:bg-background transition ${
+                              selectedDistrict?.name === d.name ? 'bg-primary/5 text-primary font-semibold' : 'text-text-primary'
                             }`}
                           >
                             {d.name}
@@ -471,7 +471,7 @@ export default function KonumSecimi() {
                   <div className="flex items-end">
                     <button
                       onClick={goToMyLocation}
-                      className="flex items-center gap-1.5 border border-[#00833e] text-[#00833e] hover:bg-[#00833e]/5 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition whitespace-nowrap"
+                      className="flex items-center gap-1.5 border border-primary text-primary hover:bg-primary/5 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition whitespace-nowrap"
                       title="Konumuma git"
                     >
                       <LocateFixed className="w-4 h-4" />
@@ -483,13 +483,13 @@ export default function KonumSecimi() {
             </div>
 
             {/* Map */}
-            <div className="bg-white rounded-2xl shadow-sm border border-[#e0e0e0] overflow-hidden relative">
+            <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden relative">
               {/* Map type toggle */}
-              <div className="absolute top-3 right-3 z-20 flex bg-white rounded-lg shadow border border-[#e0e0e0] overflow-hidden">
+              <div className="absolute top-3 right-3 z-20 flex bg-surface rounded-lg shadow border border-border overflow-hidden">
                 <button
                   onClick={() => setMapType('street')}
                   className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold transition ${
-                    mapType === 'street' ? 'bg-[#00833e] text-white' : 'text-[#555] hover:bg-[#f0f2f5]'
+                    mapType === 'street' ? 'bg-primary text-white' : 'text-[#555] hover:bg-background'
                   }`}
                 >
                   <MapIcon className="w-3.5 h-3.5" />
@@ -498,7 +498,7 @@ export default function KonumSecimi() {
                 <button
                   onClick={() => setMapType('satellite')}
                   className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold transition ${
-                    mapType === 'satellite' ? 'bg-[#00833e] text-white' : 'text-[#555] hover:bg-[#f0f2f5]'
+                    mapType === 'satellite' ? 'bg-primary text-white' : 'text-[#555] hover:bg-background'
                   }`}
                 >
                   <Satellite className="w-3.5 h-3.5" />
@@ -518,11 +518,11 @@ export default function KonumSecimi() {
               </div>
 
               {/* Info bar */}
-              <div className="px-4 py-3 bg-[#fafafa] border-t border-[#e0e0e0] flex items-center justify-between">
-                <div className="text-xs text-[#8f8f8f]">
+              <div className="px-4 py-3 bg-[#fafafa] border-t border-border flex items-center justify-between">
+                <div className="text-xs text-text-muted">
                   {pinLat && pinLng ? (
                     <span className="flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-[#00833e]" />
+                      <MapPin className="w-3.5 h-3.5 text-primary" />
                       {selectedProvince?.name || ''}{selectedDistrict ? ` / ${selectedDistrict.name}` : ''}
                       <span className="text-[#b0b0b0] ml-1">({pinLat.toFixed(5)}, {pinLng.toFixed(5)})</span>
                     </span>
@@ -537,7 +537,7 @@ export default function KonumSecimi() {
             <button
               onClick={handleConfirm}
               disabled={!pinLat || !pinLng || !selectedProvince}
-              className="w-full bg-[#00833e] hover:bg-[#006b32] text-white font-semibold py-3.5 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
+              className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3.5 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
             >
               <Check className="w-5 h-5" />
               Konumu Onayla
@@ -547,25 +547,25 @@ export default function KonumSecimi() {
 
         {/* STEP 3: Confirmation */}
         {step === 'confirm' && confirmedLocation && (
-          <div className="bg-white rounded-2xl shadow-sm border border-[#e0e0e0] overflow-hidden">
+          <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden">
             <div className="px-6 py-8 text-center">
-              <div className="w-20 h-20 bg-[#00833e]/10 rounded-full flex items-center justify-center mx-auto mb-5">
-                <Check className="w-10 h-10 text-[#00833e]" />
+              <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-5">
+                <Check className="w-10 h-10 text-primary" />
               </div>
-              <h1 className="text-2xl font-bold text-[#333] mb-2">Konum Onayı</h1>
-              <p className="text-[#8f8f8f] text-sm mb-6">
+              <h1 className="text-2xl font-bold text-text-primary mb-2">Konum Onayı</h1>
+              <p className="text-text-muted text-sm mb-6">
                 Seçtiğiniz konum bilgileri aşağıdadır. Doğru olduğunu onaylayın.
               </p>
 
-              <div className="bg-[#f0f2f5] rounded-xl p-4 max-w-sm mx-auto mb-6 text-left space-y-2">
+              <div className="bg-background rounded-xl p-4 max-w-sm mx-auto mb-6 text-left space-y-2">
                 <div className="flex items-center gap-2 text-sm">
-                  <MapPin className="w-4 h-4 text-[#00833e]" />
-                  <span className="font-semibold text-[#333]">{confirmedLocation.province}</span>
+                  <MapPin className="w-4 h-4 text-primary" />
+                  <span className="font-semibold text-text-primary">{confirmedLocation.province}</span>
                   {confirmedLocation.district && (
                     <span className="text-[#555]">/ {confirmedLocation.district}</span>
                   )}
                 </div>
-                <div className="text-xs text-[#8f8f8f] pl-6">
+                <div className="text-xs text-text-muted pl-6">
                   Koordinatlar: {confirmedLocation.lat.toFixed(5)}, {confirmedLocation.lng.toFixed(5)}
                 </div>
               </div>
@@ -589,7 +589,7 @@ export default function KonumSecimi() {
                 <button
                   onClick={saveLocation}
                   disabled={isSaving}
-                  className="w-full bg-[#00833e] hover:bg-[#006b32] text-white font-semibold py-3.5 rounded-xl text-sm transition disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3.5 rounded-xl text-sm transition disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isSaving ? (
                     <>
@@ -606,7 +606,7 @@ export default function KonumSecimi() {
                 <button
                   onClick={() => setStep('select')}
                   disabled={isSaving}
-                  className="w-full border border-[#e0e0e0] hover:bg-[#f9f9f9] text-[#555] font-semibold py-3 rounded-xl text-sm transition"
+                  className="w-full border border-border hover:bg-surface-hover text-[#555] font-semibold py-3 rounded-xl text-sm transition"
                 >
                   Konumu Değiştir
                 </button>

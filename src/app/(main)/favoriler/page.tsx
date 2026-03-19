@@ -305,14 +305,14 @@ export default function FavorilerPage() {
               placeholder="İşletme adı veya kategori ara..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 rounded-xl border border-[#e0e0e0] focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20 bg-white text-[#333] font-medium"
+              className="w-full pl-12 pr-4 py-4 rounded-xl border border-border focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 bg-surface text-text-primary font-medium"
             />
           </div>
 
           {/* Sort Options */}
           <div className="flex items-center gap-3 flex-wrap">
-            <ArrowUpDown size={20} className="text-[#00833e]" />
-            <span className="font-semibold text-[#333]">Sırala:</span>
+            <ArrowUpDown size={20} className="text-primary" />
+            <span className="font-semibold text-text-primary">Sırala:</span>
             <div className="flex gap-2 flex-wrap">
               {SORT_OPTIONS.map((option) => (
                 <button
@@ -320,8 +320,8 @@ export default function FavorilerPage() {
                   onClick={() => setSortBy(option.id)}
                   className={`px-4 py-2 rounded-full font-semibold text-sm transition-all duration-200 ${
                     sortBy === option.id
-                      ? "bg-[#00833e] text-white border border-[#00833e]"
-                      : "bg-white text-[#404040] border border-[#e0e0e0] hover:border-[#00833e] hover:text-[#00833e]"
+                      ? "bg-primary text-white border border-primary"
+                      : "bg-surface text-text-secondary border border-border hover:border-primary hover:text-primary"
                   }`}
                 >
                   {option.label}
@@ -336,7 +336,7 @@ export default function FavorilerPage() {
           <section className="mb-16">
             <div className="flex items-center gap-3 mb-8">
               <TrendingUp size={28} style={{ color: "#00833e" }} />
-              <h2 className="text-3xl font-bold text-[#333]">
+              <h2 className="text-3xl font-bold text-text-primary">
                 En Çok Tavsiye Edilen İşletmeler
               </h2>
             </div>
@@ -345,7 +345,7 @@ export default function FavorilerPage() {
               {popularBusinesses.map((business) => (
                 <div
                   key={business.id}
-                  className="rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-white hover:border-[#00833e] border border-[#e0e0e0] h-full flex flex-col"
+                  className="rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-surface hover:border-primary border border-border h-full flex flex-col"
                 >
                   {/* Cover Image */}
                   <div className="relative h-44 overflow-hidden bg-gray-100">
@@ -372,9 +372,9 @@ export default function FavorilerPage() {
                         }
                       />
                     </button>
-                    <div className="absolute top-3 left-3 bg-white px-3 py-1 rounded-full flex items-center gap-1">
+                    <div className="absolute top-3 left-3 bg-surface px-3 py-1 rounded-full flex items-center gap-1">
                       <TrendingUp size={14} style={{ color: "#00833e" }} />
-                      <span className="text-xs font-bold text-[#00833e]">
+                      <span className="text-xs font-bold text-primary">
                         Popüler
                       </span>
                     </div>
@@ -391,10 +391,10 @@ export default function FavorilerPage() {
                         />
                       </div>
                       <div className="flex-grow min-w-0">
-                        <h3 className="font-bold text-base text-[#333] line-clamp-2">
+                        <h3 className="font-bold text-base text-text-primary line-clamp-2">
                           {business.name}
                         </h3>
-                        <p className="text-xs text-[#8f8f8f]">
+                        <p className="text-xs text-text-muted">
                           {business.category}
                         </p>
                       </div>
@@ -405,7 +405,7 @@ export default function FavorilerPage() {
                       <div className="flex gap-0.5">
                         {renderStars(business.rating)}
                       </div>
-                      <span className="font-bold text-sm text-[#333]">
+                      <span className="font-bold text-sm text-text-primary">
                         {business.rating}
                       </span>
                     </div>
@@ -414,17 +414,17 @@ export default function FavorilerPage() {
                     <div className="flex items-center gap-2 mb-3">
                       <ThumbsUp
                         size={16}
-                        className="text-[#00833e] flex-shrink-0"
+                        className="text-primary flex-shrink-0"
                       />
-                      <span className="text-sm font-semibold text-[#333]">
+                      <span className="text-sm font-semibold text-text-primary">
                         {business.recommendations} Komşu Tavsiye Etti
                       </span>
                     </div>
 
                     {/* Distance */}
                     <div className="flex items-center gap-1 mb-4">
-                      <MapPin size={16} className="text-[#00833e] flex-shrink-0" />
-                      <span className="text-xs text-[#8f8f8f]">
+                      <MapPin size={16} className="text-primary flex-shrink-0" />
+                      <span className="text-xs text-text-muted">
                         {business.distance}
                       </span>
                     </div>
@@ -435,7 +435,7 @@ export default function FavorilerPage() {
                         backgroundColor: "#00833e",
                         color: "#ffffff",
                       }}
-                      className="w-full py-2 px-3 rounded-lg font-bold text-sm transition-all hover:bg-[#006b32]"
+                      className="w-full py-2 px-3 rounded-lg font-bold text-sm transition-all hover:bg-primary-hover"
                     >
                       Tavsiye Et
                     </button>
@@ -449,8 +449,8 @@ export default function FavorilerPage() {
         {/* Category Filter */}
         <section className="mb-12">
           <div className="flex items-center gap-3 mb-6">
-            <Filter size={24} className="text-[#00833e]" />
-            <h3 className="text-xl font-bold text-[#333]">Kategorilere Göre Filtrele</h3>
+            <Filter size={24} className="text-primary" />
+            <h3 className="text-xl font-bold text-text-primary">Kategorilere Göre Filtrele</h3>
           </div>
           <div className="flex flex-wrap gap-3">
             {CATEGORIES.map((category) => (
@@ -459,8 +459,8 @@ export default function FavorilerPage() {
                 onClick={() => setSelectedCategory(category)}
                 className={`px-5 py-2 rounded-full font-semibold text-sm transition-all duration-200 border ${
                   selectedCategory === category
-                    ? "bg-[#00833e] text-white border-[#00833e]"
-                    : "bg-white text-[#404040] border-[#e0e0e0] hover:border-[#00833e] hover:text-[#00833e]"
+                    ? "bg-primary text-white border-primary"
+                    : "bg-surface text-text-secondary border-border hover:border-primary hover:text-primary"
                 }`}
               >
                 {category}
@@ -471,8 +471,8 @@ export default function FavorilerPage() {
 
         {/* Business Grid - 8+ Items */}
         <section>
-          <h2 className="text-3xl font-bold text-[#333] mb-8 flex items-center gap-3">
-            <span className="w-1 h-10 bg-[#00833e] rounded-full"></span>
+          <h2 className="text-3xl font-bold text-text-primary mb-8 flex items-center gap-3">
+            <span className="w-1 h-10 bg-primary rounded-full"></span>
             {selectedCategory === "Tümü"
               ? "Tüm Mahalle Favorileri"
               : `${selectedCategory} İşletmeleri`}
@@ -483,7 +483,7 @@ export default function FavorilerPage() {
               {sortedBusinesses.map((business) => (
                 <div
                   key={business.id}
-                  className="rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-white hover:border-[#00833e] border border-[#e0e0e0] h-full flex flex-col"
+                  className="rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-surface hover:border-primary border border-border h-full flex flex-col"
                 >
                   {/* Cover Image */}
                   <div className="relative h-44 overflow-hidden bg-gray-100">
@@ -511,8 +511,8 @@ export default function FavorilerPage() {
                       />
                     </button>
                     {favorites[business.id] && (
-                      <div className="absolute top-3 left-3 bg-white px-3 py-1 rounded-full">
-                        <span className="text-xs font-bold text-[#00833e]">
+                      <div className="absolute top-3 left-3 bg-surface px-3 py-1 rounded-full">
+                        <span className="text-xs font-bold text-primary">
                           Favori
                         </span>
                       </div>
@@ -530,10 +530,10 @@ export default function FavorilerPage() {
                         />
                       </div>
                       <div className="flex-grow min-w-0">
-                        <h3 className="font-bold text-base text-[#333] line-clamp-2">
+                        <h3 className="font-bold text-base text-text-primary line-clamp-2">
                           {business.name}
                         </h3>
-                        <p className="text-xs text-[#8f8f8f]">
+                        <p className="text-xs text-text-muted">
                           {business.category}
                         </p>
                       </div>
@@ -544,7 +544,7 @@ export default function FavorilerPage() {
                       <div className="flex gap-0.5">
                         {renderStars(business.rating)}
                       </div>
-                      <span className="font-bold text-sm text-[#333]">
+                      <span className="font-bold text-sm text-text-primary">
                         {business.rating}
                       </span>
                     </div>
@@ -553,17 +553,17 @@ export default function FavorilerPage() {
                     <div className="flex items-center gap-2 mb-3">
                       <ThumbsUp
                         size={16}
-                        className="text-[#00833e] flex-shrink-0"
+                        className="text-primary flex-shrink-0"
                       />
-                      <span className="text-sm font-semibold text-[#333]">
+                      <span className="text-sm font-semibold text-text-primary">
                         {business.recommendations} Komşu Tavsiye Etti
                       </span>
                     </div>
 
                     {/* Distance */}
                     <div className="flex items-center gap-1 mb-4">
-                      <MapPin size={16} className="text-[#00833e] flex-shrink-0" />
-                      <span className="text-xs text-[#8f8f8f]">
+                      <MapPin size={16} className="text-primary flex-shrink-0" />
+                      <span className="text-xs text-text-muted">
                         {business.distance}
                       </span>
                     </div>
@@ -574,7 +574,7 @@ export default function FavorilerPage() {
                         backgroundColor: "#00833e",
                         color: "#ffffff",
                       }}
-                      className="w-full py-2 px-3 rounded-lg font-bold text-sm transition-all hover:bg-[#006b32]"
+                      className="w-full py-2 px-3 rounded-lg font-bold text-sm transition-all hover:bg-primary-hover"
                     >
                       Tavsiye Et
                     </button>
@@ -583,8 +583,8 @@ export default function FavorilerPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 bg-white rounded-xl border border-[#e0e0e0]">
-              <div className="text-[#8f8f8f] text-lg font-semibold mb-2">
+            <div className="text-center py-16 bg-surface rounded-xl border border-border">
+              <div className="text-text-muted text-lg font-semibold mb-2">
                 Sonuç bulunamadı
               </div>
               <div className="text-[#b0b0b0] text-sm">

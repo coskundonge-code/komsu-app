@@ -27,13 +27,13 @@ export function BusinessCard({
   isOpen,
 }: BusinessCardProps) {
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-[#d1fae5] hover:border-[#00833e] hover:scale-105">
+    <div className="bg-surface rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-[#d1fae5] hover:border-primary hover:scale-105">
       {/* Logo Area */}
       <div className="bg-gradient-to-r from-[#e6f4ec] to-green-50 h-32 flex items-center justify-center border-b border-[#d1fae5]">
         {logo ? (
           <img src={logo} alt={name} className="h-24 w-24 object-cover rounded" />
         ) : (
-          <div className="h-24 w-24 bg-[#a7dbb8] rounded flex items-center justify-center text-[#006b32] font-bold text-2xl">
+          <div className="h-24 w-24 bg-[#a7dbb8] rounded flex items-center justify-center text-primary-hover font-bold text-2xl">
             {name.charAt(0)}
           </div>
         )}
@@ -56,7 +56,7 @@ export function BusinessCard({
         </div>
 
         {/* Category */}
-        <p className="text-sm text-[#00833e] font-medium mb-2">{category}</p>
+        <p className="text-sm text-primary font-medium mb-2">{category}</p>
 
         {/* Rating */}
         <div className="flex items-center gap-2 mb-3">
@@ -82,7 +82,7 @@ export function BusinessCard({
 
         {/* Address */}
         <div className="flex gap-2 text-xs text-gray-600 mb-3 line-clamp-2">
-          <MapPin size={14} className="text-[#00833e] flex-shrink-0 mt-0.5" />
+          <MapPin size={14} className="text-primary flex-shrink-0 mt-0.5" />
           <span>{address}</span>
         </div>
 
@@ -90,13 +90,13 @@ export function BusinessCard({
         {(phone || website) && (
           <div className="flex gap-3 border-t border-[#d1fae5] pt-3">
             {phone && (
-              <button className="flex items-center gap-1 text-xs text-[#00833e] hover:text-[#006b32] font-medium">
+              <button className="flex items-center gap-1 text-xs text-primary hover:text-primary-hover font-medium">
                 <Phone size={14} />
                 <span className="hidden sm:inline">Ara</span>
               </button>
             )}
             {website && (
-              <button className="flex items-center gap-1 text-xs text-[#00833e] hover:text-[#006b32] font-medium">
+              <button className="flex items-center gap-1 text-xs text-primary hover:text-primary-hover font-medium">
                 <Globe size={14} />
                 <span className="hidden sm:inline">Web</span>
               </button>

@@ -109,11 +109,11 @@ const UPCOMING_EVENTS = [
 
 export default function IsletmePaneliPage() {
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       {/* Header Section */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-[#333] mb-2">Hoşgeldiniz, Kahvehane Keyif</h1>
-        <p className="text-[#8f8f8f] text-lg">
+        <h1 className="text-4xl font-bold text-text-primary mb-2">Hoşgeldiniz, Kahvehane Keyif</h1>
+        <p className="text-text-muted text-lg">
           İşletmenizin günlük performansını ve müşteri etkileşimini takip edin
         </p>
       </div>
@@ -126,7 +126,7 @@ export default function IsletmePaneliPage() {
           return (
             <div
               key={stat.id}
-              className="bg-white rounded-lg border border-[#e0e0e0] p-6 hover:shadow-md transition-all duration-200"
+              className="bg-surface rounded-lg border border-border p-6 hover:shadow-md transition-all duration-200"
             >
               <div className="flex items-start justify-between mb-4">
                 <div
@@ -135,20 +135,20 @@ export default function IsletmePaneliPage() {
                 >
                   <Icon size={24} color={stat.iconColor} />
                 </div>
-                <div className="flex items-center gap-1 text-[#00833e] font-medium text-sm">
+                <div className="flex items-center gap-1 text-primary font-medium text-sm">
                   <ArrowUpRight size={14} />
                   {stat.change}
                 </div>
               </div>
-              <p className="text-[#8f8f8f] text-sm mb-2">{stat.label}</p>
-              <p className="text-3xl font-bold text-[#333]">{stat.value}</p>
+              <p className="text-text-muted text-sm mb-2">{stat.label}</p>
+              <p className="text-3xl font-bold text-text-primary">{stat.value}</p>
             </div>
           );
         })}
       </div>
 
       {/* Revenue Overview Card */}
-      <div className="bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-lg text-white p-8 mb-8 shadow-lg">
+      <div className="bg-gradient-to-br from-primary to-primary-hover rounded-lg text-white p-8 mb-8 shadow-lg">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-[#d1fae5] text-sm font-medium mb-2">Bu Ayın Toplam Geliri</p>
@@ -167,7 +167,7 @@ export default function IsletmePaneliPage() {
         {/* Progress Bar */}
         <div className="mt-6 bg-[#005a2b] rounded-full h-2">
           <div
-            className="bg-[#d1fae5] h-2 rounded-full transition-all"
+            className="bg-primary-light h-2 rounded-full transition-all"
             style={{ width: '83%' }}
           ></div>
         </div>
@@ -177,15 +177,15 @@ export default function IsletmePaneliPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
         {/* Reviews Section - 2 cols */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+          <div className="bg-surface rounded-lg border border-border p-6">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-[#333]">Son Müşteri Yorumları</h2>
-                <p className="text-sm text-[#8f8f8f] mt-1">En yakın 3 yorum</p>
+                <h2 className="text-xl font-bold text-text-primary">Son Müşteri Yorumları</h2>
+                <p className="text-sm text-text-muted mt-1">En yakın 3 yorum</p>
               </div>
               <Link
                 href="/isletme-paneli/yorumlar"
-                className="text-[#00833e] hover:text-[#006b32] font-medium text-sm flex items-center gap-1"
+                className="text-primary hover:text-primary-hover font-medium text-sm flex items-center gap-1"
               >
                 Tümünü Gör
                 <ChevronRight size={16} />
@@ -196,12 +196,12 @@ export default function IsletmePaneliPage() {
               {RECENT_REVIEWS.map((review) => (
                 <div
                   key={review.id}
-                  className="border-b border-[#e0e0e0] pb-4 last:border-b-0"
+                  className="border-b border-border pb-4 last:border-b-0"
                 >
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <p className="font-semibold text-[#333]">{review.author}</p>
-                      <p className="text-xs text-[#8f8f8f]">
+                      <p className="font-semibold text-text-primary">{review.author}</p>
+                      <p className="text-xs text-text-muted">
                         {new Date(review.date).toLocaleDateString('tr-TR')}
                       </p>
                     </div>
@@ -219,14 +219,14 @@ export default function IsletmePaneliPage() {
                       ))}
                     </div>
                   </div>
-                  <p className="text-[#333] text-sm mb-3">{review.text}</p>
+                  <p className="text-text-primary text-sm mb-3">{review.text}</p>
 
                   {/* Quick Actions */}
                   <div className="flex gap-3">
-                    <button className="text-xs text-[#00833e] hover:text-[#006b32] font-medium hover:underline">
+                    <button className="text-xs text-primary hover:text-primary-hover font-medium hover:underline">
                       Cevap Ver
                     </button>
-                    <button className="text-xs text-[#8f8f8f] hover:text-[#333] font-medium hover:underline">
+                    <button className="text-xs text-text-muted hover:text-text-primary font-medium hover:underline">
                       Raporla
                     </button>
                   </div>
@@ -238,12 +238,12 @@ export default function IsletmePaneliPage() {
 
         {/* Sidebar - Quick Actions */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 h-full">
-            <h3 className="text-lg font-bold text-[#333] mb-4">Hızlı İşlemler</h3>
+          <div className="bg-surface rounded-lg border border-border p-6 h-full">
+            <h3 className="text-lg font-bold text-text-primary mb-4">Hızlı İşlemler</h3>
             <div className="space-y-2">
               <Link
                 href="/isletme-paneli/reklamlar"
-                className="flex items-center gap-2 w-full bg-[#e6f4ec] hover:bg-[#d1fae5] text-[#00833e] font-medium py-3 px-4 rounded-lg transition-colors text-center text-sm justify-center"
+                className="flex items-center gap-2 w-full bg-primary-light hover:bg-primary-light text-primary font-medium py-3 px-4 rounded-lg transition-colors text-center text-sm justify-center"
               >
                 <Plus size={16} />
                 Reklam Oluştur
@@ -261,7 +261,7 @@ export default function IsletmePaneliPage() {
               </button>
               <Link
                 href="/isletme-paneli/istatistikler"
-                className="flex items-center gap-2 w-full bg-[#f0f2f5] hover:bg-[#e0e0e0] text-[#333] font-medium py-3 px-4 rounded-lg transition-colors text-sm justify-center"
+                className="flex items-center gap-2 w-full bg-background hover:bg-[#e0e0e0] text-text-primary font-medium py-3 px-4 rounded-lg transition-colors text-sm justify-center"
               >
                 <BarChart3 size={16} />
                 İstatistikler
@@ -274,8 +274,8 @@ export default function IsletmePaneliPage() {
       {/* This Week's Activity Timeline */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Weekly Activity Timeline */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-          <h2 className="text-xl font-bold text-[#333] mb-6 flex items-center gap-2">
+        <div className="bg-surface rounded-lg border border-border p-6">
+          <h2 className="text-xl font-bold text-text-primary mb-6 flex items-center gap-2">
             <BarChart3 size={20} color="#00833e" />
             Bu Haftanın Aktivitesi
           </h2>
@@ -291,16 +291,16 @@ export default function IsletmePaneliPage() {
               { label: 'Cumartesi', views: 380, messages: 20, reviews: 6 },
               { label: 'Pazar', views: 340, messages: 16, reviews: 4 },
             ].map((item, idx) => (
-              <div key={idx} className="border-l-4 border-[#00833e] pl-4 py-2">
+              <div key={idx} className="border-l-4 border-primary pl-4 py-2">
                 <div className="flex justify-between items-start mb-2">
-                  <span className="text-sm font-semibold text-[#333]">{item.label}</span>
+                  <span className="text-sm font-semibold text-text-primary">{item.label}</span>
                   <div className="flex gap-3 text-xs">
-                    <span className="px-2 py-1 bg-[#e6f4ec] text-[#00833e] rounded">
+                    <span className="px-2 py-1 bg-primary-light text-primary rounded">
                       <Eye size={12} className="inline mr-1" />{item.views}
                     </span>
                   </div>
                 </div>
-                <p className="text-xs text-[#8f8f8f]">
+                <p className="text-xs text-text-muted">
                   {item.messages} mesaj • {item.reviews} yorum
                 </p>
               </div>
@@ -309,8 +309,8 @@ export default function IsletmePaneliPage() {
         </div>
 
         {/* Upcoming Events */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-          <h2 className="text-xl font-bold text-[#333] mb-6 flex items-center gap-2">
+        <div className="bg-surface rounded-lg border border-border p-6">
+          <h2 className="text-xl font-bold text-text-primary mb-6 flex items-center gap-2">
             <Calendar size={20} color="#00833e" />
             Yaklaşan Etkinlikler
           </h2>
@@ -319,15 +319,15 @@ export default function IsletmePaneliPage() {
             {UPCOMING_EVENTS.map((event) => (
               <div
                 key={event.id}
-                className="p-4 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0] hover:border-[#00833e] transition-colors"
+                className="p-4 bg-background rounded-lg border border-border hover:border-primary transition-colors"
               >
                 <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-semibold text-[#333]">{event.title}</h3>
-                  <span className="text-xs bg-[#e6f4ec] text-[#00833e] px-2 py-1 rounded">
+                  <h3 className="font-semibold text-text-primary">{event.title}</h3>
+                  <span className="text-xs bg-primary-light text-primary px-2 py-1 rounded">
                     {event.registered}/{event.capacity}
                   </span>
                 </div>
-                <div className="flex items-center gap-4 text-sm text-[#8f8f8f]">
+                <div className="flex items-center gap-4 text-sm text-text-muted">
                   <div className="flex items-center gap-1">
                     <Calendar size={14} />
                     {new Date(event.date).toLocaleDateString('tr-TR')}
@@ -338,7 +338,7 @@ export default function IsletmePaneliPage() {
                 <div className="mt-2">
                   <div className="w-full bg-[#e0e0e0] rounded-full h-1.5">
                     <div
-                      className="bg-[#00833e] h-1.5 rounded-full"
+                      className="bg-primary h-1.5 rounded-full"
                       style={{ width: `${(event.registered / event.capacity) * 100}%` }}
                     ></div>
                   </div>
@@ -352,17 +352,17 @@ export default function IsletmePaneliPage() {
       {/* Insights Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Performance Summary */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-          <h3 className="text-lg font-bold text-[#333] mb-6">Performans Özeti</h3>
+        <div className="bg-surface rounded-lg border border-border p-6">
+          <h3 className="text-lg font-bold text-text-primary mb-6">Performans Özeti</h3>
           <div className="space-y-4">
             <div>
               <div className="flex justify-between mb-2">
-                <p className="text-sm font-medium text-[#333]">Profil Tamamlama</p>
-                <p className="text-sm font-bold text-[#00833e]">85%</p>
+                <p className="text-sm font-medium text-text-primary">Profil Tamamlama</p>
+                <p className="text-sm font-bold text-primary">85%</p>
               </div>
               <div className="w-full bg-[#e0e0e0] rounded-full h-2">
                 <div
-                  className="bg-[#00833e] h-2 rounded-full"
+                  className="bg-primary h-2 rounded-full"
                   style={{ width: '85%' }}
                 ></div>
               </div>
@@ -370,12 +370,12 @@ export default function IsletmePaneliPage() {
 
             <div>
               <div className="flex justify-between mb-2">
-                <p className="text-sm font-medium text-[#333]">İçerik Kalitesi</p>
-                <p className="text-sm font-bold text-[#00833e]">92%</p>
+                <p className="text-sm font-medium text-text-primary">İçerik Kalitesi</p>
+                <p className="text-sm font-bold text-primary">92%</p>
               </div>
               <div className="w-full bg-[#e0e0e0] rounded-full h-2">
                 <div
-                  className="bg-[#00833e] h-2 rounded-full"
+                  className="bg-primary h-2 rounded-full"
                   style={{ width: '92%' }}
                 ></div>
               </div>
@@ -383,12 +383,12 @@ export default function IsletmePaneliPage() {
 
             <div>
               <div className="flex justify-between mb-2">
-                <p className="text-sm font-medium text-[#333]">Müşteri Memnuniyeti</p>
-                <p className="text-sm font-bold text-[#00833e]">96%</p>
+                <p className="text-sm font-medium text-text-primary">Müşteri Memnuniyeti</p>
+                <p className="text-sm font-bold text-primary">96%</p>
               </div>
               <div className="w-full bg-[#e0e0e0] rounded-full h-2">
                 <div
-                  className="bg-[#00833e] h-2 rounded-full"
+                  className="bg-primary h-2 rounded-full"
                   style={{ width: '96%' }}
                 ></div>
               </div>
@@ -398,8 +398,8 @@ export default function IsletmePaneliPage() {
 
         {/* Tips & Recommendations */}
         <div className="bg-gradient-to-br from-[#e6f4ec] to-[#d1fae5] rounded-lg border border-[#a7dbb8] p-6">
-          <h3 className="text-lg font-bold text-[#004d24] mb-4">Tavsiyeler</h3>
-          <ul className="space-y-3 text-sm text-[#004d24]">
+          <h3 className="text-lg font-bold text-primary mb-4">Tavsiyeler</h3>
+          <ul className="space-y-3 text-sm text-primary">
             <li className="flex gap-3">
               <span className="flex-shrink-0">✓</span>
               <span>Profil fotoğrafınızı yüksek kaliteli bir görselle güncelleyin</span>

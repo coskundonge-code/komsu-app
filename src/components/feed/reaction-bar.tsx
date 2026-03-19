@@ -58,7 +58,7 @@ export function ReactionBar({
         className={cn(
           'flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors',
           active === 'like'
-            ? 'bg-[#d1fae5] text-[#006b32]'
+            ? 'bg-primary-light text-primary-hover'
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
         )}
       >
@@ -74,7 +74,7 @@ export function ReactionBar({
         className={cn(
           'flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors',
           active === 'thanks'
-            ? 'bg-[#d1fae5] text-[#006b32]'
+            ? 'bg-primary-light text-primary-hover'
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
         )}
       >
@@ -87,7 +87,7 @@ export function ReactionBar({
         className={cn(
           'flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors',
           active === 'agree'
-            ? 'bg-[#d1fae5] text-[#006b32]'
+            ? 'bg-primary-light text-primary-hover'
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
         )}
       >
@@ -100,7 +100,7 @@ export function ReactionBar({
         className={cn(
           'flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors',
           active === 'laugh'
-            ? 'bg-[#d1fae5] text-[#006b32]'
+            ? 'bg-primary-light text-primary-hover'
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
         )}
       >
@@ -113,7 +113,7 @@ export function ReactionBar({
         className={cn(
           'flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors',
           active === 'wow'
-            ? 'bg-[#d1fae5] text-[#006b32]'
+            ? 'bg-primary-light text-primary-hover'
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
         )}
       >

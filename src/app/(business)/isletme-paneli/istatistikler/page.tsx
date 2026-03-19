@@ -53,29 +53,29 @@ export default function IstatistiklerPage() {
   const [dateRange, setDateRange] = useState('month');
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       {/* Header Section */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-[#333] mb-2">İstatistikler</h1>
-          <p className="text-[#8f8f8f]">İşletmenizin performansını derinlemesine analiz edin</p>
+          <h1 className="text-4xl font-bold text-text-primary mb-2">İstatistikler</h1>
+          <p className="text-text-muted">İşletmenizin performansını derinlemesine analiz edin</p>
         </div>
-        <button className="flex items-center gap-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium py-2 px-4 rounded-lg transition-colors shadow-md">
+        <button className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-medium py-2 px-4 rounded-lg transition-colors shadow-md">
           <Download size={18} />
           Rapor İndir
         </button>
       </div>
 
       {/* Date Range Selector */}
-      <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 mb-6 flex gap-2 flex-wrap">
+      <div className="bg-surface rounded-lg border border-border p-4 mb-6 flex gap-2 flex-wrap">
         {DATE_RANGES.map((range) => (
           <button
             key={range.value}
             onClick={() => setDateRange(range.value)}
             className={`px-4 py-2 rounded-lg font-medium transition-colors ${
               dateRange === range.value
-                ? 'bg-[#00833e] text-white'
-                : 'bg-[#f0f2f5] text-[#333] hover:bg-[#e0e0e0]'
+                ? 'bg-primary text-white'
+                : 'bg-background text-text-primary hover:bg-[#e0e0e0]'
             }`}
           >
             {range.label}
@@ -101,7 +101,7 @@ export default function IstatistiklerPage() {
           return (
             <div
               key={metric.title}
-              className="bg-white rounded-lg border border-[#e0e0e0] p-6 hover:shadow-md transition-all duration-200"
+              className="bg-surface rounded-lg border border-border p-6 hover:shadow-md transition-all duration-200"
             >
               <div className="flex items-start justify-between mb-4">
                 <div
@@ -115,13 +115,13 @@ export default function IstatistiklerPage() {
                     color={iconColors[metric.title as keyof typeof iconColors]}
                   />
                 </div>
-                <div className="flex items-center gap-1 text-[#00833e] font-medium text-sm">
+                <div className="flex items-center gap-1 text-primary font-medium text-sm">
                   <ArrowUpRight size={14} />
                   {metric.change}
                 </div>
               </div>
-              <p className="text-[#8f8f8f] text-sm mb-1">{metric.title}</p>
-              <p className="text-3xl font-bold text-[#333]">{metric.data}</p>
+              <p className="text-text-muted text-sm mb-1">{metric.title}</p>
+              <p className="text-3xl font-bold text-text-primary">{metric.data}</p>
             </div>
           );
         })}
@@ -130,9 +130,9 @@ export default function IstatistiklerPage() {
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Monthly Views Bar Chart */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+        <div className="bg-surface rounded-lg border border-border p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold text-[#333] flex items-center gap-2">
+            <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
               <BarChart3 size={20} color="#00833e" />
               Aylık Görüntülemeler
             </h2>
@@ -145,19 +145,19 @@ export default function IstatistiklerPage() {
             ].map((item) => (
               <div key={item.month}>
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-medium text-[#333]">{item.month}</span>
-                  <span className="text-xs font-bold text-[#00833e]">{item.views.toLocaleString()}</span>
+                  <span className="text-sm font-medium text-text-primary">{item.month}</span>
+                  <span className="text-xs font-bold text-primary">{item.views.toLocaleString()}</span>
                 </div>
                 <div className="w-full bg-[#e0e0e0] rounded-full h-3">
                   <div
-                    className="bg-[#00833e] h-3 rounded-full transition-all"
+                    className="bg-primary h-3 rounded-full transition-all"
                     style={{ width: `${(item.views / item.max) * 100}%` }}
                   ></div>
                 </div>
               </div>
             ))}
-            <div className="mt-4 pt-3 border-t border-[#e0e0e0]">
-              <p className="text-xs text-[#8f8f8f]">
+            <div className="mt-4 pt-3 border-t border-border">
+              <p className="text-xs text-text-muted">
                 <strong>Ort. Aylık:</strong> 3,300 görüntüleme
               </p>
             </div>
@@ -165,9 +165,9 @@ export default function IstatistiklerPage() {
         </div>
 
         {/* Top Referral Sources */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+        <div className="bg-surface rounded-lg border border-border p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold text-[#333] flex items-center gap-2">
+            <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
               <Users size={20} color="#00833e" />
               En İyi Trafik Kaynakları
             </h2>
@@ -180,18 +180,18 @@ export default function IstatistiklerPage() {
               { source: 'Facebook', visitors: 320, percent: 10 },
               { source: 'Diğer', visitors: 217, percent: 7 },
             ].map((item, idx) => (
-              <div key={idx} className="p-3 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0] hover:border-[#00833e] transition-colors">
+              <div key={idx} className="p-3 bg-background rounded-lg border border-border hover:border-primary transition-colors">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-[#333]">{item.source}</span>
-                  <span className="text-xs font-bold text-[#00833e]">{item.percent}%</span>
+                  <span className="text-sm font-medium text-text-primary">{item.source}</span>
+                  <span className="text-xs font-bold text-primary">{item.percent}%</span>
                 </div>
                 <div className="w-full bg-[#e0e0e0] rounded-full h-1.5">
                   <div
-                    className="bg-[#00833e] h-1.5 rounded-full transition-all"
+                    className="bg-primary h-1.5 rounded-full transition-all"
                     style={{ width: `${item.percent}%` }}
                   ></div>
                 </div>
-                <p className="text-xs text-[#8f8f8f] mt-1">{item.visitors} ziyaretçi</p>
+                <p className="text-xs text-text-muted mt-1">{item.visitors} ziyaretçi</p>
               </div>
             ))}
           </div>
@@ -201,13 +201,13 @@ export default function IstatistiklerPage() {
       {/* Peak Hours Heatmap & Comparison */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Peak Hours Heatmap */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-          <h2 className="text-lg font-bold text-[#333] mb-6 flex items-center gap-2">
+        <div className="bg-surface rounded-lg border border-border p-6">
+          <h2 className="text-lg font-bold text-text-primary mb-6 flex items-center gap-2">
             <Calendar size={20} color="#00833e" />
             Yoğun Saatler Haritası
           </h2>
           <div className="space-y-2">
-            <p className="text-xs text-[#8f8f8f] mb-4">Ziyaretçilerin en aktif olduğu saatler</p>
+            <p className="text-xs text-text-muted mb-4">Ziyaretçilerin en aktif olduğu saatler</p>
             <div className="grid grid-cols-6 gap-1">
               {[
                 { hour: '06:00', activity: 5 },
@@ -233,14 +233,14 @@ export default function IstatistiklerPage() {
                       style={{ backgroundColor: bgColor }}
                       title={`${item.hour}: %${item.activity}`}
                     ></div>
-                    <p className="text-xs text-[#8f8f8f] mt-1">{item.hour}</p>
+                    <p className="text-xs text-text-muted mt-1">{item.hour}</p>
                   </div>
                 );
               })}
             </div>
             <div className="mt-4 flex items-center justify-center gap-4 text-xs">
               <span className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded bg-[#d1fae5]"></div>
+                <div className="w-3 h-3 rounded bg-primary-light"></div>
                 Düşük
               </span>
               <span className="flex items-center gap-2">
@@ -248,7 +248,7 @@ export default function IstatistiklerPage() {
                 Orta
               </span>
               <span className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded bg-[#00833e]"></div>
+                <div className="w-3 h-3 rounded bg-primary"></div>
                 Yüksek
               </span>
             </div>
@@ -256,8 +256,8 @@ export default function IstatistiklerPage() {
         </div>
 
         {/* Period Comparison */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-          <h2 className="text-lg font-bold text-[#333] mb-6 flex items-center gap-2">
+        <div className="bg-surface rounded-lg border border-border p-6">
+          <h2 className="text-lg font-bold text-text-primary mb-6 flex items-center gap-2">
             <TrendingUp size={20} color="#00833e" />
             Önceki Dönem Karşılaştırması
           </h2>
@@ -268,21 +268,21 @@ export default function IstatistiklerPage() {
               { metric: 'Yorum Sayısı', current: 32, previous: 24, change: '+33.3%' },
               { metric: 'Mesaj Sayısı', current: 156, previous: 134, change: '+16.4%' },
             ].map((item, idx) => (
-              <div key={idx} className="p-4 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0]">
+              <div key={idx} className="p-4 bg-background rounded-lg border border-border">
                 <div className="flex justify-between items-start mb-2">
-                  <span className="text-sm font-medium text-[#333]">{item.metric}</span>
-                  <span className="text-xs bg-[#d1fae5] text-[#00833e] px-2 py-1 rounded font-semibold">
+                  <span className="text-sm font-medium text-text-primary">{item.metric}</span>
+                  <span className="text-xs bg-primary-light text-primary px-2 py-1 rounded font-semibold">
                     {item.change}
                   </span>
                 </div>
                 <div className="flex gap-6 text-xs">
                   <div>
-                    <p className="text-[#8f8f8f]">Bu Ay</p>
-                    <p className="text-lg font-bold text-[#333]">{item.current}</p>
+                    <p className="text-text-muted">Bu Ay</p>
+                    <p className="text-lg font-bold text-text-primary">{item.current}</p>
                   </div>
                   <div>
-                    <p className="text-[#8f8f8f]">Geçen Ay</p>
-                    <p className="text-lg font-bold text-[#8f8f8f]">{item.previous}</p>
+                    <p className="text-text-muted">Geçen Ay</p>
+                    <p className="text-lg font-bold text-text-muted">{item.previous}</p>
                   </div>
                 </div>
               </div>
@@ -294,8 +294,8 @@ export default function IstatistiklerPage() {
       {/* Detailed Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Rating Distribution */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-          <h2 className="text-lg font-bold text-[#333] mb-6 flex items-center gap-2">
+        <div className="bg-surface rounded-lg border border-border p-6">
+          <h2 className="text-lg font-bold text-text-primary mb-6 flex items-center gap-2">
             <Star size={20} color="#00833e" />
             Değerlendirme Dağılımı
           </h2>
@@ -310,16 +310,16 @@ export default function IstatistiklerPage() {
               <div key={item.rating}>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-[#333]">
+                    <span className="font-medium text-text-primary">
                       {item.rating} Yıldız
                     </span>
-                    <span className="text-sm text-[#8f8f8f]">({item.count} yorum)</span>
+                    <span className="text-sm text-text-muted">({item.count} yorum)</span>
                   </div>
-                  <span className="font-bold text-[#00833e]">{item.percent}%</span>
+                  <span className="font-bold text-primary">{item.percent}%</span>
                 </div>
                 <div className="w-full bg-[#e0e0e0] rounded-full h-2">
                   <div
-                    className="bg-[#00833e] h-2 rounded-full transition-all"
+                    className="bg-primary h-2 rounded-full transition-all"
                     style={{ width: `${item.percent}%` }}
                   ></div>
                 </div>
@@ -329,8 +329,8 @@ export default function IstatistiklerPage() {
         </div>
 
         {/* Top Performing Days */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-          <h2 className="text-lg font-bold text-[#333] mb-6 flex items-center gap-2">
+        <div className="bg-surface rounded-lg border border-border p-6">
+          <h2 className="text-lg font-bold text-text-primary mb-6 flex items-center gap-2">
             <Award size={20} color="#00833e" />
             En İyi Performans Gösteren Günler
           </h2>
@@ -344,17 +344,17 @@ export default function IstatistiklerPage() {
             ].map((item, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-3 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0] hover:border-[#00833e] transition-colors"
+                className="flex items-center justify-between p-3 bg-background rounded-lg border border-border hover:border-primary transition-colors"
               >
                 <div>
-                  <p className="font-medium text-[#333]">{item.day}</p>
-                  <p className="text-sm text-[#8f8f8f]">
+                  <p className="font-medium text-text-primary">{item.day}</p>
+                  <p className="text-sm text-text-muted">
                     {item.views} görüntüleme • {item.reviews} yorum
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-[#00833e]">{item.views}</p>
-                  <p className="text-xs text-[#8f8f8f]">ziyaretçi</p>
+                  <p className="font-bold text-primary">{item.views}</p>
+                  <p className="text-xs text-text-muted">ziyaretçi</p>
                 </div>
               </div>
             ))}
@@ -365,8 +365,8 @@ export default function IstatistiklerPage() {
       {/* Profile Completion & Analytics */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Profile Completion */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-          <h2 className="text-lg font-bold text-[#333] mb-6 flex items-center gap-2">
+        <div className="bg-surface rounded-lg border border-border p-6">
+          <h2 className="text-lg font-bold text-text-primary mb-6 flex items-center gap-2">
             <Award size={20} color="#00833e" />
             Profil Tamamlanma Durumu
           </h2>
@@ -381,31 +381,31 @@ export default function IstatistiklerPage() {
             ].map((item, idx) => (
               <div key={idx}>
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-medium text-[#333]">{item.section}</span>
-                  <span className="text-xs font-bold text-[#00833e]">{item.percent}%</span>
+                  <span className="text-sm font-medium text-text-primary">{item.section}</span>
+                  <span className="text-xs font-bold text-primary">{item.percent}%</span>
                 </div>
                 <div className="w-full bg-[#e0e0e0] rounded-full h-2">
                   <div
-                    className="bg-[#00833e] h-2 rounded-full transition-all"
+                    className="bg-primary h-2 rounded-full transition-all"
                     style={{ width: `${item.percent}%` }}
                   ></div>
                 </div>
               </div>
             ))}
           </div>
-          <div className="mt-6 p-4 bg-[#e6f4ec] rounded-lg border border-[#a7dbb8]">
-            <p className="text-sm text-[#004d24] font-medium">
+          <div className="mt-6 p-4 bg-primary-light rounded-lg border border-[#a7dbb8]">
+            <p className="text-sm text-primary font-medium">
               Genel Tamamlanma: <span className="font-bold text-lg">92%</span>
             </p>
-            <p className="text-xs text-[#004d24] mt-1">
+            <p className="text-xs text-primary mt-1">
               Sosyal medya bağlantılarınızı ekleyerek profil tamamlanmanızı artırabilirsiniz
             </p>
           </div>
         </div>
 
         {/* Content Performance */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-          <h2 className="text-lg font-bold text-[#333] mb-6 flex items-center gap-2">
+        <div className="bg-surface rounded-lg border border-border p-6">
+          <h2 className="text-lg font-bold text-text-primary mb-6 flex items-center gap-2">
             <TrendingUp size={20} color="#00833e" />
             En İyi Performans Gösteren İçerikler
           </h2>
@@ -418,19 +418,19 @@ export default function IstatistiklerPage() {
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="p-3 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0]"
+                className="p-3 bg-background rounded-lg border border-border"
               >
-                <p className="font-medium text-[#333] text-sm mb-2">{item.content}</p>
+                <p className="font-medium text-text-primary text-sm mb-2">{item.content}</p>
                 <div className="flex gap-4 text-xs">
-                  <div className="flex items-center gap-1 text-[#8f8f8f]">
+                  <div className="flex items-center gap-1 text-text-muted">
                     <Eye size={12} />
                     <span>{item.views} görüntüleme</span>
                   </div>
-                  <div className="flex items-center gap-1 text-[#8f8f8f]">
+                  <div className="flex items-center gap-1 text-text-muted">
                     <Star size={12} />
                     <span>{item.likes} beğeni</span>
                   </div>
-                  <div className="flex items-center gap-1 text-[#8f8f8f]">
+                  <div className="flex items-center gap-1 text-text-muted">
                     <MessageCircle size={12} />
                     <span>{item.comments} yorum</span>
                   </div>
@@ -443,31 +443,31 @@ export default function IstatistiklerPage() {
 
       {/* Export Options */}
       <div className="bg-gradient-to-br from-[#e6f4ec] to-[#d1fae5] rounded-lg border border-[#a7dbb8] p-8">
-        <h2 className="text-lg font-bold text-[#004d24] mb-2">Rapor İndir & Dışa Aktar</h2>
-        <p className="text-sm text-[#004d24] mb-6">
+        <h2 className="text-lg font-bold text-primary mb-2">Rapor İndir & Dışa Aktar</h2>
+        <p className="text-sm text-primary mb-6">
           İstatistik raporlarınızı çeşitli formatlarda indirin veya haftalık özeti e-posta ile alın
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button className="p-4 border-2 border-[#a7dbb8] rounded-lg bg-white hover:border-[#00833e] hover:shadow-md transition-all text-left">
+          <button className="p-4 border-2 border-[#a7dbb8] rounded-lg bg-surface hover:border-primary hover:shadow-md transition-all text-left">
             <div className="flex items-center gap-3 mb-2">
               <FileText size={20} color="#00833e" />
-              <p className="font-semibold text-[#333]">PDF Raporu</p>
+              <p className="font-semibold text-text-primary">PDF Raporu</p>
             </div>
-            <p className="text-sm text-[#8f8f8f]">Detaylı istatistik raporu ve grafikleri</p>
+            <p className="text-sm text-text-muted">Detaylı istatistik raporu ve grafikleri</p>
           </button>
-          <button className="p-4 border-2 border-[#a7dbb8] rounded-lg bg-white hover:border-[#00833e] hover:shadow-md transition-all text-left">
+          <button className="p-4 border-2 border-[#a7dbb8] rounded-lg bg-surface hover:border-primary hover:shadow-md transition-all text-left">
             <div className="flex items-center gap-3 mb-2">
               <Table size={20} color="#00833e" />
-              <p className="font-semibold text-[#333]">Excel Dosyası</p>
+              <p className="font-semibold text-text-primary">Excel Dosyası</p>
             </div>
-            <p className="text-sm text-[#8f8f8f]">Tüm verileri Excel'de analiz et</p>
+            <p className="text-sm text-text-muted">Tüm verileri Excel'de analiz et</p>
           </button>
-          <button className="p-4 border-2 border-[#a7dbb8] rounded-lg bg-white hover:border-[#00833e] hover:shadow-md transition-all text-left">
+          <button className="p-4 border-2 border-[#a7dbb8] rounded-lg bg-surface hover:border-primary hover:shadow-md transition-all text-left">
             <div className="flex items-center gap-3 mb-2">
               <Mail size={20} color="#00833e" />
-              <p className="font-semibold text-[#333]">E-posta Raporu</p>
+              <p className="font-semibold text-text-primary">E-posta Raporu</p>
             </div>
-            <p className="text-sm text-[#8f8f8f]">Haftalık özeti düzenli olarak al</p>
+            <p className="text-sm text-text-muted">Haftalık özeti düzenli olarak al</p>
           </button>
         </div>
       </div>

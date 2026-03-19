@@ -58,7 +58,7 @@ const GROWTH_DATA = [
 ];
 
 const CONTENT_BREAKDOWN = [
-  { name: 'Paylaşımlar', count: 23500, percentage: 44, color: 'bg-[#00833e]' },
+  { name: 'Paylaşımlar', count: 23500, percentage: 44, color: 'bg-primary' },
   { name: 'Yorumlar', count: 15200, percentage: 29, color: 'bg-blue-500' },
   { name: 'Raporlar', count: 8900, percentage: 17, color: 'bg-red-500' },
   { name: 'Diğer', count: 4847, percentage: 10, color: 'bg-gray-400' },
@@ -106,11 +106,11 @@ export default function AdminReportsPage() {
     <div className="min-h-screen">
       <div>
         {/* Header Section */}
-        <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden mb-6 p-6">
+        <div className="bg-surface rounded-lg shadow-sm border border-border overflow-hidden mb-6 p-6">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-[#333]">Raporlar ve Analizler</h1>
-              <p className="text-[#8f8f8f] text-sm mt-1">Platform performansı ve kullanıcı aktiviteleri</p>
+              <h1 className="text-2xl font-bold text-text-primary">Raporlar ve Analizler</h1>
+              <p className="text-text-muted text-sm mt-1">Platform performansı ve kullanıcı aktiviteleri</p>
             </div>
 
             {/* Time Range Selector and Actions */}
@@ -118,7 +118,7 @@ export default function AdminReportsPage() {
               <button
                 onClick={handleRefresh}
                 disabled={isRefreshing}
-                className="flex items-center gap-2 px-4 py-2.5 bg-[#f0f2f5] border border-[#e0e0e0] rounded-lg text-[#333] font-medium text-sm hover:bg-[#e0e0e0] disabled:opacity-50 transition-colors"
+                className="flex items-center gap-2 px-4 py-2.5 bg-background border border-border rounded-lg text-text-primary font-medium text-sm hover:bg-[#e0e0e0] disabled:opacity-50 transition-colors"
                 title="Verileri Yenile"
               >
                 <RefreshCw className={cn('w-4 h-4', isRefreshing && 'animate-spin')} />
@@ -128,14 +128,14 @@ export default function AdminReportsPage() {
               <div className="relative">
                 <button
                   onClick={() => setOpenDropdown(!openDropdown)}
-                  className="flex items-center gap-2 px-4 py-2.5 bg-[#f0f2f5] border border-[#e0e0e0] rounded-lg text-[#333] font-medium text-sm hover:bg-[#e0e0e0] transition-colors"
+                  className="flex items-center gap-2 px-4 py-2.5 bg-background border border-border rounded-lg text-text-primary font-medium text-sm hover:bg-[#e0e0e0] transition-colors"
                 >
                   {selectedLabel}
                   <ChevronDown className={cn('w-4 h-4 transition-transform', openDropdown && 'rotate-180')} />
                 </button>
 
                 {openDropdown && (
-                  <div className="absolute right-0 top-full mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50 min-w-40">
+                  <div className="absolute right-0 top-full mt-2 bg-surface border border-border rounded-lg shadow-lg z-50 min-w-40">
                     {timeRanges.map((range) => (
                       <button
                         key={range.id}
@@ -146,8 +146,8 @@ export default function AdminReportsPage() {
                         className={cn(
                           'w-full text-left px-4 py-3 text-sm transition-colors',
                           selectedRange === range.id
-                            ? 'bg-[#00833e] text-white font-medium'
-                            : 'text-[#404040] hover:bg-[#f0f2f5]'
+                            ? 'bg-primary text-white font-medium'
+                            : 'text-text-secondary hover:bg-background'
                         )}
                       >
                         {range.label}
@@ -160,7 +160,7 @@ export default function AdminReportsPage() {
               <button
                 onClick={handleExport}
                 disabled={isExporting}
-                className="flex items-center gap-2 px-4 py-2.5 bg-[#00833e] text-white rounded-lg hover:bg-[#006b32] disabled:opacity-50 transition-colors font-medium text-sm shadow-sm"
+                className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-primary-hover disabled:opacity-50 transition-colors font-medium text-sm shadow-sm"
               >
                 <Download className="w-4 h-4" />
                 {isExporting ? 'İndiriliyor...' : 'Rapor İndir'}
@@ -177,7 +177,7 @@ export default function AdminReportsPage() {
             return (
               <div
                 key={stat.id}
-                className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-5 hover:shadow-md transition-shadow"
+                className="bg-surface rounded-lg shadow-sm border border-border p-5 hover:shadow-md transition-shadow"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div
@@ -186,10 +186,10 @@ export default function AdminReportsPage() {
                   >
                     <Icon size={20} style={{ color: stat.textColor }} />
                   </div>
-                  <span className="text-sm font-semibold text-[#00833e]">{stat.change}</span>
+                  <span className="text-sm font-semibold text-primary">{stat.change}</span>
                 </div>
-                <p className="text-[#8f8f8f] text-sm mb-1">{stat.label}</p>
-                <p className="text-2xl font-bold text-[#333]">{stat.value}</p>
+                <p className="text-text-muted text-sm mb-1">{stat.label}</p>
+                <p className="text-2xl font-bold text-text-primary">{stat.value}</p>
               </div>
             );
           })}
@@ -198,12 +198,12 @@ export default function AdminReportsPage() {
         {/* Growth Metrics and Content Breakdown */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* Growth Chart */}
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-border p-6">
             <div className="flex items-center gap-2 mb-6">
-              <BarChart3 size={20} className="text-[#00833e]" />
+              <BarChart3 size={20} className="text-primary" />
               <div>
-                <h2 className="text-lg font-bold text-[#333]">Haftalık Büyüme</h2>
-                <p className="text-xs text-[#8f8f8f]">Son 4 hafta eğilimi</p>
+                <h2 className="text-lg font-bold text-text-primary">Haftalık Büyüme</h2>
+                <p className="text-xs text-text-muted">Son 4 hafta eğilimi</p>
               </div>
             </div>
 
@@ -215,12 +215,12 @@ export default function AdminReportsPage() {
                 return (
                   <div key={data.week}>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium text-[#333]">{data.week}</span>
-                      <span className="text-xs text-[#8f8f8f] font-medium">{data.users.toLocaleString('tr-TR')} kullanıcı</span>
+                      <span className="text-sm font-medium text-text-primary">{data.week}</span>
+                      <span className="text-xs text-text-muted font-medium">{data.users.toLocaleString('tr-TR')} kullanıcı</span>
                     </div>
                     <div className="w-full bg-[#e0e0e0] rounded-full h-2.5">
                       <div
-                        className="bg-[#00833e] h-2.5 rounded-full transition-all"
+                        className="bg-primary h-2.5 rounded-full transition-all"
                         style={{ width: `${percentage}%` }}
                       />
                     </div>
@@ -229,18 +229,18 @@ export default function AdminReportsPage() {
               })}
             </div>
 
-            <p className="text-xs text-[#8f8f8f] mt-6 bg-[#f0f2f5] p-3 rounded">
+            <p className="text-xs text-text-muted mt-6 bg-background p-3 rounded">
               <span className="font-medium">Ortalama:</span> {Math.round(GROWTH_DATA.reduce((a, b) => a + b.users, 0) / GROWTH_DATA.length).toLocaleString('tr-TR')} kullanıcı/hafta
             </p>
           </div>
 
           {/* Content Breakdown */}
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-border p-6">
             <div className="flex items-center gap-2 mb-6">
-              <TrendingUp size={20} className="text-[#00833e]" />
+              <TrendingUp size={20} className="text-primary" />
               <div>
-                <h2 className="text-lg font-bold text-[#333]">İçerik Dağılımı</h2>
-                <p className="text-xs text-[#8f8f8f]">Toplam {CONTENT_BREAKDOWN.reduce((a, b) => a + b.count, 0).toLocaleString('tr-TR')} içerik</p>
+                <h2 className="text-lg font-bold text-text-primary">İçerik Dağılımı</h2>
+                <p className="text-xs text-text-muted">Toplam {CONTENT_BREAKDOWN.reduce((a, b) => a + b.count, 0).toLocaleString('tr-TR')} içerik</p>
               </div>
             </div>
 
@@ -248,10 +248,10 @@ export default function AdminReportsPage() {
               {CONTENT_BREAKDOWN.map((item) => (
                 <div key={item.name}>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium text-[#333]">{item.name}</span>
+                    <span className="text-sm font-medium text-text-primary">{item.name}</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-[#333]">{item.percentage}%</span>
-                      <span className="text-xs text-[#8f8f8f]">({item.count.toLocaleString('tr-TR')})</span>
+                      <span className="text-sm font-bold text-text-primary">{item.percentage}%</span>
+                      <span className="text-xs text-text-muted">({item.count.toLocaleString('tr-TR')})</span>
                     </div>
                   </div>
                   <div className="w-full bg-[#e0e0e0] rounded-full h-2.5">
@@ -265,12 +265,12 @@ export default function AdminReportsPage() {
             </div>
 
             {/* Legend */}
-            <div className="mt-6 pt-4 border-t border-[#e0e0e0]">
+            <div className="mt-6 pt-4 border-t border-border">
               <div className="grid grid-cols-2 gap-2 text-xs">
                 {CONTENT_BREAKDOWN.map((item) => (
                   <div key={item.name} className="flex items-center gap-2">
                     <div className={`w-2 h-2 rounded-full ${item.color}`} />
-                    <span className="text-[#404040]">{item.name}</span>
+                    <span className="text-text-secondary">{item.name}</span>
                   </div>
                 ))}
               </div>
@@ -281,8 +281,8 @@ export default function AdminReportsPage() {
         {/* User Activity Heatmap and Top Neighborhoods */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Activity Heatmap */}
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
-            <h2 className="text-lg font-bold text-[#333] mb-6">Saatlik Aktivite Haritası</h2>
+          <div className="bg-surface rounded-lg shadow-sm border border-border p-6">
+            <h2 className="text-lg font-bold text-text-primary mb-6">Saatlik Aktivite Haritası</h2>
 
             <div className="space-y-3">
               {HOURLY_ACTIVITY.map((data) => {
@@ -292,69 +292,69 @@ export default function AdminReportsPage() {
                 return (
                   <div key={data.hour}>
                     <div className="flex items-center gap-3">
-                      <span className="text-sm font-medium text-[#333] w-12">{data.hour}</span>
+                      <span className="text-sm font-medium text-text-primary w-12">{data.hour}</span>
                       <div className="flex-1">
                         <div className="w-full bg-[#e0e0e0] rounded-full h-2.5">
                           <div
-                            className="bg-[#00833e] h-2.5 rounded-full transition-all"
+                            className="bg-primary h-2.5 rounded-full transition-all"
                             style={{ width: `${percentage}%` }}
                           />
                         </div>
                       </div>
-                      <span className="text-xs text-[#8f8f8f] font-medium w-16 text-right">{data.activity} etkinlik</span>
+                      <span className="text-xs text-text-muted font-medium w-16 text-right">{data.activity} etkinlik</span>
                     </div>
                   </div>
                 );
               })}
             </div>
 
-            <p className="text-xs text-[#8f8f8f] mt-6 bg-[#f0f2f5] p-3 rounded">
+            <p className="text-xs text-text-muted mt-6 bg-background p-3 rounded">
               <span className="font-medium">En yüksek aktivite:</span> 16:00 ile 20:00 saatleri arasında
             </p>
           </div>
 
           {/* Top Neighborhoods */}
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
-            <h2 className="text-lg font-bold text-[#333] mb-6">En Aktif Mahalleler</h2>
+          <div className="bg-surface rounded-lg shadow-sm border border-border p-6">
+            <h2 className="text-lg font-bold text-text-primary mb-6">En Aktif Mahalleler</h2>
 
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-[#e0e0e0]">
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[#8f8f8f] uppercase">Sıra</th>
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[#8f8f8f] uppercase">Mahalle</th>
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[#8f8f8f] uppercase">Kullanıcı</th>
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[#8f8f8f] uppercase">Gönderi</th>
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-[#8f8f8f] uppercase">Katılım</th>
+                  <tr className="border-b border-border">
+                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-text-muted uppercase">Sıra</th>
+                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-text-muted uppercase">Mahalle</th>
+                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-text-muted uppercase">Kullanıcı</th>
+                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-text-muted uppercase">Gönderi</th>
+                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-text-muted uppercase">Katılım</th>
                   </tr>
                 </thead>
                 <tbody>
                   {TOP_NEIGHBORHOODS.map((neighborhood) => (
                     <tr
                       key={neighborhood.rank}
-                      className="border-b border-[#e0e0e0] hover:bg-[#f0f2f5] transition-colors"
+                      className="border-b border-border hover:bg-background transition-colors"
                     >
-                      <td className="px-3 py-3 text-sm font-semibold text-[#00833e] w-8">
+                      <td className="px-3 py-3 text-sm font-semibold text-primary w-8">
                         {neighborhood.rank}
                       </td>
-                      <td className="px-3 py-3 text-sm font-medium text-[#333]">
+                      <td className="px-3 py-3 text-sm font-medium text-text-primary">
                         {neighborhood.name}
                       </td>
-                      <td className="px-3 py-3 text-sm text-[#404040]">
+                      <td className="px-3 py-3 text-sm text-text-secondary">
                         {neighborhood.users.toLocaleString('tr-TR')}
                       </td>
-                      <td className="px-3 py-3 text-sm text-[#404040]">
+                      <td className="px-3 py-3 text-sm text-text-secondary">
                         {neighborhood.posts.toLocaleString('tr-TR')}
                       </td>
                       <td className="px-3 py-3">
                         <div className="flex items-center gap-2">
                           <div className="w-full bg-[#e0e0e0] rounded-full h-1.5">
                             <div
-                              className="bg-[#00833e] h-1.5 rounded-full"
+                              className="bg-primary h-1.5 rounded-full"
                               style={{ width: `${neighborhood.engagement}%` }}
                             />
                           </div>
-                          <span className="text-xs font-semibold text-[#333] w-8 text-right">
+                          <span className="text-xs font-semibold text-text-primary w-8 text-right">
                             {neighborhood.engagement}%
                           </span>
                         </div>

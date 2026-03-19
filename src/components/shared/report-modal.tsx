@@ -52,13 +52,13 @@ export function ReportModal({ isOpen, onClose, type, targetId }: ReportModalProp
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-surface rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-[#e0e0e0]">
-          <h2 className="text-lg font-semibold text-[#333]">İçeriği Bildir</h2>
+        <div className="flex items-center justify-between p-6 border-b border-border">
+          <h2 className="text-lg font-semibold text-text-primary">İçeriği Bildir</h2>
           <button
             onClick={onClose}
-            className="text-[#8f8f8f] hover:text-[#333] transition-colors"
+            className="text-text-muted hover:text-text-primary transition-colors"
           >
             <X size={24} />
           </button>
@@ -68,11 +68,11 @@ export function ReportModal({ isOpen, onClose, type, targetId }: ReportModalProp
         <form onSubmit={handleSubmit} className="p-6">
           {isSuccess ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="rounded-full bg-[#00833e]/10 p-3 mb-4">
-                <Check size={32} className="text-[#00833e]" />
+              <div className="rounded-full bg-primary/10 p-3 mb-4">
+                <Check size={32} className="text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-[#333] mb-2">Bildiriminiz alındı</h3>
-              <p className="text-sm text-[#8f8f8f]">
+              <h3 className="text-lg font-semibold text-text-primary mb-2">Bildiriminiz alındı</h3>
+              <p className="text-sm text-text-muted">
                 İçeriği incelememiz için teşekkür ederiz.
               </p>
             </div>
@@ -80,14 +80,14 @@ export function ReportModal({ isOpen, onClose, type, targetId }: ReportModalProp
             <>
               {/* Reason Selection */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-[#333] mb-3">
+                <label className="block text-sm font-medium text-text-primary mb-3">
                   Bildirme nedeniniz
                 </label>
                 <div className="space-y-3">
                   {reasons.map((reason) => (
                     <label
                       key={reason.id}
-                      className="flex items-center p-3 border border-[#e0e0e0] rounded-lg cursor-pointer hover:bg-[#f0f2f5] transition-colors"
+                      className="flex items-center p-3 border border-border rounded-lg cursor-pointer hover:bg-background transition-colors"
                     >
                       <input
                         type="radio"
@@ -97,7 +97,7 @@ export function ReportModal({ isOpen, onClose, type, targetId }: ReportModalProp
                         onChange={(e) => setSelectedReason(e.target.value)}
                         className="w-4 h-4 accent-[#00833e]"
                       />
-                      <span className="ml-3 text-sm text-[#333]">{reason.label}</span>
+                      <span className="ml-3 text-sm text-text-primary">{reason.label}</span>
                     </label>
                   ))}
                 </div>
@@ -105,14 +105,14 @@ export function ReportModal({ isOpen, onClose, type, targetId }: ReportModalProp
 
               {/* Details Textarea */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-[#333] mb-2">
+                <label className="block text-sm font-medium text-text-primary mb-2">
                   Ek detaylar (isteğe bağlı)
                 </label>
                 <textarea
                   value={details}
                   onChange={(e) => setDetails(e.target.value)}
                   placeholder="Daha fazla bilgi sağlayın..."
-                  className="w-full px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:border-[#00833e] text-[#333] placeholder-[#8f8f8f] resize-none"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:border-primary text-text-primary placeholder:text-text-muted resize-none"
                   rows={4}
                 />
               </div>
@@ -121,7 +121,7 @@ export function ReportModal({ isOpen, onClose, type, targetId }: ReportModalProp
               <button
                 type="submit"
                 disabled={!selectedReason || isLoading}
-                className="w-full py-2.5 bg-[#00833e] hover:bg-[#006b32] disabled:bg-[#8f8f8f] text-white font-medium rounded-lg transition-colors disabled:opacity-60"
+                className="w-full py-2.5 bg-primary hover:bg-primary-hover disabled:bg-[#8f8f8f] text-white font-medium rounded-lg transition-colors disabled:opacity-60"
               >
                 {isLoading ? 'Gönderiliyor...' : 'Bildir'}
               </button>
@@ -130,7 +130,7 @@ export function ReportModal({ isOpen, onClose, type, targetId }: ReportModalProp
               <button
                 type="button"
                 onClick={onClose}
-                className="w-full mt-2 py-2.5 bg-[#f0f2f5] hover:bg-[#e0e0e0] text-[#333] font-medium rounded-lg transition-colors"
+                className="w-full mt-2 py-2.5 bg-background hover:bg-[#e0e0e0] text-text-primary font-medium rounded-lg transition-colors"
               >
                 İptal
               </button>

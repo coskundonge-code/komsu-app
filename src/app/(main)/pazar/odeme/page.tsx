@@ -101,7 +101,7 @@ function PaymentPageContent() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-surface border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <button
             onClick={() => router.back()}
@@ -118,7 +118,7 @@ function PaymentPageContent() {
         <div className="grid md:grid-cols-2 gap-8">
           {/* Left Column - Order Summary */}
           <div>
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="bg-surface rounded-lg shadow-sm border border-gray-200 p-6">
               <h2 className="text-lg font-bold text-gray-900 mb-6">Sipariş Özeti</h2>
 
               {/* Item */}
@@ -157,7 +157,7 @@ function PaymentPageContent() {
                 </div>
                 <div className="flex justify-between items-baseline pt-4 border-t border-gray-200">
                   <span className="font-semibold text-gray-900">Toplam</span>
-                  <span className="text-2xl font-bold text-[#00833e]">{amount}₺</span>
+                  <span className="text-2xl font-bold text-primary">{amount}₺</span>
                 </div>
               </div>
 
@@ -183,15 +183,15 @@ function PaymentPageContent() {
           {/* Right Column - Payment States */}
           <div>
             {paymentState === 'initial' && (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="bg-surface rounded-lg shadow-sm border border-gray-200 p-6">
                 <h2 className="text-lg font-bold text-gray-900 mb-6">Ödeme Yöntemi</h2>
 
                 <div className="space-y-3">
                   <button
                     onClick={() => setIsPaymentModalOpen(true)}
-                    className="w-full p-4 border-2 border-gray-300 rounded-lg text-left hover:border-[#00833e] hover:bg-green-50 transition-all group"
+                    className="w-full p-4 border-2 border-gray-300 rounded-lg text-left hover:border-primary hover:bg-green-50 transition-all group"
                   >
-                    <p className="font-semibold text-gray-900 group-hover:text-[#00833e]">
+                    <p className="font-semibold text-gray-900 group-hover:text-primary">
                       Kredi/Banka Kartı
                     </p>
                     <p className="text-sm text-gray-600">Anında ödeme</p>
@@ -199,9 +199,9 @@ function PaymentPageContent() {
 
                   <button
                     onClick={() => setIsPaymentModalOpen(true)}
-                    className="w-full p-4 border-2 border-gray-300 rounded-lg text-left hover:border-[#00833e] hover:bg-green-50 transition-all group"
+                    className="w-full p-4 border-2 border-gray-300 rounded-lg text-left hover:border-primary hover:bg-green-50 transition-all group"
                   >
-                    <p className="font-semibold text-gray-900 group-hover:text-[#00833e]">
+                    <p className="font-semibold text-gray-900 group-hover:text-primary">
                       Havale / EFT
                     </p>
                     <p className="text-sm text-gray-600">Banka hesabına aktarım</p>
@@ -212,7 +212,7 @@ function PaymentPageContent() {
                   <label className="flex items-start gap-2 text-xs text-gray-600">
                     <input type="checkbox" defaultChecked className="mt-1" />
                     <span>
-                      <a href="#" className="text-[#00833e] hover:underline font-semibold">
+                      <a href="#" className="text-primary hover:underline font-semibold">
                         Şartları ve Koşulları
                       </a>{' '}
                       kabul ediyorum.
@@ -222,7 +222,7 @@ function PaymentPageContent() {
 
                 <button
                   onClick={() => setIsPaymentModalOpen(true)}
-                  className="w-full mt-6 py-3 px-4 bg-[#00833e] text-white font-semibold rounded-lg hover:bg-[#006b2f] transition-colors"
+                  className="w-full mt-6 py-3 px-4 bg-primary text-white font-semibold rounded-lg hover:bg-[#006b2f] transition-colors"
                 >
                   Ödemeye Devam Et
                 </button>
@@ -230,9 +230,9 @@ function PaymentPageContent() {
             )}
 
             {paymentState === 'processing' && (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+              <div className="bg-surface rounded-lg shadow-sm border border-gray-200 p-8 text-center">
                 <div className="flex justify-center mb-4">
-                  <Loader2 className="w-12 h-12 text-[#00833e] animate-spin" />
+                  <Loader2 className="w-12 h-12 text-primary animate-spin" />
                 </div>
                 <p className="text-lg font-semibold text-gray-900 mb-2">
                   Ödemeniz işleniyor...
@@ -242,7 +242,7 @@ function PaymentPageContent() {
             )}
 
             {paymentState === 'success' && (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+              <div className="bg-surface rounded-lg shadow-sm border border-gray-200 p-8 text-center">
                 <div className="flex justify-center mb-4">
                   <div className="bg-green-100 rounded-full p-3">
                     <CheckCircle2 className="w-12 h-12 text-green-600" />
@@ -255,7 +255,7 @@ function PaymentPageContent() {
             )}
 
             {paymentState === 'error' && (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="bg-surface rounded-lg shadow-sm border border-gray-200 p-6">
                 <div className="flex items-start gap-3 mb-4">
                   <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0" />
                   <div>
@@ -268,7 +268,7 @@ function PaymentPageContent() {
                     setPaymentState('initial');
                     setErrorMessage('');
                   }}
-                  className="w-full mt-4 py-2 px-4 bg-[#00833e] text-white font-semibold rounded-lg hover:bg-[#006b2f] transition-colors"
+                  className="w-full mt-4 py-2 px-4 bg-primary text-white font-semibold rounded-lg hover:bg-[#006b2f] transition-colors"
                 >
                   Tekrar Deneyin
                 </button>

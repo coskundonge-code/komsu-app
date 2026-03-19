@@ -75,12 +75,12 @@ export default function HelpPage() {
     : [];
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-[#00833e] to-[#006b32] text-white py-20 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -mr-20 -mt-20"></div>
-        <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full -ml-16 -mb-16"></div>
-        <div className="absolute top-1/2 right-1/4 w-24 h-24 bg-white/3 rounded-full"></div>
+      <div className="bg-gradient-to-br from-primary to-primary-hover text-white py-20 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-40 h-40 bg-surface/5 rounded-full -mr-20 -mt-20"></div>
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-surface/5 rounded-full -ml-16 -mb-16"></div>
+        <div className="absolute top-1/2 right-1/4 w-24 h-24 bg-surface/3 rounded-full"></div>
 
         <div className="max-w-5xl mx-auto px-4 text-center relative z-10">
           <HelpCircle className="w-16 h-16 mx-auto mb-4" />
@@ -95,7 +95,7 @@ export default function HelpPage() {
               placeholder="Sorunuzu arayın..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 bg-white text-[#333] rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg"
+              className="w-full pl-12 pr-4 py-4 bg-surface text-text-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg"
             />
           </div>
         </div>
@@ -105,16 +105,16 @@ export default function HelpPage() {
         {/* Search Results */}
         {searchQuery.length > 2 && searchResults.length > 0 && (
           <div className="mb-12">
-            <h2 className="text-2xl font-bold text-[#333] mb-6 flex items-center gap-2">
-              <Lightbulb className="w-6 h-6 text-[#00833e]" />
+            <h2 className="text-2xl font-bold text-text-primary mb-6 flex items-center gap-2">
+              <Lightbulb className="w-6 h-6 text-primary" />
               Arama Sonuçları ({searchResults.length})
             </h2>
             <div className="space-y-3">
               {searchResults.map((result, i) => (
-                <div key={i} className="bg-white border border-[#e0e0e0] rounded-lg p-5 hover:shadow-md transition-shadow">
-                  <p className="text-xs text-[#00833e] font-semibold mb-2 uppercase">{result.category}</p>
-                  <h3 className="font-bold text-[#333] mb-2">{result.q}</h3>
-                  <p className="text-sm text-[#8f8f8f] line-clamp-2">{result.a}</p>
+                <div key={i} className="bg-surface border border-border rounded-lg p-5 hover:shadow-md transition-shadow">
+                  <p className="text-xs text-primary font-semibold mb-2 uppercase">{result.category}</p>
+                  <h3 className="font-bold text-text-primary mb-2">{result.q}</h3>
+                  <p className="text-sm text-text-muted line-clamp-2">{result.a}</p>
                 </div>
               ))}
             </div>
@@ -125,7 +125,7 @@ export default function HelpPage() {
           <>
             {/* Category Cards */}
             <div className="mb-12">
-              <h2 className="text-2xl font-bold text-[#333] mb-6">Yardım Kategorileri</h2>
+              <h2 className="text-2xl font-bold text-text-primary mb-6">Yardım Kategorileri</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {categories.map((cat) => {
                   const Icon = cat.icon;
@@ -133,12 +133,12 @@ export default function HelpPage() {
                     <Link
                       key={cat.slug}
                       href={`/yardim/kategori/${cat.slug}`}
-                      className="group bg-white border-2 border-[#e0e0e0] rounded-lg p-5 hover:border-[#00833e] hover:shadow-lg transition-all duration-200"
+                      className="group bg-surface border-2 border-border rounded-lg p-5 hover:border-primary hover:shadow-lg transition-all duration-200"
                     >
                       <div className="flex flex-col items-center justify-center">
-                        <Icon className="w-8 h-8 text-[#00833e] mb-3 group-hover:scale-110 transition-transform" />
-                        <span className="text-sm font-bold text-center text-[#333] leading-tight mb-2">{cat.title}</span>
-                        <span className="text-xs text-[#8f8f8f]">{cat.count} makale</span>
+                        <Icon className="w-8 h-8 text-primary mb-3 group-hover:scale-110 transition-transform" />
+                        <span className="text-sm font-bold text-center text-text-primary leading-tight mb-2">{cat.title}</span>
+                        <span className="text-xs text-text-muted">{cat.count} makale</span>
                       </div>
                     </Link>
                   );
@@ -148,13 +148,13 @@ export default function HelpPage() {
 
             {/* Popular Articles Section */}
             <div className="mb-12">
-              <h2 className="text-2xl font-bold text-[#333] mb-6">Sık Aranan Makaleler</h2>
+              <h2 className="text-2xl font-bold text-text-primary mb-6">Sık Aranan Makaleler</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {popularArticles.map((article, idx) => (
-                  <div key={idx} className="bg-white border border-[#e0e0e0] rounded-lg p-5 hover:shadow-md transition-shadow">
-                    <p className="text-xs text-[#00833e] font-semibold mb-2 uppercase">{article.category}</p>
-                    <h3 className="font-bold text-[#333] mb-3 line-clamp-2">{article.title}</h3>
-                    <p className="text-xs text-[#8f8f8f]">👁 {article.views.toLocaleString("tr-TR")} kişi bunu okudu</p>
+                  <div key={idx} className="bg-surface border border-border rounded-lg p-5 hover:shadow-md transition-shadow">
+                    <p className="text-xs text-primary font-semibold mb-2 uppercase">{article.category}</p>
+                    <h3 className="font-bold text-text-primary mb-3 line-clamp-2">{article.title}</h3>
+                    <p className="text-xs text-text-muted">👁 {article.views.toLocaleString("tr-TR")} kişi bunu okudu</p>
                   </div>
                 ))}
               </div>
@@ -162,17 +162,17 @@ export default function HelpPage() {
 
             {/* Stats Section */}
             <div className="grid grid-cols-3 gap-4 mb-12">
-              <div className="bg-white border border-[#e0e0e0] rounded-lg p-6 text-center">
-                <div className="text-3xl font-bold text-[#00833e] mb-2">5,000+</div>
-                <p className="text-sm text-[#8f8f8f]">Çözülen Sorun</p>
+              <div className="bg-surface border border-border rounded-lg p-6 text-center">
+                <div className="text-3xl font-bold text-primary mb-2">5,000+</div>
+                <p className="text-sm text-text-muted">Çözülen Sorun</p>
               </div>
-              <div className="bg-white border border-[#e0e0e0] rounded-lg p-6 text-center">
-                <div className="text-3xl font-bold text-[#00833e] mb-2">7/24</div>
-                <p className="text-sm text-[#8f8f8f]">Destek Hizmeti</p>
+              <div className="bg-surface border border-border rounded-lg p-6 text-center">
+                <div className="text-3xl font-bold text-primary mb-2">7/24</div>
+                <p className="text-sm text-text-muted">Destek Hizmeti</p>
               </div>
-              <div className="bg-white border border-[#e0e0e0] rounded-lg p-6 text-center">
-                <div className="text-3xl font-bold text-[#00833e] mb-2">2 dk</div>
-                <p className="text-sm text-[#8f8f8f]">Ortalama Yanıt</p>
+              <div className="bg-surface border border-border rounded-lg p-6 text-center">
+                <div className="text-3xl font-bold text-primary mb-2">2 dk</div>
+                <p className="text-sm text-text-muted">Ortalama Yanıt</p>
               </div>
             </div>
           </>
@@ -181,12 +181,12 @@ export default function HelpPage() {
         {/* No Results */}
         {searchQuery.length > 2 && searchResults.length === 0 && (
           <div className="text-center py-16">
-            <AlertCircle className="w-16 h-16 text-[#8f8f8f] mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-[#333] mb-2">Sonuç bulunamadı</h3>
-            <p className="text-[#8f8f8f] mb-8">"{searchQuery}" için bir sonuç bulamadık.</p>
+            <AlertCircle className="w-16 h-16 text-text-muted mx-auto mb-4" />
+            <h3 className="text-lg font-bold text-text-primary mb-2">Sonuç bulunamadı</h3>
+            <p className="text-text-muted mb-8">"{searchQuery}" için bir sonuç bulamadık.</p>
             <button
               onClick={() => setSearchQuery("")}
-              className="px-6 py-3 bg-[#00833e] text-white rounded-lg font-medium hover:bg-[#006b32] transition-colors"
+              className="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-hover transition-colors"
             >
               Aramayı Temizle
             </button>
@@ -195,13 +195,13 @@ export default function HelpPage() {
 
         {/* Contact Support Section */}
         {!searchQuery && (
-          <div className="bg-gradient-to-br from-[#00833e] to-[#006b32] border-0 rounded-lg p-8 md:p-12 text-center text-white">
+          <div className="bg-gradient-to-br from-primary to-primary-hover border-0 rounded-lg p-8 md:p-12 text-center text-white">
             <MessageCircle className="w-12 h-12 mx-auto mb-4" />
             <h3 className="text-2xl font-bold mb-3">Hâlâ Yardıma İhtiyacınız Var mı?</h3>
             <p className="text-green-100 mb-8 max-w-lg mx-auto">Sorunuzu bulamadıysanız, destek ekibimiz size 2 dakika içinde yanıt vermeye hazırdır.</p>
             <Link
               href="/iletisim"
-              className="inline-block px-8 py-4 bg-white text-[#00833e] font-bold rounded-lg hover:bg-gray-100 transition-colors shadow-lg"
+              className="inline-block px-8 py-4 bg-surface text-primary font-bold rounded-lg hover:bg-gray-100 transition-colors shadow-lg"
             >
               Destek ile İletişime Geç
             </Link>

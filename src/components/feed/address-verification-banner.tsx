@@ -101,14 +101,14 @@ export function AddressVerificationBanner({
           <div className="flex items-center gap-2 flex-wrap">
             <Link
               href="/adres-dogrulama"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#00833e] text-white text-sm font-medium rounded-lg hover:bg-[#006b32] transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-hover transition-colors"
             >
               <Shield className="w-4 h-4" />
               e-Devlet ile Doğrula
             </Link>
             <Link
               href="/referans-kullan"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white text-blue-700 text-sm font-medium rounded-lg border border-blue-300 hover:bg-blue-50 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-surface text-blue-700 text-sm font-medium rounded-lg border border-blue-300 hover:bg-blue-50 transition-colors"
             >
               <UserPlus className="w-4 h-4" />
               Referans Kodu Kullan

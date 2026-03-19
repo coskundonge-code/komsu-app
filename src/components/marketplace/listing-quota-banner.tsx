@@ -118,7 +118,7 @@ export function ListingQuotaBanner({
                   ? 'bg-orange-500'
                   : progressPercent >= 66
                     ? 'bg-yellow-500'
-                    : 'bg-[#00833e]'
+                    : 'bg-primary'
               )}
               style={{ width: `${Math.min(progressPercent, 100)}%` }}
             />
@@ -132,7 +132,7 @@ export function ListingQuotaBanner({
             {!quota.canPostFree && showPrice && (
               <button
                 onClick={onUpgradeClick}
-                className="text-xs font-semibold px-3 py-1.5 rounded-md bg-[#00833e] text-white hover:bg-[#006b2f] transition-colors"
+                className="text-xs font-semibold px-3 py-1.5 rounded-md bg-primary text-white hover:bg-[#006b2f] transition-colors"
               >
                 250₺ ile İlan Ver
               </button>

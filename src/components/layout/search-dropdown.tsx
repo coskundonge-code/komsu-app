@@ -122,18 +122,18 @@ export function SearchDropdown({ isOpen, onClose, searchQuery }: SearchDropdownP
   return (
     <div
       ref={dropdownRef}
-      className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-40 w-full"
+      className="absolute top-full left-0 right-0 mt-2 bg-surface border border-border rounded-lg shadow-lg z-40 w-full"
     >
       {/* Category Tabs */}
-      <div className="flex items-center gap-1 px-4 pt-3 pb-3 border-b border-[#e0e0e0] overflow-x-auto">
+      <div className="flex items-center gap-1 px-4 pt-3 pb-3 border-b border-border overflow-x-auto">
         {categories.map(category => (
           <button
             key={category.id}
             onClick={() => setSelectedCategory(category.id)}
             className={`px-3 py-1.5 text-sm font-medium rounded-full whitespace-nowrap transition-colors ${
               selectedCategory === category.id
-                ? 'bg-[#00833e] text-white'
-                : 'bg-[#f0f2f5] text-gray-700 hover:bg-[#e4e6eb]'
+                ? 'bg-primary text-white'
+                : 'bg-background text-gray-700 hover:bg-[#e4e6eb]'
             }`}
           >
             {category.label}
@@ -150,10 +150,10 @@ export function SearchDropdown({ isOpen, onClose, searchQuery }: SearchDropdownP
                 key={result.id}
                 href={result.href}
                 onClick={onClose}
-                className="flex items-start gap-3 px-4 py-3 hover:bg-[#f0f2f5] transition-colors border-b border-[#f0f2f5] last:border-b-0"
+                className="flex items-start gap-3 px-4 py-3 hover:bg-background transition-colors border-b border-[#f0f2f5] last:border-b-0"
               >
                 {/* Icon */}
-                <div className="mt-1 text-[#00833e]">
+                <div className="mt-1 text-primary">
                   {result.icon}
                 </div>
 
@@ -188,13 +188,13 @@ export function SearchDropdown({ isOpen, onClose, searchQuery }: SearchDropdownP
         <Link
           href={`/ara?q=${encodeURIComponent(searchQuery)}`}
           onClick={onClose}
-          className="block px-4 py-3 bg-[#f0f2f5] text-sm font-medium text-[#00833e] hover:bg-[#e4e6eb] border-t border-[#e0e0e0] rounded-b-lg transition-colors text-center"
+          className="block px-4 py-3 bg-background text-sm font-medium text-primary hover:bg-[#e4e6eb] border-t border-border rounded-b-lg transition-colors text-center"
         >
           Tüm Sonuçları Gör ({mockResults.length}+)
         </Link>
       )}
       {!searchQuery && (
-        <div className="px-4 py-2 bg-[#f0f2f5] text-xs text-gray-600 border-t border-[#e0e0e0] rounded-b-lg text-center">
+        <div className="px-4 py-2 bg-background text-xs text-gray-600 border-t border-border rounded-b-lg text-center">
           Ara ve başında olması için arayı yazın
         </div>
       )}

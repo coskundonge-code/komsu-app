@@ -140,14 +140,14 @@ export default function BusinessPanelReviewsPage() {
   const monthlyCount = getMonthlyCount(mockReviews);
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       <div className="max-w-5xl mx-auto py-6 px-4">
         {/* Header Section */}
-        <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden mb-6 p-6">
+        <div className="bg-surface rounded-lg shadow-sm border border-border overflow-hidden mb-6 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-[#333]">Müşteri Yorumları Yönetimi</h1>
-              <p className="text-[#8f8f8f] text-sm mt-1">Müşteri değerlendirmelerini filtreleyin, yanıtlayın ve performansınızı takip edin</p>
+              <h1 className="text-2xl font-bold text-text-primary">Müşteri Yorumları Yönetimi</h1>
+              <p className="text-text-muted text-sm mt-1">Müşteri değerlendirmelerini filtreleyin, yanıtlayın ve performansınızı takip edin</p>
             </div>
           </div>
 
@@ -157,7 +157,7 @@ export default function BusinessPanelReviewsPage() {
             <div className="relative flex-1">
               <button
                 onClick={() => setOpenDropdown(!openDropdown)}
-                className="w-full flex items-center gap-2 px-4 py-2.5 bg-[#f0f2f5] border border-[#e0e0e0] rounded-lg text-[#333] font-medium text-sm hover:bg-[#e0e0e0] transition-colors"
+                className="w-full flex items-center gap-2 px-4 py-2.5 bg-background border border-border rounded-lg text-text-primary font-medium text-sm hover:bg-[#e0e0e0] transition-colors"
               >
                 <Filter size={16} />
                 {selectedLabel}
@@ -165,7 +165,7 @@ export default function BusinessPanelReviewsPage() {
               </button>
 
               {openDropdown && (
-                <div className="absolute left-0 top-full mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50 min-w-48">
+                <div className="absolute left-0 top-full mt-2 bg-surface border border-border rounded-lg shadow-lg z-50 min-w-48">
                   {ratingFilters.map((filter) => (
                     <button
                       key={filter.id}
@@ -176,8 +176,8 @@ export default function BusinessPanelReviewsPage() {
                       className={cn(
                         'w-full text-left px-4 py-3 text-sm transition-colors flex items-center gap-2',
                         selectedRating === filter.stars
-                          ? 'bg-[#00833e] text-white font-medium'
-                          : 'text-[#404040] hover:bg-[#f0f2f5]'
+                          ? 'bg-primary text-white font-medium'
+                          : 'text-text-secondary hover:bg-background'
                       )}
                     >
                       {filter.label}
@@ -206,7 +206,7 @@ export default function BusinessPanelReviewsPage() {
             <div className="relative">
               <button
                 onClick={() => setSortOpen(!sortOpen)}
-                className="flex items-center gap-2 px-4 py-2.5 bg-[#f0f2f5] border border-[#e0e0e0] rounded-lg text-[#333] font-medium text-sm hover:bg-[#e0e0e0] transition-colors whitespace-nowrap"
+                className="flex items-center gap-2 px-4 py-2.5 bg-background border border-border rounded-lg text-text-primary font-medium text-sm hover:bg-[#e0e0e0] transition-colors whitespace-nowrap"
               >
                 <ArrowUpDown size={16} />
                 {sortBy === 'date' ? 'Tarih' : 'Puan'}
@@ -214,7 +214,7 @@ export default function BusinessPanelReviewsPage() {
               </button>
 
               {sortOpen && (
-                <div className="absolute right-0 top-full mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50 min-w-40">
+                <div className="absolute right-0 top-full mt-2 bg-surface border border-border rounded-lg shadow-lg z-50 min-w-40">
                   <button
                     onClick={() => {
                       setSortBy('date');
@@ -223,8 +223,8 @@ export default function BusinessPanelReviewsPage() {
                     className={cn(
                       'w-full text-left px-4 py-3 text-sm transition-colors',
                       sortBy === 'date'
-                        ? 'bg-[#00833e] text-white font-medium'
-                        : 'text-[#404040] hover:bg-[#f0f2f5]'
+                        ? 'bg-primary text-white font-medium'
+                        : 'text-text-secondary hover:bg-background'
                     )}
                   >
                     En Yeni
@@ -237,8 +237,8 @@ export default function BusinessPanelReviewsPage() {
                     className={cn(
                       'w-full text-left px-4 py-3 text-sm transition-colors',
                       sortBy === 'rating'
-                        ? 'bg-[#00833e] text-white font-medium'
-                        : 'text-[#404040] hover:bg-[#f0f2f5]'
+                        ? 'bg-primary text-white font-medium'
+                        : 'text-text-secondary hover:bg-background'
                     )}
                   >
                     En Yüksek Puan
@@ -252,11 +252,11 @@ export default function BusinessPanelReviewsPage() {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {/* Average Rating */}
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
+          <div className="bg-surface rounded-lg shadow-sm border border-border p-6">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-[#8f8f8f] text-sm mb-2">Ortalama Puan</p>
-                <p className="text-3xl font-bold text-[#333] mb-1">{averageRating}</p>
+                <p className="text-text-muted text-sm mb-2">Ortalama Puan</p>
+                <p className="text-3xl font-bold text-text-primary mb-1">{averageRating}</p>
                 <div className="flex gap-0.5">
                   {[...Array(5)].map((_, i) => (
                     <Star
@@ -272,23 +272,23 @@ export default function BusinessPanelReviewsPage() {
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-xs text-[#8f8f8f]">Mükemmel</p>
+                <p className="text-xs text-text-muted">Mükemmel</p>
               </div>
             </div>
           </div>
 
           {/* Total Reviews */}
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
-            <p className="text-[#8f8f8f] text-sm mb-2">Toplam Yorum</p>
-            <p className="text-3xl font-bold text-[#333]">{totalCount}</p>
-            <p className="text-xs text-[#8f8f8f] mt-2">Tüm zamanlar</p>
+          <div className="bg-surface rounded-lg shadow-sm border border-border p-6">
+            <p className="text-text-muted text-sm mb-2">Toplam Yorum</p>
+            <p className="text-3xl font-bold text-text-primary">{totalCount}</p>
+            <p className="text-xs text-text-muted mt-2">Tüm zamanlar</p>
           </div>
 
           {/* New This Month */}
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
-            <p className="text-[#8f8f8f] text-sm mb-2">Bu Ay Yeni</p>
-            <p className="text-3xl font-bold text-[#333]">{monthlyCount}</p>
-            <p className="text-xs text-[#8f8f8f] mt-2">Son 30 gün</p>
+          <div className="bg-surface rounded-lg shadow-sm border border-border p-6">
+            <p className="text-text-muted text-sm mb-2">Bu Ay Yeni</p>
+            <p className="text-3xl font-bold text-text-primary">{monthlyCount}</p>
+            <p className="text-xs text-text-muted mt-2">Son 30 gün</p>
           </div>
         </div>
 
@@ -297,7 +297,7 @@ export default function BusinessPanelReviewsPage() {
           {sorted.map((review) => (
             <div
               key={review.id}
-              className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6 hover:shadow-md transition-shadow"
+              className="bg-surface rounded-lg shadow-sm border border-border p-6 hover:shadow-md transition-shadow"
             >
               {/* Review Header */}
               <div className="flex items-start gap-4 mb-4">
@@ -317,8 +317,8 @@ export default function BusinessPanelReviewsPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
                     <div>
-                      <p className="font-semibold text-[#333]">{review.authorName}</p>
-                      <p className="text-xs text-[#8f8f8f]">
+                      <p className="font-semibold text-text-primary">{review.authorName}</p>
+                      <p className="text-xs text-text-muted">
                         {new Date(review.date).toLocaleDateString('tr-TR', {
                           day: 'numeric',
                           month: 'long',
@@ -344,31 +344,31 @@ export default function BusinessPanelReviewsPage() {
               </div>
 
               {/* Review Text */}
-              <p className="text-[#333] text-sm mb-4 leading-relaxed">{review.text}</p>
+              <p className="text-text-primary text-sm mb-4 leading-relaxed">{review.text}</p>
 
               {/* Reply Section */}
               {replies[review.id] || review.replied ? (
-                <div className="mb-4 p-4 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0]">
-                  <p className="text-xs font-semibold text-[#8f8f8f] mb-2">İŞLETME CEVABI</p>
-                  <p className="text-sm text-[#333]">
+                <div className="mb-4 p-4 bg-background rounded-lg border border-border">
+                  <p className="text-xs font-semibold text-text-muted mb-2">İŞLETME CEVABI</p>
+                  <p className="text-sm text-text-primary">
                     {replies[review.id]
                       ? replyText
                       : 'Teşekkür ederiz! Yorumunuz için minnettarız. Daha iyi hizmet sunmak için çalışmaya devam edeceğiz.'}
                   </p>
                 </div>
               ) : replyingId === review.id ? (
-                <div className="mb-4 p-4 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0]">
+                <div className="mb-4 p-4 bg-background rounded-lg border border-border">
                   <textarea
                     value={replyText}
                     onChange={(e) => setReplyText(e.target.value)}
                     placeholder="Müşteriye yanıt yazın..."
-                    className="w-full bg-white border border-[#e0e0e0] rounded-lg p-3 text-sm text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e] focus:ring-opacity-30 resize-none mb-3"
+                    className="w-full bg-surface border border-border rounded-lg p-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-30 resize-none mb-3"
                     rows={3}
                   />
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleReplySubmit(review.id)}
-                      className="flex items-center gap-2 px-4 py-2 bg-[#00833e] text-white rounded-lg hover:bg-[#006b32] transition-colors font-medium text-sm"
+                      className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors font-medium text-sm"
                     >
                       <Send className="w-4 h-4" />
                       Gönder
@@ -378,7 +378,7 @@ export default function BusinessPanelReviewsPage() {
                         setReplyingId(null);
                         setReplyText('');
                       }}
-                      className="px-4 py-2 border border-[#e0e0e0] text-[#333] rounded-lg hover:bg-[#f0f2f5] transition-colors font-medium text-sm"
+                      className="px-4 py-2 border border-border text-text-primary rounded-lg hover:bg-background transition-colors font-medium text-sm"
                     >
                       İptal
                     </button>
@@ -388,14 +388,14 @@ export default function BusinessPanelReviewsPage() {
 
               {/* Action Buttons */}
               {!replies[review.id] && !review.replied && replyingId !== review.id && (
-                <div className="flex gap-3 pt-4 border-t border-[#e0e0e0]">
+                <div className="flex gap-3 pt-4 border-t border-border">
                   <button
                     onClick={() => setReplyingId(review.id)}
-                    className="text-sm font-medium text-[#00833e] hover:text-[#006b32] transition-colors"
+                    className="text-sm font-medium text-primary hover:text-primary-hover transition-colors"
                   >
                     Cevap Ver
                   </button>
-                  <button className="text-sm font-medium text-[#8f8f8f] hover:text-[#333] transition-colors">
+                  <button className="text-sm font-medium text-text-muted hover:text-text-primary transition-colors">
                     Raporla
                   </button>
                 </div>
@@ -406,10 +406,10 @@ export default function BusinessPanelReviewsPage() {
 
         {/* Empty State */}
         {sorted.length === 0 && (
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-12 text-center">
+          <div className="bg-surface rounded-lg shadow-sm border border-border p-12 text-center">
             <Star className="w-12 h-12 text-[#e0e0e0] mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-[#333] mb-2">Yorum bulunamadı</h3>
-            <p className="text-[#8f8f8f]">
+            <h3 className="text-lg font-semibold text-text-primary mb-2">Yorum bulunamadı</h3>
+            <p className="text-text-muted">
               {selectedRating !== null
                 ? 'Seçilen derecelendirme için yorum bulunmuyor.'
                 : 'Henüz yorum alınmamış.'}
@@ -419,8 +419,8 @@ export default function BusinessPanelReviewsPage() {
 
         {/* Star Rating Distribution */}
         {sorted.length > 0 && (
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6 mt-8">
-            <h3 className="text-lg font-bold text-[#333] mb-4">Yıldız Dağılımı</h3>
+          <div className="bg-surface rounded-lg shadow-sm border border-border p-6 mt-8">
+            <h3 className="text-lg font-bold text-text-primary mb-4">Yıldız Dağılımı</h3>
             <div className="space-y-3">
               {[5, 4, 3, 2, 1].map((rating) => {
                 const count = mockReviews.filter((r) => r.rating === rating).length;
@@ -444,12 +444,12 @@ export default function BusinessPanelReviewsPage() {
                     <div className="flex-1">
                       <div className="w-full bg-[#e0e0e0] rounded-full h-2">
                         <div
-                          className="bg-[#00833e] h-2 rounded-full transition-all"
+                          className="bg-primary h-2 rounded-full transition-all"
                           style={{ width: `${percentage}%` }}
                         ></div>
                       </div>
                     </div>
-                    <span className="text-sm font-medium text-[#333] w-12 text-right">
+                    <span className="text-sm font-medium text-text-primary w-12 text-right">
                       {count} ({Math.round(percentage)}%)
                     </span>
                   </div>

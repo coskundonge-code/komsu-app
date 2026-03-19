@@ -222,11 +222,11 @@ const getNotificationIcon = (type: NotificationType) => {
     case "alert":
       return <AlertCircle className="w-5 h-5 text-orange-500" />;
     case "marketplace":
-      return <ShoppingBag className="w-5 h-5 text-[#00833e]" />;
+      return <ShoppingBag className="w-5 h-5 text-primary" />;
     case "event":
       return <Calendar className="w-5 h-5 text-amber-600" />;
     default:
-      return <Bell className="w-5 h-5 text-[#00833e]" />;
+      return <Bell className="w-5 h-5 text-primary" />;
   }
 };
 
@@ -241,11 +241,11 @@ const getNotificationColor = (type: NotificationType) => {
     case "alert":
       return "bg-orange-50 border-l-orange-500";
     case "marketplace":
-      return "bg-green-50 border-l-[#00833e]";
+      return "bg-green-50 border-l-primary";
     case "event":
       return "bg-amber-50 border-l-amber-600";
     default:
-      return "bg-white border-l-transparent";
+      return "bg-surface border-l-transparent";
   }
 };
 
@@ -324,18 +324,18 @@ export default function NotificationsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       <div className="max-w-2xl mx-auto px-4 py-4">
         {/* Header */}
-        <div className="bg-white border-b border-[#e0e0e0] sticky top-0 z-10 mb-4 rounded-lg">
+        <div className="bg-surface border-b border-border sticky top-0 z-10 mb-4 rounded-lg">
           <div className="py-4 px-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#e6f4ec] flex items-center justify-center">
-                  <Bell size={20} className="text-[#00833e]" />
+                <div className="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center">
+                  <Bell size={20} className="text-primary" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-[#333]">Bildirimler</h1>
+                  <h1 className="text-2xl font-bold text-text-primary">Bildirimler</h1>
                 </div>
                 {unreadCount > 0 && (
                   <span className="px-2.5 py-1 bg-red-500 text-white text-xs font-bold rounded-full ml-2">
@@ -346,7 +346,7 @@ export default function NotificationsPage() {
               {unreadCount > 0 && (
                 <button
                   onClick={markAllAsRead}
-                  className="text-sm font-medium text-[#00833e] hover:text-[#006b32] transition-colors flex items-center gap-1.5"
+                  className="text-sm font-medium text-primary hover:text-primary-hover transition-colors flex items-center gap-1.5"
                 >
                   <CheckCircle size={16} />
                   <span className="hidden sm:inline">Tümünü Okundu İşaretle</span>
@@ -356,7 +356,7 @@ export default function NotificationsPage() {
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-0 border-b border-[#e0e0e0] -mx-4 px-4 overflow-x-auto scrollbar-hide">
+            <div className="flex gap-0 border-b border-border -mx-4 px-4 overflow-x-auto scrollbar-hide">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
@@ -364,8 +364,8 @@ export default function NotificationsPage() {
                   className={cn(
                     "px-3 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
                     activeTab === tab.id
-                      ? "border-[#00833e] text-[#00833e]"
-                      : "border-transparent text-[#8f8f8f] hover:text-[#333]"
+                      ? "border-primary text-primary"
+                      : "border-transparent text-text-muted hover:text-text-primary"
                   )}
                 >
                   {tab.label}
@@ -375,12 +375,12 @@ export default function NotificationsPage() {
                     </span>
                   )}
                   {tab.id === "mentions" && (
-                    <span className="ml-1.5 text-xs font-medium text-[#8f8f8f]">
+                    <span className="ml-1.5 text-xs font-medium text-text-muted">
                       ({notifications.filter((n) => n.category === "mentions").length})
                     </span>
                   )}
                   {tab.id === "events" && (
-                    <span className="ml-1.5 text-xs font-medium text-[#8f8f8f]">
+                    <span className="ml-1.5 text-xs font-medium text-text-muted">
                       ({notifications.filter((n) => n.category === "events").length})
                     </span>
                   )}
@@ -392,12 +392,12 @@ export default function NotificationsPage() {
 
         {/* Notification List */}
         {Object.entries(grouped).length === 0 ? (
-          <div className="bg-white rounded-lg border border-[#e0e0e0] p-12 text-center">
-            <div className="w-16 h-16 rounded-full bg-[#f0f2f5] flex items-center justify-center mx-auto mb-4">
-              <Bell size={32} className="text-[#8f8f8f]" />
+          <div className="bg-surface rounded-lg border border-border p-12 text-center">
+            <div className="w-16 h-16 rounded-full bg-background flex items-center justify-center mx-auto mb-4">
+              <Bell size={32} className="text-text-muted" />
             </div>
-            <p className="text-[#333] font-medium text-lg">Bildirim yok</p>
-            <p className="text-[#8f8f8f] text-sm mt-2">
+            <p className="text-text-primary font-medium text-lg">Bildirim yok</p>
+            <p className="text-text-muted text-sm mt-2">
               {activeTab === "unread"
                 ? "Okunmamış bildiriminiz bulunmuyor"
                 : activeTab === "mentions"
@@ -411,7 +411,7 @@ export default function NotificationsPage() {
           <div className="space-y-4">
             {Object.entries(grouped).map(([dateKey, items]) => (
               <div key={dateKey}>
-                <h2 className="text-xs font-semibold text-[#8f8f8f] uppercase tracking-wider px-3 py-2 sticky top-20 bg-[#f0f2f5] rounded-lg">
+                <h2 className="text-xs font-semibold text-text-muted uppercase tracking-wider px-3 py-2 sticky top-20 bg-background rounded-lg">
                   {dateKey}
                 </h2>
                 <div className="space-y-2">
@@ -421,7 +421,7 @@ export default function NotificationsPage() {
                       className={cn(
                         "flex items-start gap-3 p-4 rounded-lg transition-all border-l-4 group relative",
                         !notification.read
-                          ? "bg-[#e6f4ec] border-l-[#00833e] hover:bg-[#d1fae5] shadow-sm"
+                          ? "bg-primary-light border-l-primary hover:bg-primary-light shadow-sm"
                           : getNotificationColor(notification.type),
                         "border"
                       )}
@@ -437,7 +437,7 @@ export default function NotificationsPage() {
                           unoptimized
                         />
                         {/* Icon Badge */}
-                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-white rounded-full border-2 flex items-center justify-center shadow-sm"
+                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-surface rounded-full border-2 flex items-center justify-center shadow-sm"
                           style={{
                             borderColor: notification.type === "like" ? "#ef4444" :
                                        notification.type === "comment" ? "#3b82f6" :
@@ -460,24 +460,24 @@ export default function NotificationsPage() {
                         <p className="text-sm leading-snug">
                           <span className={cn(
                             "font-bold",
-                            !notification.read ? "text-[#333]" : "text-[#404040]"
+                            !notification.read ? "text-text-primary" : "text-text-secondary"
                           )}>
                             {notification.userName}
                           </span>
                           <span className={cn(
-                            !notification.read ? "text-[#333] font-medium" : "text-[#8f8f8f]"
+                            !notification.read ? "text-text-primary font-medium" : "text-text-muted"
                           )}>
                             {" "}{notification.action}
                           </span>
                         </p>
-                        <p className="text-xs text-[#8f8f8f] mt-1">{notification.timestamp}</p>
+                        <p className="text-xs text-text-muted mt-1">{notification.timestamp}</p>
                       </Link>
 
                       {/* Action Buttons */}
                       <div className="flex-shrink-0 z-10 flex items-center gap-2">
                         {!notification.read && (
                           <>
-                            <span className="w-2.5 h-2.5 bg-[#00833e] rounded-full block shadow-sm" />
+                            <span className="w-2.5 h-2.5 bg-primary rounded-full block shadow-sm" />
                           </>
                         )}
                         <button
@@ -485,7 +485,7 @@ export default function NotificationsPage() {
                             e.preventDefault();
                             markAsRead(notification.id);
                           }}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-md hover:bg-white/50 text-[#8f8f8f] hover:text-[#333]"
+                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-md hover:bg-surface/50 text-text-muted hover:text-text-primary"
                           title={notification.read ? "Mark as unread" : "Mark as read"}
                         >
                           <CheckCircle size={16} />
@@ -495,7 +495,7 @@ export default function NotificationsPage() {
                             e.preventDefault();
                             deleteNotification(notification.id);
                           }}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-md hover:bg-white/50 text-[#8f8f8f] hover:text-red-500"
+                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-md hover:bg-surface/50 text-text-muted hover:text-red-500"
                           title="Delete notification"
                         >
                           <Trash2 size={16} />

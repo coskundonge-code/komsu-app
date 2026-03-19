@@ -11,14 +11,14 @@ export default function NotFound() {
         <div className="mb-8 relative">
           <div className="w-32 h-32 mx-auto mb-6 relative">
             {/* Background circle */}
-            <div className="absolute inset-0 bg-[#00833e] bg-opacity-10 rounded-full animate-pulse"></div>
+            <div className="absolute inset-0 bg-primary bg-opacity-10 rounded-full animate-pulse"></div>
 
             {/* Icon container */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="relative">
                 {/* Lost neighborhood icon illustration */}
                 <svg
-                  className="w-32 h-32 text-[#00833e]"
+                  className="w-32 h-32 text-primary"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -33,7 +33,7 @@ export default function NotFound() {
                 </svg>
 
                 {/* Floating question mark */}
-                <div className="absolute top-2 right-0 text-4xl font-bold text-[#00833e] opacity-70 animate-bounce">
+                <div className="absolute top-2 right-0 text-4xl font-bold text-primary opacity-70 animate-bounce">
                   ?
                 </div>
               </div>
@@ -43,7 +43,7 @@ export default function NotFound() {
 
         {/* Error code */}
         <div className="mb-6">
-          <h1 className="text-7xl font-bold text-[#00833e] mb-2">404</h1>
+          <h1 className="text-7xl font-bold text-primary mb-2">404</h1>
           <h2 className="text-3xl font-bold text-gray-800 mb-2">Sayfa Bulunamadı</h2>
         </div>
 
@@ -59,7 +59,7 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             href="/"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#00833e] text-white font-semibold rounded-lg hover:bg-[#006b32] transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-hover transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
           >
             <Home size={20} />
             <span>Ana Sayfaya Dön</span>
@@ -67,7 +67,7 @@ export default function NotFound() {
 
           <button
             onClick={() => window.history.back()}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-[#00833e] text-[#00833e] font-semibold rounded-lg hover:bg-[#f0f2f5] transition-all duration-300 transform hover:scale-105 active:scale-95"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-primary text-primary font-semibold rounded-lg hover:bg-background transition-all duration-300 transform hover:scale-105 active:scale-95"
           >
             <ArrowLeft size={20} />
             <span>Geri Dön</span>
@@ -76,9 +76,9 @@ export default function NotFound() {
 
         {/* Decorative elements */}
         <div className="mt-12 flex justify-center gap-2 opacity-50">
-          <MapPin size={20} className="text-[#00833e] animate-pulse" style={{ animationDelay: '0s' }} />
-          <MapPin size={20} className="text-[#00833e] animate-pulse" style={{ animationDelay: '0.2s' }} />
-          <MapPin size={20} className="text-[#00833e] animate-pulse" style={{ animationDelay: '0.4s' }} />
+          <MapPin size={20} className="text-primary animate-pulse" style={{ animationDelay: '0s' }} />
+          <MapPin size={20} className="text-primary animate-pulse" style={{ animationDelay: '0.2s' }} />
+          <MapPin size={20} className="text-primary animate-pulse" style={{ animationDelay: '0.4s' }} />
         </div>
       </div>
     </div>

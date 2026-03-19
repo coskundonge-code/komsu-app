@@ -68,17 +68,17 @@ export function PWAInstallPrompt() {
 
   return (
     <div
-      className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#e0e0e0] shadow-md animate-in slide-in-from-top-2 duration-300"
+      className="fixed top-0 left-0 right-0 z-50 bg-surface border-b border-border shadow-md animate-in slide-in-from-top-2 duration-300"
       role="banner"
     >
       <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-3">
           {/* Icon and Text */}
           <div className="flex items-center gap-3 flex-1">
-            <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 bg-[#00833e] rounded-lg">
+            <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 bg-primary rounded-lg">
               <Download size={18} className="text-white" />
             </div>
-            <p className="text-sm font-medium text-[#333]">
+            <p className="text-sm font-medium text-text-primary">
               Mahallem'i ana ekranına ekle!
             </p>
           </div>
@@ -87,13 +87,13 @@ export function PWAInstallPrompt() {
           <div className="flex items-center gap-2">
             <button
               onClick={handleInstall}
-              className="px-4 py-2 bg-[#00833e] text-white rounded-lg hover:bg-[#006b32] font-medium transition-colors text-sm whitespace-nowrap"
+              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover font-medium transition-colors text-sm whitespace-nowrap"
             >
               Yükle
             </button>
             <button
               onClick={handleDismiss}
-              className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-[#f0f2f5] transition-colors text-[#8f8f8f]"
+              className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-background transition-colors text-text-muted"
               aria-label="Kapat"
             >
               <X size={18} />

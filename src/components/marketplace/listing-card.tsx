@@ -52,7 +52,7 @@ export function ListingCard({
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+      className="bg-surface rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
     >
       {/* Image Container */}
       <div className="relative overflow-hidden h-48 bg-gray-100">
@@ -73,7 +73,7 @@ export function ListingCard({
         {/* Favorite Button */}
         <button
           onClick={handleFavorite}
-          className="absolute top-3 left-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors"
+          className="absolute top-3 left-3 p-2 bg-surface rounded-full shadow-md hover:bg-gray-100 transition-colors"
         >
           <Heart
             size={20}

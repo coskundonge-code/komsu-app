@@ -2,75 +2,70 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { ChevronRight, Edit3, ChevronUp, Building2, Shield, AlertCircle } from 'lucide-react'
+import { ChevronRight, Building2, Shield, AlertCircle, MapPin, Users } from 'lucide-react'
 import { WeatherWidget } from '@/components/widgets/weather-widget'
 import { TrendingWidget } from '@/components/widgets/trending-widget'
 import { UpcomingEventsWidget } from '@/components/widgets/upcoming-events-widget'
 import { NeighborhoodStatsWidget } from '@/components/widgets/neighborhood-stats-widget'
-import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
+import { getFeedImageUrl } from '@/lib/demo-images'
 
 export function RightSidebar() {
   return (
-    <div className="w-[300px] flex-shrink-0 hidden xl:block py-4 px-2 space-y-4">
-      {/* Neighborhood Card */}
-      <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
+    <div className="w-[300px] flex-shrink-0 hidden xl:block py-4 px-2 space-y-3">
+      <div className="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
         <div className="p-4">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-[#00833e] rounded-full" />
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-primary-light rounded-lg flex items-center justify-center">
+              <MapPin className="w-5 h-5 text-primary" />
+            </div>
             <div>
-              <p className="text-[15px] font-bold text-[#333]">Kadıköy, Moda</p>
-              <p className="text-xs text-[#8f8f8f]">İstanbul</p>
+              <p className="text-sm font-bold text-text-primary">Kadikoy, Moda</p>
+              <p className="text-xs text-text-muted flex items-center gap-1">
+                <Users className="w-3 h-3" />
+                1.247 uye
+              </p>
             </div>
           </div>
         </div>
         <Link
           href="/uyarilar"
-          className="flex items-center justify-between px-4 py-3 border-t border-[#e0e0e0] hover:bg-[#f9f9f9] transition-colors"
+          className="flex items-center justify-between px-4 py-2.5 border-t border-border-light hover:bg-surface-hover transition-colors"
         >
-          <span className="text-sm font-medium text-[#404040]">Tüm uyarıları gör</span>
-          <ChevronRight className="w-4 h-4 text-[#8f8f8f]" />
+          <span className="text-xs font-medium text-text-secondary">Tum uyarilari gor</span>
+          <ChevronRight className="w-4 h-4 text-text-muted" />
         </Link>
       </div>
 
-      {/* Weather Widget */}
       <WeatherWidget />
-
-      {/* Trending Topics Widget */}
       <TrendingWidget />
-
-      {/* Upcoming Events Widget */}
       <UpcomingEventsWidget />
-
-      {/* Neighborhood Stats Widget */}
       <NeighborhoodStatsWidget />
 
-      {/* Safety Status */}
-      <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
+      <div className="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
         <div className="p-4">
-          <p className="text-sm font-semibold text-[#333] flex items-center gap-2 mb-3">
-            <Shield className="w-4 h-4 text-[#00833e]" />
-            Güvenlik Durumu
+          <p className="text-sm font-semibold text-text-primary flex items-center gap-2 mb-3">
+            <Shield className="w-4 h-4 text-primary" />
+            Guvenlik Durumu
           </p>
           <div className="flex items-center gap-3">
-            <div className="w-3 h-3 bg-[#00833e] rounded-full animate-pulse" />
+            <div className="w-3 h-3 bg-primary rounded-full animate-pulse" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-[#333]">Mahalle Güvenli</p>
-              <p className="text-xs text-[#8f8f8f]">Son uyarı: 3 gün önce</p>
+              <p className="text-sm font-medium text-text-primary">Mahalle Guvenli</p>
+              <p className="text-xs text-text-muted">Son uyari: 3 gun once</p>
             </div>
           </div>
           <Link
             href="/uyarilar"
-            className="mt-3 text-xs text-[#00833e] font-medium hover:text-[#006b32] flex items-center gap-1"
+            className="mt-3 text-xs text-primary font-medium hover:text-primary-hover flex items-center gap-1"
           >
             <AlertCircle className="w-3 h-3" />
-            Tüm uyarıları görüntüle
+            Tum uyarilari goruntule
           </Link>
         </div>
       </div>
 
-      {/* Sponsored Business */}
-      <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-md transition-shadow">
-        <div className="relative h-32 bg-gradient-to-br from-[#00833e] to-[#006b32] overflow-hidden">
+      <div className="bg-surface rounded-xl shadow-card border border-border overflow-hidden hover:shadow-card-hover transition-shadow">
+        <div className="relative h-28 bg-gradient-to-br from-primary to-primary-hover overflow-hidden">
           <Image
             src={getFeedImageUrl(1, 300, 128)}
             alt="Moda Kafe & Bistro"
@@ -79,93 +74,66 @@ export function RightSidebar() {
             className="object-cover opacity-40"
           />
         </div>
-        <div className="p-4">
-          <p className="text-xs text-[#8f8f8f] font-semibold mb-2 uppercase">Sponsorlu</p>
-          <p className="text-sm font-semibold text-[#333]">Moda Kafe & Bistro</p>
-          <p className="text-xs text-[#8f8f8f] mt-1 mb-3">Kahvaltı ve brunch menüsü</p>
+        <div className="p-3">
+          <p className="text-[10px] text-text-muted font-semibold uppercase tracking-wider">Sponsorlu</p>
+          <p className="text-sm font-semibold text-text-primary mt-1">Moda Kafe & Bistro</p>
+          <p className="text-xs text-text-muted mt-0.5">Kahvalti ve brunch menusu</p>
           <Link
             href="/isletme/moda-kafe"
-            className="text-xs font-medium text-[#00833e] hover:text-[#006b32] flex items-center gap-1"
+            className="mt-2 text-xs font-medium text-primary hover:text-primary-hover flex items-center gap-1"
           >
-            Sayfayı ziyaret et
+            Sayfayi ziyaret et
             <ChevronRight className="w-3 h-3" />
           </Link>
         </div>
       </div>
 
-      {/* Invite Neighbors Card */}
-      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg shadow-sm border border-blue-200 overflow-hidden">
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-card border border-blue-100 overflow-hidden">
         <div className="p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-2xl">🏘️</span>
-            <p className="text-[15px] font-bold text-[#333]">Komşularını Davet Et</p>
-          </div>
-          <p className="text-sm text-[#666] mb-3">
-            Referans kodunla en fazla 3 komşunu sisteme davet et. Davet ettiğin komşular adres doğrulama adımını atlayabilir!
+          <p className="text-sm font-bold text-text-primary mb-1">Komsularini Davet Et</p>
+          <p className="text-xs text-text-muted mb-3">
+            Referans kodunla en fazla 3 komsunu sisteme davet et.
           </p>
           <Link
             href="/davet"
-            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#00833e] text-white text-sm font-semibold rounded-lg hover:bg-[#006b32] transition-colors w-full"
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-hover transition-colors w-full shadow-sm"
           >
-            <span>Davet Kodunu Al</span>
+            Davet Kodunu Al
             <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
       </div>
 
-      {/* Business Promo Card */}
-      <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
-        <div className="h-[160px] bg-gradient-to-br from-[#00833e] to-[#006b32] flex items-center justify-center">
-          <Building2 className="w-16 h-16 text-white/40" />
+      <div className="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
+        <div className="h-32 bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center">
+          <Building2 className="w-12 h-12 text-white/30" />
         </div>
         <div className="p-4">
-          <p className="text-[15px] font-bold text-[#333]">İşletme sahibi misiniz?</p>
-          <p className="text-sm text-[#8f8f8f] mt-1">
-            İşletme sayfanızı oluşturun, komşularınızla bağlantı kurun ve yeni müşteriler kazanın.
+          <p className="text-sm font-bold text-text-primary">Isletme sahibi misiniz?</p>
+          <p className="text-xs text-text-muted mt-1">
+            Isletme sayfanizi olusturun, komsularinizla baglanti kurun.
           </p>
         </div>
         <Link
           href="/isletme-ekle"
-          className="flex items-center justify-between px-4 py-3 border-t border-[#e0e0e0] hover:bg-[#f9f9f9] transition-colors"
+          className="flex items-center justify-between px-4 py-2.5 border-t border-border-light hover:bg-surface-hover transition-colors"
         >
-          <span className="text-sm font-medium text-[#00833e]">Sayfa oluştur</span>
-          <ChevronRight className="w-4 h-4 text-[#00833e]" />
+          <span className="text-xs font-medium text-primary">Sayfa olustur</span>
+          <ChevronRight className="w-4 h-4 text-primary" />
         </Link>
       </div>
 
-      {/* Footer links */}
-      <div className="px-2 pt-2">
-        <div className="flex flex-wrap gap-x-2 gap-y-1 text-[11px] text-[#8f8f8f]">
-          <Link href="/gizlilik" className="hover:text-[#404040]">
-            Gizlilik
-          </Link>
+      <div className="px-2 pt-2 pb-4">
+        <div className="flex flex-wrap gap-x-2 gap-y-1 text-[11px] text-text-muted">
+          <Link href="/gizlilik" className="hover:text-text-secondary">Gizlilik</Link>
           <span>·</span>
-          <Link href="/kosullar" className="hover:text-[#404040]">
-            Koşullar
-          </Link>
+          <Link href="/kosullar" className="hover:text-text-secondary">Kosullar</Link>
           <span>·</span>
-          <Link href="/hakkinda" className="hover:text-[#404040]">
-            Hakkında
-          </Link>
+          <Link href="/hakkinda" className="hover:text-text-secondary">Hakkinda</Link>
+          <span>·</span>
+          <Link href="/yardim" className="hover:text-text-secondary">Yardim</Link>
         </div>
-        <p className="text-[11px] text-[#8f8f8f] mt-1">© 2026 Mahallem</p>
-      </div>
-
-      {/* Chats Widget - Bottom Right */}
-      <div className="fixed bottom-0 right-4 w-[300px] z-40">
-        <Link
-          href="/mesajlar"
-          className="w-full flex items-center justify-between px-4 py-3 bg-white border border-[#e0e0e0] border-b-0 rounded-t-lg shadow-lg hover:bg-[#f9f9f9] transition-colors"
-        >
-          <div className="flex items-center gap-2">
-            <span className="text-[15px] font-bold text-[#333]">Sohbetler</span>
-            <span className="w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center font-bold">3</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Edit3 className="w-4 h-4 text-[#404040]" />
-            <ChevronUp className="w-4 h-4 text-[#404040]" />
-          </div>
-        </Link>
+        <p className="text-[11px] text-text-muted mt-1">© 2026 Mahallem</p>
       </div>
     </div>
   )

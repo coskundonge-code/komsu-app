@@ -227,9 +227,9 @@ export default function IsletmelerPage() {
   }, [search, selectedCategory, sortBy]);
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-[#00833e] to-green-600 text-white py-12 px-4">
+      <div className="bg-gradient-to-r from-primary to-primary-hover text-white py-12 px-4">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-4xl font-bold mb-3">Mahallenizdeki İşletmeler</h1>
           <p className="text-[#d1fae5] mb-6">
@@ -238,13 +238,13 @@ export default function IsletmelerPage() {
 
           {/* Hero Search Bar */}
           <div className="relative max-w-2xl">
-            <Search className="absolute left-4 top-4 text-[#00833e]" size={20} />
+            <Search className="absolute left-4 top-4 text-primary" size={20} />
             <input
               type="text"
               placeholder="İşletme adı, kategori veya konum ara..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 rounded-lg border-2 border-transparent focus:border-[#00833e] focus:outline-none bg-white text-[#333] placeholder-[#8f8f8f]"
+              className="w-full pl-12 pr-4 py-3 rounded-lg border-2 border-transparent focus:border-primary focus:outline-none bg-surface text-text-primary placeholder:text-text-muted"
             />
           </div>
         </div>
@@ -260,8 +260,8 @@ export default function IsletmelerPage() {
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 rounded-full font-medium transition-all flex-shrink-0 ${
                   selectedCategory === category
-                    ? 'bg-[#00833e] text-white shadow-md'
-                    : 'bg-white text-[#333] border border-[#e0e0e0] hover:border-[#00833e]'
+                    ? 'bg-primary text-white shadow-md'
+                    : 'bg-surface text-text-primary border border-border hover:border-primary'
                 }`}
               >
                 {category}
@@ -273,7 +273,7 @@ export default function IsletmelerPage() {
         {/* Results Header and Controls */}
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <p className="text-[#333] font-bold text-lg">
+            <p className="text-text-primary font-bold text-lg">
               {filteredAndSortedBusinesses.length} işletme bulundu
             </p>
           </div>
@@ -284,7 +284,7 @@ export default function IsletmelerPage() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortOption)}
-              className="px-4 py-2 rounded-lg border-2 border-[#e0e0e0] bg-white text-[#333] font-medium text-sm focus:border-[#00833e] focus:outline-none hover:border-[#00833e] transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-lg border-2 border-border bg-surface text-text-primary font-medium text-sm focus:border-primary focus:outline-none hover:border-primary transition-colors cursor-pointer"
             >
               <option value="recommended">Önerilen</option>
               <option value="nearest">En Yakın</option>
@@ -293,13 +293,13 @@ export default function IsletmelerPage() {
             </select>
 
             {/* View Mode Toggle */}
-            <div className="flex gap-1 border-2 border-[#e0e0e0] rounded-lg p-1 bg-white">
+            <div className="flex gap-1 border-2 border-border rounded-lg p-1 bg-surface">
               <button
                 onClick={() => setViewMode('list')}
                 className={`p-2 rounded transition-colors ${
                   viewMode === 'list'
-                    ? 'bg-[#00833e] text-white'
-                    : 'text-[#8f8f8f] hover:text-[#00833e]'
+                    ? 'bg-primary text-white'
+                    : 'text-text-muted hover:text-primary'
                 }`}
                 title="Liste Görünümü"
               >
@@ -309,8 +309,8 @@ export default function IsletmelerPage() {
                 onClick={() => setViewMode('map')}
                 className={`p-2 rounded transition-colors ${
                   viewMode === 'map'
-                    ? 'bg-[#00833e] text-white'
-                    : 'text-[#8f8f8f] hover:text-[#00833e]'
+                    ? 'bg-primary text-white'
+                    : 'text-text-muted hover:text-primary'
                 }`}
                 title="Harita Görünümü"
               >
@@ -342,7 +342,7 @@ export default function IsletmelerPage() {
                     )}
 
                     {/* Distance Badge */}
-                    <div className="absolute bottom-4 left-4 bg-[#00833e] text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                    <div className="absolute bottom-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
                       <MapPin size={14} />
                       {business.distance} km
                     </div>
@@ -354,7 +354,7 @@ export default function IsletmelerPage() {
                           e.preventDefault();
                           window.location.href = `tel:${business.phone}`;
                         }}
-                        className="bg-[#00833e] hover:bg-[#006b32] text-white p-2 rounded-full shadow-lg transition-colors"
+                        className="bg-primary hover:bg-primary-hover text-white p-2 rounded-full shadow-lg transition-colors"
                         title="Ara"
                       >
                         <Phone size={18} />
@@ -365,7 +365,7 @@ export default function IsletmelerPage() {
               ))}
             </div>
           ) : (
-            <div className="mb-12 bg-white rounded-lg border-2 border-[#e0e0e0] overflow-hidden">
+            <div className="mb-12 bg-surface rounded-lg border-2 border-border overflow-hidden">
               <LeafletMap
                 center={[41.0370, 28.9850]}
                 zoom={13}
@@ -382,28 +382,28 @@ export default function IsletmelerPage() {
             </div>
           )
         ) : (
-          <div className="text-center py-12 bg-white rounded-lg border-2 border-[#e0e0e0]">
+          <div className="text-center py-12 bg-surface rounded-lg border-2 border-border">
             <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-xl font-bold text-[#333] mb-2">
+            <h3 className="text-xl font-bold text-text-primary mb-2">
               İşletme bulunamadı
             </h3>
-            <p className="text-[#8f8f8f]">
+            <p className="text-text-muted">
               Farklı arama terimlerini veya filtreleri deneyebilirsiniz
             </p>
           </div>
         )}
 
         {/* Add Business CTA */}
-        <div className="bg-gradient-to-r from-[#e6f4ec] to-[#f0f2f5] rounded-lg border-2 border-[#00833e] p-8 text-center mb-8">
-          <h3 className="text-2xl font-bold text-[#333] mb-2">
+        <div className="bg-gradient-to-r from-[#e6f4ec] to-[#f0f2f5] rounded-lg border-2 border-primary p-8 text-center mb-8">
+          <h3 className="text-2xl font-bold text-text-primary mb-2">
             Kendi İşletmenizi Ekleyin
           </h3>
-          <p className="text-[#8f8f8f] mb-6 max-w-2xl mx-auto">
+          <p className="text-text-muted mb-6 max-w-2xl mx-auto">
             Mahallenizdeki müşterilerinize ulaşın, işletmenizi tanıtın ve büyütün
           </p>
           <Link
             href="/isletme-ekle"
-            className="inline-flex items-center gap-2 bg-[#00833e] hover:bg-[#006b32] text-white font-bold py-3 px-8 rounded-lg transition-all hover:shadow-lg"
+            className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-bold py-3 px-8 rounded-lg transition-all hover:shadow-lg"
           >
             <Zap size={20} />
             İşletme Ekle

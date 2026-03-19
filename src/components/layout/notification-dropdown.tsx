@@ -186,14 +186,14 @@ export function NotificationDropdown({
   return (
     <div
       data-notification-dropdown
-      className="absolute top-full right-0 mt-2 w-[360px] bg-white rounded-lg shadow-lg border border-[#e0e0e0] z-50"
+      className="absolute top-full right-0 mt-2 w-[360px] bg-surface rounded-lg shadow-lg border border-border z-50"
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-[#e0e0e0]">
-        <h3 className="text-lg font-semibold text-[#404040]">Bildirimler</h3>
+      <div className="flex items-center justify-between p-4 border-b border-border">
+        <h3 className="text-lg font-semibold text-text-secondary">Bildirimler</h3>
         <button
           onClick={onClose}
-          className="p-1 hover:bg-[#f0f2f5] rounded-full transition-colors"
+          className="p-1 hover:bg-background rounded-full transition-colors"
           aria-label="Kapat"
         >
           <X className="w-5 h-5 text-gray-500" />
@@ -212,7 +212,7 @@ export function NotificationDropdown({
             <div
               key={notification.id}
               className={cn(
-                'px-4 py-3 border-b border-[#f0f2f5] hover:bg-[#f0f2f5] transition-colors cursor-pointer',
+                'px-4 py-3 border-b border-[#f0f2f5] hover:bg-background transition-colors cursor-pointer',
                 !notification.isRead && 'bg-blue-50'
               )}
             >
@@ -222,7 +222,7 @@ export function NotificationDropdown({
                   <div
                     className={cn(
                       'w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold text-white',
-                      !notification.isRead ? 'bg-[#00833e]' : 'bg-gray-400'
+                      !notification.isRead ? 'bg-primary' : 'bg-gray-400'
                     )}
                   >
                     {notification.userAvatar}
@@ -231,7 +231,7 @@ export function NotificationDropdown({
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-[#404040] break-words">
+                  <p className="text-sm text-text-secondary break-words">
                     <span className="font-semibold">{notification.userName}</span>{' '}
                     {notification.text}
                   </p>
@@ -243,7 +243,7 @@ export function NotificationDropdown({
                 {/* Unread Indicator */}
                 {!notification.isRead && (
                   <div className="flex-shrink-0">
-                    <div className="w-2 h-2 bg-[#00833e] rounded-full mt-1" />
+                    <div className="w-2 h-2 bg-primary rounded-full mt-1" />
                   </div>
                 )}
               </div>
@@ -253,11 +253,11 @@ export function NotificationDropdown({
       </div>
 
       {/* Footer */}
-      <div className="p-3 border-t border-[#e0e0e0] flex flex-col gap-2">
+      <div className="p-3 border-t border-border flex flex-col gap-2">
         {!allRead && unreadCount > 0 && (
           <button
             onClick={handleMarkAllAsRead}
-            className="w-full px-4 py-2 text-sm font-medium text-[#00833e] hover:bg-[#f0f2f5] rounded transition-colors"
+            className="w-full px-4 py-2 text-sm font-medium text-primary hover:bg-background rounded transition-colors"
           >
             Tümünü Okundu İşaretle
           </button>
@@ -265,7 +265,7 @@ export function NotificationDropdown({
         <Link
           href="/bildirimler"
           onClick={onClose}
-          className="w-full px-4 py-2 text-sm font-medium text-center text-[#00833e] hover:bg-[#f0f2f5] rounded transition-colors"
+          className="w-full px-4 py-2 text-sm font-medium text-center text-primary hover:bg-background rounded transition-colors"
         >
           Tüm Bildirimler
         </Link>

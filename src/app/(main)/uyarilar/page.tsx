@@ -279,20 +279,20 @@ export default function AlertsPage() {
   const resolvedAlertCount = mockAlerts.filter(a => !a.active).length;
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       {/* Header Section */}
-      <div className="bg-white border-b border-[#e0e0e0] sticky top-0 z-10">
+      <div className="bg-surface border-b border-border sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-5">
           {/* Title Row */}
           <div className="flex items-center justify-between mb-4 gap-3">
-            <h1 className="text-2xl font-bold text-[#333]">Mahalle Uyarıları</h1>
+            <h1 className="text-2xl font-bold text-text-primary">Mahalle Uyarıları</h1>
             {/* Notification Toggle */}
             <button
               onClick={() => setNotificationsEnabled(!notificationsEnabled)}
               className={`p-2 rounded-lg transition-all ${
                 notificationsEnabled
-                  ? 'bg-[#00833e] text-white'
-                  : 'bg-[#f0f2f5] text-[#8f8f8f] border border-[#e0e0e0]'
+                  ? 'bg-primary text-white'
+                  : 'bg-background text-text-muted border border-border'
               }`}
               title={notificationsEnabled ? "Bildirimler açık" : "Bildirimler kapalı"}
             >
@@ -302,50 +302,50 @@ export default function AlertsPage() {
 
           {/* Search Bar */}
           <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8f8f8f]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
             <input
               type="text"
               placeholder="Uyarılarda ara..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-[#f0f2f5] border border-[#e0e0e0] rounded-full text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e]"
+              className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-full text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </div>
 
           {/* Controls Row */}
           <div className="flex items-center justify-between gap-3 flex-wrap mb-4">
             {/* Active/Past Toggle */}
-            <div className="flex items-center gap-2 bg-[#f0f2f5] rounded-full p-1">
+            <div className="flex items-center gap-2 bg-background rounded-full p-1">
               <button
                 onClick={() => setShowActive(true)}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all flex items-center gap-1 ${
                   showActive
-                    ? 'bg-[#00833e] text-white'
-                    : 'text-[#8f8f8f] hover:text-[#333]'
+                    ? 'bg-primary text-white'
+                    : 'text-text-muted hover:text-text-primary'
                 }`}
               >
                 <Eye size={16} />
                 Aktif
-                <span className="bg-white/30 px-2 py-0.5 rounded-full text-xs font-bold">{activeAlertCount}</span>
+                <span className="bg-surface/30 px-2 py-0.5 rounded-full text-xs font-bold">{activeAlertCount}</span>
               </button>
               <button
                 onClick={() => setShowActive(false)}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all flex items-center gap-1 ${
                   !showActive
-                    ? 'bg-[#00833e] text-white'
-                    : 'text-[#8f8f8f] hover:text-[#333]'
+                    ? 'bg-primary text-white'
+                    : 'text-text-muted hover:text-text-primary'
                 }`}
               >
                 <EyeOff size={16} />
                 Geçmiş
-                <span className="bg-white/30 px-2 py-0.5 rounded-full text-xs font-bold">{resolvedAlertCount}</span>
+                <span className="bg-surface/30 px-2 py-0.5 rounded-full text-xs font-bold">{resolvedAlertCount}</span>
               </button>
             </div>
 
             {/* Create Alert Button */}
             <button
               onClick={() => setIsModalOpen(true)}
-              className="px-4 py-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-primary hover:bg-primary-hover text-white font-medium rounded-lg transition-colors flex items-center gap-2"
             >
               <Plus size={18} />
               Uyarı Paylaş
@@ -360,8 +360,8 @@ export default function AlertsPage() {
                 onClick={() => setActiveFilter(category.id)}
                 className={`px-4 py-2 rounded-full font-medium whitespace-nowrap transition-colors flex items-center gap-2 ${
                   activeFilter === category.id
-                    ? 'bg-[#00833e] text-white'
-                    : 'bg-white text-[#333] border border-[#e0e0e0] hover:border-[#00833e]'
+                    ? 'bg-primary text-white'
+                    : 'bg-surface text-text-primary border border-border hover:border-primary'
                 }`}
               >
                 {category.icon && <span className={activeFilter === category.id ? 'text-white' : 'text-gray-600'}>{category.icon}</span>}
@@ -377,10 +377,10 @@ export default function AlertsPage() {
         {/* Alerts List */}
         <div className="lg:col-span-2 space-y-4">
           {filteredAlerts.length === 0 ? (
-            <div className="bg-white rounded-lg border border-[#e0e0e0] p-12 text-center">
-              <AlertCircle size={48} className="mx-auto text-[#8f8f8f] mb-3" />
-              <p className="text-[#333] font-medium">Uyarı bulunamadı</p>
-              <p className="text-[#8f8f8f] text-sm mt-1">
+            <div className="bg-surface rounded-lg border border-border p-12 text-center">
+              <AlertCircle size={48} className="mx-auto text-text-muted mb-3" />
+              <p className="text-text-primary font-medium">Uyarı bulunamadı</p>
+              <p className="text-text-muted text-sm mt-1">
                 {showActive
                   ? 'Şu anda aktif uyarı bulunmamaktadır'
                   : 'Geçmiş uyarı bulunmamaktadır'}
@@ -396,7 +396,7 @@ export default function AlertsPage() {
                 >
                   <div className="flex items-start gap-4">
                     {/* Large Severity Icon */}
-                    <div className={`flex-shrink-0 p-2 rounded-lg ${getSeverityIconColor(alert.severity)} bg-white/50`}>
+                    <div className={`flex-shrink-0 p-2 rounded-lg ${getSeverityIconColor(alert.severity)} bg-surface/50`}>
                       {alert.icon}
                     </div>
 
@@ -405,8 +405,8 @@ export default function AlertsPage() {
                       {/* Header with Title and Severity Badge */}
                       <div className="flex items-start justify-between gap-3 mb-2 flex-wrap">
                         <div className="flex-1">
-                          <h3 className="font-bold text-lg text-[#333]">{alert.title}</h3>
-                          <p className="text-xs text-[#8f8f8f] mt-0.5 font-medium">Kaynak: {alert.source}</p>
+                          <h3 className="font-bold text-lg text-text-primary">{alert.title}</h3>
+                          <p className="text-xs text-text-muted mt-0.5 font-medium">Kaynak: {alert.source}</p>
                         </div>
                         <span className={`text-xs font-bold px-3 py-1.5 rounded-full flex-shrink-0 uppercase tracking-wide ${getSeverityBadgeColor(alert.severity)}`}>
                           {getSeverityLabel(alert.severity)}
@@ -414,17 +414,17 @@ export default function AlertsPage() {
                       </div>
 
                       {/* Description */}
-                      <p className="text-sm text-[#404040] mb-4 leading-relaxed">{alert.description}</p>
+                      <p className="text-sm text-text-secondary mb-4 leading-relaxed">{alert.description}</p>
 
                       {/* Footer: Location and Time */}
-                      <div className="flex items-center gap-4 text-xs text-[#8f8f8f] flex-wrap pt-3 border-t border-white/30">
+                      <div className="flex items-center gap-4 text-xs text-text-muted flex-wrap pt-3 border-t border-white/30">
                         <div className="flex items-center gap-2 font-medium">
-                          <MapPin size={16} className="text-[#00833e]" />
+                          <MapPin size={16} className="text-primary" />
                           <span>{alert.location}</span>
                         </div>
                         <span className="hidden sm:inline">•</span>
                         <div className="flex items-center gap-2 font-medium">
-                          <Clock size={16} className="text-[#00833e]" />
+                          <Clock size={16} className="text-primary" />
                           <span>{alert.time}</span>
                         </div>
                       </div>
@@ -439,7 +439,7 @@ export default function AlertsPage() {
         {/* Sidebar */}
         <div className="lg:col-span-1 space-y-4">
           {/* Map */}
-          <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden">
+          <div className="bg-surface rounded-lg border border-border overflow-hidden">
             <LeafletMap
               center={[41.0370, 28.9850]}
               zoom={13}
@@ -453,42 +453,42 @@ export default function AlertsPage() {
               interactive={false}
             />
             <div className="p-3">
-              <p className="text-xs text-[#8f8f8f] text-center">Uyarı konumları haritada gösterilmektedir</p>
+              <p className="text-xs text-text-muted text-center">Uyarı konumları haritada gösterilmektedir</p>
             </div>
           </div>
 
           {/* Statistics Card */}
-          <div className="bg-white rounded-lg border border-[#e0e0e0] p-5">
-            <h3 className="font-bold text-[#333] mb-5 flex items-center gap-2">
-              <AlertCircle size={18} className="text-[#00833e]" />
+          <div className="bg-surface rounded-lg border border-border p-5">
+            <h3 className="font-bold text-text-primary mb-5 flex items-center gap-2">
+              <AlertCircle size={18} className="text-primary" />
               Aciliyet İstatistikleri
             </h3>
             <div className="space-y-3">
-              <div className="flex items-center justify-between pb-3 border-b border-[#e0e0e0] hover:bg-[#f0f2f5] -mx-1 px-1 py-1 rounded transition-colors">
+              <div className="flex items-center justify-between pb-3 border-b border-border hover:bg-surface-hover -mx-1 px-1 py-1 rounded transition-colors">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded-full bg-red-600 shadow-sm"></div>
-                  <span className="text-sm font-medium text-[#333]">Kritik</span>
+                  <span className="text-sm font-medium text-text-primary">Kritik</span>
                 </div>
                 <span className="font-bold text-lg text-red-600">{mockAlerts.filter(a => a.severity === 'critical' && a.active).length}</span>
               </div>
-              <div className="flex items-center justify-between pb-3 border-b border-[#e0e0e0] hover:bg-[#f0f2f5] -mx-1 px-1 py-1 rounded transition-colors">
+              <div className="flex items-center justify-between pb-3 border-b border-border hover:bg-surface-hover -mx-1 px-1 py-1 rounded transition-colors">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded-full bg-orange-500 shadow-sm"></div>
-                  <span className="text-sm font-medium text-[#333]">Yüksek</span>
+                  <span className="text-sm font-medium text-text-primary">Yüksek</span>
                 </div>
                 <span className="font-bold text-lg text-orange-500">{mockAlerts.filter(a => a.severity === 'high' && a.active).length}</span>
               </div>
-              <div className="flex items-center justify-between pb-3 border-b border-[#e0e0e0] hover:bg-[#f0f2f5] -mx-1 px-1 py-1 rounded transition-colors">
+              <div className="flex items-center justify-between pb-3 border-b border-border hover:bg-surface-hover -mx-1 px-1 py-1 rounded transition-colors">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded-full bg-yellow-500 shadow-sm"></div>
-                  <span className="text-sm font-medium text-[#333]">Orta</span>
+                  <span className="text-sm font-medium text-text-primary">Orta</span>
                 </div>
                 <span className="font-bold text-lg text-yellow-600">{mockAlerts.filter(a => a.severity === 'medium' && a.active).length}</span>
               </div>
-              <div className="flex items-center justify-between hover:bg-[#f0f2f5] -mx-1 px-1 py-1 rounded transition-colors">
+              <div className="flex items-center justify-between hover:bg-surface-hover -mx-1 px-1 py-1 rounded transition-colors">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded-full bg-green-500 shadow-sm"></div>
-                  <span className="text-sm font-medium text-[#333]">Düşük</span>
+                  <span className="text-sm font-medium text-text-primary">Düşük</span>
                 </div>
                 <span className="font-bold text-lg text-green-600">{mockAlerts.filter(a => a.severity === 'low' && a.active).length}</span>
               </div>
@@ -496,21 +496,21 @@ export default function AlertsPage() {
           </div>
 
           {/* Category Breakdown Card */}
-          <div className="bg-white rounded-lg border border-[#e0e0e0] p-5">
-            <h3 className="font-bold text-[#333] mb-5 flex items-center gap-2">
-              <Zap size={18} className="text-[#00833e]" />
+          <div className="bg-surface rounded-lg border border-border p-5">
+            <h3 className="font-bold text-text-primary mb-5 flex items-center gap-2">
+              <Zap size={18} className="text-primary" />
               Kategori Dağılımı
             </h3>
             <div className="space-y-2">
               {filterCategories.filter(c => c.id !== 'all').map((category) => {
                 const count = mockAlerts.filter(a => a.category === category.id && a.active).length;
                 return (
-                  <div key={category.id} className="flex items-center justify-between text-sm hover:bg-[#f0f2f5] -mx-1 px-1 py-1.5 rounded transition-colors">
+                  <div key={category.id} className="flex items-center justify-between text-sm hover:bg-surface-hover -mx-1 px-1 py-1.5 rounded transition-colors">
                     <div className="flex items-center gap-2">
-                      <span className="text-[#00833e]">{category.icon}</span>
-                      <span className="text-[#333] font-medium">{category.label}</span>
+                      <span className="text-primary">{category.icon}</span>
+                      <span className="text-text-primary font-medium">{category.label}</span>
                     </div>
-                    <span className="font-bold text-[#00833e] bg-[#e6f4ec] px-2.5 py-0.5 rounded-full text-xs">
+                    <span className="font-bold text-primary bg-primary-light px-2.5 py-0.5 rounded-full text-xs">
                       {count}
                     </span>
                   </div>
@@ -524,15 +524,15 @@ export default function AlertsPage() {
       {/* Create Alert Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-surface rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-4 border-b border-[#e0e0e0]">
-              <h2 className="text-lg font-bold text-[#333]">Yeni Uyarı Oluştur</h2>
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h2 className="text-lg font-bold text-text-primary">Yeni Uyarı Oluştur</h2>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                <X size={20} className="text-[#8f8f8f]" />
+                <X size={20} className="text-text-muted" />
               </button>
             </div>
 
@@ -540,25 +540,25 @@ export default function AlertsPage() {
             <form onSubmit={handleCreateAlert} className="p-4 space-y-4">
               {/* Title */}
               <div>
-                <label className="block text-sm font-medium text-[#333] mb-2">Başlık</label>
+                <label className="block text-sm font-medium text-text-primary mb-2">Başlık</label>
                 <input
                   type="text"
                   value={formData.title}
                   onChange={(e) => setFormData({...formData, title: e.target.value})}
                   placeholder="Uyarı başlığını yazınız"
-                  className="w-full px-3 py-2 border border-[#e0e0e0] rounded-lg text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e]"
+                  className="w-full px-3 py-2 border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                   required
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-[#333] mb-2">Açıklama</label>
+                <label className="block text-sm font-medium text-text-primary mb-2">Açıklama</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
                   placeholder="Uyarının detaylarını yazınız"
-                  className="w-full px-3 py-2 border border-[#e0e0e0] rounded-lg text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e] resize-none"
+                  className="w-full px-3 py-2 border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none"
                   rows={3}
                   required
                 />
@@ -566,24 +566,24 @@ export default function AlertsPage() {
 
               {/* Location */}
               <div>
-                <label className="block text-sm font-medium text-[#333] mb-2">Konum</label>
+                <label className="block text-sm font-medium text-text-primary mb-2">Konum</label>
                 <input
                   type="text"
                   value={formData.location}
                   onChange={(e) => setFormData({...formData, location: e.target.value})}
                   placeholder="Uyarı konumunu yazınız"
-                  className="w-full px-3 py-2 border border-[#e0e0e0] rounded-lg text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e]"
+                  className="w-full px-3 py-2 border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                   required
                 />
               </div>
 
               {/* Category */}
               <div>
-                <label className="block text-sm font-medium text-[#333] mb-2">Kategori</label>
+                <label className="block text-sm font-medium text-text-primary mb-2">Kategori</label>
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({...formData, category: e.target.value})}
-                  className="w-full px-3 py-2 border border-[#e0e0e0] rounded-lg text-[#333] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e]"
+                  className="w-full px-3 py-2 border border-border rounded-lg text-text-primary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                 >
                   <option value="security">Güvenlik</option>
                   <option value="weather">Hava Durumu</option>
@@ -596,11 +596,11 @@ export default function AlertsPage() {
 
               {/* Severity */}
               <div>
-                <label className="block text-sm font-medium text-[#333] mb-2">Aciliyet Derecesi</label>
+                <label className="block text-sm font-medium text-text-primary mb-2">Aciliyet Derecesi</label>
                 <select
                   value={formData.severity}
                   onChange={(e) => setFormData({...formData, severity: e.target.value})}
-                  className="w-full px-3 py-2 border border-[#e0e0e0] rounded-lg text-[#333] focus:outline-none focus:border-[#00833e] focus:ring-1 focus:ring-[#00833e]"
+                  className="w-full px-3 py-2 border border-border rounded-lg text-text-primary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                 >
                   <option value="low">Düşük</option>
                   <option value="medium">Orta</option>
@@ -614,13 +614,13 @@ export default function AlertsPage() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-4 py-2 border border-[#e0e0e0] text-[#333] font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-4 py-2 border border-border text-text-primary font-medium rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   İptal
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-colors"
+                  className="flex-1 px-4 py-2 bg-primary hover:bg-primary-hover text-white font-medium rounded-lg transition-colors"
                 >
                   Uyarı Paylaş
                 </button>

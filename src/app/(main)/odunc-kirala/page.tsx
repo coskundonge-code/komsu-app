@@ -347,17 +347,17 @@ export default function OduncKiralaPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto py-6 px-4 space-y-6">
         {/* Header Section */}
-        <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
+        <div className="bg-surface rounded-lg shadow-sm border border-border overflow-hidden">
           <div className="p-4 sm:p-6">
             {/* Title and Action Button */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-6">
-              <h1 className="text-2xl font-bold text-[#333]">Ödünç Ver & Kirala</h1>
+              <h1 className="text-2xl font-bold text-text-primary">Ödünç Ver & Kirala</h1>
               <Link
                 href="/odunc-kirala/ilan-ver"
-                className="flex items-center gap-2 px-5 py-2.5 bg-[#00833e] text-white rounded-full hover:bg-[#006b32] transition-colors text-sm font-semibold shadow-sm"
+                className="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-full hover:bg-primary-hover transition-colors text-sm font-semibold shadow-sm"
               >
                 <Plus className="w-4 h-4" />
                 İlan Ver
@@ -366,18 +366,18 @@ export default function OduncKiralaPage() {
 
             {/* Search Bar */}
             <div className="relative mb-6">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8f8f8f]" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
               <input
                 type="text"
                 placeholder="Aletler, mobilya, elektronik ara..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-5 py-3 bg-[#f0f2f5] border border-[#e0e0e0] rounded-full text-sm text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e] focus:ring-opacity-30 transition"
+                className="w-full pl-12 pr-5 py-3 bg-background border border-border rounded-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-30 transition"
               />
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-0 border-b border-[#e0e0e0] -mx-6 px-6 overflow-x-auto">
+            <div className="flex gap-0 border-b border-border -mx-6 px-6 overflow-x-auto">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
@@ -385,8 +385,8 @@ export default function OduncKiralaPage() {
                   className={cn(
                     'px-5 py-4 text-sm font-medium border-b-[3px] transition-colors whitespace-nowrap flex-shrink-0',
                     activeTab === tab.id
-                      ? 'text-[#00833e] border-[#00833e]'
-                      : 'text-[#8f8f8f] border-transparent hover:text-[#404040]'
+                      ? 'text-primary border-primary'
+                      : 'text-text-muted border-transparent hover:text-text-secondary'
                   )}
                 >
                   {tab.label}
@@ -405,8 +405,8 @@ export default function OduncKiralaPage() {
               className={cn(
                 'flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors shadow-sm',
                 selectedCategory === cat.id
-                  ? 'bg-[#00833e] text-white'
-                  : 'bg-white border border-[#e0e0e0] text-[#404040] hover:bg-[#f0f2f5]'
+                  ? 'bg-primary text-white'
+                  : 'bg-surface border border-border text-text-secondary hover:bg-surface-hover'
               )}
               title={cat.label}
             >
@@ -425,15 +425,15 @@ export default function OduncKiralaPage() {
               className={cn(
                 'flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap shadow-sm transition-colors',
                 selectedType
-                  ? 'bg-[#00833e] text-white border border-[#00833e]'
-                  : 'bg-white border border-[#e0e0e0] text-[#404040] hover:bg-[#f0f2f5]'
+                  ? 'bg-primary text-white border border-primary'
+                  : 'bg-surface border border-border text-text-secondary hover:bg-surface-hover'
               )}
             >
               Tür
               <ChevronDown className={cn('w-4 h-4', openDropdown === 'type' && 'rotate-180')} />
             </button>
             {openDropdown === 'type' && (
-              <div className="absolute top-full left-0 mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50 min-w-48">
+              <div className="absolute top-full left-0 mt-2 bg-surface border border-border rounded-lg shadow-lg z-50 min-w-48">
                 {typeOptions.map((opt) => (
                   <button
                     key={opt.label}
@@ -444,8 +444,8 @@ export default function OduncKiralaPage() {
                     className={cn(
                       'w-full text-left px-4 py-3 text-sm transition-colors',
                       selectedType === opt.value
-                        ? 'bg-[#00833e] text-white font-medium'
-                        : 'text-[#404040] hover:bg-[#f0f2f5]'
+                        ? 'bg-primary text-white font-medium'
+                        : 'text-text-secondary hover:bg-surface-hover'
                     )}
                   >
                     {opt.label}
@@ -462,15 +462,15 @@ export default function OduncKiralaPage() {
               className={cn(
                 'flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap shadow-sm transition-colors',
                 selectedDistance
-                  ? 'bg-[#00833e] text-white border border-[#00833e]'
-                  : 'bg-white border border-[#e0e0e0] text-[#404040] hover:bg-[#f0f2f5]'
+                  ? 'bg-primary text-white border border-primary'
+                  : 'bg-surface border border-border text-text-secondary hover:bg-surface-hover'
               )}
             >
               {selectedDistance ? `${selectedDistance} km` : 'Mesafe'}
               <ChevronDown className={cn('w-4 h-4', openDropdown === 'distance' && 'rotate-180')} />
             </button>
             {openDropdown === 'distance' && (
-              <div className="absolute top-full left-0 mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50">
+              <div className="absolute top-full left-0 mt-2 bg-surface border border-border rounded-lg shadow-lg z-50">
                 {distanceOptions.map((opt) => (
                   <button
                     key={opt.label}
@@ -481,8 +481,8 @@ export default function OduncKiralaPage() {
                     className={cn(
                       'w-full text-left px-4 py-3 text-sm transition-colors whitespace-nowrap',
                       selectedDistance === opt.value
-                        ? 'bg-[#00833e] text-white font-medium'
-                        : 'text-[#404040] hover:bg-[#f0f2f5]'
+                        ? 'bg-primary text-white font-medium'
+                        : 'text-text-secondary hover:bg-surface-hover'
                     )}
                   >
                     {opt.label}
@@ -496,13 +496,13 @@ export default function OduncKiralaPage() {
           <div className="relative flex-shrink-0">
             <button
               onClick={() => setOpenDropdown(openDropdown === 'sort' ? null : 'sort')}
-              className="flex items-center gap-2 px-5 py-2.5 bg-white border border-[#e0e0e0] rounded-full text-sm font-medium text-[#404040] hover:bg-[#f0f2f5] transition-colors whitespace-nowrap shadow-sm"
+              className="flex items-center gap-2 px-5 py-2.5 bg-surface border border-border rounded-full text-sm font-medium text-text-secondary hover:bg-surface-hover transition-colors whitespace-nowrap shadow-sm"
             >
               Sıralama
-              <ChevronDown className={cn('w-4 h-4 text-[#8f8f8f]', openDropdown === 'sort' && 'rotate-180')} />
+              <ChevronDown className={cn('w-4 h-4 text-text-muted', openDropdown === 'sort' && 'rotate-180')} />
             </button>
             {openDropdown === 'sort' && (
-              <div className="absolute top-full left-0 mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50">
+              <div className="absolute top-full left-0 mt-2 bg-surface border border-border rounded-lg shadow-lg z-50">
                 {sortOptions.map((opt) => (
                   <button
                     key={opt.value}
@@ -513,8 +513,8 @@ export default function OduncKiralaPage() {
                     className={cn(
                       'w-full text-left px-4 py-3 text-sm transition-colors whitespace-nowrap',
                       selectedSort === opt.value
-                        ? 'bg-[#00833e] text-white font-medium'
-                        : 'text-[#404040] hover:bg-[#f0f2f5]'
+                        ? 'bg-primary text-white font-medium'
+                        : 'text-text-secondary hover:bg-surface-hover'
                     )}
                   >
                     {opt.label}
@@ -551,10 +551,10 @@ export default function OduncKiralaPage() {
                   {displayedListings.map((listing) => (
                     <div
                       key={listing.id}
-                      className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-lg transition-shadow duration-200 group"
+                      className="bg-surface rounded-lg shadow-sm border border-border overflow-hidden hover:shadow-lg transition-shadow duration-200 group"
                     >
                       {/* Image Container */}
-                      <div className="relative aspect-square overflow-hidden bg-[#f0f2f5]">
+                      <div className="relative aspect-square overflow-hidden bg-background">
                         <Image
                           src={listing.image}
                           alt={listing.title}
@@ -565,7 +565,7 @@ export default function OduncKiralaPage() {
                         {/* Type Badge */}
                         <span className={cn(
                           'absolute top-3 left-3 text-white text-xs font-bold px-3 py-1 rounded-md',
-                          listing.type === 'free' ? 'bg-[#00833e]' : 'bg-[#ff9500]'
+                          listing.type === 'free' ? 'bg-primary' : 'bg-[#ff9500]'
                         )}>
                           {typeLabel(listing.type)}
                         </span>
@@ -575,11 +575,11 @@ export default function OduncKiralaPage() {
                       <div className="p-4">
                         {/* Price */}
                         <div className="mb-1">
-                          <p className="text-lg font-bold text-[#00833e]">{priceLabel(listing)}</p>
+                          <p className="text-lg font-bold text-primary">{priceLabel(listing)}</p>
                         </div>
 
                         {/* Title */}
-                        <p className="text-sm text-[#404040] line-clamp-2 mb-3 leading-snug font-semibold">
+                        <p className="text-sm text-text-secondary line-clamp-2 mb-3 leading-snug font-semibold">
                           {listing.title}
                         </p>
 
@@ -594,28 +594,28 @@ export default function OduncKiralaPage() {
                             className="w-7 h-7 rounded-full"
                           />
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs text-[#404040] font-medium truncate">{listing.ownerName}</p>
-                            <p className="text-xs text-[#8f8f8f]">{listing.neighborhood}</p>
+                            <p className="text-xs text-text-secondary font-medium truncate">{listing.ownerName}</p>
+                            <p className="text-xs text-text-muted">{listing.neighborhood}</p>
                           </div>
                         </div>
 
                         {/* Meta Info */}
-                        <div className="flex items-center gap-1.5 text-xs text-[#8f8f8f] mb-2">
+                        <div className="flex items-center gap-1.5 text-xs text-text-muted mb-2">
                           <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
                           <span>{listing.distance}</span>
                         </div>
 
                         {/* Rating */}
                         <div className="flex items-center gap-1 mb-3">
-                          <Star className="w-4 h-4 text-[#00833e] fill-[#00833e]" />
-                          <span className="text-xs font-semibold text-[#00833e]">{listing.rating}</span>
-                          <span className="text-xs text-[#8f8f8f]">({listing.reviewCount})</span>
+                          <Star className="w-4 h-4 text-primary fill-[#00833e]" />
+                          <span className="text-xs font-semibold text-primary">{listing.rating}</span>
+                          <span className="text-xs text-text-muted">({listing.reviewCount})</span>
                         </div>
 
                         {/* Action Button */}
                         <button
                           onClick={() => openRequestModal(listing.id)}
-                          className="w-full px-4 py-2.5 bg-[#00833e] text-white rounded-lg text-sm font-semibold hover:bg-[#006b32] transition-colors"
+                          className="w-full px-4 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary-hover transition-colors"
                         >
                           Talep Gönder
                         </button>
@@ -629,7 +629,7 @@ export default function OduncKiralaPage() {
                   <div className="text-center mt-8">
                     <button
                       onClick={() => setVisibleCount((prev) => prev + 6)}
-                      className="px-8 py-3 border border-[#e0e0e0] bg-white rounded-full text-sm font-semibold text-[#404040] hover:bg-[#f0f2f5] transition-colors shadow-sm"
+                      className="px-8 py-3 border border-border bg-surface rounded-full text-sm font-semibold text-text-secondary hover:bg-surface-hover transition-colors shadow-sm"
                     >
                       Daha Fazla Göster ({filtered.length - visibleCount} ilan daha)
                     </button>
@@ -638,7 +638,7 @@ export default function OduncKiralaPage() {
               </>
             ) : (
               <div className="col-span-full text-center py-12">
-                <p className="text-[#8f8f8f] text-lg">İlanlar bulunamadı. Filtreleri kontrol edin.</p>
+                <p className="text-text-muted text-lg">İlanlar bulunamadı. Filtreleri kontrol edin.</p>
               </div>
             )}
           </div>
@@ -649,60 +649,60 @@ export default function OduncKiralaPage() {
       {/* Talep Gönder Modal */}
       {showRequestModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
-            <div className="flex items-center justify-between p-6 border-b border-[#e0e0e0]">
-              <h2 className="text-xl font-bold text-[#333]">Talep Gönder</h2>
+          <div className="bg-surface rounded-lg shadow-xl max-w-md w-full">
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <h2 className="text-xl font-bold text-text-primary">Talep Gönder</h2>
               <button
                 onClick={closeRequestModal}
-                className="p-2 hover:bg-[#f0f2f5] rounded-lg transition-colors"
+                className="p-2 hover:bg-surface-hover rounded-lg transition-colors"
               >
-                <X className="w-5 h-5 text-[#404040]" />
+                <X className="w-5 h-5 text-text-secondary" />
               </button>
             </div>
 
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-[#333] mb-2">
+                <label className="block text-sm font-semibold text-text-primary mb-2">
                   Talep Tarihi
                 </label>
                 <input
                   type="date"
-                  className="w-full px-4 py-2.5 border border-[#e0e0e0] rounded-lg text-sm text-[#333] focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e] focus:ring-opacity-30"
+                  className="w-full px-4 py-2.5 border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-30"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[#333] mb-2">
+                <label className="block text-sm font-semibold text-text-primary mb-2">
                   Süre (gün/saat)
                 </label>
                 <input
                   type="text"
                   placeholder="örn: 2 gün, 5 saat"
-                  className="w-full px-4 py-2.5 border border-[#e0e0e0] rounded-lg text-sm text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e] focus:ring-opacity-30"
+                  className="w-full px-4 py-2.5 border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-30"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[#333] mb-2">
+                <label className="block text-sm font-semibold text-text-primary mb-2">
                   İleti
                 </label>
                 <textarea
                   placeholder="Talep hakkında kısa bir açıklama..."
                   rows={4}
-                  className="w-full px-4 py-2.5 border border-[#e0e0e0] rounded-lg text-sm text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e] focus:ring-opacity-30 resize-none"
+                  className="w-full px-4 py-2.5 border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-30 resize-none"
                 />
               </div>
 
               <div className="flex gap-3 pt-4">
                 <button
                   onClick={closeRequestModal}
-                  className="flex-1 px-4 py-2.5 border border-[#e0e0e0] text-[#404040] rounded-lg text-sm font-semibold hover:bg-[#f0f2f5] transition-colors"
+                  className="flex-1 px-4 py-2.5 border border-border text-text-secondary rounded-lg text-sm font-semibold hover:bg-surface-hover transition-colors"
                 >
                   İptal
                 </button>
                 <button
                   onClick={closeRequestModal}
-                  className="flex-1 px-4 py-2.5 bg-[#00833e] text-white rounded-lg text-sm font-semibold hover:bg-[#006b32] transition-colors"
+                  className="flex-1 px-4 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary-hover transition-colors"
                 >
                   Gönder
                 </button>

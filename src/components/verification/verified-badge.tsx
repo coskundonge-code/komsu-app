@@ -25,7 +25,7 @@ export function VerifiedBadge({
         className={`inline-flex items-center justify-center ${className}`}
       >
         <div className="relative">
-          <Shield className="h-5 w-5 text-[#00833e] fill-[#00833e]" />
+          <Shield className="h-5 w-5 text-primary fill-[#00833e]" />
           <CheckCircle className="absolute -bottom-1 -right-1 h-3 w-3 text-white fill-[#00833e] border border-white" />
         </div>
       </div>
@@ -46,13 +46,13 @@ export function VerifiedBadge({
   // Full variant - default
   return (
     <div
-      className={`inline-flex items-center gap-2 px-3 py-1.5 bg-[#e6f4ec] border border-[#00833e] rounded-full ${className}`}
+      className={`inline-flex items-center gap-2 px-3 py-1.5 bg-primary-light border border-primary rounded-full ${className}`}
     >
       <div className="relative">
-        <Shield className="h-4 w-4 text-[#00833e] fill-[#00833e]" />
+        <Shield className="h-4 w-4 text-primary fill-[#00833e]" />
         <CheckCircle className="absolute -bottom-0.5 -right-0.5 h-3 w-3 text-white fill-[#00833e] border border-white" />
       </div>
-      <span className="text-xs font-semibold text-[#00833e]">Onaylanmış Komşu</span>
+      <span className="text-xs font-semibold text-primary">Onaylanmış Komşu</span>
     </div>
   );
 }

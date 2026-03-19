@@ -31,18 +31,18 @@ export function ConversationList({
   );
 
   return (
-    <div className="flex flex-col h-full bg-white border-r border-[#d1fae5]">
+    <div className="flex flex-col h-full bg-surface border-r border-[#d1fae5]">
       {/* Header */}
       <div className="p-4 border-b border-[#d1fae5]">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-[#004d24]">Mesajlar</h2>
+          <h2 className="text-xl font-bold text-primary">Mesajlar</h2>
           {onNewConversation && (
             <button
               onClick={onNewConversation}
-              className="p-2 hover:bg-[#e6f4ec] rounded-lg transition-colors"
+              className="p-2 hover:bg-primary-light rounded-lg transition-colors"
               title="Yeni sohbet"
             >
-              <Plus size={20} className="text-[#00833e]" />
+              <Plus size={20} className="text-primary" />
             </button>
           )}
         </div>
@@ -58,7 +58,7 @@ export function ConversationList({
             placeholder="Ara..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-[#e6f4ec] border border-[#a7dbb8] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] text-sm"
+            className="w-full pl-10 pr-4 py-2 bg-primary-light border border-[#a7dbb8] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
           />
         </div>
       </div>
@@ -66,7 +66,7 @@ export function ConversationList({
       {/* Conversations List */}
       <div className="flex-1 overflow-y-auto">
         {filteredConversations.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-[#00833e]">
+          <div className="flex items-center justify-center h-full text-primary">
             <p>Sohbet bulunamadı</p>
           </div>
         ) : (
@@ -76,7 +76,7 @@ export function ConversationList({
               onClick={() => onSelect(conversation.id)}
               className={`w-full p-4 border-b border-[#e6f4ec] transition-colors text-left ${
                 selectedId === conversation.id
-                  ? 'bg-[#e6f4ec]'
+                  ? 'bg-primary-light'
                   : 'hover:bg-[#f0fdf4]'
               }`}
             >
@@ -89,27 +89,27 @@ export function ConversationList({
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   {conversation.online && (
-                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-[#00833e] rounded-full border-2 border-white" />
+                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-primary rounded-full border-2 border-white" />
                   )}
                 </div>
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-start gap-2">
-                    <h3 className="font-semibold text-[#004d24] truncate">
+                    <h3 className="font-semibold text-primary truncate">
                       {conversation.name}
                     </h3>
-                    <span className="text-xs text-[#00833e] flex-shrink-0">
+                    <span className="text-xs text-primary flex-shrink-0">
                       {conversation.timestamp}
                     </span>
                   </div>
 
                   <div className="flex justify-between items-center gap-2 mt-1">
-                    <p className="text-sm text-[#006b32] truncate">
+                    <p className="text-sm text-primary-hover truncate">
                       {conversation.lastMessage}
                     </p>
                     {conversation.unreadCount > 0 && (
-                      <span className="flex-shrink-0 bg-[#00833e] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                      <span className="flex-shrink-0 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                         {conversation.unreadCount > 9 ? '9+' : conversation.unreadCount}
                       </span>
                     )}

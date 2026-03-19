@@ -244,21 +244,21 @@ export default function MahallemKartPage() {
   })
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       {/* Hero Section - Digital Card */}
       <section className="relative pt-6 pb-12 px-4 md:px-6">
         <div className="max-w-2xl mx-auto">
           {/* Card with animated glow */}
           <div className="relative">
             {/* Glow effect background */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-[#00833e] to-[#006b32] rounded-3xl blur-xl opacity-30 animate-pulse"></div>
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-primary-hover rounded-3xl blur-xl opacity-30 animate-pulse"></div>
 
             {/* Main Card */}
-            <div className="relative bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-3xl p-5 sm:p-8 text-white shadow-2xl overflow-hidden">
+            <div className="relative bg-gradient-to-br from-primary to-primary-hover rounded-3xl p-5 sm:p-8 text-white shadow-2xl overflow-hidden">
               {/* Card background pattern */}
               <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-0 right-0 w-40 h-40 bg-white rounded-full -mr-20 -mt-20"></div>
-                <div className="absolute bottom-0 left-0 w-32 h-32 bg-white rounded-full -ml-16 -mb-16"></div>
+                <div className="absolute top-0 right-0 w-40 h-40 bg-surface rounded-full -mr-20 -mt-20"></div>
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-surface rounded-full -ml-16 -mb-16"></div>
               </div>
 
               {/* Card content */}
@@ -302,8 +302,8 @@ export default function MahallemKartPage() {
 
                   {/* QR Code */}
                   <div className="flex flex-col items-center justify-center">
-                    <div className="w-24 h-24 bg-white rounded-lg flex items-center justify-center shadow-lg">
-                      <QrCode className="w-16 h-16 text-[#00833e]" />
+                    <div className="w-24 h-24 bg-surface rounded-lg flex items-center justify-center shadow-lg">
+                      <QrCode className="w-16 h-16 text-primary" />
                     </div>
                     <p className="text-xs opacity-75 mt-2 text-center">QR Kodunuz</p>
                   </div>
@@ -334,53 +334,53 @@ export default function MahallemKartPage() {
       {/* Stats Section */}
       <section className="px-4 md:px-6 py-8">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-xl sm:text-2xl font-bold text-[#333] mb-6">İstatistiklerim</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-text-primary mb-6">İstatistiklerim</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-[#e0e0e0]">
+            <div className="bg-surface rounded-2xl p-4 sm:p-6 shadow-sm border border-border">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[#8f8f8f] text-sm font-medium mb-2">
+                  <p className="text-text-muted text-sm font-medium mb-2">
                     Toplam Puan
                   </p>
-                  <p className="text-2xl sm:text-3xl font-bold text-[#333]">1.250</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-text-primary">1.250</p>
                 </div>
-                <Star className="w-8 h-8 text-[#00833e]" />
+                <Star className="w-8 h-8 text-primary" />
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-[#e0e0e0]">
+            <div className="bg-surface rounded-2xl p-4 sm:p-6 shadow-sm border border-border">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[#8f8f8f] text-sm font-medium mb-2">
+                  <p className="text-text-muted text-sm font-medium mb-2">
                     Kullanılan İndirimler
                   </p>
-                  <p className="text-2xl sm:text-3xl font-bold text-[#333]">23</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-text-primary">23</p>
                 </div>
-                <Percent className="w-8 h-8 text-[#00833e]" />
+                <Percent className="w-8 h-8 text-primary" />
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-[#e0e0e0]">
+            <div className="bg-surface rounded-2xl p-4 sm:p-6 shadow-sm border border-border">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[#8f8f8f] text-sm font-medium mb-2">
+                  <p className="text-text-muted text-sm font-medium mb-2">
                     Askıda Bağışlar
                   </p>
-                  <p className="text-2xl sm:text-3xl font-bold text-[#333]">8</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-text-primary">8</p>
                 </div>
-                <Gift className="w-8 h-8 text-[#00833e]" />
+                <Gift className="w-8 h-8 text-primary" />
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-[#e0e0e0]">
+            <div className="bg-surface rounded-2xl p-4 sm:p-6 shadow-sm border border-border">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[#8f8f8f] text-sm font-medium mb-2">
+                  <p className="text-text-muted text-sm font-medium mb-2">
                     Üye Süresi
                   </p>
-                  <p className="text-2xl sm:text-3xl font-bold text-[#333]">2 yıl</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-text-primary">2 yıl</p>
                 </div>
-                <Clock className="w-8 h-8 text-[#00833e]" />
+                <Clock className="w-8 h-8 text-primary" />
               </div>
             </div>
           </div>
@@ -391,8 +391,8 @@ export default function MahallemKartPage() {
       <section className="px-4 md:px-6 py-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold text-[#333]">Yakındaki İndirimler</h2>
-            <button className="flex items-center gap-2 text-[#00833e] hover:text-[#006b32] font-semibold">
+            <h2 className="text-xl sm:text-2xl font-bold text-text-primary">Yakındaki İndirimler</h2>
+            <button className="flex items-center gap-2 text-primary hover:text-primary-hover font-semibold">
               Tümünü Gör
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -401,13 +401,13 @@ export default function MahallemKartPage() {
           {/* Search and Filter */}
           <div className="flex flex-col gap-4 mb-6">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#8f8f8f]" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-text-muted" />
               <input
                 type="text"
                 placeholder="İşletme ara..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 rounded-xl border border-[#e0e0e0] bg-white text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20"
+                className="w-full pl-12 pr-4 py-3 rounded-xl border border-border bg-surface text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
               />
             </div>
 
@@ -420,8 +420,8 @@ export default function MahallemKartPage() {
                   className={cn(
                     'px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all',
                     selectedCategory === category
-                      ? 'bg-[#00833e] text-white'
-                      : 'bg-white text-[#333] border border-[#e0e0e0] hover:border-[#00833e]'
+                      ? 'bg-primary text-white'
+                      : 'bg-surface text-text-primary border border-border hover:border-primary'
                   )}
                 >
                   {category}
@@ -435,40 +435,40 @@ export default function MahallemKartPage() {
             {filteredDiscounts.map((discount) => (
               <div
                 key={discount.id}
-                className="bg-white rounded-2xl overflow-hidden shadow-sm border border-[#e0e0e0] hover:shadow-md hover:border-[#00833e] transition-all"
+                className="bg-surface rounded-2xl overflow-hidden shadow-sm border border-border hover:shadow-md hover:border-primary transition-all"
               >
                 {/* Logo/Image */}
-                <div className="w-full h-32 bg-gradient-to-br from-[#00833e]/10 to-[#00833e]/5 flex items-center justify-center text-4xl">
+                <div className="w-full h-32 bg-gradient-to-br from-primary/10 to-[#00833e]/5 flex items-center justify-center text-4xl">
                   {discount.logo}
                 </div>
 
                 {/* Content */}
                 <div className="p-4">
-                  <h3 className="font-bold text-[#333] text-lg mb-1">
+                  <h3 className="font-bold text-text-primary text-lg mb-1">
                     {discount.name}
                   </h3>
-                  <p className="text-xs text-[#8f8f8f] mb-2">{discount.category}</p>
-                  <p className="text-sm text-[#404040] mb-3">{discount.description}</p>
+                  <p className="text-xs text-text-muted mb-2">{discount.category}</p>
+                  <p className="text-sm text-text-secondary mb-3">{discount.description}</p>
 
                   {/* Discount badge */}
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="inline-flex items-center gap-1 bg-[#00833e]/10 px-2 py-1 rounded-lg">
-                      <Percent className="w-4 h-4 text-[#00833e]" />
-                      <span className="font-bold text-[#00833e]">%{discount.discount}</span>
+                    <div className="inline-flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-lg">
+                      <Percent className="w-4 h-4 text-primary" />
+                      <span className="font-bold text-primary">%{discount.discount}</span>
                     </div>
-                    <span className="text-xs text-[#8f8f8f] ml-auto">
+                    <span className="text-xs text-text-muted ml-auto">
                       İndirim
                     </span>
                   </div>
 
                   {/* Valid until */}
-                  <div className="flex items-center gap-2 text-xs text-[#8f8f8f] mb-4">
+                  <div className="flex items-center gap-2 text-xs text-text-muted mb-4">
                     <Calendar className="w-3 h-3" />
                     <span>{discount.validUntil}</span>
                   </div>
 
                   {/* Use button */}
-                  <button className="w-full py-2 rounded-lg bg-[#00833e] hover:bg-[#006b32] text-white font-semibold transition-colors">
+                  <button className="w-full py-2 rounded-lg bg-primary hover:bg-primary-hover text-white font-semibold transition-colors">
                     Kullan
                   </button>
                 </div>
@@ -479,7 +479,7 @@ export default function MahallemKartPage() {
           {filteredDiscounts.length === 0 && (
             <div className="text-center py-12">
               <Search className="w-12 h-12 text-[#e0e0e0] mx-auto mb-4" />
-              <p className="text-[#8f8f8f]">İndirim bulunamadı</p>
+              <p className="text-text-muted">İndirim bulunamadı</p>
             </div>
           )}
         </div>
@@ -489,32 +489,32 @@ export default function MahallemKartPage() {
       <section className="px-4 md:px-6 py-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold text-[#333]">Kart Geçmişi</h2>
-            <button className="flex items-center gap-2 text-[#00833e] hover:text-[#006b32] font-semibold">
+            <h2 className="text-xl sm:text-2xl font-bold text-text-primary">Kart Geçmişi</h2>
+            <button className="flex items-center gap-2 text-primary hover:text-primary-hover font-semibold">
               Tümünü Gör
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-[#e0e0e0] overflow-hidden">
+          <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden">
             <div className="divide-y divide-[#e0e0e0]">
               {TRANSACTIONS.map((transaction) => (
                 <div
                   key={transaction.id}
-                  className="p-4 hover:bg-[#f0f2f5] transition-colors"
+                  className="p-4 hover:bg-background transition-colors"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <p className="font-semibold text-[#333]">
+                      <p className="font-semibold text-text-primary">
                         {transaction.business}
                       </p>
-                      <p className="text-sm text-[#8f8f8f]">{transaction.date}</p>
+                      <p className="text-sm text-text-muted">{transaction.date}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-[#00833e]">
+                      <p className="font-semibold text-primary">
                         -%{transaction.discount}
                       </p>
-                      <p className="text-sm text-[#8f8f8f]">
+                      <p className="text-sm text-text-muted">
                         +{transaction.pointsEarned} puan
                       </p>
                     </div>
@@ -529,25 +529,25 @@ export default function MahallemKartPage() {
       {/* Earn Points Section */}
       <section className="px-4 md:px-6 py-8">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-xl sm:text-2xl font-bold text-[#333] mb-6">Puan Kazan</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-text-primary mb-6">Puan Kazan</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {EARN_METHODS.map((method) => (
               <div
                 key={method.id}
-                className="bg-white rounded-2xl p-6 shadow-sm border border-[#e0e0e0] hover:shadow-md hover:border-[#00833e] transition-all"
+                className="bg-surface rounded-2xl p-6 shadow-sm border border-border hover:shadow-md hover:border-primary transition-all"
               >
                 <div className="flex items-start justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-[#00833e]/10 flex items-center justify-center text-[#00833e]">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                     {method.icon}
                   </div>
-                  <div className="px-3 py-1 rounded-lg bg-[#00833e]/10 text-[#00833e] font-bold text-sm">
+                  <div className="px-3 py-1 rounded-lg bg-primary/10 text-primary font-bold text-sm">
                     +{method.points}
                   </div>
                 </div>
 
-                <h3 className="font-bold text-[#333] mb-2">{method.title}</h3>
-                <p className="text-sm text-[#8f8f8f]">{method.description}</p>
+                <h3 className="font-bold text-text-primary mb-2">{method.title}</h3>
+                <p className="text-sm text-text-muted">{method.description}</p>
               </div>
             ))}
           </div>
@@ -556,7 +556,7 @@ export default function MahallemKartPage() {
 
       {/* CTA Section */}
       <section className="px-4 md:px-6 py-12">
-        <div className="max-w-6xl mx-auto bg-gradient-to-r from-[#00833e] to-[#006b32] rounded-3xl p-6 sm:p-8 md:p-12 text-white text-center">
+        <div className="max-w-6xl mx-auto bg-gradient-to-r from-primary to-primary-hover rounded-3xl p-6 sm:p-8 md:p-12 text-white text-center">
           <div className="flex justify-center mb-4">
             <Sparkles className="w-8 h-8" />
           </div>
@@ -566,7 +566,7 @@ export default function MahallemKartPage() {
           <p className="text-base sm:text-lg opacity-90 mb-8">
             Mahalle esnaflarında harcama yap ve puan biriktir, ödünü al!
           </p>
-          <button className="bg-white hover:bg-gray-100 text-[#00833e] font-bold py-3 px-8 rounded-xl transition-colors">
+          <button className="bg-surface hover:bg-gray-100 text-primary font-bold py-3 px-8 rounded-xl transition-colors">
             Komşuları Davet Et
           </button>
         </div>

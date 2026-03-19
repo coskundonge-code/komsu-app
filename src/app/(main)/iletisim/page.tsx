@@ -142,19 +142,19 @@ export default function ContactPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 py-6">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm text-[#00833e] hover:text-[#006b32] font-medium mb-6 transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary-hover font-medium mb-6 transition-colors"
         >
           <ArrowLeft size={16} />
           Ana Sayfaya Dön
         </Link>
 
-        <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden shadow-sm">
+        <div className="bg-surface rounded-lg border border-border overflow-hidden shadow-sm">
           {/* Hero Section */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-[#00833e] via-[#00833e] to-[#006b32] p-12 text-white">
+          <div className="relative overflow-hidden bg-gradient-to-br from-primary via-[#00833e] to-primary-hover p-12 text-white">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32"></div>
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full -ml-24 -mb-24"></div>
             <div className="relative z-10">
@@ -167,8 +167,8 @@ export default function ContactPage() {
           <div className="p-8 md:p-12 space-y-12">
             {/* Contact Methods */}
             <section>
-              <h2 className="text-2xl font-bold text-[#333] mb-6 flex items-center gap-2">
-                <span className="w-1 h-8 bg-[#00833e] rounded-full"></span>
+              <h2 className="text-2xl font-bold text-text-primary mb-6 flex items-center gap-2">
+                <span className="w-1 h-8 bg-primary rounded-full"></span>
                 Bize Nasıl Ulaşabilirsiniz
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -184,16 +184,16 @@ export default function ContactPage() {
                           ? `mailto:${method.value}`
                           : '#'
                       }
-                      className="p-6 bg-[#f0f2f5] border border-[#e0e0e0] rounded-lg hover:border-[#00833e] hover:shadow-md transition-all duration-200 group"
+                      className="p-6 bg-background border border-border rounded-lg hover:border-primary hover:shadow-md transition-all duration-200 group"
                     >
                       <div className="flex items-start gap-4">
-                        <div className="p-3 bg-white rounded-lg border border-[#e0e0e0] group-hover:border-[#00833e] transition-colors">
-                          <Icon className="w-6 h-6 text-[#00833e]" />
+                        <div className="p-3 bg-surface rounded-lg border border-border group-hover:border-primary transition-colors">
+                          <Icon className="w-6 h-6 text-primary" />
                         </div>
                         <div className="flex-grow">
-                          <h3 className="font-bold text-[#333] mb-1">{method.title}</h3>
-                          <p className="text-[#00833e] font-semibold text-sm mb-1">{method.value}</p>
-                          <p className="text-xs text-[#8f8f8f]">{method.description}</p>
+                          <h3 className="font-bold text-text-primary mb-1">{method.title}</h3>
+                          <p className="text-primary font-semibold text-sm mb-1">{method.value}</p>
+                          <p className="text-xs text-text-muted">{method.description}</p>
                         </div>
                       </div>
                     </a>
@@ -203,9 +203,9 @@ export default function ContactPage() {
             </section>
 
             {/* Contact Form */}
-            <section className="border-t border-[#e0e0e0] pt-12">
-              <h2 className="text-2xl font-bold text-[#333] mb-6 flex items-center gap-2">
-                <span className="w-1 h-8 bg-[#00833e] rounded-full"></span>
+            <section className="border-t border-border pt-12">
+              <h2 className="text-2xl font-bold text-text-primary mb-6 flex items-center gap-2">
+                <span className="w-1 h-8 bg-primary rounded-full"></span>
                 İletişim Formu
               </h2>
 
@@ -223,7 +223,7 @@ export default function ContactPage() {
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
-                      <label htmlFor="ad" className="block text-sm font-semibold text-[#333] mb-2">
+                      <label htmlFor="ad" className="block text-sm font-semibold text-text-primary mb-2">
                         Ad Soyad *
                       </label>
                       <input
@@ -235,7 +235,7 @@ export default function ContactPage() {
                         className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
                           errors.ad
                             ? "border-red-500 focus:border-red-500 focus:ring-red-200 bg-red-50"
-                            : "border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20"
+                            : "border-border focus:border-primary focus:ring-primary/20"
                         }`}
                         placeholder="Adınız ve soyadınız"
                       />
@@ -247,7 +247,7 @@ export default function ContactPage() {
                       )}
                     </div>
                     <div>
-                      <label htmlFor="email" className="block text-sm font-semibold text-[#333] mb-2">
+                      <label htmlFor="email" className="block text-sm font-semibold text-text-primary mb-2">
                         E-posta *
                       </label>
                       <input
@@ -259,7 +259,7 @@ export default function ContactPage() {
                         className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
                           errors.email
                             ? "border-red-500 focus:border-red-500 focus:ring-red-200 bg-red-50"
-                            : "border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20"
+                            : "border-border focus:border-primary focus:ring-primary/20"
                         }`}
                         placeholder="ornek@email.com"
                       />
@@ -273,7 +273,7 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="konu" className="block text-sm font-semibold text-[#333] mb-2">
+                    <label htmlFor="konu" className="block text-sm font-semibold text-text-primary mb-2">
                       Konu *
                     </label>
                     <select
@@ -281,7 +281,7 @@ export default function ContactPage() {
                       name="konu"
                       value={formData.konu}
                       onChange={handleChange}
-                      className="w-full px-4 py-2.5 border border-[#e0e0e0] rounded-lg focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20 transition-colors bg-white"
+                      className="w-full px-4 py-2.5 border border-border rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors bg-surface"
                     >
                       <option value="Genel">Genel Sorular</option>
                       <option value="Teknik Destek">Teknik Destek</option>
@@ -292,8 +292,8 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="mesaj" className="block text-sm font-semibold text-[#333] mb-2">
-                      Mesaj * <span className="text-xs text-[#8f8f8f]">(En az 10 karakter)</span>
+                    <label htmlFor="mesaj" className="block text-sm font-semibold text-text-primary mb-2">
+                      Mesaj * <span className="text-xs text-text-muted">(En az 10 karakter)</span>
                     </label>
                     <textarea
                       id="mesaj"
@@ -304,7 +304,7 @@ export default function ContactPage() {
                       className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-colors resize-none ${
                         errors.mesaj
                           ? "border-red-500 focus:border-red-500 focus:ring-red-200 bg-red-50"
-                          : "border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20"
+                          : "border-border focus:border-primary focus:ring-primary/20"
                       }`}
                       placeholder="Lütfen detaylı bir şekilde açıklayınız..."
                     ></textarea>
@@ -320,14 +320,14 @@ export default function ContactPage() {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full px-6 py-3 bg-[#00833e] text-white font-bold rounded-lg hover:bg-[#006b32] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                      className="w-full px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
                     >
                       <Send size={18} />
                       {isLoading ? "Gönderiliyor..." : "Mesajı Gönder"}
                     </button>
                   </div>
 
-                  <p className="text-xs text-[#8f8f8f] text-center">
+                  <p className="text-xs text-text-muted text-center">
                     * Zorunlu alanları doldurunuz. İşlenmiş verileriniz KVKK'ya uygun olarak güvence altında tutulacaktır.
                   </p>
                 </form>
@@ -335,9 +335,9 @@ export default function ContactPage() {
             </section>
 
             {/* Social Media */}
-            <section className="border-t border-[#e0e0e0] pt-12">
-              <h2 className="text-2xl font-bold text-[#333] mb-6 flex items-center gap-2">
-                <span className="w-1 h-8 bg-[#00833e] rounded-full"></span>
+            <section className="border-t border-border pt-12">
+              <h2 className="text-2xl font-bold text-text-primary mb-6 flex items-center gap-2">
+                <span className="w-1 h-8 bg-primary rounded-full"></span>
                 Sosyal Medyada Bizi Takip Edin
               </h2>
               <div className="flex gap-4 flex-wrap">
@@ -349,7 +349,7 @@ export default function ContactPage() {
                       href={social.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`p-4 bg-[#f0f2f5] border border-[#e0e0e0] rounded-lg hover:bg-white hover:shadow-md transition-all ${social.color}`}
+                      className={`p-4 bg-background border border-border rounded-lg hover:bg-surface hover:shadow-md transition-all ${social.color}`}
                       title={social.name}
                     >
                       <Icon size={24} />
@@ -360,24 +360,24 @@ export default function ContactPage() {
             </section>
 
             {/* FAQ */}
-            <section className="border-t border-[#e0e0e0] pt-12">
-              <h2 className="text-2xl font-bold text-[#333] mb-6 flex items-center gap-2">
-                <span className="w-1 h-8 bg-[#00833e] rounded-full"></span>
+            <section className="border-t border-border pt-12">
+              <h2 className="text-2xl font-bold text-text-primary mb-6 flex items-center gap-2">
+                <span className="w-1 h-8 bg-primary rounded-full"></span>
                 Sıkça Sorulan Sorular
               </h2>
               <div className="space-y-3">
                 {faqs.map((faq, idx) => (
                   <details
                     key={idx}
-                    className="group border border-[#e0e0e0] rounded-lg overflow-hidden hover:border-[#00833e] transition-colors"
+                    className="group border border-border rounded-lg overflow-hidden hover:border-primary transition-colors"
                   >
-                    <summary className="p-4 cursor-pointer bg-[#f0f2f5] hover:bg-white font-semibold text-[#333] flex items-center justify-between">
+                    <summary className="p-4 cursor-pointer bg-background hover:bg-surface font-semibold text-text-primary flex items-center justify-between">
                       <span>{faq.q}</span>
-                      <span className="text-[#00833e] group-open:rotate-180 transition-transform text-lg">
+                      <span className="text-primary group-open:rotate-180 transition-transform text-lg">
                         ▼
                       </span>
                     </summary>
-                    <div className="p-4 bg-white text-[#404040] text-sm leading-relaxed border-t border-[#e0e0e0]">
+                    <div className="p-4 bg-surface text-text-secondary text-sm leading-relaxed border-t border-border">
                       {faq.a}
                     </div>
                   </details>
@@ -387,48 +387,48 @@ export default function ContactPage() {
 
             {/* Office Hours & Response Time */}
             <section className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 rounded-lg">
-              <h3 className="font-bold text-[#333] mb-4 flex items-center gap-2">
-                <Clock size={20} className="text-[#00833e]" />
+              <h3 className="font-bold text-text-primary mb-4 flex items-center gap-2">
+                <Clock size={20} className="text-primary" />
                 Çalışma Saatleri ve Yanıt Süresi
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="font-semibold text-[#333] mb-1">Çalışma Saatleri</p>
-                  <p className="text-[#404040]">Pazartesi - Cuma: 09:00 - 18:00</p>
-                  <p className="text-[#8f8f8f]">Cumartesi ve Pazar: Kapalı</p>
+                  <p className="font-semibold text-text-primary mb-1">Çalışma Saatleri</p>
+                  <p className="text-text-secondary">Pazartesi - Cuma: 09:00 - 18:00</p>
+                  <p className="text-text-muted">Cumartesi ve Pazar: Kapalı</p>
                 </div>
                 <div>
-                  <p className="font-semibold text-[#333] mb-1">Yanıt Süresi</p>
-                  <p className="text-[#404040]">İş saatleri içinde: 24 saat içinde</p>
-                  <p className="text-[#8f8f8f]">Weekend: Pazartesi günü yanıtlanır</p>
+                  <p className="font-semibold text-text-primary mb-1">Yanıt Süresi</p>
+                  <p className="text-text-secondary">İş saatleri içinde: 24 saat içinde</p>
+                  <p className="text-text-muted">Weekend: Pazartesi günü yanıtlanır</p>
                 </div>
               </div>
             </section>
           </div>
 
           {/* Footer */}
-          <div className="border-t border-[#e0e0e0] bg-[#f0f2f5] py-6 px-8 text-center">
-            <p className="text-sm text-[#8f8f8f] mb-4">
+          <div className="border-t border-border bg-background py-6 px-8 text-center">
+            <p className="text-sm text-text-muted mb-4">
               © 2026 Mahallem — Trendex Lojistik tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link
                 href="/gizlilik"
-                className="text-sm text-[#00833e] hover:text-[#006b32] font-medium transition-colors"
+                className="text-sm text-primary hover:text-primary-hover font-medium transition-colors"
               >
                 Gizlilik Politikası
               </Link>
               <span className="text-[#e0e0e0]">•</span>
               <Link
                 href="/topluluk-kurallari"
-                className="text-sm text-[#00833e] hover:text-[#006b32] font-medium transition-colors"
+                className="text-sm text-primary hover:text-primary-hover font-medium transition-colors"
               >
                 Topluluk Kuralları
               </Link>
               <span className="text-[#e0e0e0]">•</span>
               <Link
                 href="/kvkk"
-                className="text-sm text-[#00833e] hover:text-[#006b32] font-medium transition-colors"
+                className="text-sm text-primary hover:text-primary-hover font-medium transition-colors"
               >
                 KVKK Aydınlatma
               </Link>

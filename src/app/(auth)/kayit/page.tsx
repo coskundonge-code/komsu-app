@@ -172,10 +172,10 @@ export default function KayitPage() {
       {/* Top bar */}
       <div className="w-full px-6 py-4">
         <Link href="/" className="inline-flex items-center gap-2">
-          <div className="w-8 h-8 bg-[#00833e] rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-sm">K</span>
           </div>
-          <span className="text-lg font-bold text-[#333]">Mahallem</span>
+          <span className="text-lg font-bold text-text-primary">Mahallem</span>
         </Link>
       </div>
 
@@ -184,7 +184,7 @@ export default function KayitPage() {
         <div className="w-full max-w-[480px]">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-[#333] mb-2">Hesap Oluşturun</h1>
+            <h1 className="text-3xl font-bold text-text-primary mb-2">Hesap Oluşturun</h1>
             <p className="text-[#666]">
               Mahallenizin dijital topluluğuna katılın
             </p>
@@ -207,12 +207,12 @@ export default function KayitPage() {
           )}
 
           {/* Card */}
-          <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] p-6 sm:p-8">
+          <div className="bg-surface rounded-2xl shadow-sm border border-[#e8eaed] p-6 sm:p-8">
             {/* Google Sign Up */}
             <button
               onClick={handleGoogleSignUp}
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-3 border border-[#e0e0e0] hover:bg-[#f9f9f9] text-[#333] font-medium py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed bg-white hover:border-[#d0d0d0] active:bg-[#f5f5f5]"
+              className="w-full flex items-center justify-center gap-3 border border-border hover:bg-surface-hover text-text-primary font-medium py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed bg-surface hover:border-[#d0d0d0] active:bg-[#f5f5f5]"
             >
               {isLoading ? (
                 <>
@@ -238,24 +238,24 @@ export default function KayitPage() {
             {/* Divider */}
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#e0e0e0]" />
+                <div className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="px-3 bg-white text-[#8f8f8f]">ya da e-posta ile</span>
+                <span className="px-3 bg-surface text-text-muted">ya da e-posta ile</span>
               </div>
             </div>
 
             {/* Step indicator */}
             <div className="flex items-center gap-2 mb-6">
-              <div className={`flex-1 h-1 rounded-full transition-colors ${step >= 1 ? 'bg-[#00833e]' : 'bg-[#e0e0e0]'}`} />
-              <div className={`flex-1 h-1 rounded-full transition-colors ${step >= 2 ? 'bg-[#00833e]' : 'bg-[#e0e0e0]'}`} />
+              <div className={`flex-1 h-1 rounded-full transition-colors ${step >= 1 ? 'bg-primary' : 'bg-[#e0e0e0]'}`} />
+              <div className={`flex-1 h-1 rounded-full transition-colors ${step >= 2 ? 'bg-primary' : 'bg-[#e0e0e0]'}`} />
             </div>
 
             <form onSubmit={handleSignUp} noValidate>
               {/* ===== STEP 1: Kişisel Bilgiler ===== */}
               {step === 1 && (
                 <div className="space-y-4">
-                  <p className="text-sm font-semibold text-[#333] mb-1">Adım 1: Kişisel Bilgiler</p>
+                  <p className="text-sm font-semibold text-text-primary mb-1">Adım 1: Kişisel Bilgiler</p>
 
                   {/* TC Kimlik No */}
                   <div>
@@ -276,10 +276,10 @@ export default function KayitPage() {
                         }}
                         placeholder="11 haneli TC Kimlik Numaranız"
                         disabled={isLoading}
-                        className={`w-full pl-11 pr-4 py-3 border rounded-xl text-sm text-[#333] placeholder-[#aaa] bg-[#fafafa] focus:bg-white focus:outline-none focus:ring-2 transition ${
+                        className={`w-full pl-11 pr-4 py-3 border rounded-xl text-sm text-text-primary placeholder-[#aaa] bg-[#fafafa] focus:bg-surface focus:outline-none focus:ring-2 transition ${
                           tcKimlikNoError
                             ? 'border-red-300 focus:ring-red-200'
-                            : 'border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20'
+                            : 'border-border focus:border-primary focus:ring-primary/20'
                         }`}
                       />
                     </div>
@@ -308,10 +308,10 @@ export default function KayitPage() {
                         }}
                         placeholder="Adınız Soyadınız"
                         disabled={isLoading}
-                        className={`w-full pl-11 pr-4 py-3 border rounded-xl text-sm text-[#333] placeholder-[#aaa] bg-[#fafafa] focus:bg-white focus:outline-none focus:ring-2 transition ${
+                        className={`w-full pl-11 pr-4 py-3 border rounded-xl text-sm text-text-primary placeholder-[#aaa] bg-[#fafafa] focus:bg-surface focus:outline-none focus:ring-2 transition ${
                           fullNameError
                             ? 'border-red-300 focus:ring-red-200'
-                            : 'border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20'
+                            : 'border-border focus:border-primary focus:ring-primary/20'
                         }`}
                       />
                     </div>
@@ -340,10 +340,10 @@ export default function KayitPage() {
                         }}
                         placeholder="ornek@email.com"
                         disabled={isLoading}
-                        className={`w-full pl-11 pr-4 py-3 border rounded-xl text-sm text-[#333] placeholder-[#aaa] bg-[#fafafa] focus:bg-white focus:outline-none focus:ring-2 transition ${
+                        className={`w-full pl-11 pr-4 py-3 border rounded-xl text-sm text-text-primary placeholder-[#aaa] bg-[#fafafa] focus:bg-surface focus:outline-none focus:ring-2 transition ${
                           emailError
                             ? 'border-red-300 focus:ring-red-200'
-                            : 'border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20'
+                            : 'border-border focus:border-primary focus:ring-primary/20'
                         }`}
                       />
                     </div>
@@ -359,7 +359,7 @@ export default function KayitPage() {
                   <button
                     type="button"
                     onClick={handleNextStep}
-                    className="w-full bg-[#00833e] hover:bg-[#006b32] text-white font-semibold py-3 rounded-xl text-sm transition mt-2 flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
+                    className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 rounded-xl text-sm transition mt-2 flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
                   >
                     Devam Et
                     <ArrowRight className="w-4 h-4" />
@@ -371,11 +371,11 @@ export default function KayitPage() {
               {step === 2 && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between mb-1">
-                    <p className="text-sm font-semibold text-[#333]">Adım 2: Güvenlik Bilgileri</p>
+                    <p className="text-sm font-semibold text-text-primary">Adım 2: Güvenlik Bilgileri</p>
                     <button
                       type="button"
                       onClick={() => setStep(1)}
-                      className="text-xs text-[#00833e] hover:text-[#006b32] font-medium"
+                      className="text-xs text-primary hover:text-primary-hover font-medium"
                     >
                       ← Geri
                     </button>
@@ -383,11 +383,11 @@ export default function KayitPage() {
 
                   {/* Kullanıcı özeti */}
                   <div className="bg-[#f0f7f2] rounded-lg px-4 py-3 flex items-center gap-3">
-                    <div className="w-9 h-9 bg-[#00833e] rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                    <div className="w-9 h-9 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                       {fullName.charAt(0).toUpperCase() || 'K'}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-medium text-[#333] truncate">{fullName}</p>
+                      <p className="text-sm font-medium text-text-primary truncate">{fullName}</p>
                       <p className="text-xs text-[#666] truncate">{email}</p>
                     </div>
                   </div>
@@ -409,10 +409,10 @@ export default function KayitPage() {
                         }}
                         placeholder="En az 8 karakter"
                         disabled={isLoading}
-                        className={`w-full pl-11 pr-11 py-3 border rounded-xl text-sm text-[#333] placeholder-[#aaa] bg-[#fafafa] focus:bg-white focus:outline-none focus:ring-2 transition ${
+                        className={`w-full pl-11 pr-11 py-3 border rounded-xl text-sm text-text-primary placeholder-[#aaa] bg-[#fafafa] focus:bg-surface focus:outline-none focus:ring-2 transition ${
                           passwordError
                             ? 'border-red-300 focus:ring-red-200'
-                            : 'border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20'
+                            : 'border-border focus:border-primary focus:ring-primary/20'
                         }`}
                       />
                       <button
@@ -448,10 +448,10 @@ export default function KayitPage() {
                         }}
                         placeholder="Şifrenizi tekrar girin"
                         disabled={isLoading}
-                        className={`w-full pl-11 pr-11 py-3 border rounded-xl text-sm text-[#333] placeholder-[#aaa] bg-[#fafafa] focus:bg-white focus:outline-none focus:ring-2 transition ${
+                        className={`w-full pl-11 pr-11 py-3 border rounded-xl text-sm text-text-primary placeholder-[#aaa] bg-[#fafafa] focus:bg-surface focus:outline-none focus:ring-2 transition ${
                           confirmPasswordError
                             ? 'border-red-300 focus:ring-red-200'
-                            : 'border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20'
+                            : 'border-border focus:border-primary focus:ring-primary/20'
                         }`}
                       />
                       <button
@@ -487,10 +487,10 @@ export default function KayitPage() {
                         }}
                         placeholder="+90 5XX XXX XXXX"
                         disabled={isLoading}
-                        className={`w-full pl-11 pr-4 py-3 border rounded-xl text-sm text-[#333] placeholder-[#aaa] bg-[#fafafa] focus:bg-white focus:outline-none focus:ring-2 transition ${
+                        className={`w-full pl-11 pr-4 py-3 border rounded-xl text-sm text-text-primary placeholder-[#aaa] bg-[#fafafa] focus:bg-surface focus:outline-none focus:ring-2 transition ${
                           phoneError
                             ? 'border-red-300 focus:ring-red-200'
-                            : 'border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20'
+                            : 'border-border focus:border-primary focus:ring-primary/20'
                         }`}
                       />
                     </div>
@@ -513,11 +513,11 @@ export default function KayitPage() {
                         if (error && error.includes("koşulları")) setError('')
                       }}
                       disabled={isLoading}
-                      className="w-4 h-4 mt-0.5 rounded border-[#e0e0e0] text-[#00833e] focus:ring-[#00833e] cursor-pointer accent-[#00833e]"
+                      className="w-4 h-4 mt-0.5 rounded border-border text-primary focus:ring-primary cursor-pointer accent-[#00833e]"
                     />
                     <label htmlFor="terms" className="text-xs text-[#666] cursor-pointer leading-relaxed">
-                      <Link href="/kosullar" className="text-[#00833e] font-medium hover:underline">Kullanım Koşullarını</Link> ve{' '}
-                      <Link href="/gizlilik" className="text-[#00833e] font-medium hover:underline">Gizlilik Politikasını</Link> okudum ve kabul ediyorum
+                      <Link href="/kosullar" className="text-primary font-medium hover:underline">Kullanım Koşullarını</Link> ve{' '}
+                      <Link href="/gizlilik" className="text-primary font-medium hover:underline">Gizlilik Politikasını</Link> okudum ve kabul ediyorum
                     </label>
                   </div>
 
@@ -525,7 +525,7 @@ export default function KayitPage() {
                   <button
                     type="submit"
                     disabled={isLoading || !agreeTerms}
-                    className="w-full bg-[#00833e] hover:bg-[#006b32] text-white font-semibold py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed mt-2 shadow-sm hover:shadow-md"
+                    className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed mt-2 shadow-sm hover:shadow-md"
                   >
                     {isLoading ? (
                       <span className="flex items-center justify-center gap-2">
@@ -548,7 +548,7 @@ export default function KayitPage() {
           <div className="mt-6 text-center">
             <p className="text-sm text-[#666]">
               Zaten hesabınız var mı?{' '}
-              <Link href="/giris" className="text-[#00833e] hover:text-[#006b32] font-semibold transition">
+              <Link href="/giris" className="text-primary hover:text-primary-hover font-semibold transition">
                 Giriş yapın
               </Link>
             </p>

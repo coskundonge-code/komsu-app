@@ -37,7 +37,7 @@ export function GroupHeader({
   };
 
   return (
-    <div className="bg-white">
+    <div className="bg-surface">
       {/* Cover Image */}
       <div className="relative h-64 bg-gray-200 overflow-hidden">
         <Image
@@ -51,7 +51,7 @@ export function GroupHeader({
 
       {/* Group Info */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 -mt-20 relative z-10">
-        <div className="bg-white rounded-lg shadow-md p-6 flex items-start justify-between mb-8">
+        <div className="bg-surface rounded-lg shadow-md p-6 flex items-start justify-between mb-8">
           <div className="flex gap-6 flex-1">
             {/* Group Icon */}
             <Image
@@ -70,7 +70,7 @@ export function GroupHeader({
               {/* Stats */}
               <div className="flex gap-6 text-gray-700">
                 <div className="flex items-center gap-2">
-                  <Users className="w-5 h-5 text-[#00833e]" />
+                  <Users className="w-5 h-5 text-primary" />
                   <span className="font-semibold">{memberCount} Üye</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -92,7 +92,7 @@ export function GroupHeader({
               className={`px-6 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2 ${
                 joined
                   ? 'bg-red-100 text-red-600 hover:bg-red-200'
-                  : 'bg-[#00833e] text-white hover:bg-[#006b32]'
+                  : 'bg-primary text-white hover:bg-primary-hover'
               }`}
             >
               {joined ? (
@@ -111,7 +111,7 @@ export function GroupHeader({
         </div>
 
         {/* Tabs */}
-        <div className="border-b border-gray-200 bg-white">
+        <div className="border-b border-gray-200 bg-surface">
           <div className="flex gap-8">
             {['posts', 'members', 'about'].map((tab) => (
               <button
@@ -119,7 +119,7 @@ export function GroupHeader({
                 onClick={() => onTabChange(tab as any)}
                 className={`px-4 py-4 font-semibold border-b-2 transition-colors ${
                   activeTab === tab
-                    ? 'text-[#00833e] border-[#00833e]'
+                    ? 'text-primary border-primary'
                     : 'text-gray-600 border-transparent hover:text-gray-900'
                 }`}
               >

@@ -168,7 +168,7 @@ export default function MahalleleriPage() {
         </div>
         <button
           onClick={() => setFormModal({ isOpen: true, mode: 'add' })}
-          className="flex items-center gap-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium py-2 px-4 rounded-lg transition-colors"
+          className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-medium py-2 px-4 rounded-lg transition-colors"
         >
           <Plus size={20} />
           Mahalle Ekle
@@ -177,7 +177,7 @@ export default function MahalleleriPage() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 hover:shadow-md transition-shadow">
+        <div className="bg-surface rounded-lg border border-border p-4 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-xs font-medium">Toplam Mahalle</p>
@@ -185,10 +185,10 @@ export default function MahalleleriPage() {
                 {MOCK_NEIGHBORHOODS.length}
               </p>
             </div>
-            <Layers className="text-[#00833e]" size={28} />
+            <Layers className="text-primary" size={28} />
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 hover:shadow-md transition-shadow">
+        <div className="bg-surface rounded-lg border border-border p-4 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-xs font-medium">Toplam Üye</p>
@@ -199,7 +199,7 @@ export default function MahalleleriPage() {
             <Users className="text-blue-600" size={28} />
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 hover:shadow-md transition-shadow">
+        <div className="bg-surface rounded-lg border border-border p-4 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-xs font-medium">Toplam Paylaşım</p>
@@ -210,7 +210,7 @@ export default function MahalleleriPage() {
             <MessageSquare className="text-purple-600" size={28} />
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 hover:shadow-md transition-shadow">
+        <div className="bg-surface rounded-lg border border-border p-4 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-xs font-medium">Ort. Aktiflik</p>
@@ -222,7 +222,7 @@ export default function MahalleleriPage() {
       </div>
 
       {/* Search and Sort */}
-      <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-6">
+      <div className="bg-surface rounded-lg border border-border p-6 mb-6">
         <div className="flex gap-4 flex-col md:flex-row">
           <div className="flex-1 relative">
             <Search size={20} className="absolute left-3 top-3 text-gray-400" />
@@ -231,13 +231,13 @@ export default function MahalleleriPage() {
               placeholder="Mahalle veya ilçe ile ara..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+              className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-            className="px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] bg-white"
+            className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-surface"
           >
             <option value="members">En Çok Üye</option>
             <option value="posts">En Çok Paylaşım</option>
@@ -255,15 +255,15 @@ export default function MahalleleriPage() {
           return (
             <div
               key={neighborhood.id}
-              className="bg-white rounded-lg border border-[#e0e0e0] p-6 hover:shadow-lg transition-shadow flex flex-col"
+              className="bg-surface rounded-lg border border-border p-6 hover:shadow-lg transition-shadow flex flex-col"
             >
               <div className="flex items-start justify-between mb-4">
-                <div className="p-3 bg-[#e6f4ec] rounded-lg text-[#00833e]">
+                <div className="p-3 bg-primary-light rounded-lg text-primary">
                   <MapPin size={24} />
                 </div>
                 <button
                   onClick={() => setDetailsModal({ isOpen: true, neighborhood })}
-                  className="p-2 hover:bg-[#f0f2f5] rounded transition-colors"
+                  className="p-2 hover:bg-surface-hover rounded transition-colors"
                   title="Detayları Görüntüle"
                 >
                   <MoreVertical size={18} className="text-gray-600" />
@@ -284,11 +284,11 @@ export default function MahalleleriPage() {
               )}
 
               {/* Stats */}
-              <div className="space-y-3 py-4 border-t border-b border-[#e0e0e0] flex-1">
+              <div className="space-y-3 py-4 border-t border-b border-border flex-1">
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2 text-gray-700">
-                      <Users size={16} className="text-[#00833e]" />
+                      <Users size={16} className="text-primary" />
                       <span className="text-sm font-medium">Üyeler</span>
                     </div>
                     <span className="font-bold text-gray-900">
@@ -297,7 +297,7 @@ export default function MahalleleriPage() {
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div
-                      className="bg-[#00833e] h-2 rounded-full"
+                      className="bg-primary h-2 rounded-full"
                       style={{ width: `${memberPercentage}%` }}
                     />
                   </div>
@@ -337,7 +337,7 @@ export default function MahalleleriPage() {
               <div className="flex gap-2 mt-4">
                 <button
                   onClick={() => setFormModal({ isOpen: true, mode: 'edit', neighborhood })}
-                  className="flex-1 flex items-center justify-center gap-2 bg-[#e6f4ec] hover:bg-[#d1fae5] text-[#006b32] font-medium py-2 px-3 rounded-lg transition-colors text-sm border border-[#00833e]/20"
+                  className="flex-1 flex items-center justify-center gap-2 bg-primary-light hover:bg-primary-light text-primary-hover font-medium py-2 px-3 rounded-lg transition-colors text-sm border border-primary/20"
                 >
                   <Edit2 size={16} />
                   Düzenle
@@ -356,7 +356,7 @@ export default function MahalleleriPage() {
       </div>
 
       {/* Summary Stats */}
-      <div className="bg-gradient-to-r from-[#00833e] to-[#006b32] rounded-lg text-white p-8 mt-8">
+      <div className="bg-gradient-to-r from-primary to-primary-hover rounded-lg text-white p-8 mt-8">
         <h2 className="text-lg font-bold mb-6">Genel İstatistikler</h2>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <div>
@@ -398,7 +398,7 @@ export default function MahalleleriPage() {
 
       {/* Empty State */}
       {filteredAndSorted.length === 0 && (
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-12 text-center mt-8">
+        <div className="bg-surface rounded-lg border border-border p-12 text-center mt-8">
           <MapPin size={48} className="mx-auto mb-4 text-gray-400" />
           <p className="text-lg font-bold text-gray-900">
             Mahalle Bulunamadı
@@ -412,7 +412,7 @@ export default function MahalleleriPage() {
       {/* Form Modal */}
       {formModal.isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+          <div className="bg-surface rounded-lg p-6 max-w-md w-full">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold text-gray-900">
                 {formModal.mode === 'add' ? 'Yeni Mahalle Ekle' : 'Mahalle Düzenle'}
@@ -440,7 +440,7 @@ export default function MahalleleriPage() {
                     })
                   }
                   placeholder="Örn: Beşiktaş"
-                  className="w-full px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   required
                 />
               </div>
@@ -458,14 +458,14 @@ export default function MahalleleriPage() {
                     })
                   }
                   placeholder="Örn: İstanbul"
-                  className="w-full px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   required
                 />
               </div>
               <div className="flex gap-3 pt-2">
                 <button
                   type="submit"
-                  className="flex-1 bg-[#00833e] hover:bg-[#006b32] text-white font-medium py-2 px-6 rounded-lg transition-colors"
+                  className="flex-1 bg-primary hover:bg-primary-hover text-white font-medium py-2 px-6 rounded-lg transition-colors"
                 >
                   {formModal.mode === 'add' ? 'Ekle' : 'Kaydet'}
                 </button>
@@ -485,7 +485,7 @@ export default function MahalleleriPage() {
       {/* Details Modal */}
       {detailsModal.isOpen && detailsModal.neighborhood && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+          <div className="bg-surface rounded-lg p-6 max-w-md w-full">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold text-gray-900">Mahalle Detayları</h2>
               <button
@@ -497,8 +497,8 @@ export default function MahalleleriPage() {
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-center gap-3 pb-4 border-b border-[#e0e0e0]">
-                <div className="p-3 bg-[#e6f4ec] rounded-lg text-[#00833e]">
+              <div className="flex items-center gap-3 pb-4 border-b border-border">
+                <div className="p-3 bg-primary-light rounded-lg text-primary">
                   <MapPin size={24} />
                 </div>
                 <div>
@@ -512,7 +512,7 @@ export default function MahalleleriPage() {
               </div>
 
               {detailsModal.neighborhood.lead && (
-                <div className="pb-4 border-b border-[#e0e0e0]">
+                <div className="pb-4 border-b border-border">
                   <p className="text-xs font-medium text-gray-600 uppercase mb-1">
                     Sorumlu Kişi
                   </p>
@@ -541,7 +541,7 @@ export default function MahalleleriPage() {
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-[#e0e0e0]">
+              <div className="pt-4 border-t border-border">
                 <p className="text-xs text-gray-600">
                   Oluşturuldu:{' '}
                   {new Date(detailsModal.neighborhood.createdAt).toLocaleDateString('tr-TR')}
@@ -555,7 +555,7 @@ export default function MahalleleriPage() {
       {/* Confirmation Modal */}
       {confirmModal.isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-sm w-full">
+          <div className="bg-surface rounded-lg p-6 max-w-sm w-full">
             <h2 className="text-lg font-bold text-gray-900 mb-2">İşlemi Onayla</h2>
             <p className="text-gray-600 mb-6">
               {confirmModal.action === 'delete'
@@ -565,7 +565,7 @@ export default function MahalleleriPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmModal({ isOpen: false, action: '' })}
-                className="flex-1 px-4 py-2 border border-[#e0e0e0] rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors"
+                className="flex-1 px-4 py-2 border border-border rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors"
               >
                 İptal
               </button>

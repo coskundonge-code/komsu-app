@@ -45,14 +45,14 @@ export default function ReferralPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5] py-8 px-4">
+    <div className="min-h-screen bg-background py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/" className="text-[#00833e] hover:text-[#006b32] font-medium mb-4 inline-flex items-center gap-2">
+          <Link href="/" className="text-primary hover:text-primary-hover font-medium mb-4 inline-flex items-center gap-2">
             ← Ana Sayfaya Dön
           </Link>
-          <h1 className="text-3xl font-bold text-[#333] mb-2">Komşularını Davet Et</h1>
+          <h1 className="text-3xl font-bold text-text-primary mb-2">Komşularını Davet Et</h1>
           <p className="text-[#666]">Mahallende yaşayan arkadaşlarını Mahallem'e davet et ve birlikte komşu topluluğunu büyüt.</p>
         </div>
 
@@ -64,18 +64,18 @@ export default function ReferralPage() {
         </div>
 
         {/* Referral Code Section */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-6">
-          <h2 className="text-xl font-bold text-[#333] mb-4">Davet Kodunuz</h2>
+        <div className="bg-surface rounded-lg border border-border p-6 mb-6">
+          <h2 className="text-xl font-bold text-text-primary mb-4">Davet Kodunuz</h2>
 
-          <div className="bg-gradient-to-r from-[#00833e]/10 to-[#006b32]/10 border-2 border-dashed border-[#00833e] rounded-lg p-6 text-center mb-6">
+          <div className="bg-gradient-to-r from-primary/10 to-primary-hover/10 border-2 border-dashed border-primary rounded-lg p-6 text-center mb-6">
             <p className="text-sm text-[#666] mb-2">Davet Kodu</p>
-            <p className="text-4xl font-bold text-[#00833e] font-mono tracking-wider mb-4">{referralCode}</p>
+            <p className="text-4xl font-bold text-primary font-mono tracking-wider mb-4">{referralCode}</p>
             <button
               onClick={handleCopyCode}
               className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
                 copied
-                  ? 'bg-[#00833e] text-white'
-                  : 'bg-[#e6f4ec] text-[#00833e] hover:bg-[#d1fae5]'
+                  ? 'bg-primary text-white'
+                  : 'bg-primary-light text-primary hover:bg-primary-light'
               }`}
             >
               {copied ? (
@@ -112,12 +112,12 @@ export default function ReferralPage() {
         </div>
 
         {/* Invitation Progress */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-6">
-          <h2 className="text-xl font-bold text-[#333] mb-4">Davet Edebileceğiniz Kişi Sayısı</h2>
+        <div className="bg-surface rounded-lg border border-border p-6 mb-6">
+          <h2 className="text-xl font-bold text-text-primary mb-4">Davet Edebileceğiniz Kişi Sayısı</h2>
 
           <div className="mb-4">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-[#333] font-medium">
+              <p className="text-text-primary font-medium">
                 {currentUses} / {maxInvites} kullanılan
               </p>
               <p className="text-[#666] text-sm">
@@ -126,7 +126,7 @@ export default function ReferralPage() {
             </div>
             <div className="w-full bg-[#e0e0e0] rounded-full h-3">
               <div
-                className="bg-[#00833e] h-3 rounded-full transition-all duration-300"
+                className="bg-primary h-3 rounded-full transition-all duration-300"
                 style={{
                   width: `${(currentUses / maxInvites) * 100}%`,
                 }}
@@ -140,15 +140,15 @@ export default function ReferralPage() {
                 key={i}
                 className={`p-3 rounded-lg text-center border-2 ${
                   i < currentUses
-                    ? 'bg-[#e6f4ec] border-[#00833e]'
-                    : 'bg-[#f0f2f5] border-[#e0e0e0]'
+                    ? 'bg-primary-light border-primary'
+                    : 'bg-background border-border'
                 }`}
               >
-                <p className="text-sm font-bold text-[#333]">{i + 1}.</p>
+                <p className="text-sm font-bold text-text-primary">{i + 1}.</p>
                 {i < currentUses ? (
-                  <CheckCircle2 className="w-5 h-5 text-[#00833e] mx-auto mt-1" />
+                  <CheckCircle2 className="w-5 h-5 text-primary mx-auto mt-1" />
                 ) : (
-                  <div className="w-5 h-5 border-2 border-[#e0e0e0] rounded-full mx-auto mt-1" />
+                  <div className="w-5 h-5 border-2 border-border rounded-full mx-auto mt-1" />
                 )}
               </div>
             ))}
@@ -156,8 +156,8 @@ export default function ReferralPage() {
         </div>
 
         {/* Invited Users */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
-          <h2 className="text-xl font-bold text-[#333] mb-4 flex items-center gap-2">
+        <div className="bg-surface rounded-lg border border-border p-6">
+          <h2 className="text-xl font-bold text-text-primary mb-4 flex items-center gap-2">
             <Users className="w-5 h-5" />
             Davet Ettiğiniz Komşular ({invitedUsers.length})
           </h2>
@@ -166,32 +166,32 @@ export default function ReferralPage() {
             <div className="text-center py-8">
               <Users className="w-12 h-12 text-[#e0e0e0] mx-auto mb-3" />
               <p className="text-[#666]">Henüz kimseyi davet etmediniz.</p>
-              <p className="text-sm text-[#8f8f8f] mt-2">Davet kodunuzu paylaşarak komşu topluluğunu büyütün!</p>
+              <p className="text-sm text-text-muted mt-2">Davet kodunuzu paylaşarak komşu topluluğunu büyütün!</p>
             </div>
           ) : (
             <div className="space-y-3">
               {invitedUsers.map((user) => (
-                <div key={user.id} className="flex items-center justify-between p-4 border border-[#e0e0e0] rounded-lg hover:border-[#00833e] transition-colors">
+                <div key={user.id} className="flex items-center justify-between p-4 border border-border rounded-lg hover:border-primary transition-colors">
                   <div className="flex items-center gap-3 flex-1">
-                    <div className="w-10 h-10 bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-hover rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                       {user.name
                         .split(' ')
                         .map((n) => n[0])
                         .join('')}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-[#333]">{user.name}</p>
+                      <p className="font-medium text-text-primary">{user.name}</p>
                       {user.joinedAt && (
-                        <p className="text-xs text-[#8f8f8f]">{user.joinedAt}</p>
+                        <p className="text-xs text-text-muted">{user.joinedAt}</p>
                       )}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2">
                     {user.status === 'verified' && (
-                      <div className="flex items-center gap-1 px-3 py-1 bg-[#e6f4ec] border border-[#00833e] rounded-full">
-                        <CheckCircle2 className="w-4 h-4 text-[#00833e]" />
-                        <span className="text-xs font-medium text-[#00833e]">Doğrulandı</span>
+                      <div className="flex items-center gap-1 px-3 py-1 bg-primary-light border border-primary rounded-full">
+                        <CheckCircle2 className="w-4 h-4 text-primary" />
+                        <span className="text-xs font-medium text-primary">Doğrulandı</span>
                       </div>
                     )}
                     {user.status === 'registered' && (

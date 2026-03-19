@@ -4,11 +4,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function MessagesLoading() {
   return (
-    <div className="flex h-screen bg-[#f0f2f5]">
+    <div className="flex h-screen bg-background">
       {/* Conversations sidebar */}
-      <aside className="w-80 border-r border-[#e0e0e0] bg-white flex flex-col">
+      <aside className="w-80 border-r border-border bg-surface flex flex-col">
         {/* Header */}
-        <div className="p-4 border-b border-[#e0e0e0]">
+        <div className="p-4 border-b border-border">
           <Skeleton className="w-full h-10 rounded-lg mb-3" />
           <Skeleton className="w-full h-8 rounded-lg" />
         </div>
@@ -16,7 +16,7 @@ export default function MessagesLoading() {
         {/* Conversations list */}
         <div className="flex-1 overflow-y-auto">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="p-3 border-b border-[#e0e0e0] hover:bg-[#f0f2f5] cursor-pointer transition-colors">
+            <div key={i} className="p-3 border-b border-border hover:bg-background cursor-pointer transition-colors">
               <div className="flex gap-3">
                 {/* Avatar */}
                 <Skeleton className="w-12 h-12 rounded-full flex-shrink-0" />
@@ -37,9 +37,9 @@ export default function MessagesLoading() {
       </aside>
 
       {/* Chat area */}
-      <main className="flex-1 flex flex-col bg-white">
+      <main className="flex-1 flex flex-col bg-surface">
         {/* Chat header */}
-        <div className="p-4 border-b border-[#e0e0e0] flex items-center justify-between">
+        <div className="p-4 border-b border-border flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Skeleton className="w-10 h-10 rounded-full" />
             <div>
@@ -85,7 +85,7 @@ export default function MessagesLoading() {
         </div>
 
         {/* Message input area */}
-        <div className="p-4 border-t border-[#e0e0e0] flex gap-2">
+        <div className="p-4 border-t border-border flex gap-2">
           <Skeleton className="w-10 h-10 rounded flex-shrink-0" />
           <Skeleton className="flex-1 h-10 rounded-lg" />
           <Skeleton className="w-10 h-10 rounded flex-shrink-0" />

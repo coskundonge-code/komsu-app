@@ -49,11 +49,11 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
   return (
     <div
       ref={dropdownRef}
-      className="absolute top-full right-0 mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50 w-64 animate-in fade-in slide-in-from-top-2 duration-200"
+      className="absolute top-full right-0 mt-2 bg-surface border border-border rounded-lg shadow-lg z-50 w-64 animate-in fade-in slide-in-from-top-2 duration-200"
     >
       {/* User Info Header */}
       <Link href="/profil/me" onClick={onClose}>
-        <div className="px-4 py-4 border-b border-[#e0e0e0] hover:bg-[#f0f2f5] transition-colors">
+        <div className="px-4 py-4 border-b border-border hover:bg-background transition-colors">
           <div className="flex items-center gap-3">
             {/* Avatar */}
             <div className="w-12 h-12 bg-[#404040] rounded-full flex items-center justify-center text-white text-lg font-semibold flex-shrink-0">
@@ -62,8 +62,8 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
 
             {/* User Details */}
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-[#333] truncate">Coşkun Dönge</p>
-              <p className="text-xs text-[#8f8f8f] truncate">Akaretler Mahallesi</p>
+              <p className="font-semibold text-text-primary truncate">Coşkun Dönge</p>
+              <p className="text-xs text-text-muted truncate">Akaretler Mahallesi</p>
             </div>
           </div>
         </div>
@@ -75,7 +75,7 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
         <Link
           href="/profil/me"
           onClick={onClose}
-          className="flex items-center gap-3 px-4 py-2.5 text-[#333] hover:bg-[#f0f2f5] transition-colors"
+          className="flex items-center gap-3 px-4 py-2.5 text-text-primary hover:bg-background transition-colors"
         >
           <User className="w-4 h-4 flex-shrink-0" />
           <span className="text-sm font-medium">Profilim</span>
@@ -85,7 +85,7 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
         <Link
           href="/isletme-paneli"
           onClick={onClose}
-          className="flex items-center gap-3 px-4 py-2.5 text-[#333] hover:bg-[#f0f2f5] transition-colors"
+          className="flex items-center gap-3 px-4 py-2.5 text-text-primary hover:bg-background transition-colors"
         >
           <Store className="w-4 h-4 flex-shrink-0" />
           <span className="text-sm font-medium">İşletmem</span>
@@ -95,7 +95,7 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
         <Link
           href="/favoriler"
           onClick={onClose}
-          className="flex items-center gap-3 px-4 py-2.5 text-[#333] hover:bg-[#f0f2f5] transition-colors"
+          className="flex items-center gap-3 px-4 py-2.5 text-text-primary hover:bg-background transition-colors"
         >
           <Heart className="w-4 h-4 flex-shrink-0" />
           <span className="text-sm font-medium">Favorilerim</span>
@@ -105,7 +105,7 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
         <Link
           href="/ayarlar"
           onClick={onClose}
-          className="flex items-center gap-3 px-4 py-2.5 text-[#333] hover:bg-[#f0f2f5] transition-colors"
+          className="flex items-center gap-3 px-4 py-2.5 text-text-primary hover:bg-background transition-colors"
         >
           <Settings className="w-4 h-4 flex-shrink-0" />
           <span className="text-sm font-medium">Ayarlar</span>
@@ -115,7 +115,7 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
         <Link
           href="/davet"
           onClick={onClose}
-          className="flex items-center gap-3 px-4 py-2.5 text-[#333] hover:bg-[#f0f2f5] transition-colors"
+          className="flex items-center gap-3 px-4 py-2.5 text-text-primary hover:bg-background transition-colors"
         >
           <UserPlus className="w-4 h-4 flex-shrink-0" />
           <span className="text-sm font-medium">Komşularını Davet Et</span>
@@ -125,7 +125,7 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
         <Link
           href="/yardim"
           onClick={onClose}
-          className="flex items-center gap-3 px-4 py-2.5 text-[#333] hover:bg-[#f0f2f5] transition-colors"
+          className="flex items-center gap-3 px-4 py-2.5 text-text-primary hover:bg-background transition-colors"
         >
           <HelpCircle className="w-4 h-4 flex-shrink-0" />
           <span className="text-sm font-medium">Yardım</span>
@@ -135,19 +135,19 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
         <Link
           href="/admin"
           onClick={onClose}
-          className="flex items-center gap-3 px-4 py-2.5 text-[#00833e] hover:bg-[#f0f2f5] transition-colors"
+          className="flex items-center gap-3 px-4 py-2.5 text-primary hover:bg-background transition-colors"
         >
           <Shield className="w-4 h-4 flex-shrink-0" />
           <span className="text-sm font-medium">Yönetici Paneli</span>
         </Link>
 
         {/* Divider */}
-        <div className="my-2 border-t border-[#e0e0e0]" />
+        <div className="my-2 border-t border-border" />
 
         {/* Çıkış Yap */}
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-4 py-2.5 text-red-600 hover:bg-[#f0f2f5] transition-colors"
+          className="w-full flex items-center gap-3 px-4 py-2.5 text-red-600 hover:bg-background transition-colors"
         >
           <LogOut className="w-4 h-4 flex-shrink-0" />
           <span className="text-sm font-medium">Çıkış Yap</span>

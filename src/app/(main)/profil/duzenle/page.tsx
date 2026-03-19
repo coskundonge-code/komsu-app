@@ -195,12 +195,12 @@ export default function ProfileEditPage() {
   const bioPercentage = (formData.bio.length / bioCharLimit) * 100;
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5] py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-4xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-[#333] mb-2">Profilimi Düzenle</h1>
-          <p className="text-[#8f8f8f] text-lg">
+          <h1 className="text-4xl font-bold text-text-primary mb-2">Profilimi Düzenle</h1>
+          <p className="text-text-muted text-lg">
             Profil bilgilerinizi güncelleyin ve mahallenizdeki komşularla daha iyi bağlantı kurun
           </p>
         </div>
@@ -217,9 +217,9 @@ export default function ProfileEditPage() {
         )}
 
         {/* Main Form Card */}
-        <div className="bg-white rounded-xl shadow-lg border border-[#e0e0e0] overflow-hidden">
+        <div className="bg-surface rounded-xl shadow-lg border border-border overflow-hidden">
           {/* Cover Photo Section */}
-          <div className="relative h-56 bg-gradient-to-br from-[#00833e] via-[#00833e] to-[#006b32] overflow-hidden group">
+          <div className="relative h-56 bg-gradient-to-br from-primary via-[#00833e] to-primary-hover overflow-hidden group">
             <Image
               src={formData.coverImage}
               alt="Kapak Fotoğrafı"
@@ -233,7 +233,7 @@ export default function ProfileEditPage() {
             {/* Cover Upload Button */}
             <button
               onClick={() => coverInputRef.current?.click()}
-              className="absolute bottom-4 right-4 inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-[#f0f2f5] text-[#333] font-medium rounded-lg transition-all duration-200 shadow-lg opacity-0 group-hover:opacity-100 hover:shadow-xl"
+              className="absolute bottom-4 right-4 inline-flex items-center gap-2 px-4 py-2 bg-surface hover:bg-background text-text-primary font-medium rounded-lg transition-all duration-200 shadow-lg opacity-0 group-hover:opacity-100 hover:shadow-xl"
             >
               <Camera size={18} />
               Kapağı Değiştir
@@ -252,7 +252,7 @@ export default function ProfileEditPage() {
             {/* Avatar Section - Positioned over cover */}
             <div className="mb-10 -mt-16 flex items-end gap-6">
               <div className="relative group flex-shrink-0">
-                <div className="relative w-36 h-36 bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-full flex items-center justify-center text-white text-5xl font-bold overflow-hidden border-4 border-white shadow-2xl">
+                <div className="relative w-36 h-36 bg-gradient-to-br from-primary to-primary-hover rounded-full flex items-center justify-center text-white text-5xl font-bold overflow-hidden border-4 border-white shadow-2xl">
                   <Image
                     src={formData.avatar}
                     alt="Profil Fotoğrafı"
@@ -264,7 +264,7 @@ export default function ProfileEditPage() {
                 </div>
                 <button
                   onClick={() => avatarInputRef.current?.click()}
-                  className="absolute bottom-0 right-0 p-3 bg-[#00833e] hover:bg-[#006b32] text-white rounded-full transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-110"
+                  className="absolute bottom-0 right-0 p-3 bg-primary hover:bg-primary-hover text-white rounded-full transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-110"
                   title="Profil fotoğrafını değiştir"
                 >
                   <Camera size={20} />
@@ -278,17 +278,17 @@ export default function ProfileEditPage() {
                 />
               </div>
               <div className="flex-1">
-                <h2 className="text-[#333] font-bold text-2xl mb-1">{formData.fullName}</h2>
-                <p className="text-[#8f8f8f] text-sm">
+                <h2 className="text-text-primary font-bold text-2xl mb-1">{formData.fullName}</h2>
+                <p className="text-text-muted text-sm">
                   JPG, PNG veya GIF formatı. En fazla 5MB boyutta
                 </p>
               </div>
             </div>
 
             {/* Personal Information Section */}
-            <div className="mb-8 pb-8 border-b border-[#e0e0e0]">
-              <h2 className="text-xl font-bold text-[#333] mb-6 flex items-center gap-2">
-                <Users size={22} className="text-[#00833e]" />
+            <div className="mb-8 pb-8 border-b border-border">
+              <h2 className="text-xl font-bold text-text-primary mb-6 flex items-center gap-2">
+                <Users size={22} className="text-primary" />
                 Kişisel Bilgiler
               </h2>
 
@@ -296,7 +296,7 @@ export default function ProfileEditPage() {
                 {/* First and Last Name */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-[#333] mb-2">
+                    <label className="block text-sm font-medium text-text-primary mb-2">
                       Ad <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -304,8 +304,8 @@ export default function ProfileEditPage() {
                       value={formData.firstName}
                       onChange={(e) => handleInputChange("firstName", e.target.value)}
                       placeholder="Adınız"
-                      className={`w-full px-4 py-3 border rounded-lg bg-white text-[#333] placeholder-[#8f8f8f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#00833e]/50 ${
-                        errors.firstName ? "border-red-500" : "border-[#e0e0e0]"
+                      className={`w-full px-4 py-3 border rounded-lg bg-surface text-text-primary placeholder:text-text-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50 ${
+                        errors.firstName ? "border-red-500" : "border-border"
                       }`}
                     />
                     {errors.firstName && (
@@ -317,7 +317,7 @@ export default function ProfileEditPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-[#333] mb-2">
+                    <label className="block text-sm font-medium text-text-primary mb-2">
                       Soyad <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -325,8 +325,8 @@ export default function ProfileEditPage() {
                       value={formData.lastName}
                       onChange={(e) => handleInputChange("lastName", e.target.value)}
                       placeholder="Soyadınız"
-                      className={`w-full px-4 py-3 border rounded-lg bg-white text-[#333] placeholder-[#8f8f8f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#00833e]/50 ${
-                        errors.lastName ? "border-red-500" : "border-[#e0e0e0]"
+                      className={`w-full px-4 py-3 border rounded-lg bg-surface text-text-primary placeholder:text-text-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50 ${
+                        errors.lastName ? "border-red-500" : "border-border"
                       }`}
                     />
                     {errors.lastName && (
@@ -340,18 +340,18 @@ export default function ProfileEditPage() {
 
                 {/* Email */}
                 <div>
-                  <label className="block text-sm font-medium text-[#333] mb-2">
+                  <label className="block text-sm font-medium text-text-primary mb-2">
                     E-posta
                   </label>
                   <div className="relative">
-                    <Mail size={18} className="absolute left-3 top-3 text-[#8f8f8f]" />
+                    <Mail size={18} className="absolute left-3 top-3 text-text-muted" />
                     <input
                       type="email"
                       value={formData.email}
                       onChange={(e) => handleInputChange("email", e.target.value)}
                       placeholder="ornek@email.com"
-                      className={`w-full pl-10 pr-4 py-3 border rounded-lg bg-white text-[#333] placeholder-[#8f8f8f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#00833e]/50 ${
-                        errors.email ? "border-red-500" : "border-[#e0e0e0]"
+                      className={`w-full pl-10 pr-4 py-3 border rounded-lg bg-surface text-text-primary placeholder:text-text-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50 ${
+                        errors.email ? "border-red-500" : "border-border"
                       }`}
                     />
                   </div>
@@ -366,7 +366,7 @@ export default function ProfileEditPage() {
                 {/* Bio with Character Counter */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="block text-sm font-medium text-[#333]">
+                    <label className="block text-sm font-medium text-text-primary">
                       Biyografi
                     </label>
                     <span
@@ -375,7 +375,7 @@ export default function ProfileEditPage() {
                           ? "text-red-600"
                           : bioPercentage > 70
                           ? "text-orange-600"
-                          : "text-[#8f8f8f]"
+                          : "text-text-muted"
                       }`}
                     >
                       {formData.bio.length}/{bioCharLimit}
@@ -387,8 +387,8 @@ export default function ProfileEditPage() {
                     placeholder="Kendiniz hakkında kısaca yazın..."
                     maxLength={bioCharLimit}
                     rows={4}
-                    className={`w-full px-4 py-3 border rounded-lg bg-white text-[#333] placeholder-[#8f8f8f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#00833e]/50 resize-none ${
-                      errors.bio ? "border-red-500" : "border-[#e0e0e0]"
+                    className={`w-full px-4 py-3 border rounded-lg bg-surface text-text-primary placeholder:text-text-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none ${
+                      errors.bio ? "border-red-500" : "border-border"
                     }`}
                   />
                   {/* Character Counter Progress Bar */}
@@ -399,7 +399,7 @@ export default function ProfileEditPage() {
                           ? "bg-red-500"
                           : bioPercentage > 70
                           ? "bg-orange-500"
-                          : "bg-[#00833e]"
+                          : "bg-primary"
                       }`}
                       style={{ width: `${bioPercentage}%` }}
                     />
@@ -414,18 +414,18 @@ export default function ProfileEditPage() {
 
                 {/* Phone */}
                 <div>
-                  <label className="block text-sm font-medium text-[#333] mb-2">
+                  <label className="block text-sm font-medium text-text-primary mb-2">
                     Telefon Numarası
                   </label>
                   <div className="relative">
-                    <Phone size={18} className="absolute left-3 top-3 text-[#8f8f8f]" />
+                    <Phone size={18} className="absolute left-3 top-3 text-text-muted" />
                     <input
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => handleInputChange("phone", e.target.value)}
                       placeholder="+90 555 123 4567"
-                      className={`w-full pl-10 pr-4 py-3 border rounded-lg bg-white text-[#333] placeholder-[#8f8f8f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#00833e]/50 ${
-                        errors.phone ? "border-red-500" : "border-[#e0e0e0]"
+                      className={`w-full pl-10 pr-4 py-3 border rounded-lg bg-surface text-text-primary placeholder:text-text-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50 ${
+                        errors.phone ? "border-red-500" : "border-border"
                       }`}
                     />
                   </div>
@@ -440,16 +440,16 @@ export default function ProfileEditPage() {
             </div>
 
             {/* Location Section */}
-            <div className="mb-8 pb-8 border-b border-[#e0e0e0]">
-              <h2 className="text-xl font-bold text-[#333] mb-6 flex items-center gap-2">
-                <MapPin size={22} className="text-[#00833e]" />
+            <div className="mb-8 pb-8 border-b border-border">
+              <h2 className="text-xl font-bold text-text-primary mb-6 flex items-center gap-2">
+                <MapPin size={22} className="text-primary" />
                 Konum Bilgileri
               </h2>
 
               <div className="space-y-5">
                 {/* Neighborhood */}
                 <div>
-                  <label className="block text-sm font-medium text-[#333] mb-2">
+                  <label className="block text-sm font-medium text-text-primary mb-2">
                     Mahalle <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -457,8 +457,8 @@ export default function ProfileEditPage() {
                     value={formData.neighborhood}
                     onChange={(e) => handleInputChange("neighborhood", e.target.value)}
                     placeholder="Örn: Moda, Beşiktaş, Cihangir"
-                    className={`w-full px-4 py-3 border rounded-lg bg-white text-[#333] placeholder-[#8f8f8f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#00833e]/50 ${
-                      errors.neighborhood ? "border-red-500" : "border-[#e0e0e0]"
+                    className={`w-full px-4 py-3 border rounded-lg bg-surface text-text-primary placeholder:text-text-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50 ${
+                      errors.neighborhood ? "border-red-500" : "border-border"
                     }`}
                   />
                   {errors.neighborhood && (
@@ -471,7 +471,7 @@ export default function ProfileEditPage() {
 
                 {/* Address */}
                 <div>
-                  <label className="block text-sm font-medium text-[#333] mb-2">
+                  <label className="block text-sm font-medium text-text-primary mb-2">
                     Adres <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -479,8 +479,8 @@ export default function ProfileEditPage() {
                     value={formData.address}
                     onChange={(e) => handleInputChange("address", e.target.value)}
                     placeholder="Sokak adı, bina numarası vb."
-                    className={`w-full px-4 py-3 border rounded-lg bg-white text-[#333] placeholder-[#8f8f8f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#00833e]/50 ${
-                      errors.address ? "border-red-500" : "border-[#e0e0e0]"
+                    className={`w-full px-4 py-3 border rounded-lg bg-surface text-text-primary placeholder:text-text-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50 ${
+                      errors.address ? "border-red-500" : "border-border"
                     }`}
                   />
                   {errors.address && (
@@ -489,7 +489,7 @@ export default function ProfileEditPage() {
                       {errors.address}
                     </p>
                   )}
-                  <p className="mt-2 text-xs text-[#8f8f8f]">
+                  <p className="mt-2 text-xs text-text-muted">
                     Tam adres paylaşmazsanız, sadece mahalle adınız gösterilecektir
                   </p>
                 </div>
@@ -497,13 +497,13 @@ export default function ProfileEditPage() {
             </div>
 
             {/* Interests Section */}
-            <div className="mb-8 pb-8 border-b border-[#e0e0e0]">
-              <h2 className="text-xl font-bold text-[#333] mb-2 flex items-center gap-2">
-                <Heart size={22} className="text-[#00833e]" />
+            <div className="mb-8 pb-8 border-b border-border">
+              <h2 className="text-xl font-bold text-text-primary mb-2 flex items-center gap-2">
+                <Heart size={22} className="text-primary" />
                 İlgi Alanları
               </h2>
 
-              <p className="text-sm text-[#8f8f8f] mb-6">
+              <p className="text-sm text-text-muted mb-6">
                 İlgi alanlarınızı seçerek komşularınızla ortak ilgi alanlarını keşfedin
               </p>
 
@@ -514,8 +514,8 @@ export default function ProfileEditPage() {
                     onClick={() => toggleInterest(interest)}
                     className={`px-5 py-2.5 rounded-full font-medium transition-all text-sm border-2 ${
                       formData.interests.includes(interest)
-                        ? "bg-[#00833e] text-white border-[#00833e] shadow-md"
-                        : "bg-white text-[#333] border-[#e0e0e0] hover:border-[#00833e] hover:text-[#00833e]"
+                        ? "bg-primary text-white border-primary shadow-md"
+                        : "bg-surface text-text-primary border-border hover:border-primary hover:text-primary"
                     }`}
                   >
                     {interest}
@@ -526,12 +526,12 @@ export default function ProfileEditPage() {
 
             {/* Skills Section */}
             <div className="mb-8">
-              <h2 className="text-xl font-bold text-[#333] mb-2 flex items-center gap-2">
-                <Users size={22} className="text-[#00833e]" />
+              <h2 className="text-xl font-bold text-text-primary mb-2 flex items-center gap-2">
+                <Users size={22} className="text-primary" />
                 Beceriler & Uzmanlık
               </h2>
 
-              <p className="text-sm text-[#8f8f8f] mb-6">
+              <p className="text-sm text-text-muted mb-6">
                 Komşularınıza yardımcı olabileceğiniz beceriler ekleyin
               </p>
 
@@ -543,11 +543,11 @@ export default function ProfileEditPage() {
                   onChange={(e) => setNewSkill(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && addSkill()}
                   placeholder="Örn: Elektrik Onarımı, Çatı Tamir"
-                  className="flex-1 px-4 py-3 border border-[#e0e0e0] rounded-lg bg-white text-[#333] placeholder-[#8f8f8f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#00833e]/50"
+                  className="flex-1 px-4 py-3 border border-border rounded-lg bg-surface text-text-primary placeholder:text-text-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50"
                 />
                 <button
                   onClick={addSkill}
-                  className="px-6 py-3 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-all duration-200 hover:shadow-lg"
+                  className="px-6 py-3 bg-primary hover:bg-primary-hover text-white font-medium rounded-lg transition-all duration-200 hover:shadow-lg"
                 >
                   Ekle
                 </button>
@@ -559,12 +559,12 @@ export default function ProfileEditPage() {
                   {formData.skills.map((skill) => (
                     <div
                       key={skill}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-[#00833e]/10 border border-[#00833e]/30 rounded-full hover:bg-[#00833e]/20 transition-colors"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-full hover:bg-primary/20 transition-colors"
                     >
-                      <span className="text-sm font-medium text-[#006b32]">{skill}</span>
+                      <span className="text-sm font-medium text-primary-hover">{skill}</span>
                       <button
                         onClick={() => removeSkill(skill)}
-                        className="ml-1 text-[#006b32] hover:text-red-600 transition-colors"
+                        className="ml-1 text-primary-hover hover:text-red-600 transition-colors"
                         title="Beceri sil"
                       >
                         <X size={16} />
@@ -574,24 +574,24 @@ export default function ProfileEditPage() {
                 </div>
               )}
               {formData.skills.length === 0 && (
-                <p className="text-sm text-[#8f8f8f] italic">
+                <p className="text-sm text-text-muted italic">
                   Henüz beceri eklenmemiştir. Yukarıya yazarak başlayın.
                 </p>
               )}
             </div>
 
             {/* Form Actions */}
-            <div className="flex gap-4 pt-8 border-t border-[#e0e0e0]">
+            <div className="flex gap-4 pt-8 border-t border-border">
               <button
                 onClick={handleSave}
-                className="flex-1 px-6 py-3 bg-[#00833e] hover:bg-[#006b32] text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:shadow-lg active:scale-95"
+                className="flex-1 px-6 py-3 bg-primary hover:bg-primary-hover text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:shadow-lg active:scale-95"
               >
                 <Check size={20} />
                 Değişiklikleri Kaydet
               </button>
               <button
                 onClick={handleCancel}
-                className="flex-1 px-6 py-3 border-2 border-[#e0e0e0] hover:border-[#00833e] hover:bg-[#f0f2f5] text-[#333] font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+                className="flex-1 px-6 py-3 border-2 border-border hover:border-primary hover:bg-background text-text-primary font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
               >
                 <X size={20} />
                 İptal Et

@@ -121,7 +121,7 @@ export default function ReviewList({
   };
 
   const getRatingColor = (rating: number) => {
-    if (rating >= 4) return 'text-[#00833e]';
+    if (rating >= 4) return 'text-primary';
     if (rating === 3) return 'text-[#ffc107]';
     return 'text-[#ff6b6b]';
   };
@@ -142,7 +142,7 @@ export default function ReviewList({
   return (
     <div className="space-y-6">
       {/* Rating Summary */}
-      <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+      <div className="bg-surface rounded-lg border border-border p-6">
         <div className="flex items-start justify-between mb-6">
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -164,7 +164,7 @@ export default function ReviewList({
               <span className="font-bold text-lg text-gray-900">
                 {averageRating.toFixed(1)}
               </span>
-              <span className="text-sm text-[#8f8f8f]">({totalReviews} yorum)</span>
+              <span className="text-sm text-text-muted">({totalReviews} yorum)</span>
             </div>
           </div>
         </div>
@@ -173,8 +173,8 @@ export default function ReviewList({
         <div className="space-y-2">
           {[5, 4, 3, 2, 1].map((rating) => (
             <div key={rating} className="flex items-center gap-2">
-              <span className="text-xs text-[#8f8f8f] w-6">{rating}★</span>
-              <div className="flex-1 h-2 bg-[#f0f2f5] rounded-full overflow-hidden">
+              <span className="text-xs text-text-muted w-6">{rating}★</span>
+              <div className="flex-1 h-2 bg-background rounded-full overflow-hidden">
                 <div
                   className="h-full bg-[#ffc107]"
                   style={{
@@ -188,7 +188,7 @@ export default function ReviewList({
                   }}
                 />
               </div>
-              <span className="text-xs text-[#8f8f8f] w-8 text-right">
+              <span className="text-xs text-text-muted w-8 text-right">
                 {ratingDistribution[String(rating) as keyof typeof ratingDistribution] || 0}
               </span>
             </div>
@@ -202,7 +202,7 @@ export default function ReviewList({
         <div className="relative">
           <button
             onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
-            className="flex items-center gap-2 px-4 py-2 rounded border border-[#e0e0e0] bg-white hover:bg-[#f0f2f5] text-sm font-medium text-gray-900 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded border border-border bg-surface hover:bg-background text-sm font-medium text-gray-900 transition-colors"
           >
             <span>
               {sortBy === 'newest' && 'En Yeni'}
@@ -213,7 +213,7 @@ export default function ReviewList({
             <ChevronDown className="w-4 h-4" />
           </button>
           {sortDropdownOpen && (
-            <div className="absolute top-full mt-1 left-0 bg-white border border-[#e0e0e0] rounded shadow-lg z-10 w-48">
+            <div className="absolute top-full mt-1 left-0 bg-surface border border-border rounded shadow-lg z-10 w-48">
               {[
                 { value: 'newest' as SortOption, label: 'En Yeni' },
                 { value: 'highest' as SortOption, label: 'En Yüksek Puan' },
@@ -226,9 +226,9 @@ export default function ReviewList({
                     setSortBy(option.value);
                     setSortDropdownOpen(false);
                   }}
-                  className={`w-full text-left px-4 py-2 text-sm hover:bg-[#f0f2f5] ${
+                  className={`w-full text-left px-4 py-2 text-sm hover:bg-background ${
                     sortBy === option.value
-                      ? 'text-[#00833e] font-semibold'
+                      ? 'text-primary font-semibold'
                       : 'text-gray-700'
                   }`}
                 >
@@ -243,7 +243,7 @@ export default function ReviewList({
         <div className="relative">
           <button
             onClick={() => setFilterDropdownOpen(!filterDropdownOpen)}
-            className="flex items-center gap-2 px-4 py-2 rounded border border-[#e0e0e0] bg-white hover:bg-[#f0f2f5] text-sm font-medium text-gray-900 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded border border-border bg-surface hover:bg-background text-sm font-medium text-gray-900 transition-colors"
           >
             <span>
               {filterBy === 'all' && 'Tüm Yorumlar'}
@@ -253,7 +253,7 @@ export default function ReviewList({
             <ChevronDown className="w-4 h-4" />
           </button>
           {filterDropdownOpen && (
-            <div className="absolute top-full mt-1 left-0 bg-white border border-[#e0e0e0] rounded shadow-lg z-10 w-48">
+            <div className="absolute top-full mt-1 left-0 bg-surface border border-border rounded shadow-lg z-10 w-48">
               {[
                 { value: 'all' as FilterOption, label: 'Tüm Yorumlar' },
                 { value: 'verified' as FilterOption, label: 'Sadece Onaylanmış Komşular' },
@@ -265,9 +265,9 @@ export default function ReviewList({
                     setFilterBy(option.value);
                     setFilterDropdownOpen(false);
                   }}
-                  className={`w-full text-left px-4 py-2 text-sm hover:bg-[#f0f2f5] ${
+                  className={`w-full text-left px-4 py-2 text-sm hover:bg-background ${
                     filterBy === option.value
-                      ? 'text-[#00833e] font-semibold'
+                      ? 'text-primary font-semibold'
                       : 'text-gray-700'
                   }`}
                 >
@@ -282,20 +282,20 @@ export default function ReviewList({
       {/* Reviews List */}
       <div className="space-y-4">
         {filteredReviews.length === 0 ? (
-          <div className="bg-white rounded-lg border border-[#e0e0e0] p-8 text-center">
-            <p className="text-[#8f8f8f]">Bu filtrelere uygun yorum bulunmamaktadır.</p>
+          <div className="bg-surface rounded-lg border border-border p-8 text-center">
+            <p className="text-text-muted">Bu filtrelere uygun yorum bulunmamaktadır.</p>
           </div>
         ) : (
           filteredReviews.map((review) => (
             <div
               key={review.id}
-              className="bg-white rounded-lg border border-[#e0e0e0] p-4"
+              className="bg-surface rounded-lg border border-border p-4"
             >
               {/* Review Header */}
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-start gap-3 flex-1">
                   {/* Avatar placeholder */}
-                  <div className="w-10 h-10 rounded-full bg-[#f0f2f5] flex items-center justify-center text-sm font-semibold text-[#8f8f8f] flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center text-sm font-semibold text-text-muted flex-shrink-0">
                     {review.userId.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1">
@@ -304,7 +304,7 @@ export default function ReviewList({
                         {review.userId}
                       </span>
                       {review.isVerifiedUser && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#d1fae5] rounded-full text-xs font-medium text-[#006b32]">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary-light rounded-full text-xs font-medium text-primary-hover">
                           <ShieldAlert className="w-3 h-3" />
                           Onaylanmış Komşu
                         </span>
@@ -323,7 +323,7 @@ export default function ReviewList({
                           />
                         ))}
                       </div>
-                      <span className="text-xs text-[#8f8f8f] flex items-center gap-1">
+                      <span className="text-xs text-text-muted flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
                         {formatDate(review.createdAt)}
                       </span>
@@ -351,7 +351,7 @@ export default function ReviewList({
                       key={index}
                       src={url}
                       alt={`Review image ${index + 1}`}
-                      className="h-20 w-20 rounded border border-[#e0e0e0] object-cover flex-shrink-0"
+                      className="h-20 w-20 rounded border border-border object-cover flex-shrink-0"
                     />
                   ))}
                 </div>
@@ -363,8 +363,8 @@ export default function ReviewList({
                   onClick={() => handleToggleHelpful(review.id)}
                   className={`flex items-center gap-2 px-3 py-1 rounded text-sm font-medium transition-colors ${
                     helpfulReviews.has(review.id)
-                      ? 'bg-[#e8f5e9] text-[#00833e]'
-                      : 'bg-[#f0f2f5] text-[#8f8f8f] hover:bg-[#e0e0e0]'
+                      ? 'bg-[#e8f5e9] text-primary'
+                      : 'bg-background text-text-muted hover:bg-[#e0e0e0]'
                   }`}
                 >
                   <ThumbsUp className="w-4 h-4" />
@@ -386,7 +386,7 @@ export default function ReviewList({
       {/* Flag Modal */}
       {showFlagModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
+          <div className="bg-surface rounded-lg max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-lg font-semibold text-gray-900">Yorum Raporla</h4>
               <button
@@ -395,7 +395,7 @@ export default function ReviewList({
                   setFlagReason('');
                   setFlagDescription('');
                 }}
-                className="text-[#8f8f8f] hover:text-gray-900"
+                className="text-text-muted hover:text-gray-900"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -409,7 +409,7 @@ export default function ReviewList({
                 <select
                   value={flagReason}
                   onChange={(e) => setFlagReason(e.target.value as FlagReason)}
-                  className="w-full px-3 py-2 rounded border border-[#e0e0e0] text-sm focus:border-[#00833e] focus:outline-none"
+                  className="w-full px-3 py-2 rounded border border-border text-sm focus:border-primary focus:outline-none"
                 >
                   <option value="">Bir neden seçin</option>
                   {FLAG_REASONS.map((reason) => (
@@ -430,9 +430,9 @@ export default function ReviewList({
                   placeholder="Rapor hakkında detay bilgi yazın..."
                   maxLength={200}
                   rows={3}
-                  className="w-full px-3 py-2 rounded border border-[#e0e0e0] text-sm focus:border-[#00833e] focus:outline-none resize-none"
+                  className="w-full px-3 py-2 rounded border border-border text-sm focus:border-primary focus:outline-none resize-none"
                 />
-                <p className="text-xs text-[#8f8f8f] mt-1">
+                <p className="text-xs text-text-muted mt-1">
                   {flagDescription.length}/200 karakter
                 </p>
               </div>
@@ -444,7 +444,7 @@ export default function ReviewList({
                     setFlagReason('');
                     setFlagDescription('');
                   }}
-                  className="flex-1 px-4 py-2 rounded border border-[#e0e0e0] text-sm font-medium text-gray-900 hover:bg-[#f0f2f5] transition-colors"
+                  className="flex-1 px-4 py-2 rounded border border-border text-sm font-medium text-gray-900 hover:bg-background transition-colors"
                 >
                   İptal
                 </button>

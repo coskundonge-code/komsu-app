@@ -93,7 +93,7 @@ export default function ProfileSetupPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left Panel - Brand Section */}
-      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-[#00833e] to-[#006b32] relative overflow-hidden">
+      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-primary to-primary-hover relative overflow-hidden">
         {/* Decorative elements */}
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#00a84d] rounded-full opacity-10" />
         <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-[#004d1f] rounded-full opacity-10" />
@@ -102,8 +102,8 @@ export default function ProfileSetupPage() {
         <div className="relative z-10 flex flex-col justify-center items-center w-full px-12 py-12">
           {/* Logo and Brand Name */}
           <div className="text-center mb-12">
-            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg">
-              <span className="text-3xl font-bold text-[#00833e]">K</span>
+            <div className="w-16 h-16 bg-surface rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg">
+              <span className="text-3xl font-bold text-primary">K</span>
             </div>
             <h2 className="text-4xl font-bold text-white mb-2">Mahallem</h2>
             <p className="text-green-50 text-lg">Mahalle Bağlantısı</p>
@@ -160,10 +160,10 @@ export default function ProfileSetupPage() {
         <div className="w-full max-w-sm mx-auto">
           {/* Logo on mobile */}
           <div className="md:hidden text-center mb-8">
-            <div className="w-14 h-14 bg-[#00833e] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-md">
+            <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-md">
               <span className="text-2xl font-bold text-white">K</span>
             </div>
-            <h1 className="text-2xl font-bold text-[#333]">Mahallem</h1>
+            <h1 className="text-2xl font-bold text-text-primary">Mahallem</h1>
           </div>
 
           {/* Step Indicator */}
@@ -171,42 +171,42 @@ export default function ProfileSetupPage() {
             <div className="flex items-center justify-between gap-2 mb-3">
               {/* Step 1 */}
               <div className="flex flex-col items-center flex-1">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#00833e] text-white text-sm font-semibold mb-2">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white text-sm font-semibold mb-2">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <span className="text-xs text-[#8f8f8f] text-center">Kayıt</span>
+                <span className="text-xs text-text-muted text-center">Kayıt</span>
               </div>
 
               {/* Connector */}
-              <div className="flex-1 h-1 bg-[#00833e] mb-6" />
+              <div className="flex-1 h-1 bg-primary mb-6" />
 
               {/* Step 2 */}
               <div className="flex flex-col items-center flex-1">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#00833e] text-white text-sm font-semibold mb-2">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white text-sm font-semibold mb-2">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <span className="text-xs text-[#8f8f8f] text-center">Adres</span>
+                <span className="text-xs text-text-muted text-center">Adres</span>
               </div>
 
               {/* Connector */}
-              <div className="flex-1 h-1 bg-[#00833e] mb-6" />
+              <div className="flex-1 h-1 bg-primary mb-6" />
 
               {/* Step 3 */}
               <div className="flex flex-col items-center flex-1">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#00833e] text-white text-sm font-semibold mb-2">3</div>
-                <span className="text-xs text-[#333] font-semibold text-center">Profil</span>
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white text-sm font-semibold mb-2">3</div>
+                <span className="text-xs text-text-primary font-semibold text-center">Profil</span>
               </div>
             </div>
           </div>
 
           {/* Header */}
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-[#333]">Profilinizi Oluşturun</h2>
-            <p className="text-[#8f8f8f] text-sm mt-2">Komşularınızla tanışmak için son adım</p>
+            <h2 className="text-3xl font-bold text-text-primary">Profilinizi Oluşturun</h2>
+            <p className="text-text-muted text-sm mt-2">Komşularınızla tanışmak için son adım</p>
           </div>
 
           {/* Error */}
@@ -248,19 +248,19 @@ export default function ProfileSetupPage() {
                   </>
                 ) : (
                   <>
-                    <Camera className="w-8 h-8 text-[#00833e]" />
-                    <div className="absolute -bottom-0 -right-0 w-6 h-6 bg-[#00833e] rounded-full flex items-center justify-center border-2 border-white">
+                    <Camera className="w-8 h-8 text-primary" />
+                    <div className="absolute -bottom-0 -right-0 w-6 h-6 bg-primary rounded-full flex items-center justify-center border-2 border-white">
                       <span className="text-white text-xs font-bold">+</span>
                     </div>
                   </>
                 )}
               </div>
-              <p className="text-xs text-[#8f8f8f] mt-3 text-center">Profil fotoğrafınızı seçin</p>
+              <p className="text-xs text-text-muted mt-3 text-center">Profil fotoğrafınızı seçin</p>
             </div>
 
             {/* Display Name Input */}
             <div>
-              <label htmlFor="displayName" className="block text-sm font-semibold text-[#333] mb-2.5">
+              <label htmlFor="displayName" className="block text-sm font-semibold text-text-primary mb-2.5">
                 Görünen Ad
               </label>
               <input
@@ -270,14 +270,14 @@ export default function ProfileSetupPage() {
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder="Adınız"
                 disabled={isLoading}
-                className="w-full px-4 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20 transition disabled:bg-[#f0f2f5]"
+                className="w-full px-4 py-3 border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition disabled:bg-background"
               />
-              <p className="text-xs text-[#8f8f8f] mt-1.5">Bu ad komşularınız tarafından görülecek</p>
+              <p className="text-xs text-text-muted mt-1.5">Bu ad komşularınız tarafından görülecek</p>
             </div>
 
             {/* Bio Textarea */}
             <div>
-              <label htmlFor="bio" className="block text-sm font-semibold text-[#333] mb-2.5">
+              <label htmlFor="bio" className="block text-sm font-semibold text-text-primary mb-2.5">
                 Hakkımda
               </label>
               <textarea
@@ -291,11 +291,11 @@ export default function ProfileSetupPage() {
                 placeholder="Kendinizi kısaca tanıtın... (opsiyonel)"
                 rows={3}
                 disabled={isLoading}
-                className="w-full px-4 py-3 border border-[#e0e0e0] rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e]/20 transition resize-none disabled:bg-[#f0f2f5]"
+                className="w-full px-4 py-3 border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition resize-none disabled:bg-background"
               />
               <div className="flex justify-between items-center mt-1.5">
-                <p className="text-xs text-[#8f8f8f]">Kişisel bilgileri paylaşmayın</p>
-                <span className="text-xs text-[#8f8f8f]">
+                <p className="text-xs text-text-muted">Kişisel bilgileri paylaşmayın</p>
+                <span className="text-xs text-text-muted">
                   {bio.length}/{MAX_BIO_LENGTH}
                 </span>
               </div>
@@ -303,7 +303,7 @@ export default function ProfileSetupPage() {
 
             {/* Interests Section */}
             <div>
-              <label className="block text-sm font-semibold text-[#333] mb-3.5">
+              <label className="block text-sm font-semibold text-text-primary mb-3.5">
                 İlgi Alanlarınız
               </label>
               <div className="grid grid-cols-2 gap-2.5">
@@ -315,32 +315,32 @@ export default function ProfileSetupPage() {
                     disabled={isLoading}
                     className={`px-4 py-2.5 rounded-lg text-sm font-medium transition ${
                       selectedInterests.includes(interest)
-                        ? 'bg-[#00833e] text-white border border-[#00833e]'
-                        : 'bg-white text-[#333] border border-[#e0e0e0] hover:border-[#00833e]'
+                        ? 'bg-primary text-white border border-primary'
+                        : 'bg-surface text-text-primary border border-border hover:border-primary'
                     } disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
                     {interest}
                   </button>
                 ))}
               </div>
-              <p className="text-xs text-[#8f8f8f] mt-2.5">Ortak ilgi sahibi komşularınızı keşfedin</p>
+              <p className="text-xs text-text-muted mt-2.5">Ortak ilgi sahibi komşularınızı keşfedin</p>
             </div>
 
             {/* Create Profile Button */}
             <button
               type="submit"
               disabled={isLoading || !displayName.trim() || selectedInterests.length === 0}
-              className="w-full bg-[#00833e] hover:bg-[#006b32] text-white font-semibold py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed mt-8 shadow-sm hover:shadow-md"
+              className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed mt-8 shadow-sm hover:shadow-md"
             >
               {isLoading ? 'Profil Oluşturuluyor...' : 'Profilimi Oluştur'}
             </button>
           </form>
 
           {/* Back link */}
-          <div className="mt-8 pt-6 border-t border-[#e0e0e0] text-center">
+          <div className="mt-8 pt-6 border-t border-border text-center">
             <Link
               href="/kayit/adres-dogrulama"
-              className="text-sm text-[#00833e] hover:text-[#006b32] font-semibold transition inline-flex items-center gap-1"
+              className="text-sm text-primary hover:text-primary-hover font-semibold transition inline-flex items-center gap-1"
             >
               <ChevronLeft className="w-4 h-4" />
               <span>Geri dön</span>

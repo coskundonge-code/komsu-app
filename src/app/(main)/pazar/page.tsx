@@ -373,14 +373,14 @@ export default function MarketplacePage() {
   const featuredListings = mockListings.filter((l) => l.featured);
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto py-6 px-4 space-y-6">
         {/* Featured Carousel */}
         {featuredListings.length > 0 && (
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
+          <div className="bg-surface rounded-xl shadow-sm border border-border overflow-hidden">
             <div className="p-4">
-              <h2 className="text-lg font-bold text-[#333] mb-4 flex items-center gap-2">
-                <Zap className="w-5 h-5 text-[#00833e]" />
+              <h2 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
+                <Zap className="w-5 h-5 text-primary" />
                 Öne Çıkanlar
               </h2>
               <div className="overflow-x-auto pb-2 -mx-4 px-4">
@@ -389,9 +389,9 @@ export default function MarketplacePage() {
                     <Link
                       key={listing.id}
                       href={`/pazar/ilan/${listing.id}`}
-                      className="flex-shrink-0 w-56 bg-white border border-[#e0e0e0] rounded-lg overflow-hidden hover:shadow-md transition-shadow group"
+                      className="flex-shrink-0 w-56 bg-surface border border-border rounded-xl overflow-hidden hover:shadow-md transition-shadow group"
                     >
-                      <div className="relative aspect-video overflow-hidden bg-[#f0f2f5]">
+                      <div className="relative aspect-video overflow-hidden bg-background">
                         <Image
                           src={listing.image}
                           alt={listing.title}
@@ -399,18 +399,18 @@ export default function MarketplacePage() {
                           unoptimized
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                         />
-                        <span className="absolute top-2 left-2 bg-[#00833e] text-white text-xs font-bold px-2 py-1 rounded">
+                        <span className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded">
                           ÖNE ÇIKAN
                         </span>
                       </div>
                       <div className="p-3">
-                        <p className="text-sm font-semibold text-[#333] line-clamp-2 mb-1">
+                        <p className="text-sm font-semibold text-text-primary line-clamp-2 mb-1">
                           {listing.title}
                         </p>
-                        <p className="text-lg font-bold text-[#00833e] mb-1">
+                        <p className="text-lg font-bold text-primary mb-1">
                           {listing.isFree ? "Ücretsiz" : `₺${listing.price.toLocaleString("tr-TR")}`}
                         </p>
-                        <p className="text-xs text-[#8f8f8f]">
+                        <p className="text-xs text-text-muted">
                           {listing.neighborhood} • {listing.timeAgo}
                         </p>
                       </div>
@@ -423,14 +423,14 @@ export default function MarketplacePage() {
         )}
 
         {/* Header Section */}
-        <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
+        <div className="bg-surface rounded-xl shadow-sm border border-border overflow-hidden">
           <div className="p-6">
             {/* Title and Action Button */}
             <div className="flex items-center justify-between mb-6">
-              <h1 className="text-2xl font-bold text-[#333]">Satılık ve Ücretsiz</h1>
+              <h1 className="text-2xl font-bold text-text-primary">Satılık ve Ücretsiz</h1>
               <Link
                 href="/pazar/ilan-ver"
-                className="flex items-center gap-2 px-5 py-2.5 bg-[#00833e] text-white rounded-full hover:bg-[#006b32] transition-colors text-sm font-semibold shadow-sm"
+                className="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-full hover:bg-primary-hover transition-colors text-sm font-semibold shadow-sm"
               >
                 <Plus className="w-4 h-4" />
                 İlan Ver
@@ -439,18 +439,18 @@ export default function MarketplacePage() {
 
             {/* Search Bar */}
             <div className="relative mb-6">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8f8f8f]" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
               <input
                 type="text"
                 placeholder="Tüm ilanları ara"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-5 py-3 bg-[#f0f2f5] border border-[#e0e0e0] rounded-full text-sm text-[#333] placeholder-[#8f8f8f] focus:outline-none focus:border-[#00833e] focus:ring-2 focus:ring-[#00833e] focus:ring-opacity-30 transition"
+                className="w-full pl-12 pr-5 py-3 bg-background border border-border rounded-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-30 transition"
               />
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-0 border-b border-[#e0e0e0] -mx-6 px-6">
+            <div className="flex gap-0 border-b border-border -mx-6 px-6">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
@@ -458,8 +458,8 @@ export default function MarketplacePage() {
                   className={cn(
                     'px-5 py-4 text-sm font-medium border-b-[3px] transition-colors',
                     activeTab === tab.id
-                      ? 'text-[#00833e] border-[#00833e]'
-                      : 'text-[#8f8f8f] border-transparent hover:text-[#404040]'
+                      ? 'text-primary border-primary'
+                      : 'text-text-muted border-transparent hover:text-text-secondary'
                   )}
                 >
                   {tab.label}
@@ -478,21 +478,21 @@ export default function MarketplacePage() {
               className={cn(
                 'flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap shadow-sm transition-colors',
                 selectedCategory
-                  ? 'bg-[#00833e] text-white border border-[#00833e]'
-                  : 'bg-white border border-[#e0e0e0] text-[#404040] hover:bg-[#f0f2f5]'
+                  ? 'bg-primary text-white border border-primary'
+                  : 'bg-surface border border-border text-text-secondary hover:bg-surface-hover'
               )}
             >
               {selectedCategory || 'Kategoriler'}
               <ChevronDown className={cn('w-4 h-4', openDropdown === 'category' && 'rotate-180')} />
             </button>
             {openDropdown === 'category' && (
-              <div className="absolute top-full left-0 mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50 min-w-48">
+              <div className="absolute top-full left-0 mt-2 bg-surface border border-border rounded-lg shadow-lg z-50 min-w-48">
                 <button
                   onClick={() => {
                     setSelectedCategory(null);
                     setOpenDropdown(null);
                   }}
-                  className="w-full text-left px-4 py-3 text-sm text-[#8f8f8f] hover:bg-[#f0f2f5] border-b border-[#e0e0e0]"
+                  className="w-full text-left px-4 py-3 text-sm text-text-muted hover:bg-surface-hover border-b border-border"
                 >
                   Tüm Kategoriler
                 </button>
@@ -506,8 +506,8 @@ export default function MarketplacePage() {
                     className={cn(
                       'w-full text-left px-4 py-3 text-sm transition-colors',
                       selectedCategory === cat
-                        ? 'bg-[#00833e] text-white font-medium'
-                        : 'text-[#404040] hover:bg-[#f0f2f5]'
+                        ? 'bg-primary text-white font-medium'
+                        : 'text-text-secondary hover:bg-surface-hover'
                     )}
                   >
                     {cat}
@@ -524,15 +524,15 @@ export default function MarketplacePage() {
               className={cn(
                 'flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap shadow-sm transition-colors',
                 selectedDistance
-                  ? 'bg-[#00833e] text-white border border-[#00833e]'
-                  : 'bg-white border border-[#e0e0e0] text-[#404040] hover:bg-[#f0f2f5]'
+                  ? 'bg-primary text-white border border-primary'
+                  : 'bg-surface border border-border text-text-secondary hover:bg-surface-hover'
               )}
             >
               {selectedDistance ? `${selectedDistance} km` : 'Mesafe'}
               <ChevronDown className={cn('w-4 h-4', openDropdown === 'distance' && 'rotate-180')} />
             </button>
             {openDropdown === 'distance' && (
-              <div className="absolute top-full left-0 mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50">
+              <div className="absolute top-full left-0 mt-2 bg-surface border border-border rounded-lg shadow-lg z-50">
                 {distanceOptions.map((opt) => (
                   <button
                     key={opt.label}
@@ -543,8 +543,8 @@ export default function MarketplacePage() {
                     className={cn(
                       'w-full text-left px-4 py-3 text-sm transition-colors whitespace-nowrap',
                       selectedDistance === opt.value
-                        ? 'bg-[#00833e] text-white font-medium'
-                        : 'text-[#404040] hover:bg-[#f0f2f5]'
+                        ? 'bg-primary text-white font-medium'
+                        : 'text-text-secondary hover:bg-surface-hover'
                     )}
                   >
                     {opt.label}
@@ -561,15 +561,15 @@ export default function MarketplacePage() {
               className={cn(
                 'flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap shadow-sm transition-colors',
                 selectedPriceRange
-                  ? 'bg-[#00833e] text-white border border-[#00833e]'
-                  : 'bg-white border border-[#e0e0e0] text-[#404040] hover:bg-[#f0f2f5]'
+                  ? 'bg-primary text-white border border-primary'
+                  : 'bg-surface border border-border text-text-secondary hover:bg-surface-hover'
               )}
             >
               {selectedPriceRange ? 'Fiyat Aralığı' : 'Fiyat'}
               <ChevronDown className={cn('w-4 h-4', openDropdown === 'price' && 'rotate-180')} />
             </button>
             {openDropdown === 'price' && (
-              <div className="absolute top-full left-0 mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50 min-w-48">
+              <div className="absolute top-full left-0 mt-2 bg-surface border border-border rounded-lg shadow-lg z-50 min-w-48">
                 {priceRanges.map((range) => (
                   <button
                     key={range.label}
@@ -580,8 +580,8 @@ export default function MarketplacePage() {
                     className={cn(
                       'w-full text-left px-4 py-3 text-sm transition-colors',
                       selectedPriceRange === range.value
-                        ? 'bg-[#00833e] text-white font-medium'
-                        : 'text-[#404040] hover:bg-[#f0f2f5]'
+                        ? 'bg-primary text-white font-medium'
+                        : 'text-text-secondary hover:bg-surface-hover'
                     )}
                   >
                     {range.label}
@@ -598,15 +598,15 @@ export default function MarketplacePage() {
               className={cn(
                 'flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap shadow-sm transition-colors',
                 selectedCondition
-                  ? 'bg-[#00833e] text-white border border-[#00833e]'
-                  : 'bg-white border border-[#e0e0e0] text-[#404040] hover:bg-[#f0f2f5]'
+                  ? 'bg-primary text-white border border-primary'
+                  : 'bg-surface border border-border text-text-secondary hover:bg-surface-hover'
               )}
             >
               Durum
               <ChevronDown className={cn('w-4 h-4', openDropdown === 'condition' && 'rotate-180')} />
             </button>
             {openDropdown === 'condition' && (
-              <div className="absolute top-full left-0 mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50 min-w-48">
+              <div className="absolute top-full left-0 mt-2 bg-surface border border-border rounded-lg shadow-lg z-50 min-w-48">
                 {conditions.map((cond) => (
                   <button
                     key={cond.label}
@@ -617,8 +617,8 @@ export default function MarketplacePage() {
                     className={cn(
                       'w-full text-left px-4 py-3 text-sm transition-colors',
                       selectedCondition === cond.value
-                        ? 'bg-[#00833e] text-white font-medium'
-                        : 'text-[#404040] hover:bg-[#f0f2f5]'
+                        ? 'bg-primary text-white font-medium'
+                        : 'text-text-secondary hover:bg-surface-hover'
                     )}
                   >
                     {cond.label}
@@ -632,13 +632,13 @@ export default function MarketplacePage() {
           <div className="relative">
             <button
               onClick={() => setOpenDropdown(openDropdown === 'sort' ? null : 'sort')}
-              className="flex items-center gap-2 px-5 py-2.5 bg-white border border-[#e0e0e0] rounded-full text-sm font-medium text-[#404040] hover:bg-[#f0f2f5] transition-colors whitespace-nowrap shadow-sm"
+              className="flex items-center gap-2 px-5 py-2.5 bg-surface border border-border rounded-full text-sm font-medium text-text-secondary hover:bg-surface-hover transition-colors whitespace-nowrap shadow-sm"
             >
               Sıralama
-              <ChevronDown className={cn('w-4 h-4 text-[#8f8f8f]', openDropdown === 'sort' && 'rotate-180')} />
+              <ChevronDown className={cn('w-4 h-4 text-text-muted', openDropdown === 'sort' && 'rotate-180')} />
             </button>
             {openDropdown === 'sort' && (
-              <div className="absolute top-full left-0 mt-2 bg-white border border-[#e0e0e0] rounded-lg shadow-lg z-50">
+              <div className="absolute top-full left-0 mt-2 bg-surface border border-border rounded-lg shadow-lg z-50">
                 {sortOptions.map((opt) => (
                   <button
                     key={opt.value}
@@ -649,8 +649,8 @@ export default function MarketplacePage() {
                     className={cn(
                       'w-full text-left px-4 py-3 text-sm transition-colors whitespace-nowrap',
                       selectedSort === opt.value
-                        ? 'bg-[#00833e] text-white font-medium'
-                        : 'text-[#404040] hover:bg-[#f0f2f5]'
+                        ? 'bg-primary text-white font-medium'
+                        : 'text-text-secondary hover:bg-surface-hover'
                     )}
                   >
                     {opt.label}
@@ -687,10 +687,10 @@ export default function MarketplacePage() {
                 <Link
                   key={listing.id}
                   href={`/pazar/ilan/${listing.id}`}
-                  className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-lg transition-shadow duration-200 group"
+                  className="bg-surface rounded-xl shadow-sm border border-border overflow-hidden hover:shadow-lg transition-shadow duration-200 group"
                 >
                   {/* Image Container */}
-                  <div className="relative aspect-square overflow-hidden bg-[#f0f2f5]">
+                  <div className="relative aspect-square overflow-hidden bg-background">
                     <Image
                       src={listing.image}
                       alt={listing.title}
@@ -700,7 +700,7 @@ export default function MarketplacePage() {
                     />
                     {/* Free Badge */}
                     {listing.isFree && (
-                      <span className="absolute top-3 left-3 bg-[#00833e] text-white text-xs font-bold px-3 py-1 rounded-md">
+                      <span className="absolute top-3 left-3 bg-primary text-white text-xs font-bold px-3 py-1 rounded-md">
                         ÜCRETSİZ
                       </span>
                     )}
@@ -711,7 +711,7 @@ export default function MarketplacePage() {
                         e.stopPropagation();
                         toggleFavorite(listing.id);
                       }}
-                      className="absolute top-3 right-3 p-2 bg-white/95 rounded-full hover:bg-white transition-colors shadow-md"
+                      className="absolute top-3 right-3 p-2 bg-surface/95 rounded-full hover:bg-surface transition-colors shadow-md"
                       aria-label="Kaydet"
                     >
                       <Heart
@@ -719,7 +719,7 @@ export default function MarketplacePage() {
                           'w-5 h-5',
                           favorites.has(listing.id)
                             ? 'fill-red-500 text-red-500'
-                            : 'text-[#404040]'
+                            : 'text-text-secondary'
                         )}
                       />
                     </button>
@@ -730,35 +730,35 @@ export default function MarketplacePage() {
                     {/* Price - Bold with improved formatting */}
                     <div className="mb-1">
                       {listing.isFree ? (
-                        <span className="text-lg font-bold text-[#00833e]">Ücretsiz</span>
+                        <span className="text-lg font-bold text-primary">Ücretsiz</span>
                       ) : (
                         <div className="flex items-baseline gap-2">
-                          <span className="text-xl font-bold text-[#333]">₺{listing.price.toLocaleString('tr-TR')}</span>
-                          <span className="text-xs text-[#8f8f8f]">TL</span>
+                          <span className="text-xl font-bold text-text-primary">₺{listing.price.toLocaleString('tr-TR')}</span>
+                          <span className="text-xs text-text-muted">TL</span>
                         </div>
                       )}
                     </div>
 
                     {/* Title */}
-                    <p className="text-sm text-[#404040] line-clamp-2 mb-3 leading-snug">
+                    <p className="text-sm text-text-secondary line-clamp-2 mb-3 leading-snug">
                       {listing.title}
                     </p>
 
                     {/* Meta Info */}
-                    <div className="flex items-center gap-1.5 text-xs text-[#8f8f8f] mb-1">
+                    <div className="flex items-center gap-1.5 text-xs text-text-muted mb-1">
                       <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
                       <span className="truncate">
                         {listing.timeAgo} • {listing.distance}
                       </span>
                     </div>
-                    <div className="text-xs text-[#8f8f8f] mb-2">
+                    <div className="text-xs text-text-muted mb-2">
                       {listing.neighborhood}
                     </div>
 
                     {/* Rating */}
                     <div className="flex items-center gap-1">
-                      <span className="text-xs font-semibold text-[#00833e]">★ {listing.rating}</span>
-                      <span className="text-xs text-[#8f8f8f]">({listing.reviewCount})</span>
+                      <span className="text-xs font-semibold text-primary">★ {listing.rating}</span>
+                      <span className="text-xs text-text-muted">({listing.reviewCount})</span>
                     </div>
                   </div>
                 </Link>
@@ -770,7 +770,7 @@ export default function MarketplacePage() {
               <div className="text-center mt-8">
                 <button
                   onClick={() => setVisibleCount((prev) => prev + 6)}
-                  className="px-8 py-3 border border-[#e0e0e0] bg-white rounded-full text-sm font-semibold text-[#404040] hover:bg-[#f0f2f5] transition-colors shadow-sm"
+                  className="px-8 py-3 border border-border bg-surface rounded-full text-sm font-semibold text-text-secondary hover:bg-surface-hover transition-colors shadow-sm"
                 >
                   Daha Fazla Göster ({allFiltered.length - visibleCount} ilan daha)
                 </button>
@@ -780,8 +780,8 @@ export default function MarketplacePage() {
 
           {/* Right Sidebar - Chat Widget */}
           <div className="lg:col-span-1">
-            <div className="sticky top-6 bg-white rounded-lg shadow-md border border-[#e0e0e0] overflow-hidden">
-              <div className="bg-gradient-to-br from-[#00833e] to-[#006b32] p-6 text-white">
+            <div className="sticky top-6 bg-surface rounded-xl shadow-md border border-border overflow-hidden">
+              <div className="bg-gradient-to-br from-primary to-primary-hover p-6 text-white">
                 <div className="flex items-start gap-3 mb-4">
                   <MessageCircle className="w-6 h-6 flex-shrink-0 mt-0.5" />
                   <div>
@@ -794,7 +794,7 @@ export default function MarketplacePage() {
                   </div>
                 </div>
 
-                <div className="space-y-3 bg-white/10 rounded-lg p-4 mb-4">
+                <div className="space-y-3 bg-surface/10 rounded-lg p-4 mb-4">
                   <div className="text-sm text-green-50">
                     <span className="font-semibold">Ayşe K.:</span> Bu laptop halen var mı?
                   </div>
@@ -806,13 +806,13 @@ export default function MarketplacePage() {
                   </div>
                 </div>
 
-                <Link href="/mesajlar" className="block w-full px-4 py-2.5 bg-white text-[#00833e] rounded-full font-semibold text-sm hover:bg-green-50 transition-colors text-center">
+                <Link href="/mesajlar" className="block w-full px-4 py-2.5 bg-surface text-primary rounded-full font-semibold text-sm hover:bg-green-50 transition-colors text-center">
                   Sohbeti Aç
                 </Link>
               </div>
 
-              <div className="p-4 bg-[#f0f2f5]">
-                <p className="text-xs text-[#8f8f8f] text-center">
+              <div className="p-4 bg-background">
+                <p className="text-xs text-text-muted text-center">
                   Bu hafta {filtered.length} yeni ilan
                 </p>
               </div>

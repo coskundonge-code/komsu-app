@@ -52,7 +52,7 @@ export function WelcomeModal() {
       icon: null,
       content: (
         <div className="text-center space-y-4">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#00833e] rounded-full mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-4">
             <span className="text-white text-2xl font-bold">K</span>
           </div>
           <h2 className="text-2xl font-bold text-gray-900">Mahallem</h2>
@@ -70,8 +70,8 @@ export function WelcomeModal() {
         <div className="space-y-4">
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0">
-              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-[#f0f2f5]">
-                <Users size={24} className="text-[#00833e]" />
+              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-background">
+                <Users size={24} className="text-primary" />
               </div>
             </div>
             <div>
@@ -84,8 +84,8 @@ export function WelcomeModal() {
 
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0">
-              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-[#f0f2f5]">
-                <ShoppingBag size={24} className="text-[#00833e]" />
+              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-background">
+                <ShoppingBag size={24} className="text-primary" />
               </div>
             </div>
             <div>
@@ -98,8 +98,8 @@ export function WelcomeModal() {
 
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0">
-              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-[#f0f2f5]">
-                <Calendar size={24} className="text-[#00833e]" />
+              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-background">
+                <Calendar size={24} className="text-primary" />
               </div>
             </div>
             <div>
@@ -112,8 +112,8 @@ export function WelcomeModal() {
 
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0">
-              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-[#f0f2f5]">
-                <Store size={24} className="text-[#00833e]" />
+              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-background">
+                <Store size={24} className="text-primary" />
               </div>
             </div>
             <div>
@@ -141,7 +141,7 @@ export function WelcomeModal() {
             </p>
           </div>
 
-          <div className="bg-[#f0f2f5] rounded-lg p-4">
+          <div className="bg-background rounded-lg p-4">
             <p className="text-sm text-gray-700">
               İstediğin zaman profil ayarlarından bu kılavuzu tekrar görebilirsin.
             </p>
@@ -160,7 +160,7 @@ export function WelcomeModal() {
 
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="relative w-full max-w-[480px] bg-white rounded-2xl shadow-2xl overflow-hidden transition-all duration-300">
+        <div className="relative w-full max-w-[480px] bg-surface rounded-2xl shadow-2xl overflow-hidden transition-all duration-300">
           {/* Close Button */}
           <button
             onClick={handleClose}
@@ -190,7 +190,7 @@ export function WelcomeModal() {
                 onClick={() => setCurrentStep(index)}
                 className={`h-2 rounded-full transition-all duration-300 ${
                   index === currentStep
-                    ? 'w-8 bg-[#00833e]'
+                    ? 'w-8 bg-primary'
                     : 'w-2 bg-gray-300 hover:bg-gray-400'
                 }`}
                 aria-label={`Adım ${index + 1}`}
@@ -203,7 +203,7 @@ export function WelcomeModal() {
             <button
               onClick={handlePrev}
               disabled={currentStep === 0}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 border-2 border-gray-300 text-gray-700 rounded-lg hover:border-gray-400 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-300 disabled:hover:bg-white font-medium transition-colors text-sm"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 border-2 border-gray-300 text-gray-700 rounded-lg hover:border-gray-400 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-300 disabled:hover:bg-surface font-medium transition-colors text-sm"
             >
               <ArrowLeft size={18} />
               Geri
@@ -211,7 +211,7 @@ export function WelcomeModal() {
 
             <button
               onClick={handleNext}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-[#00833e] text-white rounded-lg hover:bg-[#006b32] font-medium transition-colors text-sm shadow-md hover:shadow-lg"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-primary-hover font-medium transition-colors text-sm shadow-md hover:shadow-lg"
             >
               {currentStep === 2 ? 'Başla' : 'İleri'}
               {currentStep < 2 && <ArrowRight size={18} />}

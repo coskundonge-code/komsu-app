@@ -247,7 +247,7 @@ export default function AdminDashboard() {
           return (
             <div
               key={stat.id}
-              className="bg-white rounded-lg border border-[#e0e0e0] p-6 hover:shadow-lg transition-shadow"
+              className="bg-surface rounded-lg border border-border p-6 hover:shadow-lg transition-shadow"
             >
               <div className="flex items-start justify-between mb-4">
                 <div
@@ -270,13 +270,13 @@ export default function AdminDashboard() {
       {/* Activity Chart and Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Daily Activity Chart */}
-        <div className="lg:col-span-2 bg-white rounded-lg border border-[#e0e0e0] p-6">
+        <div className="lg:col-span-2 bg-surface rounded-lg border border-border p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-lg font-bold text-gray-900">Son 7 Gün Aktivite</h2>
               <p className="text-sm text-gray-600">Günlük gönderi sayısı</p>
             </div>
-            <BarChart3 size={24} className="text-[#00833e]" />
+            <BarChart3 size={24} className="text-primary" />
           </div>
 
           {/* CSS Bar Chart */}
@@ -289,7 +289,7 @@ export default function AdminDashboard() {
                   className="flex-1 flex flex-col items-center gap-2"
                 >
                   <div
-                    className="w-full bg-gradient-to-t from-[#00833e] to-[#00aa52] rounded-t transition-all hover:shadow-lg"
+                    className="w-full bg-gradient-to-t from-primary to-[#00aa52] rounded-t transition-all hover:shadow-lg"
                     style={{ height: `${percentage}%` }}
                     title={`${data.posts} gönderi`}
                   />
@@ -308,10 +308,10 @@ export default function AdminDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+        <div className="bg-surface rounded-lg border border-border p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-bold text-gray-900">Hızlı İşlemler</h2>
-            <Zap size={20} className="text-[#00833e]" />
+            <Zap size={20} className="text-primary" />
           </div>
 
           <div className="space-y-3">
@@ -341,13 +341,13 @@ export default function AdminDashboard() {
       {/* Recent Activity Feed and Platform Health */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Recent Activity Feed */}
-        <div className="lg:col-span-2 bg-white rounded-lg border border-[#e0e0e0] p-6">
+        <div className="lg:col-span-2 bg-surface rounded-lg border border-border p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-lg font-bold text-gray-900">Son Aktiviteler</h2>
               <p className="text-sm text-gray-600">Platform etkinlikleri</p>
             </div>
-            <Activity size={20} className="text-[#00833e]" />
+            <Activity size={20} className="text-primary" />
           </div>
 
           <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -357,7 +357,7 @@ export default function AdminDashboard() {
               return (
                 <div
                   key={activity.id}
-                  className="flex items-start gap-3 p-3 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0] hover:border-[#00833e] transition-colors"
+                  className="flex items-start gap-3 p-3 bg-background rounded-lg border border-border hover:border-primary transition-colors"
                 >
                   <div
                     className={`p-2 rounded-lg ${activity.badgeColor} flex-shrink-0`}
@@ -377,16 +377,16 @@ export default function AdminDashboard() {
             })}
           </div>
 
-          <button className="mt-4 w-full py-2 px-4 text-sm font-medium text-[#00833e] bg-[#e6f4ec] hover:bg-[#d1fae5] rounded-lg transition-colors">
+          <button className="mt-4 w-full py-2 px-4 text-sm font-medium text-primary bg-primary-light hover:bg-primary-light rounded-lg transition-colors">
             Tüm Aktiviteleri Görüntüle
           </button>
         </div>
 
         {/* Platform Health */}
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+        <div className="bg-surface rounded-lg border border-border p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-bold text-gray-900">Platform Sağlığı</h2>
-            <Server size={20} className="text-[#00833e]" />
+            <Server size={20} className="text-primary" />
           </div>
 
           <div className="space-y-4">
@@ -417,13 +417,13 @@ export default function AdminDashboard() {
       </div>
 
       {/* Top Neighborhoods Table */}
-      <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-8">
+      <div className="bg-surface rounded-lg border border-border p-6 mb-8">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-lg font-bold text-gray-900">En Aktif Mahalleler</h2>
             <p className="text-sm text-gray-600">Top 10 mahalle - tıklayarak sırala</p>
           </div>
-          <TrendingUp size={20} className="text-[#00833e]" />
+          <TrendingUp size={20} className="text-primary" />
         </div>
 
         <div className="overflow-x-auto">
@@ -434,35 +434,35 @@ export default function AdminDashboard() {
                   Mahalle
                 </th>
                 <th
-                  className="text-left py-3 px-4 text-sm font-semibold text-gray-700 cursor-pointer hover:text-[#00833e]"
+                  className="text-left py-3 px-4 text-sm font-semibold text-gray-700 cursor-pointer hover:text-primary"
                   onClick={() => handleSort('members')}
                 >
                   <div className="flex items-center gap-1">
                     Üye Sayısı
                     {sortKey === 'members' && (
-                      <TrendingUp size={14} className="text-[#00833e]" />
+                      <TrendingUp size={14} className="text-primary" />
                     )}
                   </div>
                 </th>
                 <th
-                  className="text-left py-3 px-4 text-sm font-semibold text-gray-700 cursor-pointer hover:text-[#00833e]"
+                  className="text-left py-3 px-4 text-sm font-semibold text-gray-700 cursor-pointer hover:text-primary"
                   onClick={() => handleSort('posts')}
                 >
                   <div className="flex items-center gap-1">
                     Gönderi
                     {sortKey === 'posts' && (
-                      <TrendingUp size={14} className="text-[#00833e]" />
+                      <TrendingUp size={14} className="text-primary" />
                     )}
                   </div>
                 </th>
                 <th
-                  className="text-left py-3 px-4 text-sm font-semibold text-gray-700 cursor-pointer hover:text-[#00833e]"
+                  className="text-left py-3 px-4 text-sm font-semibold text-gray-700 cursor-pointer hover:text-primary"
                   onClick={() => handleSort('score')}
                 >
                   <div className="flex items-center gap-1">
                     Aktiflik Skoru
                     {sortKey === 'score' && (
-                      <TrendingUp size={14} className="text-[#00833e]" />
+                      <TrendingUp size={14} className="text-primary" />
                     )}
                   </div>
                 </th>
@@ -476,7 +476,7 @@ export default function AdminDashboard() {
                 >
                   <td className="py-3 px-4 text-sm font-medium text-gray-900">
                     <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-[#e6f4ec] flex items-center justify-center text-xs font-bold text-[#00833e]">
+                      <span className="w-6 h-6 rounded-full bg-primary-light flex items-center justify-center text-xs font-bold text-primary">
                         {idx + 1}
                       </span>
                       {neighborhood.name}
@@ -492,7 +492,7 @@ export default function AdminDashboard() {
                     <div className="flex items-center gap-2">
                       <div className="w-20 h-1.5 bg-gray-200 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-[#00833e] to-[#00aa52] rounded-full"
+                          className="h-full bg-gradient-to-r from-primary to-[#00aa52] rounded-full"
                           style={{ width: `${neighborhood.score}%` }}
                         />
                       </div>
@@ -510,9 +510,9 @@ export default function AdminDashboard() {
 
       {/* System Status */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+        <div className="bg-surface rounded-lg border border-border p-6">
           <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <Server size={20} className="text-[#00833e]" />
+            <Server size={20} className="text-primary" />
             Sistem Durumu
           </h2>
 
@@ -520,7 +520,7 @@ export default function AdminDashboard() {
             {SYSTEM_STATUS.map((service) => (
               <div
                 key={service.name}
-                className="flex items-center justify-between p-3 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0]"
+                className="flex items-center justify-between p-3 bg-background rounded-lg border border-border"
               >
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
@@ -537,29 +537,29 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-[#e6f4ec] to-[#d1fae5] rounded-lg border border-[#00833e] border-opacity-20 p-6">
+        <div className="bg-gradient-to-br from-[#e6f4ec] to-[#d1fae5] rounded-lg border border-primary border-opacity-20 p-6">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h2 className="text-lg font-bold text-[#00833e] mb-1">
+              <h2 className="text-lg font-bold text-primary mb-1">
                 Sistem Özeti
               </h2>
-              <p className="text-sm text-[#00833e] opacity-75">
+              <p className="text-sm text-primary opacity-75">
                 Tüm hizmetler sorunsuz çalışıyor
               </p>
             </div>
-            <CheckCircle size={28} className="text-[#00833e]" />
+            <CheckCircle size={28} className="text-primary" />
           </div>
 
           <div className="grid grid-cols-2 gap-4 mt-6">
             <div>
-              <p className="text-xs text-[#00833e] opacity-75">Güncellenme</p>
-              <p className="text-sm font-semibold text-[#00833e] mt-1">
+              <p className="text-xs text-primary opacity-75">Güncellenme</p>
+              <p className="text-sm font-semibold text-primary mt-1">
                 Son 2 dakika
               </p>
             </div>
             <div>
-              <p className="text-xs text-[#00833e] opacity-75">Sonraki Kontrol</p>
-              <p className="text-sm font-semibold text-[#00833e] mt-1">
+              <p className="text-xs text-primary opacity-75">Sonraki Kontrol</p>
+              <p className="text-sm font-semibold text-primary mt-1">
                 30 saniye içinde
               </p>
             </div>

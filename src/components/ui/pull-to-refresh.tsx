@@ -139,7 +139,7 @@ const PullToRefresh = React.forwardRef<HTMLDivElement, PullToRefreshProps>(
                     "w-8 h-8 rounded-full border-2",
                     isRefreshing
                       ? "border-[#a7dbb8] border-t-[#00833e] animate-spin"
-                      : "border-[#00833e]"
+                      : "border-primary"
                   )}
                   style={{
                     borderTopColor: isRefreshing ? "#00833e" : "transparent",
@@ -156,14 +156,14 @@ const PullToRefresh = React.forwardRef<HTMLDivElement, PullToRefreshProps>(
 
               {/* Release Text */}
               {!isRefreshing && pullDistance >= threshold && (
-                <p className="mt-2 text-sm font-medium text-[#00833e] text-center">
+                <p className="mt-2 text-sm font-medium text-primary text-center">
                   Release to refresh
                 </p>
               )}
 
               {/* Refreshing Text */}
               {isRefreshing && (
-                <p className="mt-2 text-sm font-medium text-[#00833e] text-center">
+                <p className="mt-2 text-sm font-medium text-primary text-center">
                   Refreshing...
                 </p>
               )}

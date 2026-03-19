@@ -147,8 +147,8 @@ const STATUS_CONFIG = {
   active: {
     label: 'Aktif',
     color: 'bg-green-100 text-green-800',
-    badgeBg: 'bg-[#e6f4ec]',
-    badgeText: 'text-[#006b32]',
+    badgeBg: 'bg-primary-light',
+    badgeText: 'text-primary-hover',
     icon: CheckCircle,
   },
   inactive: {
@@ -241,16 +241,16 @@ export default function KullanicilarPage() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 hover:shadow-md transition-shadow">
+        <div className="bg-surface rounded-lg border border-border p-4 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-xs font-medium">Toplam</p>
               <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
             </div>
-            <Users className="text-[#00833e]" size={28} />
+            <Users className="text-primary" size={28} />
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 hover:shadow-md transition-shadow">
+        <div className="bg-surface rounded-lg border border-border p-4 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-xs font-medium">Aktif</p>
@@ -259,7 +259,7 @@ export default function KullanicilarPage() {
             <UserCheck className="text-green-600" size={28} />
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 hover:shadow-md transition-shadow">
+        <div className="bg-surface rounded-lg border border-border p-4 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-xs font-medium">Pasif</p>
@@ -268,7 +268,7 @@ export default function KullanicilarPage() {
             <AlertCircle className="text-gray-600" size={28} />
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 hover:shadow-md transition-shadow">
+        <div className="bg-surface rounded-lg border border-border p-4 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-xs font-medium">Askıya</p>
@@ -280,7 +280,7 @@ export default function KullanicilarPage() {
       </div>
 
       {/* Search and Filter */}
-      <div className="bg-white rounded-lg border border-[#e0e0e0] p-6 mb-6">
+      <div className="bg-surface rounded-lg border border-border p-6 mb-6">
         <div className="flex gap-4 mb-4">
           <div className="flex-1 relative">
             <Search size={20} className="absolute left-3 top-3 text-gray-400" />
@@ -292,7 +292,7 @@ export default function KullanicilarPage() {
                 setSearch(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-10 pr-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+              className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
         </div>
@@ -308,8 +308,8 @@ export default function KullanicilarPage() {
               }}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 statusFilter === status
-                  ? 'bg-[#00833e] text-white'
-                  : 'bg-[#f0f2f5] text-gray-700 hover:bg-gray-200 border border-[#e0e0e0]'
+                  ? 'bg-primary text-white'
+                  : 'bg-background text-gray-700 hover:bg-gray-200 border border-border'
               }`}
             >
               {status === 'all'
@@ -325,10 +325,10 @@ export default function KullanicilarPage() {
       </div>
 
       {/* Users Table */}
-      <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden">
+      <div className="bg-surface rounded-lg border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-[#f0f2f5] border-b border-[#e0e0e0]">
+            <thead className="bg-background border-b border-border">
               <tr>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                   Kullanıcı
@@ -363,7 +363,7 @@ export default function KullanicilarPage() {
                 return (
                   <tr
                     key={user.id}
-                    className="hover:bg-[#f0f2f5] transition-colors"
+                    className="hover:bg-surface-hover transition-colors"
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -405,7 +405,7 @@ export default function KullanicilarPage() {
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-2">
                             <div
-                              className="bg-[#00833e] h-2 rounded-full"
+                              className="bg-primary h-2 rounded-full"
                               style={{ width: `${user.engagement}%` }}
                             />
                           </div>
@@ -469,7 +469,7 @@ export default function KullanicilarPage() {
           <button
             onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
             disabled={currentPage === 1}
-            className="flex items-center gap-2 px-3 py-2 border border-[#e0e0e0] rounded-lg text-gray-700 hover:bg-[#f0f2f5] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-2 px-3 py-2 border border-border rounded-lg text-gray-700 hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <ChevronLeft size={16} />
             Önceki
@@ -479,7 +479,7 @@ export default function KullanicilarPage() {
               setCurrentPage(Math.min(totalPages, currentPage + 1))
             }
             disabled={currentPage === totalPages}
-            className="flex items-center gap-2 px-3 py-2 border border-[#e0e0e0] rounded-lg text-gray-700 hover:bg-[#f0f2f5] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-2 px-3 py-2 border border-border rounded-lg text-gray-700 hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Sonraki
             <ChevronRight size={16} />
@@ -490,8 +490,8 @@ export default function KullanicilarPage() {
       {/* Details Modal */}
       {detailsModal && selectedUser && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-[#e0e0e0] px-6 py-4 flex items-center justify-between">
+          <div className="bg-surface rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto">
+            <div className="sticky top-0 bg-surface border-b border-border px-6 py-4 flex items-center justify-between">
               <h2 className="text-xl font-bold text-gray-900">Kullanıcı Detayları</h2>
               <button
                 onClick={() => setDetailsModal(false)}
@@ -502,7 +502,7 @@ export default function KullanicilarPage() {
             </div>
 
             <div className="p-6 space-y-4">
-              <div className="flex items-center gap-4 pb-4 border-b border-[#e0e0e0]">
+              <div className="flex items-center gap-4 pb-4 border-b border-border">
                 <div
                   className="w-16 h-16 rounded-full flex items-center justify-center font-bold text-white text-xl"
                   style={{ backgroundColor: '#00833e' }}
@@ -551,7 +551,7 @@ export default function KullanicilarPage() {
                 <div className="flex items-center gap-3">
                   <div className="flex-1 bg-gray-200 rounded-full h-3">
                     <div
-                      className="bg-[#00833e] h-3 rounded-full"
+                      className="bg-primary h-3 rounded-full"
                       style={{ width: `${selectedUser.engagement}%` }}
                     />
                   </div>
@@ -566,7 +566,7 @@ export default function KullanicilarPage() {
       {/* Confirmation Modal */}
       {confirmModal.isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-sm w-full">
+          <div className="bg-surface rounded-lg p-6 max-w-sm w-full">
             <h2 className="text-lg font-bold text-gray-900 mb-2">İşlemi Onayla</h2>
             <p className="text-gray-600 mb-6">
               {confirmModal.action === 'delete'
@@ -580,7 +580,7 @@ export default function KullanicilarPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmModal({ isOpen: false, action: '' })}
-                className="flex-1 px-4 py-2 border border-[#e0e0e0] rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors"
+                className="flex-1 px-4 py-2 border border-border rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors"
               >
                 İptal
               </button>
@@ -589,7 +589,7 @@ export default function KullanicilarPage() {
                 className={`flex-1 px-4 py-2 rounded-lg text-white font-medium transition-colors ${
                   confirmModal.action === 'delete'
                     ? 'bg-red-600 hover:bg-red-700'
-                    : 'bg-[#00833e] hover:bg-[#006b32]'
+                    : 'bg-primary hover:bg-primary-hover'
                 }`}
               >
                 Onayla

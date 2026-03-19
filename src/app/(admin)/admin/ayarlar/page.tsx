@@ -91,15 +91,15 @@ export default function AyarlarPage() {
       </div>
 
       {/* Tabs */}
-      <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden mb-6">
-        <div className="flex border-b border-[#e0e0e0] overflow-x-auto">
+      <div className="bg-surface rounded-lg border border-border overflow-hidden mb-6">
+        <div className="flex border-b border-border overflow-x-auto">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`px-6 py-3 font-medium whitespace-nowrap border-b-2 transition ${
                 activeTab === tab.id
-                  ? 'border-[#00833e] text-[#00833e]'
+                  ? 'border-primary text-primary'
                   : 'border-transparent text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -125,7 +125,7 @@ export default function AyarlarPage() {
                       general: { ...settings.general, siteName: e.target.value },
                     })
                   }
-                  className="w-full px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               <div>
@@ -141,10 +141,10 @@ export default function AyarlarPage() {
                     })
                   }
                   rows={4}
-                  className="w-full px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
-              <div className="flex items-center gap-3 p-4 bg-[#f0f2f5] rounded-lg">
+              <div className="flex items-center gap-3 p-4 bg-background rounded-lg">
                 <input
                   type="checkbox"
                   checked={settings.general.maintenanceMode}
@@ -211,7 +211,7 @@ export default function AyarlarPage() {
                       },
                     })
                   }
-                  className="w-full px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="low">Düşük (Daha az filter)</option>
                   <option value="medium">Orta (Dengeli)</option>
@@ -237,7 +237,7 @@ export default function AyarlarPage() {
                       listing: { ...settings.listing, freeQuotaPerYear: parseInt(e.target.value) },
                     })
                   }
-                  className="w-full px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               <div>
@@ -253,7 +253,7 @@ export default function AyarlarPage() {
                       listing: { ...settings.listing, listingPrice: parseInt(e.target.value) },
                     })
                   }
-                  className="w-full px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               <div>
@@ -269,7 +269,7 @@ export default function AyarlarPage() {
                       listing: { ...settings.listing, featuredPrice: parseInt(e.target.value) },
                     })
                   }
-                  className="w-full px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>
@@ -292,7 +292,7 @@ export default function AyarlarPage() {
                         packages: { ...settings.packages, temelPrice: parseInt(e.target.value) },
                       })
                     }
-                    className="w-full px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                    className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
                 <div>
@@ -308,7 +308,7 @@ export default function AyarlarPage() {
                         packages: { ...settings.packages, proPrice: parseInt(e.target.value) },
                       })
                     }
-                    className="w-full px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                    className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
                 <div>
@@ -324,7 +324,7 @@ export default function AyarlarPage() {
                         packages: { ...settings.packages, premiumPrice: parseInt(e.target.value) },
                       })
                     }
-                    className="w-full px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                    className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
               </div>
@@ -354,7 +354,7 @@ export default function AyarlarPage() {
                           api: { ...settings.api, apiKey: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                      className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                     <button
                       onClick={() => setShowApiKey(!showApiKey)}
@@ -363,7 +363,7 @@ export default function AyarlarPage() {
                       {showApiKey ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
-                  <button className="px-4 py-2 bg-[#f0f2f5] text-gray-900 rounded-lg hover:bg-[#e0e0e0] font-medium">
+                  <button className="px-4 py-2 bg-background text-gray-900 rounded-lg hover:bg-[#e0e0e0] font-medium">
                     Yenile
                   </button>
                 </div>
@@ -383,7 +383,7 @@ export default function AyarlarPage() {
                           api: { ...settings.api, apiSecret: e.target.value },
                         })
                       }
-                      className="w-full px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                      className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                     <button
                       onClick={() => setShowApiSecret(!showApiSecret)}
@@ -392,7 +392,7 @@ export default function AyarlarPage() {
                       {showApiSecret ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
-                  <button className="px-4 py-2 bg-[#f0f2f5] text-gray-900 rounded-lg hover:bg-[#e0e0e0] font-medium">
+                  <button className="px-4 py-2 bg-background text-gray-900 rounded-lg hover:bg-[#e0e0e0] font-medium">
                     Yenile
                   </button>
                 </div>
@@ -415,7 +415,7 @@ export default function AyarlarPage() {
                 <textarea
                   defaultValue="Merhaba {name},\n\nMahallem'e hoş geldiniz! Hesabınız başarıyla oluşturuldu.\n\nProfilinizi tamamlamak için lütfen {link} ziyaret edin.\n\nSaygılar,\nMahallem Ekibi"
                   rows={6}
-                  className="w-full px-4 py-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e]"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>
@@ -427,25 +427,25 @@ export default function AyarlarPage() {
               <div>
                 <h3 className="font-semibold text-gray-900 mb-4">Bildirim Tercihlerini Yapılandırın</h3>
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 border border-[#e0e0e0] rounded-lg hover:bg-[#f0f2f5]">
+                  <div className="flex items-center gap-3 p-3 border border-border rounded-lg hover:bg-background">
                     <input type="checkbox" defaultChecked className="w-5 h-5 accent-[#00833e]" />
                     <label className="font-medium text-gray-900">
                       Yeni Gönderi Bildirimleri
                     </label>
                   </div>
-                  <div className="flex items-center gap-3 p-3 border border-[#e0e0e0] rounded-lg hover:bg-[#f0f2f5]">
+                  <div className="flex items-center gap-3 p-3 border border-border rounded-lg hover:bg-background">
                     <input type="checkbox" defaultChecked className="w-5 h-5 accent-[#00833e]" />
                     <label className="font-medium text-gray-900">
                       Grup Aktiviteleri
                     </label>
                   </div>
-                  <div className="flex items-center gap-3 p-3 border border-[#e0e0e0] rounded-lg hover:bg-[#f0f2f5]">
+                  <div className="flex items-center gap-3 p-3 border border-border rounded-lg hover:bg-background">
                     <input type="checkbox" defaultChecked className="w-5 h-5 accent-[#00833e]" />
                     <label className="font-medium text-gray-900">
                       Sistem Güncellemeleri
                     </label>
                   </div>
-                  <div className="flex items-center gap-3 p-3 border border-[#e0e0e0] rounded-lg hover:bg-[#f0f2f5]">
+                  <div className="flex items-center gap-3 p-3 border border-border rounded-lg hover:bg-background">
                     <input type="checkbox" className="w-5 h-5 accent-[#00833e]" />
                     <label className="font-medium text-gray-900">
                       Pazarlama Emails
@@ -462,14 +462,14 @@ export default function AyarlarPage() {
       <div className="flex gap-3 justify-end">
         <button
           onClick={() => setSaved(false)}
-          className="px-6 py-2 border border-[#e0e0e0] rounded-lg text-gray-900 font-medium hover:bg-[#f0f2f5] flex items-center gap-2"
+          className="px-6 py-2 border border-border rounded-lg text-gray-900 font-medium hover:bg-background flex items-center gap-2"
         >
           <RotateCw size={18} />
           Sıfırla
         </button>
         <button
           onClick={handleSave}
-          className="px-6 py-2 bg-[#00833e] text-white rounded-lg font-medium hover:bg-[#006b32] flex items-center gap-2"
+          className="px-6 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-hover flex items-center gap-2"
         >
           <Save size={18} />
           Kaydet
@@ -478,7 +478,7 @@ export default function AyarlarPage() {
 
       {/* Success Message */}
       {saved && (
-        <div className="fixed bottom-4 right-4 bg-[#00833e] text-white px-6 py-3 rounded-lg shadow-lg">
+        <div className="fixed bottom-4 right-4 bg-primary text-white px-6 py-3 rounded-lg shadow-lg">
           ✓ Ayarlar başarıyla kaydedildi!
         </div>
       )}

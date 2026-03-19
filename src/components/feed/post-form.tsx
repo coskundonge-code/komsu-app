@@ -73,7 +73,7 @@ export function PostForm({
   if (!isOpen) return null;
 
   return (
-    <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4">
+    <div className="bg-surface rounded-lg shadow-md border border-gray-200 p-4">
       {/* Header */}
       <div className="flex items-center gap-3 mb-4">
         <img
@@ -110,7 +110,7 @@ export function PostForm({
                 className={cn(
                   'px-3 py-1.5 rounded-full text-sm font-medium transition-all',
                   type === pt.value
-                    ? 'bg-[#00833e] text-white'
+                    ? 'bg-primary text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 )}
               >
@@ -130,7 +130,7 @@ export function PostForm({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Başlığınızı girin"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] text-sm"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
           />
         </div>
 
@@ -144,7 +144,7 @@ export function PostForm({
             onChange={(e) => setBody(e.target.value)}
             placeholder="Düşüncelerinizi paylaşın..."
             rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] text-sm resize-none"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm resize-none"
           />
         </div>
 
@@ -153,7 +153,7 @@ export function PostForm({
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Medya
           </label>
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-[#00833e] transition-colors cursor-pointer">
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-primary transition-colors cursor-pointer">
             <Image size={24} className="mx-auto text-gray-400 mb-2" />
             <p className="text-sm text-gray-600">
               Fotoğraf veya video eklemek için tıklayın
@@ -203,7 +203,7 @@ export function PostForm({
               className={cn(
                 'flex items-center gap-2 flex-1 px-3 py-2 rounded-lg border transition-colors',
                 visibility === 'public'
-                  ? 'border-[#00833e] bg-[#e6f4ec]'
+                  ? 'border-primary bg-primary-light'
                   : 'border-gray-300 hover:border-gray-400'
               )}
             >
@@ -216,7 +216,7 @@ export function PostForm({
               className={cn(
                 'flex items-center gap-2 flex-1 px-3 py-2 rounded-lg border transition-colors',
                 visibility === 'private'
-                  ? 'border-[#00833e] bg-[#e6f4ec]'
+                  ? 'border-primary bg-primary-light'
                   : 'border-gray-300 hover:border-gray-400'
               )}
             >
@@ -240,7 +240,7 @@ export function PostForm({
           <button
             type="submit"
             disabled={isLoading || !title.trim() || !body.trim()}
-            className="flex-1 px-4 py-2 bg-[#00833e] text-white rounded-lg font-medium hover:bg-[#006b32] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex-1 px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             <Send size={18} />
             <span>{isLoading ? 'Gönderiliyor...' : 'Gönder'}</span>

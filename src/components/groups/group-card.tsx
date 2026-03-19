@@ -30,7 +30,7 @@ export function GroupCard({
 
   return (
     <Link href={`/gruplar/${slug}`}>
-      <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden cursor-pointer h-full flex flex-col">
+      <div className="bg-surface rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden cursor-pointer h-full flex flex-col">
         {/* Cover Image */}
         <div className="relative h-48 bg-gray-200 overflow-hidden">
           <Image
@@ -40,7 +40,7 @@ export function GroupCard({
             className="object-cover hover:scale-105 transition-transform"
           />
           {/* Category Badge */}
-          <div className="absolute top-3 right-3 bg-[#00833e] text-white px-3 py-1 rounded-full text-xs font-semibold">
+          <div className="absolute top-3 right-3 bg-primary text-white px-3 py-1 rounded-full text-xs font-semibold">
             {category}
           </div>
         </div>
@@ -59,7 +59,7 @@ export function GroupCard({
 
           {/* Member Count */}
           <div className="flex items-center gap-2 text-gray-700 text-sm mb-4 pb-4 border-b">
-            <Users className="w-4 h-4 text-[#00833e]" />
+            <Users className="w-4 h-4 text-primary" />
             <span>{memberCount} Üye</span>
           </div>
 
@@ -71,8 +71,8 @@ export function GroupCard({
             }}
             className={`w-full py-2 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 ${
               joined
-                ? 'bg-[#d1fae5] text-[#00833e] hover:bg-[#a7dbb8]'
-                : 'bg-[#00833e] text-white hover:bg-[#006b32]'
+                ? 'bg-primary-light text-primary hover:bg-[#a7dbb8]'
+                : 'bg-primary text-white hover:bg-primary-hover'
             }`}
           >
             {joined ? 'Grubun Üyesisin' : 'Gruba Katıl'}

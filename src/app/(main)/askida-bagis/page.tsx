@@ -277,14 +277,14 @@ export default function AskidaBagisPage() {
   return (
     <div className="w-full">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-[#00833e] via-[#009d4e] to-[#00833e] text-white overflow-hidden">
+      <div className="relative bg-gradient-to-r from-primary via-[#009d4e] to-[#00833e] text-white overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-4 right-10 text-6xl animate-pulse">💚</div>
           <div className="absolute bottom-4 left-10 text-6xl animate-pulse" style={{ animationDelay: '0.5s' }}>❤️</div>
         </div>
 
         <div className="relative max-w-6xl mx-auto px-4 py-8 sm:py-12 text-center">
-          <div className="mb-4 inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-white bg-opacity-20 rounded-full">
+          <div className="mb-4 inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-surface bg-opacity-20 rounded-full">
             <Gift className="w-6 h-6 sm:w-8 sm:h-8" />
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3">Askıda Bağış</h1>
@@ -292,15 +292,15 @@ export default function AskidaBagisPage() {
 
           {/* Stats */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4 mt-4 sm:mt-6 max-w-xl mx-auto">
-            <div className="bg-white bg-opacity-15 rounded-lg px-2 py-2 sm:px-4 sm:py-3 backdrop-blur">
+            <div className="bg-surface bg-opacity-15 rounded-lg px-2 py-2 sm:px-4 sm:py-3 backdrop-blur">
               <div className="text-lg sm:text-2xl font-bold">2,847</div>
               <div className="text-xs opacity-90">Askıda Ürün</div>
             </div>
-            <div className="bg-white bg-opacity-15 rounded-lg px-2 py-2 sm:px-4 sm:py-3 backdrop-blur">
+            <div className="bg-surface bg-opacity-15 rounded-lg px-2 py-2 sm:px-4 sm:py-3 backdrop-blur">
               <div className="text-lg sm:text-2xl font-bold">₺42,350</div>
               <div className="text-xs opacity-90">Bu Ay Bağış</div>
             </div>
-            <div className="bg-white bg-opacity-15 rounded-lg px-2 py-2 sm:px-4 sm:py-3 backdrop-blur">
+            <div className="bg-surface bg-opacity-15 rounded-lg px-2 py-2 sm:px-4 sm:py-3 backdrop-blur">
               <div className="text-lg sm:text-2xl font-bold">1,246</div>
               <div className="text-xs opacity-90">Faydalanan</div>
             </div>
@@ -318,8 +318,8 @@ export default function AskidaBagisPage() {
             className={cn(
               'flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-xl font-bold text-center transition-all flex items-center justify-center gap-1 sm:gap-2 whitespace-nowrap text-sm sm:text-base',
               activeTab === 'donate'
-                ? 'bg-[#00833e] text-white shadow-lg'
-                : 'bg-white text-[#333] border border-[#e0e0e0] hover:border-[#00833e]'
+                ? 'bg-primary text-white shadow-lg'
+                : 'bg-surface text-text-primary border border-border hover:border-primary'
             )}
           >
             <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -331,8 +331,8 @@ export default function AskidaBagisPage() {
             className={cn(
               'flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-xl font-bold text-center transition-all flex items-center justify-center gap-1 sm:gap-2 whitespace-nowrap text-sm sm:text-base',
               activeTab === 'redeem'
-                ? 'bg-[#00833e] text-white shadow-lg'
-                : 'bg-white text-[#333] border border-[#e0e0e0] hover:border-[#00833e]'
+                ? 'bg-primary text-white shadow-lg'
+                : 'bg-surface text-text-primary border border-border hover:border-primary'
             )}
           >
             <QrCode className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -345,38 +345,38 @@ export default function AskidaBagisPage() {
         {activeTab === 'donate' && (
           <>
             {/* How It Works - Compact */}
-            <div className="bg-white rounded-xl border border-[#e0e0e0] p-4 sm:p-5 mb-6 sm:mb-8">
-              <h3 className="font-bold text-[#333] mb-3 sm:mb-4 flex items-center gap-2 text-base sm:text-lg">
-                <Gift className="w-4 h-4 sm:w-5 sm:h-5 text-[#00833e]" />
+            <div className="bg-surface rounded-xl border border-border p-4 sm:p-5 mb-6 sm:mb-8">
+              <h3 className="font-bold text-text-primary mb-3 sm:mb-4 flex items-center gap-2 text-base sm:text-lg">
+                <Gift className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 Nasıl Çalışır?
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#00833e] text-white flex items-center justify-center font-bold text-sm flex-shrink-0">1</div>
+                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm flex-shrink-0">1</div>
                   <div>
-                    <p className="text-sm font-semibold text-[#333]">Esnaf Seç</p>
-                    <p className="text-xs text-[#8f8f8f]">Bağış yapacağın esnafı seç</p>
+                    <p className="text-sm font-semibold text-text-primary">Esnaf Seç</p>
+                    <p className="text-xs text-text-muted">Bağış yapacağın esnafı seç</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#00833e] text-white flex items-center justify-center font-bold text-sm flex-shrink-0">2</div>
+                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm flex-shrink-0">2</div>
                   <div>
-                    <p className="text-sm font-semibold text-[#333]">Bağışla</p>
-                    <p className="text-xs text-[#8f8f8f]">Miktar belirle, gizli/açık seç</p>
+                    <p className="text-sm font-semibold text-text-primary">Bağışla</p>
+                    <p className="text-xs text-text-muted">Miktar belirle, gizli/açık seç</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#00833e] text-white flex items-center justify-center font-bold text-sm flex-shrink-0">3</div>
+                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm flex-shrink-0">3</div>
                   <div>
-                    <p className="text-sm font-semibold text-[#333]">QR Kod Oluşur</p>
-                    <p className="text-xs text-[#8f8f8f]">Bağış karekodu sisteme eklenir</p>
+                    <p className="text-sm font-semibold text-text-primary">QR Kod Oluşur</p>
+                    <p className="text-xs text-text-muted">Bağış karekodu sisteme eklenir</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#00833e] text-white flex items-center justify-center font-bold text-sm flex-shrink-0">4</div>
+                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm flex-shrink-0">4</div>
                   <div>
-                    <p className="text-sm font-semibold text-[#333]">Komşun Kullanır</p>
-                    <p className="text-xs text-[#8f8f8f]">QR okutup teşekkür gönderebilir</p>
+                    <p className="text-sm font-semibold text-text-primary">Komşun Kullanır</p>
+                    <p className="text-xs text-text-muted">QR okutup teşekkür gönderebilir</p>
                   </div>
                 </div>
               </div>
@@ -392,8 +392,8 @@ export default function AskidaBagisPage() {
                     className={cn(
                       'flex items-center gap-1 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap flex-shrink-0',
                       selectedCategory === category.id
-                        ? 'bg-[#00833e] text-white'
-                        : 'bg-white text-[#404040] border border-[#e0e0e0] hover:border-[#00833e]'
+                        ? 'bg-primary text-white'
+                        : 'bg-surface text-text-secondary border border-border hover:border-primary'
                     )}
                   >
                     <span className="text-sm">{category.emoji}</span>
@@ -408,12 +408,12 @@ export default function AskidaBagisPage() {
               {filteredBusinesses.map((business) => (
                 <div
                   key={business.id}
-                  className="bg-white rounded-xl overflow-hidden shadow-sm border border-[#e0e0e0] hover:shadow-md transition-all flex flex-col"
+                  className="bg-surface rounded-xl overflow-hidden shadow-sm border border-border hover:shadow-md transition-all flex flex-col"
                 >
-                  <div className="relative h-32 sm:h-40 w-full bg-[#f0f2f5] overflow-hidden">
+                  <div className="relative h-32 sm:h-40 w-full bg-background overflow-hidden">
                     <Image src={business.image} alt={business.name} fill unoptimized className="object-cover" />
                     {/* Suspended badge */}
-                    <div className="absolute bottom-2 left-2 bg-[#00833e] text-white text-xs font-bold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full flex items-center gap-1">
+                    <div className="absolute bottom-2 left-2 bg-primary text-white text-xs font-bold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full flex items-center gap-1">
                       <Heart className="w-3 h-3" />
                       {business.suspendedLabel}
                     </div>
@@ -421,17 +421,17 @@ export default function AskidaBagisPage() {
                   <div className="p-3 sm:p-4 flex flex-col flex-grow">
                     <div className="flex items-start justify-between mb-2">
                       <div>
-                        <h3 className="font-bold text-sm sm:text-base text-[#333]">{business.name}</h3>
-                        <p className="text-xs text-[#8f8f8f]">{business.neighborhood}, {business.mahalle}</p>
+                        <h3 className="font-bold text-sm sm:text-base text-text-primary">{business.name}</h3>
+                        <p className="text-xs text-text-muted">{business.neighborhood}, {business.mahalle}</p>
                       </div>
-                      <div className="flex items-center gap-1 text-xs font-medium text-[#333]">
+                      <div className="flex items-center gap-1 text-xs font-medium text-text-primary">
                         <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
                         {business.rating}
                       </div>
                     </div>
                     <button
                       onClick={() => openDonationModal(business)}
-                      className="w-full bg-[#00833e] hover:bg-[#006b31] text-white font-medium py-2 sm:py-2.5 px-2 sm:px-3 rounded-lg transition-colors flex items-center justify-center gap-2 mt-auto text-sm"
+                      className="w-full bg-primary hover:bg-primary-hover text-white font-medium py-2 sm:py-2.5 px-2 sm:px-3 rounded-lg transition-colors flex items-center justify-center gap-2 mt-auto text-sm"
                     >
                       <Heart className="w-4 h-4" />
                       Bağış Yap
@@ -447,20 +447,20 @@ export default function AskidaBagisPage() {
         {activeTab === 'redeem' && (
           <div className="max-w-lg mx-auto px-4">
             {/* How to redeem */}
-            <div className="bg-white rounded-xl border border-[#e0e0e0] p-4 sm:p-6 mb-4 sm:mb-6 text-center">
+            <div className="bg-surface rounded-xl border border-border p-4 sm:p-6 mb-4 sm:mb-6 text-center">
               <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#e8f5e9] rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                <ScanLine className="w-6 h-6 sm:w-8 sm:h-8 text-[#00833e]" />
+                <ScanLine className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-[#333] mb-2">Askıda Bağışı Kullan</h3>
-              <p className="text-sm text-[#8f8f8f] mb-4 sm:mb-6">
+              <h3 className="text-lg sm:text-xl font-bold text-text-primary mb-2">Askıda Bağışı Kullan</h3>
+              <p className="text-sm text-text-muted mb-4 sm:mb-6">
                 Esnaftaki karekodu telefonunla okut ve askıdaki ürünü al. Kimliğin gizli kalır.
               </p>
 
               {/* Privacy info */}
-              <div className="bg-[#f0f2f5] rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 text-left">
+              <div className="bg-background rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 text-left">
                 <div className="flex items-center gap-2 mb-2">
-                  <Shield className="w-5 h-5 text-[#00833e]" />
-                  <span className="text-sm font-bold text-[#333]">Gizliliğin Senin Elinde</span>
+                  <Shield className="w-5 h-5 text-primary" />
+                  <span className="text-sm font-bold text-text-primary">Gizliliğin Senin Elinde</span>
                 </div>
                 <p className="text-xs text-[#666]">
                   Hizmeti kullanırken kimliğini gösterebilir veya gizleyebilirsin. Bağışçıya anonim ya da açık
@@ -470,7 +470,7 @@ export default function AskidaBagisPage() {
 
               <button
                 onClick={() => setRedeemModal({ isOpen: true, step: 'scan', qrCode: '', isAnonymous: true, donationInfo: null })}
-                className="w-full bg-[#00833e] hover:bg-[#006b31] text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
+                className="w-full bg-primary hover:bg-primary-hover text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
               >
                 <QrCode className="w-5 h-5" />
                 Karekod Okut
@@ -486,13 +486,13 @@ export default function AskidaBagisPage() {
                 { step: '4', title: 'Hizmeti Al', desc: 'Ürünü veya hizmeti teslim al' },
                 { step: '5', title: 'Teşekkür Gönder', desc: 'İstersen bağışçıya gizli/açık teşekkür mesajı gönder' },
               ].map((item, i) => (
-                <div key={i} className="flex items-start gap-3 bg-white rounded-lg border border-[#e0e0e0] p-4">
-                  <div className="w-8 h-8 rounded-full bg-[#00833e] text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
+                <div key={i} className="flex items-start gap-3 bg-surface rounded-lg border border-border p-4">
+                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
                     {item.step}
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-[#333]">{item.title}</p>
-                    <p className="text-xs text-[#8f8f8f]">{item.desc}</p>
+                    <p className="text-sm font-bold text-text-primary">{item.title}</p>
+                    <p className="text-xs text-text-muted">{item.desc}</p>
                   </div>
                 </div>
               ))}
@@ -502,11 +502,11 @@ export default function AskidaBagisPage() {
 
         {/* Donation Wall */}
         <div className="mt-8 sm:mt-12 mb-6 sm:mb-8">
-          <h2 className="text-lg sm:text-xl font-bold text-[#333] mb-3 sm:mb-4 flex items-center gap-2">
-            <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-[#00833e]" />
+          <h2 className="text-lg sm:text-xl font-bold text-text-primary mb-3 sm:mb-4 flex items-center gap-2">
+            <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             Bağış Duvarı & Teşekkürler
           </h2>
-          <div className="bg-white rounded-xl border border-[#e0e0e0] overflow-hidden">
+          <div className="bg-surface rounded-xl border border-border overflow-hidden">
             <div className="max-h-[400px] sm:max-h-[500px] overflow-y-auto">
               {mockDonations.map((donation, index) => (
                 <div
@@ -519,7 +519,7 @@ export default function AskidaBagisPage() {
                   {/* Donation info */}
                   <div className="flex items-start gap-2 sm:gap-3">
                     {donation.isAnonymous ? (
-                      <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#f0f2f5] flex items-center justify-center text-base sm:text-lg">
+                      <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-background flex items-center justify-center text-base sm:text-lg">
                         🙏
                       </div>
                     ) : (
@@ -528,18 +528,18 @@ export default function AskidaBagisPage() {
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs sm:text-sm text-[#333] truncate">
+                      <p className="text-xs sm:text-sm text-text-primary truncate">
                         <span className="font-bold">{donation.donor}</span>{' '}
                         <span className="text-[#666]">{donation.items} bağışladı</span>
                       </p>
-                      <p className="text-xs text-[#8f8f8f] mt-0.5 truncate">
+                      <p className="text-xs text-text-muted mt-0.5 truncate">
                         {donation.business} · {donation.time}
                       </p>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0">
                       <button
                         onClick={() => openThankYouModal(donation)}
-                        className="text-xs text-[#00833e] font-medium hover:underline flex items-center gap-0.5 whitespace-nowrap"
+                        className="text-xs text-primary font-medium hover:underline flex items-center gap-0.5 whitespace-nowrap"
                       >
                         <Send className="w-3 h-3" />
                         <span className="hidden sm:inline">Teşekkür</span>
@@ -552,15 +552,15 @@ export default function AskidaBagisPage() {
                   {donation.hasThankYou && (
                     <div className="mt-2 sm:mt-3 bg-[#f0fdf4] border border-[#bbf7d0] rounded-lg p-2 sm:p-3 ml-10 sm:ml-[52px]">
                       <div className="flex items-start gap-1 sm:gap-1.5 mb-1">
-                        <Heart className="w-3 h-3 text-[#00833e] fill-[#00833e] mt-0.5 flex-shrink-0" />
-                        <span className="text-xs font-semibold text-[#00833e] truncate">
+                        <Heart className="w-3 h-3 text-primary fill-[#00833e] mt-0.5 flex-shrink-0" />
+                        <span className="text-xs font-semibold text-primary truncate">
                           {donation.thankYouAnonymous ? 'Anonim Komşu' : donation.thankYouFrom} teşekkür etti
                         </span>
                         {donation.thankYouAnonymous && (
-                          <EyeOff className="w-3 h-3 text-[#8f8f8f] flex-shrink-0" />
+                          <EyeOff className="w-3 h-3 text-text-muted flex-shrink-0" />
                         )}
                       </div>
-                      <p className="text-xs text-[#333] italic break-words">&ldquo;{donation.thankYouMessage}&rdquo;</p>
+                      <p className="text-xs text-text-primary italic break-words">&ldquo;{donation.thankYouMessage}&rdquo;</p>
                     </div>
                   )}
                 </div>
@@ -573,10 +573,10 @@ export default function AskidaBagisPage() {
       {/* === DONATION MODAL === */}
       {donationModal.isOpen && donationModal.business && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
-            <div className="sticky top-0 flex items-center justify-between p-4 sm:p-5 border-b border-[#e0e0e0] bg-white rounded-t-2xl gap-2">
-              <h3 className="text-base sm:text-lg font-bold text-[#333]">Bağış Yap</h3>
-              <button onClick={closeDonationModal} className="text-[#666] hover:text-[#333] flex-shrink-0">
+          <div className="bg-surface rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
+            <div className="sticky top-0 flex items-center justify-between p-4 sm:p-5 border-b border-border bg-surface rounded-t-2xl gap-2">
+              <h3 className="text-base sm:text-lg font-bold text-text-primary">Bağış Yap</h3>
+              <button onClick={closeDonationModal} className="text-[#666] hover:text-text-primary flex-shrink-0">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -585,61 +585,61 @@ export default function AskidaBagisPage() {
               {!donationModal.isSuccess ? (
                 <>
                   {/* Business */}
-                  <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 p-3 bg-[#f0f2f5] rounded-lg">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 p-3 bg-background rounded-lg">
                     <Image src={donationModal.business.avatar} alt={donationModal.business.name} width={44} height={44} unoptimized className="rounded-full flex-shrink-0" />
                     <div className="min-w-0">
-                      <p className="font-bold text-sm text-[#333] truncate">{donationModal.business.name}</p>
-                      <p className="text-xs text-[#8f8f8f] truncate">{donationModal.business.neighborhood}, {donationModal.business.mahalle}</p>
+                      <p className="font-bold text-sm text-text-primary truncate">{donationModal.business.name}</p>
+                      <p className="text-xs text-text-muted truncate">{donationModal.business.neighborhood}, {donationModal.business.mahalle}</p>
                     </div>
                   </div>
 
                   {/* Quantity */}
                   <div className="mb-4 sm:mb-5">
-                    <label className="block text-sm font-semibold text-[#333] mb-2">Miktar</label>
-                    <div className="flex items-center gap-2 sm:gap-3 bg-[#f0f2f5] p-3 rounded-lg">
-                      <button onClick={() => setDonationModal({ ...donationModal, quantity: Math.max(1, donationModal.quantity - 1) })} className="p-1.5 hover:bg-white rounded-lg flex-shrink-0">
-                        <Minus className="w-5 h-5 text-[#00833e]" />
+                    <label className="block text-sm font-semibold text-text-primary mb-2">Miktar</label>
+                    <div className="flex items-center gap-2 sm:gap-3 bg-background p-3 rounded-lg">
+                      <button onClick={() => setDonationModal({ ...donationModal, quantity: Math.max(1, donationModal.quantity - 1) })} className="p-1.5 hover:bg-surface rounded-lg flex-shrink-0">
+                        <Minus className="w-5 h-5 text-primary" />
                       </button>
                       <input
                         type="number" min="1" value={donationModal.quantity}
                         onChange={(e) => setDonationModal({ ...donationModal, quantity: Math.max(1, parseInt(e.target.value) || 1) })}
-                        className="flex-1 bg-white border border-[#e0e0e0] rounded-lg px-2 sm:px-3 py-2 text-center font-bold text-sm"
+                        className="flex-1 bg-surface border border-border rounded-lg px-2 sm:px-3 py-2 text-center font-bold text-sm"
                       />
-                      <button onClick={() => setDonationModal({ ...donationModal, quantity: donationModal.quantity + 1 })} className="p-1.5 hover:bg-white rounded-lg flex-shrink-0">
-                        <Plus className="w-5 h-5 text-[#00833e]" />
+                      <button onClick={() => setDonationModal({ ...donationModal, quantity: donationModal.quantity + 1 })} className="p-1.5 hover:bg-surface rounded-lg flex-shrink-0">
+                        <Plus className="w-5 h-5 text-primary" />
                       </button>
                     </div>
                   </div>
 
                   {/* Privacy Toggle */}
-                  <div className="mb-4 sm:mb-5 bg-[#f0f2f5] rounded-lg p-3 sm:p-4">
-                    <p className="text-sm font-semibold text-[#333] mb-3 flex items-center gap-2">
-                      <Shield className="w-4 h-4 text-[#00833e]" />
+                  <div className="mb-4 sm:mb-5 bg-background rounded-lg p-3 sm:p-4">
+                    <p className="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+                      <Shield className="w-4 h-4 text-primary" />
                       Kimlik Gizliliği
                     </p>
                     <div className="space-y-2">
-                      <label className="flex items-start gap-2 sm:gap-3 p-2 rounded-lg hover:bg-white cursor-pointer transition-colors">
+                      <label className="flex items-start gap-2 sm:gap-3 p-2 rounded-lg hover:bg-surface cursor-pointer transition-colors">
                         <input
                           type="radio" name="privacy" checked={!donationModal.isAnonymous}
                           onChange={() => setDonationModal({ ...donationModal, isAnonymous: false })}
-                          className="w-4 h-4 text-[#00833e] mt-0.5 flex-shrink-0"
+                          className="w-4 h-4 text-primary mt-0.5 flex-shrink-0"
                         />
                         <Eye className="w-4 h-4 text-[#666] mt-0.5 flex-shrink-0" />
                         <div className="min-w-0">
-                          <p className="text-sm font-medium text-[#333]">Açık Bağış</p>
-                          <p className="text-xs text-[#8f8f8f]">Adınız bağış duvarında görünür</p>
+                          <p className="text-sm font-medium text-text-primary">Açık Bağış</p>
+                          <p className="text-xs text-text-muted">Adınız bağış duvarında görünür</p>
                         </div>
                       </label>
-                      <label className="flex items-start gap-2 sm:gap-3 p-2 rounded-lg hover:bg-white cursor-pointer transition-colors">
+                      <label className="flex items-start gap-2 sm:gap-3 p-2 rounded-lg hover:bg-surface cursor-pointer transition-colors">
                         <input
                           type="radio" name="privacy" checked={donationModal.isAnonymous}
                           onChange={() => setDonationModal({ ...donationModal, isAnonymous: true })}
-                          className="w-4 h-4 text-[#00833e] mt-0.5 flex-shrink-0"
+                          className="w-4 h-4 text-primary mt-0.5 flex-shrink-0"
                         />
                         <EyeOff className="w-4 h-4 text-[#666] mt-0.5 flex-shrink-0" />
                         <div className="min-w-0">
-                          <p className="text-sm font-medium text-[#333]">Anonim Bağış</p>
-                          <p className="text-xs text-[#8f8f8f]">Kimliğiniz gizli kalır, &ldquo;Anonim&rdquo; olarak görünür</p>
+                          <p className="text-sm font-medium text-text-primary">Anonim Bağış</p>
+                          <p className="text-xs text-text-muted">Kimliğiniz gizli kalır, &ldquo;Anonim&rdquo; olarak görünür</p>
                         </div>
                       </label>
                     </div>
@@ -647,36 +647,36 @@ export default function AskidaBagisPage() {
 
                   {/* Message */}
                   <div className="mb-4 sm:mb-5">
-                    <label className="block text-sm font-semibold text-[#333] mb-2">Mesaj (isteğe bağlı)</label>
+                    <label className="block text-sm font-semibold text-text-primary mb-2">Mesaj (isteğe bağlı)</label>
                     <textarea
                       value={donationModal.message}
                       onChange={(e) => setDonationModal({ ...donationModal, message: e.target.value })}
                       placeholder="Komşularına bir mesaj bırak..."
-                      className="w-full border border-[#e0e0e0] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#00833e] resize-none"
+                      className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary resize-none"
                       rows={2}
                     />
                   </div>
 
                   {/* Price */}
-                  <div className="bg-[#f0f2f5] rounded-lg p-3 sm:p-4 mb-4 sm:mb-5">
+                  <div className="bg-background rounded-lg p-3 sm:p-4 mb-4 sm:mb-5">
                     <div className="flex justify-between text-sm mb-1">
                       <span className="text-[#666]">Birim fiyat</span>
-                      <span className="text-[#333]">₺{getItemPrice(donationModal.business.category)}</span>
+                      <span className="text-text-primary">₺{getItemPrice(donationModal.business.category)}</span>
                     </div>
-                    <div className="flex justify-between text-sm mb-2 pb-2 border-b border-[#e0e0e0]">
+                    <div className="flex justify-between text-sm mb-2 pb-2 border-b border-border">
                       <span className="text-[#666]">Adet</span>
-                      <span className="text-[#333]">{donationModal.quantity}</span>
+                      <span className="text-text-primary">{donationModal.quantity}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="font-bold text-[#333]">Toplam</span>
-                      <span className="text-lg sm:text-xl font-bold text-[#00833e]">₺{getTotalPrice()}</span>
+                      <span className="font-bold text-text-primary">Toplam</span>
+                      <span className="text-lg sm:text-xl font-bold text-primary">₺{getTotalPrice()}</span>
                     </div>
                   </div>
 
                   <button
                     onClick={handleDonationSubmit}
                     disabled={donationModal.isProcessing}
-                    className="w-full bg-[#00833e] hover:bg-[#006b31] disabled:opacity-70 text-white font-bold py-2 sm:py-3 px-3 sm:px-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
+                    className="w-full bg-primary hover:bg-primary-hover disabled:opacity-70 text-white font-bold py-2 sm:py-3 px-3 sm:px-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
                   >
                     {donationModal.isProcessing ? (
                       <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />İşleniyor...</>
@@ -689,35 +689,35 @@ export default function AskidaBagisPage() {
                 /* Success with QR Code */
                 <div className="text-center py-3 sm:py-4">
                   <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-[#e8f5e9] rounded-full mb-3 sm:mb-4">
-                    <Check className="w-6 h-6 sm:w-8 sm:h-8 text-[#00833e]" />
+                    <Check className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
                   </div>
-                  <h4 className="text-lg sm:text-xl font-bold text-[#333] mb-2">Bağışınız Tamamlandı!</h4>
+                  <h4 className="text-lg sm:text-xl font-bold text-text-primary mb-2">Bağışınız Tamamlandı!</h4>
                   <p className="text-sm text-[#666] mb-4 sm:mb-6">
                     {donationModal.quantity} adet bağış {donationModal.business.name} için askıya alındı.
                   </p>
 
                   {/* QR Code Display */}
-                  <div className="bg-[#f0f2f5] rounded-xl p-4 sm:p-6 mb-3 sm:mb-4 inline-block w-full sm:w-auto">
-                    <div className="w-40 h-40 sm:w-48 sm:h-48 bg-white rounded-lg flex items-center justify-center mx-auto mb-2 sm:mb-3 border-2 border-dashed border-[#00833e]">
+                  <div className="bg-background rounded-xl p-4 sm:p-6 mb-3 sm:mb-4 inline-block w-full sm:w-auto">
+                    <div className="w-40 h-40 sm:w-48 sm:h-48 bg-surface rounded-lg flex items-center justify-center mx-auto mb-2 sm:mb-3 border-2 border-dashed border-primary">
                       <div className="text-center">
-                        <QrCode className="w-16 h-16 sm:w-20 sm:h-20 text-[#00833e] mx-auto mb-1 sm:mb-2" />
-                        <p className="text-xs text-[#8f8f8f]">Bağış Karekodu</p>
+                        <QrCode className="w-16 h-16 sm:w-20 sm:h-20 text-primary mx-auto mb-1 sm:mb-2" />
+                        <p className="text-xs text-text-muted">Bağış Karekodu</p>
                       </div>
                     </div>
-                    <p className="text-xs sm:text-sm font-mono font-bold text-[#333] break-all">{donationModal.qrCode}</p>
+                    <p className="text-xs sm:text-sm font-mono font-bold text-text-primary break-all">{donationModal.qrCode}</p>
                   </div>
 
-                  <p className="text-xs text-[#8f8f8f] mb-3 sm:mb-4 px-2">
+                  <p className="text-xs text-text-muted mb-3 sm:mb-4 px-2">
                     Bu karekod esnafa iletildi. İhtiyaç sahibi komşular bu kodu okutarak hizmetten yararlanacak.
                   </p>
 
                   <div className="flex gap-1.5 sm:gap-2">
-                    <button className="flex-1 py-2 px-2 sm:px-4 border border-[#e0e0e0] rounded-lg text-xs sm:text-sm font-medium text-[#333] hover:bg-[#f0f2f5] flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap">
+                    <button className="flex-1 py-2 px-2 sm:px-4 border border-border rounded-lg text-xs sm:text-sm font-medium text-text-primary hover:bg-surface-hover flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap">
                       <Copy className="w-4 h-4 flex-shrink-0" />
                       <span className="hidden sm:inline">Kodu Kopyala</span>
                       <span className="sm:hidden">Kopyala</span>
                     </button>
-                    <button className="flex-1 py-2 px-2 sm:px-4 border border-[#e0e0e0] rounded-lg text-xs sm:text-sm font-medium text-[#333] hover:bg-[#f0f2f5] flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap">
+                    <button className="flex-1 py-2 px-2 sm:px-4 border border-border rounded-lg text-xs sm:text-sm font-medium text-text-primary hover:bg-surface-hover flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap">
                       <Share2 className="w-4 h-4 flex-shrink-0" />
                       <span className="hidden sm:inline">Paylaş</span>
                       <span className="sm:hidden">Paylaş</span>
@@ -733,10 +733,10 @@ export default function AskidaBagisPage() {
       {/* === REDEEM MODAL === */}
       {redeemModal.isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
-            <div className="sticky top-0 flex items-center justify-between p-4 sm:p-5 border-b border-[#e0e0e0] bg-white rounded-t-2xl gap-2">
-              <h3 className="text-base sm:text-lg font-bold text-[#333]">Bağış Kullan</h3>
-              <button onClick={() => setRedeemModal({ ...redeemModal, isOpen: false })} className="text-[#666] hover:text-[#333] flex-shrink-0">
+          <div className="bg-surface rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
+            <div className="sticky top-0 flex items-center justify-between p-4 sm:p-5 border-b border-border bg-surface rounded-t-2xl gap-2">
+              <h3 className="text-base sm:text-lg font-bold text-text-primary">Bağış Kullan</h3>
+              <button onClick={() => setRedeemModal({ ...redeemModal, isOpen: false })} className="text-[#666] hover:text-text-primary flex-shrink-0">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -745,17 +745,17 @@ export default function AskidaBagisPage() {
               {/* Step: Scan */}
               {redeemModal.step === 'scan' && (
                 <div className="text-center">
-                  <div className="w-48 h-48 sm:w-64 sm:h-64 bg-[#f0f2f5] rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 border-2 border-dashed border-[#00833e]">
+                  <div className="w-48 h-48 sm:w-64 sm:h-64 bg-background rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 border-2 border-dashed border-primary">
                     <div className="text-center">
-                      <ScanLine className="w-12 h-12 sm:w-16 sm:h-16 text-[#00833e] mx-auto mb-2 sm:mb-3 animate-pulse" />
-                      <p className="text-xs sm:text-sm text-[#8f8f8f]">Kamerayı karekoda tut</p>
+                      <ScanLine className="w-12 h-12 sm:w-16 sm:h-16 text-primary mx-auto mb-2 sm:mb-3 animate-pulse" />
+                      <p className="text-xs sm:text-sm text-text-muted">Kamerayı karekoda tut</p>
                     </div>
                   </div>
 
                   {/* Privacy toggle for recipient */}
-                  <div className="bg-[#f0f2f5] rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 text-left">
-                    <p className="text-sm font-semibold text-[#333] mb-2 flex items-center gap-2">
-                      <Shield className="w-4 h-4 text-[#00833e]" />
+                  <div className="bg-background rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 text-left">
+                    <p className="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
+                      <Shield className="w-4 h-4 text-primary" />
                       Kimliğin
                     </p>
                     <label className="flex items-center gap-2 sm:gap-3 cursor-pointer">
@@ -764,26 +764,26 @@ export default function AskidaBagisPage() {
                         onChange={(e) => setRedeemModal({ ...redeemModal, isAnonymous: e.target.checked })}
                         className="w-4 h-4 flex-shrink-0"
                       />
-                      <span className="text-sm text-[#333]">Kimliğimi gizle (anonim kullan)</span>
+                      <span className="text-sm text-text-primary">Kimliğimi gizle (anonim kullan)</span>
                     </label>
                   </div>
 
                   <button
                     onClick={handleRedeemScan}
-                    className="w-full bg-[#00833e] hover:bg-[#006b31] text-white font-bold py-2 sm:py-3 px-3 sm:px-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
+                    className="w-full bg-primary hover:bg-primary-hover text-white font-bold py-2 sm:py-3 px-3 sm:px-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
                   >
                     <QrCode className="w-4 h-4 sm:w-5 sm:h-5" />
                     Demo: Karekod Tara
                   </button>
 
-                  <p className="text-xs text-[#8f8f8f] mt-2 sm:mt-3">
+                  <p className="text-xs text-text-muted mt-2 sm:mt-3">
                     Veya kodu elle girin:
                   </p>
                   <input
                     type="text" placeholder="MHL-XXXX-XXXX-XXXX"
                     value={redeemModal.qrCode}
                     onChange={(e) => setRedeemModal({ ...redeemModal, qrCode: e.target.value })}
-                    className="w-full mt-2 border border-[#e0e0e0] rounded-lg px-2 sm:px-3 py-2 text-sm text-center font-mono focus:outline-none focus:border-[#00833e]"
+                    className="w-full mt-2 border border-border rounded-lg px-2 sm:px-3 py-2 text-sm text-center font-mono focus:outline-none focus:border-primary"
                   />
                 </div>
               )}
@@ -792,33 +792,33 @@ export default function AskidaBagisPage() {
               {redeemModal.step === 'confirm' && redeemModal.donationInfo && (
                 <div>
                   <div className="bg-[#e8f5e9] rounded-xl p-4 sm:p-5 mb-4 sm:mb-5 text-center">
-                    <Check className="w-8 h-8 sm:w-10 sm:h-10 text-[#00833e] mx-auto mb-2" />
-                    <p className="font-bold text-sm sm:text-base text-[#333]">Bağış Bulundu!</p>
+                    <Check className="w-8 h-8 sm:w-10 sm:h-10 text-primary mx-auto mb-2" />
+                    <p className="font-bold text-sm sm:text-base text-text-primary">Bağış Bulundu!</p>
                   </div>
 
                   <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-5">
                     <div className="flex justify-between py-2 border-b border-[#f0f2f5]">
                       <span className="text-sm text-[#666]">Esnaf</span>
-                      <span className="text-sm font-medium text-[#333]">{redeemModal.donationInfo.business}</span>
+                      <span className="text-sm font-medium text-text-primary">{redeemModal.donationInfo.business}</span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-[#f0f2f5]">
                       <span className="text-sm text-[#666]">Ürün</span>
-                      <span className="text-sm font-medium text-[#333]">{redeemModal.donationInfo.item}</span>
+                      <span className="text-sm font-medium text-text-primary">{redeemModal.donationInfo.item}</span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-[#f0f2f5]">
                       <span className="text-sm text-[#666]">Miktar</span>
-                      <span className="text-sm font-medium text-[#333]">{redeemModal.donationInfo.quantity} adet</span>
+                      <span className="text-sm font-medium text-text-primary">{redeemModal.donationInfo.quantity} adet</span>
                     </div>
                     <div className="flex justify-between py-2">
                       <span className="text-sm text-[#666]">Bağışçı</span>
-                      <span className="text-sm font-medium text-[#333] flex items-center gap-1">
+                      <span className="text-sm font-medium text-text-primary flex items-center gap-1">
                         {redeemModal.donationInfo.donorAnonymous && <EyeOff className="w-3 h-3" />}
                         {redeemModal.donationInfo.donor}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-2 text-xs text-[#8f8f8f] mb-4 sm:mb-5 bg-[#f0f2f5] p-2 sm:p-3 rounded-lg">
+                  <div className="flex items-start gap-2 text-xs text-text-muted mb-4 sm:mb-5 bg-background p-2 sm:p-3 rounded-lg">
                     <Shield className="w-4 h-4 flex-shrink-0 mt-0.5" />
                     <span>{redeemModal.isAnonymous
                       ? 'Kimliğiniz gizli kalacak. Esnaf sizi tanımayacak.'
@@ -827,7 +827,7 @@ export default function AskidaBagisPage() {
 
                   <button
                     onClick={handleRedeemConfirm}
-                    className="w-full bg-[#00833e] hover:bg-[#006b31] text-white font-bold py-2 sm:py-3 px-3 sm:px-4 rounded-xl transition-colors text-sm sm:text-base"
+                    className="w-full bg-primary hover:bg-primary-hover text-white font-bold py-2 sm:py-3 px-3 sm:px-4 rounded-xl transition-colors text-sm sm:text-base"
                   >
                     Onayla ve Hizmeti Al
                   </button>
@@ -838,14 +838,14 @@ export default function AskidaBagisPage() {
               {redeemModal.step === 'success' && (
                 <div className="text-center py-3 sm:py-4">
                   <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-[#e8f5e9] rounded-full mb-3 sm:mb-4">
-                    <Check className="w-6 h-6 sm:w-8 sm:h-8 text-[#00833e]" />
+                    <Check className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
                   </div>
-                  <h4 className="text-lg sm:text-xl font-bold text-[#333] mb-2">Afiyet Olsun!</h4>
+                  <h4 className="text-lg sm:text-xl font-bold text-text-primary mb-2">Afiyet Olsun!</h4>
                   <p className="text-sm text-[#666] mb-4 sm:mb-6">Hizmeti esnaftan teslim alabilirsiniz.</p>
 
-                  <div className="bg-[#f0f2f5] rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 text-left">
-                    <p className="text-sm font-semibold text-[#333] mb-2">Bağışçıya teşekkür etmek ister misiniz?</p>
-                    <p className="text-xs text-[#8f8f8f] mb-3">Kimliğinizi gizleyerek veya göstererek teşekkür mesajı gönderebilirsiniz.</p>
+                  <div className="bg-background rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 text-left">
+                    <p className="text-sm font-semibold text-text-primary mb-2">Bağışçıya teşekkür etmek ister misiniz?</p>
+                    <p className="text-xs text-text-muted mb-3">Kimliğinizi gizleyerek veya göstererek teşekkür mesajı gönderebilirsiniz.</p>
                     <button
                       onClick={() => {
                         setRedeemModal({ ...redeemModal, isOpen: false })
@@ -859,7 +859,7 @@ export default function AskidaBagisPage() {
                           isSent: false,
                         })
                       }}
-                      className="w-full bg-[#00833e] hover:bg-[#006b31] text-white font-medium py-2 sm:py-2.5 px-2 sm:px-3 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
+                      className="w-full bg-primary hover:bg-primary-hover text-white font-medium py-2 sm:py-2.5 px-2 sm:px-3 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
                     >
                       <Send className="w-4 h-4" />
                       Teşekkür Gönder
@@ -868,7 +868,7 @@ export default function AskidaBagisPage() {
 
                   <button
                     onClick={() => setRedeemModal({ ...redeemModal, isOpen: false })}
-                    className="text-xs sm:text-sm text-[#8f8f8f] hover:text-[#333]"
+                    className="text-xs sm:text-sm text-text-muted hover:text-text-primary"
                   >
                     Şimdi değil
                   </button>
@@ -882,13 +882,13 @@ export default function AskidaBagisPage() {
       {/* === THANK YOU MODAL === */}
       {thankYouModal.isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
-            <div className="sticky top-0 flex items-center justify-between p-4 sm:p-5 border-b border-[#e0e0e0] bg-white rounded-t-2xl gap-2">
-              <h3 className="text-base sm:text-lg font-bold text-[#333] flex items-center gap-1 sm:gap-2 whitespace-nowrap overflow-hidden">
-                <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-[#00833e] flex-shrink-0" />
+          <div className="bg-surface rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
+            <div className="sticky top-0 flex items-center justify-between p-4 sm:p-5 border-b border-border bg-surface rounded-t-2xl gap-2">
+              <h3 className="text-base sm:text-lg font-bold text-text-primary flex items-center gap-1 sm:gap-2 whitespace-nowrap overflow-hidden">
+                <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0" />
                 <span className="truncate">Teşekkür Gönder</span>
               </h3>
-              <button onClick={() => setThankYouModal({ ...thankYouModal, isOpen: false })} className="text-[#666] hover:text-[#333] flex-shrink-0">
+              <button onClick={() => setThankYouModal({ ...thankYouModal, isOpen: false })} className="text-[#666] hover:text-text-primary flex-shrink-0">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -896,8 +896,8 @@ export default function AskidaBagisPage() {
             <div className="p-4 sm:p-5">
               {!thankYouModal.isSent ? (
                 <>
-                  <div className="bg-[#f0f2f5] rounded-lg p-3 sm:p-4 mb-4 sm:mb-5">
-                    <p className="text-sm text-[#333] truncate">
+                  <div className="bg-background rounded-lg p-3 sm:p-4 mb-4 sm:mb-5">
+                    <p className="text-sm text-text-primary truncate">
                       <span className="font-bold">{thankYouModal.donorAnonymous ? 'Anonim Bağışçı' : thankYouModal.donorName}</span>
                       {' '}kişisine teşekkür gönderiyorsunuz
                     </p>
@@ -905,12 +905,12 @@ export default function AskidaBagisPage() {
 
                   {/* Your privacy */}
                   <div className="mb-4 sm:mb-5">
-                    <p className="text-sm font-semibold text-[#333] mb-2 sm:mb-3 flex items-center gap-2">
-                      <Shield className="w-4 h-4 text-[#00833e]" />
+                    <p className="text-sm font-semibold text-text-primary mb-2 sm:mb-3 flex items-center gap-2">
+                      <Shield className="w-4 h-4 text-primary" />
                       Kimliğiniz
                     </p>
                     <div className="space-y-2">
-                      <label className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 border border-[#e0e0e0] rounded-lg cursor-pointer hover:border-[#00833e] transition-colors">
+                      <label className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 border border-border rounded-lg cursor-pointer hover:border-primary transition-colors">
                         <input
                           type="radio" name="ty-privacy" checked={!thankYouModal.isAnonymous}
                           onChange={() => setThankYouModal({ ...thankYouModal, isAnonymous: false })}
@@ -918,11 +918,11 @@ export default function AskidaBagisPage() {
                         />
                         <Eye className="w-4 h-4 text-[#666] mt-0.5 flex-shrink-0" />
                         <div className="min-w-0">
-                          <p className="text-sm font-medium text-[#333]">Açık Teşekkür</p>
-                          <p className="text-xs text-[#8f8f8f]">Bağışçı adınızı görecek</p>
+                          <p className="text-sm font-medium text-text-primary">Açık Teşekkür</p>
+                          <p className="text-xs text-text-muted">Bağışçı adınızı görecek</p>
                         </div>
                       </label>
-                      <label className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 border border-[#e0e0e0] rounded-lg cursor-pointer hover:border-[#00833e] transition-colors">
+                      <label className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 border border-border rounded-lg cursor-pointer hover:border-primary transition-colors">
                         <input
                           type="radio" name="ty-privacy" checked={thankYouModal.isAnonymous}
                           onChange={() => setThankYouModal({ ...thankYouModal, isAnonymous: true })}
@@ -930,8 +930,8 @@ export default function AskidaBagisPage() {
                         />
                         <EyeOff className="w-4 h-4 text-[#666] mt-0.5 flex-shrink-0" />
                         <div className="min-w-0">
-                          <p className="text-sm font-medium text-[#333]">Anonim Teşekkür</p>
-                          <p className="text-xs text-[#8f8f8f]">Kimliğiniz gizli kalır</p>
+                          <p className="text-sm font-medium text-text-primary">Anonim Teşekkür</p>
+                          <p className="text-xs text-text-muted">Kimliğiniz gizli kalır</p>
                         </div>
                       </label>
                     </div>
@@ -939,12 +939,12 @@ export default function AskidaBagisPage() {
 
                   {/* Message */}
                   <div className="mb-4 sm:mb-5">
-                    <label className="block text-sm font-semibold text-[#333] mb-2">Mesajınız</label>
+                    <label className="block text-sm font-semibold text-text-primary mb-2">Mesajınız</label>
                     <textarea
                       value={thankYouModal.message}
                       onChange={(e) => setThankYouModal({ ...thankYouModal, message: e.target.value })}
                       placeholder="Teşekkür mesajınızı yazın..."
-                      className="w-full border border-[#e0e0e0] rounded-lg px-2 sm:px-3 py-2 text-sm focus:outline-none focus:border-[#00833e] resize-none"
+                      className="w-full border border-border rounded-lg px-2 sm:px-3 py-2 text-sm focus:outline-none focus:border-primary resize-none"
                       rows={3}
                     />
                     <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2">
@@ -952,7 +952,7 @@ export default function AskidaBagisPage() {
                         <button
                           key={msg}
                           onClick={() => setThankYouModal({ ...thankYouModal, message: msg })}
-                          className="text-xs px-2 sm:px-2.5 py-0.5 sm:py-1 bg-[#f0f2f5] text-[#666] rounded-full hover:bg-[#e8f5e9] hover:text-[#00833e] transition-colors whitespace-nowrap"
+                          className="text-xs px-2 sm:px-2.5 py-0.5 sm:py-1 bg-background text-[#666] rounded-full hover:bg-[#e8f5e9] hover:text-primary transition-colors whitespace-nowrap"
                         >
                           {msg}
                         </button>
@@ -963,7 +963,7 @@ export default function AskidaBagisPage() {
                   <button
                     onClick={handleThankYouSend}
                     disabled={!thankYouModal.message.trim()}
-                    className="w-full bg-[#00833e] hover:bg-[#006b31] disabled:opacity-50 text-white font-bold py-2 sm:py-3 px-3 sm:px-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
+                    className="w-full bg-primary hover:bg-primary-hover disabled:opacity-50 text-white font-bold py-2 sm:py-3 px-3 sm:px-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
                   >
                     <Send className="w-4 h-4 sm:w-5 sm:h-5" />
                     Teşekkür Gönder
@@ -972,10 +972,10 @@ export default function AskidaBagisPage() {
               ) : (
                 <div className="text-center py-4 sm:py-6">
                   <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-[#e8f5e9] rounded-full mb-3 sm:mb-4">
-                    <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-[#00833e] fill-[#00833e]" />
+                    <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-primary fill-[#00833e]" />
                   </div>
-                  <h4 className="text-lg sm:text-xl font-bold text-[#333] mb-2">Teşekkürünüz Gönderildi!</h4>
-                  <p className="text-sm text-[#8f8f8f]">
+                  <h4 className="text-lg sm:text-xl font-bold text-text-primary mb-2">Teşekkürünüz Gönderildi!</h4>
+                  <p className="text-sm text-text-muted">
                     {thankYouModal.isAnonymous ? 'Anonim olarak' : 'Adınızla birlikte'} teşekkür mesajınız iletildi.
                   </p>
                 </div>

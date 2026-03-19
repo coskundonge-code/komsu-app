@@ -33,7 +33,7 @@ export function BackToTop() {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 z-40 bg-[#00833e] hover:bg-[#006b32] text-white rounded-full p-3 shadow-lg transition-all duration-300 ease-in-out animate-fade-in"
+          className="fixed bottom-6 right-6 z-40 bg-primary hover:bg-primary-hover text-white rounded-full p-3 shadow-lg transition-all duration-300 ease-in-out animate-fade-in"
           aria-label="Yukarı Scroll Et"
         >
           <ArrowUp size={24} />

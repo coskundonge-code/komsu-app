@@ -24,7 +24,7 @@ export function Skeleton({ className }: { className?: string }) {
  */
 export function PostSkeleton() {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div className="bg-surface rounded-lg shadow-sm border border-gray-200">
       {/* Header */}
       <div className="p-4 border-b border-gray-100">
         <div className="flex items-start gap-3">
@@ -78,7 +78,7 @@ export function PostSkeleton() {
  */
 export function ListingSkeleton() {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <div className="bg-surface rounded-lg shadow-sm border border-gray-200 overflow-hidden">
       {/* Image */}
       <Skeleton className="w-full h-40 rounded-none" />
 
@@ -110,7 +110,7 @@ export function ListingSkeleton() {
  */
 export function EventSkeleton() {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <div className="bg-surface rounded-lg shadow-sm border border-gray-200 overflow-hidden">
       {/* Event image or date banner */}
       <div className="bg-gray-100 p-4">
         <Skeleton className="w-full h-24 rounded" />
@@ -153,7 +153,7 @@ export function EventSkeleton() {
  */
 export function BusinessSkeleton() {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <div className="bg-surface rounded-lg shadow-sm border border-gray-200 overflow-hidden">
       {/* Header/Cover image */}
       <Skeleton className="w-full h-32 rounded-none" />
 
@@ -193,7 +193,7 @@ export function BusinessSkeleton() {
  */
 export function UserProfileSkeleton() {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 text-center space-y-4">
+    <div className="bg-surface rounded-lg shadow-sm border border-gray-200 p-6 text-center space-y-4">
       {/* Avatar */}
       <Skeleton className="w-16 h-16 rounded-full mx-auto" />
 
@@ -307,7 +307,7 @@ export function ListSkeleton({ count = 5 }: { count?: number }) {
   return (
     <div className="space-y-2">
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-200">
+        <div key={i} className="flex items-center gap-3 p-3 bg-surface rounded-lg border border-gray-200">
           <Skeleton className="w-10 h-10 rounded-full flex-shrink-0" />
           <div className="flex-1 space-y-2">
             <Skeleton className="w-24 h-3 rounded" />

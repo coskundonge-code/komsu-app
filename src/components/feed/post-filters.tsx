@@ -30,7 +30,7 @@ export function PostFilters({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+    <div className="bg-surface rounded-lg shadow-sm border border-gray-200 p-4">
       <div className="flex gap-2 overflow-x-auto pb-2">
         {filters.map((filter) => (
           <button
@@ -39,7 +39,7 @@ export function PostFilters({
             className={cn(
               'px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all',
               activeFilter === filter.value
-                ? 'bg-[#00833e] text-white'
+                ? 'bg-primary text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             )}
           >

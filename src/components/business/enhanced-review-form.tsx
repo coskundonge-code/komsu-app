@@ -127,7 +127,7 @@ export default function EnhancedReviewForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-[#e0e0e0] p-6">
+    <form onSubmit={handleSubmit} className="bg-surface rounded-lg border border-border p-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-6">Yorum Yapın</h3>
 
       {/* Verified Badge Requirement */}
@@ -138,7 +138,7 @@ export default function EnhancedReviewForm({
             <p className="text-sm font-medium text-[#856404]">
               Onaylanmış Komşu Kimliği Gerekli
             </p>
-            <p className="text-xs text-[#8f8f8f] mt-1">
+            <p className="text-xs text-text-muted mt-1">
               Yorum yapabilmek için adres doğrulamasını tamamlamanız gerekir.
             </p>
           </div>
@@ -147,13 +147,13 @@ export default function EnhancedReviewForm({
 
       {/* Success Message */}
       {submitSuccess && (
-        <div className="mb-6 p-4 bg-[#d1fae5] border border-[#00833e] rounded-lg flex gap-3">
-          <CheckCircle className="w-5 h-5 text-[#00833e] flex-shrink-0 mt-0.5" />
+        <div className="mb-6 p-4 bg-primary-light border border-primary rounded-lg flex gap-3">
+          <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-medium text-[#006b32]">
+            <p className="text-sm font-medium text-primary-hover">
               Yorum başarıyla gönderildi
             </p>
-            <p className="text-xs text-[#8f8f8f] mt-1">
+            <p className="text-xs text-text-muted mt-1">
               Yorum moderasyon kontrolünden geçiyor.
             </p>
           </div>
@@ -194,7 +194,7 @@ export default function EnhancedReviewForm({
           ))}
         </div>
         {rating > 0 && (
-          <p className="text-xs text-[#8f8f8f] mt-2">
+          <p className="text-xs text-text-muted mt-2">
             {rating === 1 && 'Çok kötü'}
             {rating === 2 && 'Kötü'}
             {rating === 3 && 'Orta'}
@@ -216,9 +216,9 @@ export default function EnhancedReviewForm({
           placeholder="Ör: Harika hizmet ve kaliteli ürünler"
           maxLength={100}
           disabled={!isVerifiedUser || isSubmitting}
-          className="w-full px-4 py-2 rounded border border-[#e0e0e0] text-sm focus:border-[#00833e] focus:outline-none disabled:bg-[#f0f2f5] disabled:cursor-not-allowed"
+          className="w-full px-4 py-2 rounded border border-border text-sm focus:border-primary focus:outline-none disabled:bg-background disabled:cursor-not-allowed"
         />
-        <p className="text-xs text-[#8f8f8f] mt-1">{title.length}/100 karakter</p>
+        <p className="text-xs text-text-muted mt-1">{title.length}/100 karakter</p>
       </div>
 
       {/* Content Section */}
@@ -233,12 +233,12 @@ export default function EnhancedReviewForm({
           maxLength={2000}
           rows={5}
           disabled={!isVerifiedUser || isSubmitting}
-          className="w-full px-4 py-2 rounded border border-[#e0e0e0] text-sm focus:border-[#00833e] focus:outline-none disabled:bg-[#f0f2f5] disabled:cursor-not-allowed resize-none"
+          className="w-full px-4 py-2 rounded border border-border text-sm focus:border-primary focus:outline-none disabled:bg-background disabled:cursor-not-allowed resize-none"
         />
         <div className="flex justify-between items-center mt-2">
           <p
             className={`text-xs ${
-              isContentValid ? 'text-[#00833e]' : 'text-[#ff6b6b]'
+              isContentValid ? 'text-primary' : 'text-[#ff6b6b]'
             }`}
           >
             {isContentValid ? (
@@ -252,7 +252,7 @@ export default function EnhancedReviewForm({
               </span>
             )}
           </p>
-          <p className="text-xs text-[#8f8f8f]">{contentLength}/2000</p>
+          <p className="text-xs text-text-muted">{contentLength}/2000</p>
         </div>
       </div>
 
@@ -261,7 +261,7 @@ export default function EnhancedReviewForm({
         <label className="block text-sm font-medium text-gray-900 mb-2">
           Fotoğraf Ekle (İsteğe bağlı)
         </label>
-        <p className="text-xs text-[#8f8f8f] mb-3">
+        <p className="text-xs text-text-muted mb-3">
           En fazla {MAX_IMAGES} fotoğraf yükleyebilirsiniz
         </p>
 
@@ -273,7 +273,7 @@ export default function EnhancedReviewForm({
                 <img
                   src={image}
                   alt={`Preview ${index + 1}`}
-                  className="w-full h-24 object-cover rounded border border-[#e0e0e0]"
+                  className="w-full h-24 object-cover rounded border border-border"
                 />
                 <button
                   type="button"
@@ -291,14 +291,14 @@ export default function EnhancedReviewForm({
         {/* Upload Button */}
         {images.length < MAX_IMAGES && (
           <label
-            className={`flex items-center justify-center gap-2 px-4 py-3 rounded border-2 border-dashed border-[#e0e0e0] cursor-pointer transition-colors ${
+            className={`flex items-center justify-center gap-2 px-4 py-3 rounded border-2 border-dashed border-border cursor-pointer transition-colors ${
               !isVerifiedUser || isSubmitting
-                ? 'bg-[#f0f2f5] cursor-not-allowed opacity-50'
-                : 'hover:border-[#00833e] hover:bg-[#f9f9f9]'
+                ? 'bg-background cursor-not-allowed opacity-50'
+                : 'hover:border-primary hover:bg-surface-hover'
             }`}
           >
-            <Upload className="w-4 h-4 text-[#8f8f8f]" />
-            <span className="text-sm text-[#8f8f8f]">
+            <Upload className="w-4 h-4 text-text-muted" />
+            <span className="text-sm text-text-muted">
               Fotoğraf seçin ({images.length}/{MAX_IMAGES})
             </span>
             <input
@@ -319,15 +319,15 @@ export default function EnhancedReviewForm({
         disabled={!isVerifiedUser || !isContentValid || rating === 0 || isSubmitting}
         className={`w-full font-semibold py-3 px-4 rounded-lg transition-colors ${
           !isVerifiedUser || !isContentValid || rating === 0 || isSubmitting
-            ? 'bg-[#e0e0e0] text-[#8f8f8f] cursor-not-allowed'
-            : 'bg-[#00833e] hover:bg-[#006b32] text-white'
+            ? 'bg-[#e0e0e0] text-text-muted cursor-not-allowed'
+            : 'bg-primary hover:bg-primary-hover text-white'
         }`}
       >
         {isSubmitting ? 'Gönderiliyor...' : 'Yorumu Gönder'}
       </button>
 
       {!isVerifiedUser && (
-        <p className="text-xs text-[#8f8f8f] text-center mt-3">
+        <p className="text-xs text-text-muted text-center mt-3">
           Yorum göndermek için onaylanmış komşu olmak gerekir
         </p>
       )}

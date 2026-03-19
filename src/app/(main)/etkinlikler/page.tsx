@@ -250,9 +250,9 @@ export default function EventsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5]">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-[#00833e] to-[#006b32] text-white py-12">
+      <div className="bg-gradient-to-r from-primary to-primary-hover text-white py-12">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center justify-between">
             <div>
@@ -261,7 +261,7 @@ export default function EventsPage() {
             </div>
             <Link
               href="/etkinlikler/olustur"
-              className="hidden sm:flex items-center gap-2 px-6 py-3 bg-white text-[#00833e] rounded-full font-semibold hover:bg-gray-50 transition-colors shadow-lg"
+              className="hidden sm:flex items-center gap-2 px-6 py-3 bg-surface text-primary rounded-full font-semibold hover:bg-gray-50 transition-colors shadow-lg"
             >
               <Plus className="w-5 h-5" />
               Etkinlik Oluştur
@@ -280,7 +280,7 @@ export default function EventsPage() {
               placeholder="Etkinlikleri ara (başlık veya konum)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 border border-[#e0e0e0] rounded-full text-base bg-white focus:outline-none focus:ring-2 focus:ring-[#00833e] focus:border-transparent"
+              className="w-full pl-12 pr-4 py-3 border border-border rounded-full text-base bg-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
         </div>
@@ -289,7 +289,7 @@ export default function EventsPage() {
         <div className="sm:hidden mb-6">
           <Link
             href="/etkinlikler/olustur"
-            className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-[#00833e] text-white rounded-full font-semibold hover:bg-[#006b32] transition-colors"
+            className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-primary text-white rounded-full font-semibold hover:bg-primary-hover transition-colors"
           >
             <Plus className="w-5 h-5" />
             Etkinlik Oluştur
@@ -298,7 +298,7 @@ export default function EventsPage() {
 
         {/* Time Filter Tabs */}
         <div className="mb-8">
-          <p className="text-sm font-semibold text-[#404040] mb-3">Zaman Filtresi</p>
+          <p className="text-sm font-semibold text-text-secondary mb-3">Zaman Filtresi</p>
           <div className="flex flex-wrap gap-2">
             {(Object.keys(TIME_FILTER_LABELS) as TimeFilter[]).map((filter) => (
               <button
@@ -306,8 +306,8 @@ export default function EventsPage() {
                 onClick={() => setSelectedTimeFilter(filter)}
                 className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all ${
                   selectedTimeFilter === filter
-                    ? 'bg-[#00833e] text-white shadow-md'
-                    : 'bg-white text-[#404040] border border-[#e0e0e0] hover:border-[#00833e]'
+                    ? 'bg-primary text-white shadow-md'
+                    : 'bg-surface text-text-secondary border border-border hover:border-primary'
                 }`}
               >
                 {TIME_FILTER_LABELS[filter]} <span className="ml-1 text-xs font-bold">({timeFilterCounts[filter]})</span>
@@ -318,14 +318,14 @@ export default function EventsPage() {
 
         {/* Sort Options */}
         <div className="mb-8 flex items-center gap-4">
-          <p className="text-sm font-semibold text-[#404040]">Sırala:</p>
+          <p className="text-sm font-semibold text-text-secondary">Sırala:</p>
           <div className="flex gap-2">
             <button
               onClick={() => setSortBy('date')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 sortBy === 'date'
-                  ? 'bg-[#00833e] text-white'
-                  : 'bg-white text-[#404040] border border-[#e0e0e0] hover:border-[#00833e]'
+                  ? 'bg-primary text-white'
+                  : 'bg-surface text-text-secondary border border-border hover:border-primary'
               }`}
             >
               Tarih
@@ -334,8 +334,8 @@ export default function EventsPage() {
               onClick={() => setSortBy('popularity')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 sortBy === 'popularity'
-                  ? 'bg-[#00833e] text-white'
-                  : 'bg-white text-[#404040] border border-[#e0e0e0] hover:border-[#00833e]'
+                  ? 'bg-primary text-white'
+                  : 'bg-surface text-text-secondary border border-border hover:border-primary'
               }`}
             >
               Popülerlik
@@ -356,7 +356,7 @@ export default function EventsPage() {
               <Link
                 key={event.id}
                 href={`/etkinlikler/${event.id}`}
-                className="group flex flex-col h-full bg-white rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+                className="group flex flex-col h-full bg-surface rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
               >
                 {/* Cover Image */}
                 <div className="relative overflow-hidden h-48 bg-gray-200 flex-shrink-0">
@@ -370,15 +370,15 @@ export default function EventsPage() {
                   />
 
                   {/* Date Badge */}
-                  <div className="absolute bottom-3 left-3 bg-white rounded-lg px-3 py-2 shadow-lg">
+                  <div className="absolute bottom-3 left-3 bg-surface rounded-lg px-3 py-2 shadow-lg">
                     <div className="text-center">
-                      <p className="text-xl font-bold text-[#00833e] leading-none">{event.day}</p>
+                      <p className="text-xl font-bold text-primary leading-none">{event.day}</p>
                       <p className="text-xs font-medium text-gray-600">{MONTH_ABBREVIATIONS[event.month]}</p>
                     </div>
                   </div>
 
                   {/* Interest Count Badge */}
-                  <div className="absolute top-3 right-3 bg-[#00833e] text-white rounded-full px-3 py-1.5 flex items-center gap-1 shadow-lg">
+                  <div className="absolute top-3 right-3 bg-primary text-white rounded-full px-3 py-1.5 flex items-center gap-1 shadow-lg">
                     <Heart className="w-3.5 h-3.5 fill-white" />
                     <span className="text-sm font-semibold">{event.interestedCount}</span>
                   </div>
@@ -398,19 +398,19 @@ export default function EventsPage() {
 
                   {/* Time and Location */}
                   <div className="space-y-2 mb-4 flex-1">
-                    <div className="flex items-center gap-2 text-sm text-[#8f8f8f]">
-                      <Clock className="w-4 h-4 flex-shrink-0 text-[#00833e]" />
+                    <div className="flex items-center gap-2 text-sm text-text-muted">
+                      <Clock className="w-4 h-4 flex-shrink-0 text-primary" />
                       <span className="font-medium">{event.time}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-[#8f8f8f]">
-                      <MapPin className="w-4 h-4 flex-shrink-0 text-[#00833e]" />
+                    <div className="flex items-center gap-2 text-sm text-text-muted">
+                      <MapPin className="w-4 h-4 flex-shrink-0 text-primary" />
                       <span className="line-clamp-1">{event.location}</span>
                     </div>
                   </div>
 
                   {/* Organizer Info */}
-                  <div className="border-t border-[#e0e0e0] pt-3 mb-4">
-                    <p className="text-xs text-[#8f8f8f] mb-2">Organize eden</p>
+                  <div className="border-t border-border pt-3 mb-4">
+                    <p className="text-xs text-text-muted mb-2">Organize eden</p>
                     <div className="flex items-center gap-2">
                       <Image
                         src={event.organizerImage}
@@ -420,15 +420,15 @@ export default function EventsPage() {
                         unoptimized
                         className="w-7 h-7 rounded-full"
                       />
-                      <span className="text-sm font-medium text-[#404040]">{event.organizerName}</span>
+                      <span className="text-sm font-medium text-text-secondary">{event.organizerName}</span>
                     </div>
                   </div>
 
                   {/* Attendees and RSVP */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1">
-                      <Users className="w-4 h-4 text-[#00833e]" />
-                      <span className="text-xs text-[#8f8f8f]"><span className="font-semibold text-[#404040]">{event.attendees}</span> katılıyor</span>
+                      <Users className="w-4 h-4 text-primary" />
+                      <span className="text-xs text-text-muted"><span className="font-semibold text-text-secondary">{event.attendees}</span> katılıyor</span>
                     </div>
                   </div>
 
@@ -437,8 +437,8 @@ export default function EventsPage() {
                     onClick={(e) => handleRsvp(e, event.id)}
                     className={`w-full mt-4 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all ${
                       interested[event.id]
-                        ? 'bg-[#00833e] text-white shadow-md hover:bg-[#006b32]'
-                        : 'bg-[#f0f2f5] text-[#00833e] border border-[#e0e0e0] hover:border-[#00833e] hover:bg-white'
+                        ? 'bg-primary text-white shadow-md hover:bg-primary-hover'
+                        : 'bg-background text-primary border border-border hover:border-primary hover:bg-surface'
                     }`}
                   >
                     {interested[event.id] ? '✓ Katılıyorum' : 'Katılmak İçin Tıkla'}

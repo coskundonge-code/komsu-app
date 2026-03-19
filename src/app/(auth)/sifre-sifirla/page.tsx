@@ -138,7 +138,7 @@ function SifreSifirlaContent() {
   return (
     <div className="min-h-screen flex">
       {/* Left Panel - Brand Section (Desktop Only) */}
-      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-[#00833e] to-[#005a28] text-white flex-col justify-center items-center p-8 relative overflow-hidden">
+      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-primary to-[#005a28] text-white flex-col justify-center items-center p-8 relative overflow-hidden">
         {/* Decorative Elements */}
         <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -mr-20 -mt-20"></div>
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full -ml-16 -mb-16"></div>
@@ -161,12 +161,12 @@ function SifreSifirlaContent() {
       </div>
 
       {/* Right Panel - Form Section */}
-      <div className="w-full md:w-1/2 bg-[#f0f2f5] flex flex-col justify-center items-center p-6 md:p-12">
+      <div className="w-full md:w-1/2 bg-background flex flex-col justify-center items-center p-6 md:p-12">
         <div className="w-full max-w-md space-y-8">
           {/* Mobile Logo */}
           <div className="md:hidden text-center mb-4">
             <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#00833e] to-[#005a28] rounded-full flex items-center justify-center">
+              <div className="w-12 h-12 bg-gradient-to-br from-primary to-[#005a28] rounded-full flex items-center justify-center">
                 <span className="text-white text-xl font-bold">K</span>
               </div>
             </div>
@@ -176,8 +176,8 @@ function SifreSifirlaContent() {
           {step === 'request' && (
             <div className="animate-fadeIn space-y-6">
               <div className="text-center space-y-2">
-                <h1 className="text-3xl font-bold text-[#333]">Şifre Sıfırla</h1>
-                <p className="text-[#8f8f8f]">
+                <h1 className="text-3xl font-bold text-text-primary">Şifre Sıfırla</h1>
+                <p className="text-text-muted">
                   Şifrenizi sıfırlamak için e-posta adresinizi girin
                 </p>
               </div>
@@ -194,11 +194,11 @@ function SifreSifirlaContent() {
 
               <form onSubmit={handleRequestReset} className="space-y-5">
                 <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-[#333] mb-2.5">
+                  <label htmlFor="email" className="block text-sm font-semibold text-text-primary mb-2.5">
                     E-posta Adresi
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8f8f8f]" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
                     <input
                       id="email"
                       type="email"
@@ -212,10 +212,10 @@ function SifreSifirlaContent() {
                       disabled={isLoading}
                       aria-invalid={!!emailError}
                       aria-describedby={emailError ? 'email-error' : undefined}
-                      className={`w-full pl-12 pr-4 py-3 border rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:ring-2 transition disabled:bg-[#f0f2f5] disabled:cursor-not-allowed ${
+                      className={`w-full pl-12 pr-4 py-3 border rounded-xl text-sm text-text-primary placeholder:text-text-muted bg-surface focus:outline-none focus:ring-2 transition disabled:bg-background disabled:cursor-not-allowed ${
                         emailError
                           ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
-                          : 'border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20'
+                          : 'border-border focus:border-primary focus:ring-primary/20'
                       }`}
                     />
                   </div>
@@ -228,7 +228,7 @@ function SifreSifirlaContent() {
                     </p>
                   )}
                   {!emailError && (
-                    <p className="text-xs text-[#8f8f8f] mt-2">
+                    <p className="text-xs text-text-muted mt-2">
                       E-posta adresinize şifre sıfırlama bağlantısı göndereceğiz.
                     </p>
                   )}
@@ -237,7 +237,7 @@ function SifreSifirlaContent() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-[#00833e] hover:bg-[#006b32] text-white font-semibold py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md active:shadow-sm"
+                  className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md active:shadow-sm"
                 >
                   {isLoading ? (
                     <span className="flex items-center justify-center gap-2">
@@ -257,7 +257,7 @@ function SifreSifirlaContent() {
               <div className="text-center">
                 <Link
                   href="/giris"
-                  className="inline-flex items-center gap-2 text-[#00833e] hover:text-[#006b32] font-semibold transition"
+                  className="inline-flex items-center gap-2 text-primary hover:text-primary-hover font-semibold transition"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Giriş Sayfasına Dön
@@ -270,8 +270,8 @@ function SifreSifirlaContent() {
           {step === 'reset' && (
             <div className="animate-fadeIn space-y-6">
               <div className="text-center space-y-2">
-                <h1 className="text-3xl font-bold text-[#333]">Yeni Şifre Belirle</h1>
-                <p className="text-[#8f8f8f]">
+                <h1 className="text-3xl font-bold text-text-primary">Yeni Şifre Belirle</h1>
+                <p className="text-text-muted">
                   Lütfen güçlü bir şifre oluşturun
                 </p>
               </div>
@@ -288,11 +288,11 @@ function SifreSifirlaContent() {
 
               <form onSubmit={handleResetPassword} className="space-y-4">
                 <div>
-                  <label htmlFor="password" className="block text-sm font-semibold text-[#333] mb-2.5">
+                  <label htmlFor="password" className="block text-sm font-semibold text-text-primary mb-2.5">
                     Yeni Şifre
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8f8f8f]" />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
                     <input
                       id="password"
                       type={showPassword ? 'text' : 'password'}
@@ -306,17 +306,17 @@ function SifreSifirlaContent() {
                       disabled={isLoading}
                       aria-invalid={!!passwordError}
                       aria-describedby={passwordError ? 'password-error' : undefined}
-                      className={`w-full pl-12 pr-12 py-3 border rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:ring-2 transition disabled:bg-[#f0f2f5] disabled:cursor-not-allowed ${
+                      className={`w-full pl-12 pr-12 py-3 border rounded-xl text-sm text-text-primary placeholder:text-text-muted bg-surface focus:outline-none focus:ring-2 transition disabled:bg-background disabled:cursor-not-allowed ${
                         passwordError
                           ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
-                          : 'border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20'
+                          : 'border-border focus:border-primary focus:ring-primary/20'
                       }`}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       disabled={isLoading}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8f8f8f] hover:text-[#404040] transition disabled:cursor-not-allowed"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary transition disabled:cursor-not-allowed"
                     >
                       {showPassword ? (
                         <EyeOff className="w-5 h-5" />
@@ -334,16 +334,16 @@ function SifreSifirlaContent() {
                     </p>
                   )}
                   {!passwordError && (
-                    <p className="text-xs text-[#8f8f8f] mt-2">En az 8 karakter olmalıdır</p>
+                    <p className="text-xs text-text-muted mt-2">En az 8 karakter olmalıdır</p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="confirmPassword" className="block text-sm font-semibold text-[#333] mb-2.5">
+                  <label htmlFor="confirmPassword" className="block text-sm font-semibold text-text-primary mb-2.5">
                     Şifre Tekrar
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8f8f8f]" />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
                     <input
                       id="confirmPassword"
                       type={showConfirmPassword ? 'text' : 'password'}
@@ -357,17 +357,17 @@ function SifreSifirlaContent() {
                       disabled={isLoading}
                       aria-invalid={!!confirmPasswordError}
                       aria-describedby={confirmPasswordError ? 'confirmPassword-error' : undefined}
-                      className={`w-full pl-12 pr-12 py-3 border rounded-xl text-sm text-[#333] placeholder-[#8f8f8f] bg-white focus:outline-none focus:ring-2 transition disabled:bg-[#f0f2f5] disabled:cursor-not-allowed ${
+                      className={`w-full pl-12 pr-12 py-3 border rounded-xl text-sm text-text-primary placeholder:text-text-muted bg-surface focus:outline-none focus:ring-2 transition disabled:bg-background disabled:cursor-not-allowed ${
                         confirmPasswordError
                           ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
-                          : 'border-[#e0e0e0] focus:border-[#00833e] focus:ring-[#00833e]/20'
+                          : 'border-border focus:border-primary focus:ring-primary/20'
                       }`}
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       disabled={isLoading}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8f8f8f] hover:text-[#404040] transition disabled:cursor-not-allowed"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary transition disabled:cursor-not-allowed"
                     >
                       {showConfirmPassword ? (
                         <EyeOff className="w-5 h-5" />
@@ -389,7 +389,7 @@ function SifreSifirlaContent() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-[#00833e] hover:bg-[#006b32] text-white font-semibold py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md active:shadow-sm mt-6"
+                  className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md active:shadow-sm mt-6"
                 >
                   {isLoading ? (
                     <span className="flex items-center justify-center gap-2">
@@ -409,7 +409,7 @@ function SifreSifirlaContent() {
               <div className="text-center">
                 <Link
                   href="/giris"
-                  className="inline-flex items-center gap-2 text-[#00833e] hover:text-[#006b32] font-semibold transition"
+                  className="inline-flex items-center gap-2 text-primary hover:text-primary-hover font-semibold transition"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Giriş Sayfasına Dön
@@ -423,19 +423,19 @@ function SifreSifirlaContent() {
             <div className="animate-fadeIn space-y-6">
               <div className="flex justify-center">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-[#00833e]/20 rounded-full blur-xl animate-pulse"></div>
-                  <div className="relative w-20 h-20 bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-full flex items-center justify-center animate-scaleIn">
+                  <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+                  <div className="relative w-20 h-20 bg-gradient-to-br from-primary to-primary-hover rounded-full flex items-center justify-center animate-scaleIn">
                     <CheckCircle2 className="w-10 h-10 text-white" />
                   </div>
                 </div>
               </div>
 
               <div className="text-center space-y-3">
-                <h1 className="text-3xl font-bold text-[#333]">E-posta Gönderildi!</h1>
-                <p className="text-[#8f8f8f] text-base">
+                <h1 className="text-3xl font-bold text-text-primary">E-posta Gönderildi!</h1>
+                <p className="text-text-muted text-base">
                   Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.
                 </p>
-                <p className="text-[#8f8f8f] text-sm">
+                <p className="text-text-muted text-sm">
                   Lütfen e-postanızı kontrol edin ve bağlantıyı tıklayın.
                 </p>
               </div>
@@ -445,7 +445,7 @@ function SifreSifirlaContent() {
                 <button
                   onClick={handleResendEmail}
                   disabled={isLoading}
-                  className="w-full px-4 py-3 border-2 border-[#00833e] text-[#00833e] font-semibold rounded-xl hover:bg-[#e6f4ec] transition disabled:opacity-50 disabled:cursor-not-allowed active:bg-[#e0ece7]"
+                  className="w-full px-4 py-3 border-2 border-primary text-primary font-semibold rounded-xl hover:bg-primary-light transition disabled:opacity-50 disabled:cursor-not-allowed active:bg-[#e0ece7]"
                 >
                   {isLoading ? (
                     <span className="flex items-center justify-center gap-2">
@@ -462,14 +462,14 @@ function SifreSifirlaContent() {
 
                 <Link
                   href="/giris"
-                  className="w-full flex items-center justify-center gap-2 bg-[#00833e] hover:bg-[#006b32] text-white font-semibold py-3 rounded-xl transition shadow-sm hover:shadow-md active:shadow-sm"
+                  className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white font-semibold py-3 rounded-xl transition shadow-sm hover:shadow-md active:shadow-sm"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Giriş Sayfasına Dön
                 </Link>
               </div>
 
-              <p className="text-xs text-[#8f8f8f] text-center pt-4 border-t border-[#e0e0e0]">
+              <p className="text-xs text-text-muted text-center pt-4 border-t border-border">
                 Bağlantı 24 saat geçerliliğine sahiptir.
               </p>
             </div>
@@ -530,9 +530,9 @@ function SifreSifirlaContent() {
 export default function SifreSifirlaPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-[#f0f2f5]">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#e0e0e0] border-t-[#00833e]"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-border border-t-[#00833e]"></div>
           <p className="text-gray-600 font-medium">Yükleniyor...</p>
         </div>
       </div>
