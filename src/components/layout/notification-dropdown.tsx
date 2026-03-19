@@ -186,7 +186,7 @@ export function NotificationDropdown({
   return (
     <div
       data-notification-dropdown
-      className="absolute top-full right-0 mt-2 w-[360px] bg-surface rounded-lg shadow-lg border border-border z-50"
+      className="absolute top-full right-0 mt-2 w-[calc(100vw-2rem)] sm:w-[360px] max-w-[360px] bg-surface rounded-lg shadow-lg border border-border z-50"
     >
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-border">

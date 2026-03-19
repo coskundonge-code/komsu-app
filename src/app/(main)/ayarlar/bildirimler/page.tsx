@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useCurrentUser } from '@/lib/hooks/use-auth';
+import { createClient } from '@/lib/supabase/client';
 import {
   Bell,
   ChevronLeft,
@@ -33,8 +35,10 @@ interface NotificationChannel {
 }
 
 export default function BildirimlerPage() {
+  const { user } = useCurrentUser();
   const [allNotificationsOn, setAllNotificationsOn] = useState(true);
   const [saved, setSaved] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [notifications, setNotifications] = useState<NotificationSetting[]>([
     {
@@ -93,6 +97,49 @@ export default function BildirimlerPage() {
     },
   ]);
 
+  // Load notification preferences from Supabase on mount
+  useEffect(() => {
+    const loadNotificationPreferences = async () => {
+      if (!user?.id) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const supabase = createClient();
+        const { data: prefsData, error } = await supabase
+          .from('notification_preferences')
+          .select('*')
+          .eq('user_id', user.id);
+
+        if (prefsData && !error) {
+          // Map multi-row database preferences to UI state
+          const prefsMap: Record<string, Record<string, boolean>> = {};
+          prefsData.forEach((pref) => {
+            if (!prefsMap[pref.type]) prefsMap[pref.type] = {};
+            const enabled = pref[`${pref.type}_enabled` as keyof typeof pref];
+            prefsMap[pref.type][pref.type] = Boolean(enabled);
+          });
+
+          const updated = notifications.map((notif) => ({
+            ...notif,
+            email: Boolean(prefsMap['email']?.email_enabled ?? notif.email),
+            inApp: Boolean(prefsMap['in_app']?.in_app_enabled ?? notif.inApp),
+            push: Boolean(prefsMap['push']?.push_enabled ?? notif.push),
+          }));
+          setNotifications(updated);
+          setAllNotificationsOn(updated.every((n) => n.email && n.inApp && n.push));
+        }
+      } catch (err) {
+        console.error('Failed to load notification preferences:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadNotificationPreferences();
+  }, [user?.id]);
+
   const notificationChannels: NotificationChannel[] = [
     {
       type: "email",
@@ -135,16 +182,65 @@ export default function BildirimlerPage() {
     );
   };
 
-  const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  const handleSave = async () => {
+    if (!user?.id) {
+      alert('Giriş yapmanız gerekir');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const supabase = createClient();
+
+      // Build multi-row preferences array
+      const prefsToUpsert = [
+        {
+          user_id: user.id,
+          type: 'email',
+          email_enabled: notifications.some((n) => n.email),
+          push_enabled: false,
+          in_app_enabled: false,
+        },
+        {
+          user_id: user.id,
+          type: 'push',
+          email_enabled: false,
+          push_enabled: notifications.some((n) => n.push),
+          in_app_enabled: false,
+        },
+        {
+          user_id: user.id,
+          type: 'in_app',
+          email_enabled: false,
+          push_enabled: false,
+          in_app_enabled: notifications.some((n) => n.inApp),
+        },
+      ];
+
+      const { error } = await supabase
+        .from('notification_preferences')
+        .upsert(prefsToUpsert, { onConflict: 'user_id,type' });
+
+      if (!error) {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2000);
+      } else {
+        console.error('Failed to save preferences:', error);
+        alert('Bildirim ayarları kaydedilirken bir hata oluştu.');
+      }
+    } catch (err) {
+      console.error('Error saving preferences:', err);
+      alert('Bildirim ayarları kaydedilirken bir hata oluştu.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-surface border-b border-border sticky top-0 z-10">
-        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-3">
+        <div className="max-w-2xl mx-auto px-2 sm:px-4 py-3 sm:py-4 flex items-center gap-3">
           <Link
             href="/ayarlar"
             className="p-2 hover:bg-background rounded-lg transition-colors"
@@ -166,7 +262,7 @@ export default function BildirimlerPage() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-2xl mx-auto px-4 py-6">
+      <div className="max-w-2xl mx-auto px-2 sm:px-4 py-4 sm:py-6">
         {/* Master Toggle */}
         <div className="bg-surface rounded-lg border border-border p-6 mb-6">
           <div className="flex items-center justify-between">
@@ -342,7 +438,8 @@ export default function BildirimlerPage() {
         <div className="flex gap-3 mb-12">
           <button
             onClick={handleSave}
-            className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all ${
+            disabled={isLoading}
+            className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
               saved
                 ? "bg-primary text-white"
                 : "bg-primary text-white hover:bg-primary-hover"
@@ -352,6 +449,8 @@ export default function BildirimlerPage() {
               <span className="flex items-center justify-center gap-2">
                 <Check className="w-5 h-5" /> Kaydedildi
               </span>
+            ) : isLoading ? (
+              "Kaydediliyor..."
             ) : (
               "Kaydet"
             )}

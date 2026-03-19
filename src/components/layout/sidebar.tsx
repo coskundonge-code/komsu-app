@@ -15,22 +15,22 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const primaryNavItems = [
   { icon: Home, label: 'Ana Sayfa', href: '/' },
-  { icon: Compass, label: 'Kesfet', href: '/kesfet' },
+  { icon: Compass, label: 'Keşfet', href: '/kesfet' },
   { icon: Newspaper, label: 'Yerel Haberler', href: '/kesfet' },
-  { icon: AlertTriangle, label: 'Uyarilar', href: '/uyarilar' },
-  { icon: ShoppingBag, label: 'Satilik & Ucretsiz', href: '/pazar' },
-  { icon: Repeat, label: 'Kirala & Odunc Ver', href: '/odunc-kirala' },
+  { icon: AlertTriangle, label: 'Uyarılar', href: '/uyarilar' },
+  { icon: ShoppingBag, label: 'Satılık & Ücretsiz', href: '/pazar' },
+  { icon: Repeat, label: 'Kirala & Ödünç Ver', href: '/odunc-kirala' },
   { icon: Users, label: 'Gruplar', href: '/gruplar' },
   { icon: Calendar, label: 'Etkinlikler', href: '/etkinlikler' },
-  { icon: CreditCard, label: 'Mahallem Kart', href: '/mahallem-kart' },
-  { icon: Heart, label: 'Askida Bagis', href: '/askida-bagis' },
+  { icon: CreditCard, label: 'Mahallemiz Kart', href: '/mahallem-kart' },
+  { icon: Heart, label: 'Askıda Bağış', href: '/askida-bagis' },
 ]
 
 const secondaryNavItems = [
   { icon: User, label: 'Profilim', href: '/profil/me' },
   { icon: Bell, label: 'Bildirimler', href: '/bildirimler' },
   { icon: Settings, label: 'Ayarlar', href: '/ayarlar' },
-  { icon: HelpCircle, label: 'Yardim', href: '/yardim' },
+  { icon: HelpCircle, label: 'Yardım', href: '/yardim' },
 ]
 
 export function Sidebar({ className, ...props }: SidebarProps) {
@@ -65,10 +65,10 @@ export function Sidebar({ className, ...props }: SidebarProps) {
           </div>
           {!isCollapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-text-primary truncate">Ahmet Yilmaz</p>
+              <p className="text-sm font-semibold text-text-primary truncate">Ahmet Yılmaz</p>
               <p className="text-xs text-text-muted truncate flex items-center gap-1">
                 <MapPin className="w-3 h-3" />
-                Kadikoy, Istanbul
+                Kadıköy, İstanbul
               </p>
             </div>
           )}
@@ -154,8 +154,8 @@ export function Sidebar({ className, ...props }: SidebarProps) {
             'w-full flex items-center justify-center gap-2 py-2 text-xs text-text-muted hover:text-text-secondary hover:bg-surface-hover rounded-lg transition-all',
             isCollapsed && 'px-0'
           )}
-          title={isCollapsed ? 'Genislet' : 'Daralt'}
-          aria-label={isCollapsed ? 'Kenar cubugunu genislet' : 'Kenar cubugunu daralt'}
+          title={isCollapsed ? 'Genişlet' : 'Daralt'}
+          aria-label={isCollapsed ? 'Kenar çubuğunu genişlet' : 'Kenar çubuğunu daralt'}
         >
           {isCollapsed ? (
             <ChevronRight className="w-4 h-4" />

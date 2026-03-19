@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import {
   Bell,
@@ -17,6 +17,9 @@ import {
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
+import { useCurrentUser } from "@/lib/hooks/use-auth";
+import { getNotifications, markNotificationAsRead, markAllNotificationsAsRead } from "@/lib/hooks/use-notifications";
+import { createClient } from "@/lib/supabase/client";
 
 type NotificationType = "like" | "comment" | "mention" | "event" | "marketplace" | "alert";
 
@@ -114,7 +117,7 @@ const mockNotifications: Notification[] = [
     id: "8",
     type: "alert",
     category: "alerts",
-    userName: "Mahallem",
+    userName: "Mahallemiz",
     action: "Mahallede yeni güvenlik bildirimi: Caddede bakım çalışması başlıyor",
     timestamp: "8 saat",
     read: false,
@@ -180,7 +183,7 @@ const mockNotifications: Notification[] = [
     id: "14",
     type: "alert",
     category: "alerts",
-    userName: "Mahallem",
+    userName: "Mahallemiz",
     action: "Haftalık mahalle özeti: 12 yeni gönderi, 45 yorumlar",
     timestamp: "4 gün",
     read: true,
@@ -257,10 +260,61 @@ const tabs = [
 ];
 
 export default function NotificationsPage() {
+  const { user } = useCurrentUser();
   const [notifications, setNotifications] = useState(mockNotifications);
   const [activeTab, setActiveTab] = useState("all");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadNotifications() {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+      const { data, error } = await getNotifications(user.id, { limit: 50 });
+      if (data && !error) {
+        const mapped = data.map((n: any) => ({
+          id: n.id,
+          type: (n.type as NotificationType) || 'like',
+          category: (n.type as unknown as 'likes' | 'comments' | 'mentions' | 'events' | 'marketplace' | 'alerts') || 'likes',
+          userName: n.sender_name || 'Komşu',
+          action: n.body || '',
+          timestamp: n.created_at ? new Date(n.created_at).toLocaleDateString('tr-TR') : '1 dakika',
+          read: n.is_read || false,
+          avatar: getFeedImageUrl(Math.floor(Math.random() * 66) + 50, 96, 96),
+          href: n.link_url || '/bildirimler',
+        }));
+        setNotifications(mapped);
+      }
+      setLoading(false);
+    }
+    loadNotifications();
+  }, [user]);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
+
+  const deleteNotification = async (id: string) => {
+    const supabase = createClient();
+    await supabase.from('notifications').delete().eq('id', id);
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  };
+
+  const handleMarkAsRead = async (id: string) => {
+    const { error } = await markNotificationAsRead(id);
+    if (!error) {
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+      );
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    if (!user) return;
+    const { error } = await markAllNotificationsAsRead(user.id);
+    if (!error) {
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    }
+  };
 
   const filteredNotifications = useMemo(() => {
     if (activeTab === "all") {
@@ -309,23 +363,9 @@ export default function NotificationsPage() {
     return sortedGroups;
   }, [filteredNotifications]);
 
-  const markAsRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    );
-  };
-
-  const deleteNotification = (id: string) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
-  };
-
-  const markAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-  };
-
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-2xl mx-auto px-4 py-4">
+      <div className="max-w-2xl mx-auto px-2 sm:px-4 py-3 sm:py-4">
         {/* Header */}
         <div className="bg-surface border-b border-border sticky top-0 z-10 mb-4 rounded-lg">
           <div className="py-4 px-4">
@@ -345,7 +385,7 @@ export default function NotificationsPage() {
               </div>
               {unreadCount > 0 && (
                 <button
-                  onClick={markAllAsRead}
+                  onClick={handleMarkAllAsRead}
                   className="text-sm font-medium text-primary hover:text-primary-hover transition-colors flex items-center gap-1.5"
                 >
                   <CheckCircle size={16} />
@@ -454,7 +494,7 @@ export default function NotificationsPage() {
                       {/* Content */}
                       <Link
                         href={notification.href}
-                        onClick={() => markAsRead(notification.id)}
+                        onClick={() => handleMarkAsRead(notification.id)}
                         className="flex-1 min-w-0 text-left pt-0.5 z-10 hover:opacity-80 transition-opacity"
                       >
                         <p className="text-sm leading-snug">
@@ -483,7 +523,7 @@ export default function NotificationsPage() {
                         <button
                           onClick={(e) => {
                             e.preventDefault();
-                            markAsRead(notification.id);
+                            handleMarkAsRead(notification.id);
                           }}
                           className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-md hover:bg-surface/50 text-text-muted hover:text-text-primary"
                           title={notification.read ? "Mark as unread" : "Mark as read"}

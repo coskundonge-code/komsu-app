@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Search,
   MapPin,
@@ -22,6 +22,7 @@ import {
   HeartHandshake,
 } from "lucide-react";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 interface ActivityItem {
   id: string;
@@ -311,6 +312,63 @@ export default function KesfetPage() {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [activeTab, setActiveTab] = React.useState("all");
   const [distanceFilter, setDistanceFilter] = React.useState("all");
+  const [dbActivities, setDbActivities] = useState<ActivityItem[]>(nearbyActivities);
+  const [dbBusinesses, setDbBusinesses] = useState<BusinessItem[]>(nearbyBusinesses);
+
+  // Fetch trending content from Supabase on mount
+  useEffect(() => {
+    const fetchTrendingContent = async () => {
+      try {
+        const supabase = createClient();
+
+        // Fetch popular posts
+        const { data: posts } = await supabase
+          .from("posts")
+          .select("id, title, body, created_at, profiles(full_name)")
+          .order("reaction_count", { ascending: false })
+          .limit(5)
+
+        // Fetch nearby businesses
+        const { data: businesses } = await supabase
+          .from("businesses")
+          .select("id, name, category, rating_avg, reviews:business_reviews(count)")
+          .limit(5)
+
+        if (businesses) {
+          setDbBusinesses(
+            businesses.map((b: any) => ({
+              id: b.id,
+              name: b.name,
+              category: b.category,
+              rating: b.rating_avg || 4.5,
+              reviews: b.reviews?.[0]?.count || 0,
+              distance: "0.5 km",
+              address: "Address TBD",
+            }))
+          );
+        }
+
+        if (posts) {
+          const activities: ActivityItem[] = posts.map((p: any) => ({
+            id: p.id,
+            title: p.title,
+            description: p.body?.substring(0, 100) || "",
+            distance: "250m",
+            category: "Posts",
+            categoryId: "posts",
+            type: "post",
+            time: new Date(p.created_at).toLocaleDateString("tr-TR"),
+            icon: "store",
+          }));
+          setDbActivities([...activities, ...nearbyActivities.slice(activities.length)]);
+        }
+      } catch (error) {
+        console.error("Error fetching trending content:", error);
+      }
+    };
+
+    fetchTrendingContent();
+  }, []);
 
   const filterCategories = [
     { id: "all", label: "Tümü" },
@@ -341,7 +399,7 @@ export default function KesfetPage() {
     return itemDist <= filterDist;
   };
 
-  const filteredActivities = nearbyActivities.filter((item) => {
+  const filteredActivities = dbActivities.filter((item) => {
     const matchesSearch =
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -397,7 +455,7 @@ export default function KesfetPage() {
     <div className="min-h-screen bg-background">
       {/* Header Section */}
       <div className="bg-surface border-b border-border sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 sm:py-4">
           {/* Search Bar */}
           <div className="relative mb-4">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
@@ -416,7 +474,7 @@ export default function KesfetPage() {
       </div>
 
       {/* Stats Banner */}
-      <div className="max-w-7xl mx-auto px-4 py-4">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 sm:py-4">
         <div className="grid grid-cols-3 gap-3 bg-surface rounded-lg border border-border p-4">
           <div className="text-center">
             <div className="flex items-center justify-center mb-2">
@@ -443,7 +501,7 @@ export default function KesfetPage() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-6">
         {/* Fullscreen Map Placeholder Section */}
         <div className="mb-6 rounded-lg overflow-hidden border border-border bg-surface">
           <div className="relative h-80 md:h-96 bg-gradient-to-br from-primary to-[#004d23] overflow-hidden">
@@ -640,7 +698,7 @@ export default function KesfetPage() {
               </div>
 
               <div className="space-y-3">
-                {nearbyBusinesses.map((business) => (
+                {dbBusinesses.map((business) => (
                   <div key={business.id} className="p-3 bg-background rounded-lg hover:bg-surface-active transition-colors cursor-pointer">
                     <div className="flex justify-between items-start gap-2 mb-1">
                       <h3 className="font-semibold text-sm text-text-primary line-clamp-1">{business.name}</h3>

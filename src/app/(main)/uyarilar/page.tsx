@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import {
   Search,
@@ -26,6 +26,8 @@ import {
   Bell,
 } from 'lucide-react';
 import Link from 'next/link';
+import { getAlerts } from '@/lib/hooks/use-notifications';
+import { useCurrentUser } from '@/lib/hooks/use-auth';
 
 const LeafletMap = dynamic(() => import('@/components/map/leaflet-map'), { ssr: false });
 
@@ -241,6 +243,8 @@ const getSeverityIconColor = (severity: string) => {
 };
 
 export default function AlertsPage() {
+  const { profile } = useCurrentUser();
+  const [alerts, setAlerts] = React.useState(mockAlerts);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [activeFilter, setActiveFilter] = React.useState('all');
   const [showActive, setShowActive] = React.useState(true);
@@ -254,7 +258,35 @@ export default function AlertsPage() {
     severity: 'medium',
   });
 
-  const filteredAlerts = mockAlerts.filter((alert) => {
+  // Fetch alerts from Supabase
+  useEffect(() => {
+    async function fetchAlerts() {
+      if (!(profile as any)?.neighborhood_id) return;
+      try {
+        const { data, error } = await getAlerts((profile as any).neighborhood_id, { limit: 100 });
+        if (data && !error) {
+          const mapped = data.map((alert: any) => ({
+            id: alert.id,
+            title: alert.title,
+            description: alert.description,
+            location: alert.location,
+            time: new Date(alert.created_at).toLocaleString('tr-TR'),
+            severity: alert.alert_severity,
+            category: alert.category,
+            source: alert.profiles?.full_name || 'Mahalle Sakinleri',
+            active: alert.is_active,
+            icon: null,
+          }));
+          setAlerts(mapped);
+        }
+      } catch (err) {
+        console.error('Failed to fetch alerts:', err);
+      }
+    }
+    fetchAlerts();
+  }, [profile]);
+
+  const filteredAlerts = alerts.filter((alert) => {
     const matchesSearch = alert.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       alert.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = activeFilter === 'all' || alert.category === activeFilter;
@@ -275,8 +307,8 @@ export default function AlertsPage() {
     setIsModalOpen(false);
   };
 
-  const activeAlertCount = mockAlerts.filter(a => a.active).length;
-  const resolvedAlertCount = mockAlerts.filter(a => !a.active).length;
+  const activeAlertCount = alerts.filter(a => a.active).length;
+  const resolvedAlertCount = alerts.filter(a => !a.active).length;
 
   return (
     <div className="min-h-screen bg-background">
@@ -373,7 +405,7 @@ export default function AlertsPage() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="max-w-4xl mx-auto px-2 sm:px-4 py-4 sm:py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Alerts List */}
         <div className="lg:col-span-2 space-y-4">
           {filteredAlerts.length === 0 ? (
@@ -469,28 +501,28 @@ export default function AlertsPage() {
                   <div className="w-4 h-4 rounded-full bg-red-600 shadow-sm"></div>
                   <span className="text-sm font-medium text-text-primary">Kritik</span>
                 </div>
-                <span className="font-bold text-lg text-red-600">{mockAlerts.filter(a => a.severity === 'critical' && a.active).length}</span>
+                <span className="font-bold text-lg text-red-600">{alerts.filter(a => a.severity === 'critical' && a.active).length}</span>
               </div>
               <div className="flex items-center justify-between pb-3 border-b border-border hover:bg-surface-hover -mx-1 px-1 py-1 rounded transition-colors">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded-full bg-orange-500 shadow-sm"></div>
                   <span className="text-sm font-medium text-text-primary">Yüksek</span>
                 </div>
-                <span className="font-bold text-lg text-orange-500">{mockAlerts.filter(a => a.severity === 'high' && a.active).length}</span>
+                <span className="font-bold text-lg text-orange-500">{alerts.filter(a => a.severity === 'high' && a.active).length}</span>
               </div>
               <div className="flex items-center justify-between pb-3 border-b border-border hover:bg-surface-hover -mx-1 px-1 py-1 rounded transition-colors">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded-full bg-yellow-500 shadow-sm"></div>
                   <span className="text-sm font-medium text-text-primary">Orta</span>
                 </div>
-                <span className="font-bold text-lg text-yellow-600">{mockAlerts.filter(a => a.severity === 'medium' && a.active).length}</span>
+                <span className="font-bold text-lg text-yellow-600">{alerts.filter(a => a.severity === 'medium' && a.active).length}</span>
               </div>
               <div className="flex items-center justify-between hover:bg-surface-hover -mx-1 px-1 py-1 rounded transition-colors">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded-full bg-green-500 shadow-sm"></div>
                   <span className="text-sm font-medium text-text-primary">Düşük</span>
                 </div>
-                <span className="font-bold text-lg text-green-600">{mockAlerts.filter(a => a.severity === 'low' && a.active).length}</span>
+                <span className="font-bold text-lg text-green-600">{alerts.filter(a => a.severity === 'low' && a.active).length}</span>
               </div>
             </div>
           </div>
@@ -503,7 +535,7 @@ export default function AlertsPage() {
             </h3>
             <div className="space-y-2">
               {filterCategories.filter(c => c.id !== 'all').map((category) => {
-                const count = mockAlerts.filter(a => a.category === category.id && a.active).length;
+                const count = alerts.filter(a => a.category === category.id && a.active).length;
                 return (
                   <div key={category.id} className="flex items-center justify-between text-sm hover:bg-surface-hover -mx-1 px-1 py-1.5 rounded transition-colors">
                     <div className="flex items-center gap-2">

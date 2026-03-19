@@ -46,8 +46,8 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-surface border-b border-border shadow-xs">
-        <div className="max-w-[1280px] mx-auto flex items-center justify-between h-14 px-4">
+      <nav className="sticky top-0 z-50 bg-surface border-b border-border shadow-xs" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+        <div className="max-w-[1280px] mx-auto flex items-center justify-between h-14 px-2 sm:px-4">
           <div className="flex items-center gap-2 min-w-fit lg:min-w-[200px]">
             <button
               onClick={() => setIsMobileDrawerOpen(true)}
@@ -62,11 +62,11 @@ export function Navbar() {
                   <path d="M12 3L4 9v12h5v-7h6v7h5V9l-8-6z" />
                 </svg>
               </div>
-              <span className="hidden lg:inline text-xl font-bold text-primary">Mahallem</span>
+              <span className="hidden lg:inline text-xl font-bold text-primary">Mahallemiz</span>
             </Link>
           </div>
 
-          <div ref={searchRef} className={cn("flex-1 mx-4 transition-all duration-300", isSearchFocused ? "max-w-[640px]" : "max-w-[520px]")}>
+          <div ref={searchRef} className={cn("flex-1 mx-2 sm:mx-4 transition-all duration-300", isSearchFocused ? "sm:max-w-[640px]" : "sm:max-w-[520px]")}>
             <div className="relative">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
               <input
@@ -97,7 +97,7 @@ export function Navbar() {
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white text-sm font-semibold rounded-full hover:bg-primary-hover transition-colors shadow-sm hover:shadow-md"
             >
               <Plus className="w-4 h-4" />
-              <span className="hidden md:inline">Paylas</span>
+              <span className="hidden md:inline">Paylaş</span>
             </Link>
 
             <div className="relative">

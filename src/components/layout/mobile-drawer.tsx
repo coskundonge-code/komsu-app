@@ -33,7 +33,7 @@ const primaryNavItems = [
   { icon: Repeat, label: 'Kirala & Ödünç Ver', href: '/odunc-kirala' },
   { icon: Users, label: 'Gruplar', href: '/gruplar' },
   { icon: Calendar, label: 'Etkinlikler', href: '/etkinlikler' },
-  { icon: CreditCard, label: 'Mahallem Kart', href: '/mahallem-kart' },
+  { icon: CreditCard, label: 'Mahallemiz Kart', href: '/mahallem-kart' },
   { icon: Heart, label: 'Askıda Bağış', href: '/askida-bagis' },
 ]
 
@@ -83,7 +83,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
       {/* Mobile Drawer */}
       <div
         className={cn(
-          'fixed left-0 top-0 bottom-0 z-50 w-[280px] bg-surface overflow-y-auto transition-transform duration-300 ease-in-out lg:hidden',
+          'fixed left-0 top-0 bottom-0 z-50 w-[280px] max-w-[85vw] bg-surface overflow-y-auto transition-transform duration-300 ease-in-out lg:hidden',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >

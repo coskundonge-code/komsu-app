@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import {
   MapPin,
@@ -19,6 +19,7 @@ import {
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
+import { getListingById } from '@/lib/hooks/use-listings';
 
 // Mock listings database - expanded with multiple variations
 const mockListingsDB: Record<string, any> = {
@@ -152,12 +153,80 @@ export default function ListingDetailPage({
 }: {
   params: { id: string };
 }) {
-  // Get listing data based on ID, fallback to first listing
-  const mockListing = mockListingsDB[params.id] || mockListingsDB['1'];
-
+  const [mockListing, setMockListing] = useState(mockListingsDB[params.id] || mockListingsDB['1']);
+  const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
+
+  useEffect(() => {
+    const fetchListing = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await getListingById(params.id);
+
+        if (error) {
+          console.warn('Error fetching listing, using mock data:', error);
+          setMockListing(mockListingsDB[params.id] || mockListingsDB['1']);
+        } else if (data) {
+          // Map DB fields to UI format - enhanced detail page
+          const listing = {
+            id: (data as any).id,
+            title: (data as any).title,
+            price: (data as any).price || 0,
+            condition: (data as any).item_condition || 'good',
+            conditionBadgeColor: 'bg-green-100 text-green-800',
+            category: (data as any).listing_categories?.name || 'Diğer',
+            categoryColor: 'bg-blue-100 text-blue-800',
+            neighborhood: (data as any).neighborhood || 'Bilinmiyor',
+            location: (data as any).neighborhood || 'Bilinmiyor',
+            timeAgo: (data as any).created_at ? formatTimeAgo(new Date((data as any).created_at)) : '1 saat',
+            views: 324,
+            favorites: 45,
+            description: (data as any).description || '',
+            images: (data as any).image_url ? [(data as any).image_url] : [getFeedImageUrl(1, 800, 600)],
+            seller: {
+              id: (data as any).profiles?.id || 'seller1',
+              name: (data as any).profiles?.full_name || 'Bilinmiyor',
+              avatar: (data as any).profiles?.avatar_url || getFeedImageUrl(5, 200, 200),
+              rating: 4.8,
+              reviewCount: 23,
+              responseTime: '< 1 saat',
+              joinDate: '2 yıl önce',
+              listings: 45,
+              verified: true,
+              soldCount: 42,
+            },
+            specs: [
+              { label: 'Kategori', value: (data as any).listing_categories?.name || 'Diğer' },
+              { label: 'Durum', value: (data as any).item_condition || 'good' },
+            ],
+          };
+          setMockListing(listing);
+        } else {
+          setMockListing(mockListingsDB[params.id] || mockListingsDB['1']);
+        }
+      } catch (err) {
+        console.error('Error fetching listing:', err);
+        setMockListing(mockListingsDB[params.id] || mockListingsDB['1']);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchListing();
+  }, [params.id]);
+
+  const formatTimeAgo = (date: Date): string => {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffHours < 24) return `${diffHours} saat önce`;
+    if (diffDays < 30) return `${diffDays} gün önce`;
+    return `${Math.floor(diffDays / 30)} ay önce`;
+  };
 
   const prevImage = () => {
     setCurrentImageIndex(
@@ -219,7 +288,7 @@ export default function ListingDetailPage({
     <div className="min-h-screen bg-[#f0f2f5]">
       {/* Header with Back Button */}
       <div className="sticky top-0 z-40 bg-white border-b border-[#e0e0e0] shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
           <Link
             href="/pazar"
             className="flex items-center gap-2 text-[#00833e] hover:text-[#006b32] font-semibold transition-colors"
@@ -271,7 +340,7 @@ export default function ListingDetailPage({
         )}
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content - Left Side */}
         <div className="lg:col-span-2 space-y-6">
           {/* Hero Image Gallery */}
