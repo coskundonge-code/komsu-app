@@ -521,7 +521,7 @@ export default function ListingDetailPage({
                   </li>
                   <li className="flex items-start gap-2">
                     <Check size={16} className="text-[#00833e] flex-shrink-0 mt-0.5" />
-                    <span>Bilinmeyen íwışilere önceden para göndermeyin</span>
+                    <span>Bilinmeyen kişilere önceden para göndermeyin</span>
                   </li>
                 </ul>
               </div>
@@ -533,7 +533,7 @@ export default function ListingDetailPage({
             <h2 className="text-lg font-bold text-[#333] mb-4">İlan İstatistikleri</h2>
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-[#f0f2f5] rounded-lg p-4">
-                <p className="text-xs text-[#8f8f8f] mb-1">Görüntôleme</p>
+                <p className="text-xs text-[#8f8f8f] mb-1">Görüntüleme</p>
                 <p className="text-2xl font-bold text-[#333]">{mockListing.views}</p>
               </div>
               <div className="bg-[#f0f2f5] rounded-lg p-4">
@@ -545,13 +545,23 @@ export default function ListingDetailPage({
 
           {/* Similar Listings */}
           <div>
-            <h2 className="text-lg font-bold text-[#333] mb-4">Benzer İ$anlar</h2>
+            <h2 className="text-lg font-bold text-[#333] mb-4">Benzer İlanlar</h2>
             <div className="overflow-x-auto pb-2">
               <div className="flex gap-4">
                 {similarListings.map((listing) => (
-                  <Link key={listing.id} href={`/pazar/ilan/${listing.id}`} className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-lg transition-shadow flex-shrink-0 w-48 group" >
+                  <Link
+                    key={listing.id}
+                    href={`/pazar/ilan/${listing.id}`}
+                    className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-lg transition-shadow flex-shrink-0 w-48 group"
+                  >
                     <div className="relative aspect-square overflow-hidden bg-[#f0f2f5]">
-                      <Image src={listing.image} alt={listing.title} fill className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" unoptimized />
+                      <Image
+                        src={listing.image}
+                        alt={listing.title}
+                        fill
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                        unoptimized
+                      />
                       <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs font-medium px-2 py-1 rounded">
                         {listing.timeAgo}
                       </div>
@@ -561,10 +571,10 @@ export default function ListingDetailPage({
                         ₺{listing.price.toLocaleString('tr-TR')}
                       </p>
                       <p className="text-xs text-[#404040] line-clamp-2 mb-2">
-                         {listing.title}
+                        {listing.title}
                       </p>
                       <p className="text-xs text-[#8f8f8f]">
-                         {listing.location}
+                        {listing.location}
                       </p>
                     </div>
                   </Link>
@@ -583,7 +593,14 @@ export default function ListingDetailPage({
 
               {/* Seller Profile */}
               <div className="flex items-start gap-3 mb-5 pb-5 border-b border-[#e0e0e0]">
-                <Image src={mockListing.seller.avatar} alt={mockListing.seller.name} width={56} height={56} className="w-14 h-14 rounded-full object-cover flex-shrink-0" unoptimized />
+                <Image
+                  src={mockListing.seller.avatar}
+                  alt={mockListing.seller.name}
+                  width={56}
+                  height={56}
+                  className="w-14 h-14 rounded-full object-cover flex-shrink-0"
+                  unoptimized
+                />
                 <div className="flex-1">
                   <div className="flex items-center gap-1.5">
                     <p className="font-bold text-[#333]">
@@ -594,7 +611,7 @@ export default function ListingDetailPage({
                     )}
                   </div>
                   <p className="text-xs text-[#8f8f8f]">
-                    {mockListing.seller.joinDate} kaytıldı
+                    {mockListing.seller.joinDate} katıldı
                   </p>
                 </div>
               </div>
@@ -626,28 +643,29 @@ export default function ListingDetailPage({
                       ({mockListing.seller.reviewCount} yorum)
                     </p>
                   </div>
-
-                  <div>
-                    <p className="text-xs text-[#8f8f8f] mb-1">Tepki Suresi</p>
-                    <p className="font-semibold text-[#333]">
-                      {mockListing.seller.responseTime}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-xs text-[#8f8f8f] mb-1">İlan Sayısı</p>
-                    <p className="font-semibold text-[#333]">
-                      {mockListing.seller.listings} aktif ilan
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-xs text-[#8f8f8f] mb-1">Satılan Ürün</p>
-                    <p className="font-semibold text-[#333]">
-                      {mockListing.seller.soldCount} bağarılış Satış 
-                    </p>
-                  </div>
                 </div>
+
+                <div>
+                  <p className="text-xs text-[#8f8f8f] mb-1">Tepki Süresi</p>
+                  <p className="font-semibold text-[#333]">
+                    {mockListing.seller.responseTime}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs text-[#8f8f8f] mb-1">İlan Sayısı</p>
+                  <p className="font-semibold text-[#333]">
+                    {mockListing.seller.listings} aktif ilan
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs text-[#8f8f8f] mb-1">Satılan Ürün</p>
+                  <p className="font-semibold text-[#333]">
+                    {mockListing.seller.soldCount} başarılı satış
+                  </p>
+                </div>
+              </div>
 
               {/* Action Buttons */}
               <div className="space-y-2">
@@ -664,14 +682,12 @@ export default function ListingDetailPage({
             <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-4">
               <button className="w-full flex items-center gap-2 text-[#8f8f8f] hover:text-red-500 transition-colors text-sm font-medium">
                 <AlertCircle size={18} />
-                Bu ilanİ bildir
+                Bu ilanı bildir
               </button>
             </div>
           </div>
-    
-    
-   5�db�>
-    </div>
+        </div>
+      </div>
 
     </div>
   );

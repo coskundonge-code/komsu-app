@@ -26,10 +26,10 @@ import {
   Bell,
 } from 'lucide-react';
 import Link from 'next/link';
-import { getAlerts } from 'A/lib/hooks/use-notifications';
+import { getAlerts } from '@/lib/hooks/use-notifications';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
 
-const LeafletMap = dynamic(() => import('A/components/map/leaflet-map'), { ssr: false });
+const LeafletMap = dynamic(() => import('@/components/map/leaflet-map'), { ssr: false });
 
 interface Alert {
   id: string;
@@ -40,7 +40,7 @@ interface Alert {
   severity: 'low' | 'medium' | 'high' | 'critical';
   category: 'weather' | 'traffic' | 'security' | 'infrastructure' | 'disaster' | 'other';
   source: string;
-  Active: boolean;
+  active: boolean;
   icon: React.ReactNode;
 }
 
@@ -65,8 +65,8 @@ const getCategoryIcon = (category: string) => {
 const mockAlerts: Alert[] = [
   {
     id: '1',
-    title: 'FÄ±rtÄ±na UyarÄ±sÄ± - Kritiki',
-    description: 'GÃ¼Ã§alÄ±ÅŸmalarÄ± nedeniyle yaÄŸÄ±ÅŸ beklenmektedir. AÃ§Ä° kavaiyetlerini iptal ediniz.',
+    title: 'FÄ±rtÄ±na UyarÄ±sÄ± - Kritik',
+    description: 'GÃ¼Ã§lÃ¼ rÃ¼zgarlar ve ÅŸiddetli yaÄŸÄ±ÅŸ beklenmektedir. AÃ§Ä±k hava faaliyetlerini iptal ediniz.',
     location: 'TÃ¼m Mahalle',
     time: '5 dakika Ã¶nce',
     severity: 'critical',
@@ -90,7 +90,7 @@ const mockAlerts: Alert[] = [
   {
     id: '3',
     title: 'ÅÃ¼pheli AraÃ§ Bildirimi',
-    description: 'PlakasÄ± belirsiz gri renk bir araÃ£ mahalleden geÃ§mekte. Lutfen dikkatli Ã·lunuz.',
+    description: 'PlakasÄ± belirsiz gri renk bir araÃ§ mahalleden geÃ§mekte. LÃ¼tfen dikkatli olunuz.',
     location: 'Ana Cadde, Park YakÄ±nlarÄ±',
     time: '28 dakika Ã¶nce',
     severity: 'high',
@@ -103,25 +103,564 @@ const mockAlerts: Alert[] = [
     id: '4',
     title: 'Su Kesintisi Bildirimi',
     description: 'Boru kÄ±rÄ±lmasÄ± nedeniyle yarÄ±n 08:00-16:00 saatleri arasÄ±nda su kesintisi yapÄ±lacaktÄ±r.',
-    location: '1.ve 2. Sokak Clif',
+    location: '1. ve 2. Sokaklar',
     time: '45 dakika Ã¶nce',
     severity: 'medium',
     category: 'infrastructure',
-    source: 'SuÄ° MinisterÈ),
+    source: 'Su Ä°daresi',
     active: true,
     icon: <Zap size={20} />,
   },
   {
     id: '5',
     title: 'Elektrik Kesintisi',
-    description: 'BakÄ±m Ã£ilÄ±ÅŸmalarÄ± nedeniyle elektrik alÄ±vÄ±lÄ€Í•ËÃ¿g´œ(€ô°4)ôì4(4)½¹ÍĞ™¥±Ñ•É…Ñ•½É¥•Ì€ôl4(€ì¥è€…±°œ°±…‰•°è€Sñ·ğœ°¥½¸è¹Õ±°ô°4(€ì¥è€İ•…Ñ¡•Èœ°±…‰•°è€!…Ù„ÕÉÕµÔœ°¥½¸è€ñ±½Õ‘I…¥¸Í¥é”õìÄÙô€¼øô°4(€ì¥è€ÑÉ…™™¥Œœ°±…‰•°è€QÉ…™¥¬œ°¥½¸è€ñ…ÈÍ¥é”õìÄÙô€¼øô°4(€ì¥è€Í•ÕÉ¥Ñäœ°±…‰•°è€ñÙ•¹±¥¬œ°¥½¸è€ñM¡¥•±Í¥é”õìÄÙô€¼øô°4(€ì¥è€¥¹™É…ÍÑÉÕÑÕÉ”œ°±…‰•°è€±Ñå…ÃÄœ°¥½¸è€ñ½¹ÍÑÉÕÑ¥½¸Í¥é”õìÄÙô€¼øô°4(€ì¥è€‘¥Í…ÍÑ•Èœ°±…‰•°è€¿}…°™•Ğœ°¥½¸è€ñ±•ÉÑQÉ¥…¹±”Í¥é”õìÄÙô€¼øô°4)tì4(4(¼¼M¥µ¥±…Éä€¸¸¸•É•¬½É…‘„‰‘±ĞµÁÉ¥µ…Éäˆù-É¥Ñ¥¬ğ½ÍÁ…¸ø4(€€€€€€€€€€€€€€€€ğ½‘¥Øø4(€€€€€€€€€€€€€€€€ñÍÁ…¸±…ÍÍ9…µ”ô‰™½¹Ğµ‰½±Ñ•áĞµ±œÑ•áĞµÉ•´ØÀÀˆùí…±•ÉÑÌ¹™¥±Ñ•È¡„€ôø„¹Í•Ù•É¥Ñä€ôôô€É¥Ñ¥…°œ€˜˜„¹…Ñ¥Ù”¤¹±•¹Ñ¡ôğ½ÍÁ…¸ø4(€€€€€€€€€€€€€€ğ½‘¥Øø4(€€€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰™±•à¥Ñ•µÌµ•¹Ñ•È©ÕÍÑ¥™äµ‰•Ñİ••¸Áˆ´Ì‰½É‘•Èµˆ‰½É‘•Èµ‰½É‘•È¡½Ù•Èé‰œµÍÕÉ™…”µ¡½Ù•È€µµà´ÄÁà´ÄÁä´ÄÉ½Õ¹‘•ÑÉ…¹Í¥Ñ¥½¸µ½±½ÉÌˆø4(€€€€€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰™±•à¥Ñ•µÌµ•¹Ñ•È…À´Èˆø4(€€€€€€€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰Ü´Ğ ´ĞÉ½Õ¹‘•µ™Õ±°‰œµ½É…¹”´ÔÀÀÍ¡…‘½ÜµÍ´ˆøğ½‘¥Øø4(€€€€€€€€€€€€€€€€€€ñÍÁ…¸±…ÍÍ9…µ”ô‰Ñ•áĞµÍ´™½¹Ğµµ•‘¥Õ´Ñ•áĞµÑ•áĞµÁÉ¥µ…Éäˆùgñ­Í•¬ğ½ÍÁ…¸ø4(€€€€€€€€€€€€€€€€ğ½‘¥Øø4(€€€€€€€€€€€€€€€€ñÍÁ…¸±…ÍÍ9…µ”ô‰™½¹Ğµ‰½±Ñ•áĞµ±œÑ•áĞµ½É…¹”´ÔÀÀˆùí…±•ÉÑÌ¹™¥±Ñ•È¡„€ôø„¹Í•Ù•É¥Ñä€ôôô€¡¥ œ€˜˜„¹…Ñ¥Ù”¤¹±•¹Ñ¡ôğ½ÍÁ…¸ø4(€€€€€€€€€€€€€€ğ½‘¥Øø4(€€€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰™±•à¥Ñ•µÌµ•¹Ñ•È©ÕÍÑ¥™äµ‰•Ñİ••¸Áˆ´Ì‰½É‘•Èµˆ‰½É‘•Èµ‰½É‘•È¡½Ù•Èé‰œµÍÕÉ™…”µ¡½Ù•È€µµà´ÄÁà´ÄÁä´ÄÉ½Õ¹‘•ÑÉ…¹Í¥Ñ¥½¸µ½±½ÉÌˆø4(€€€€€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰™±•à¥Ñ•µÌµ•¹Ñ•È…À´Èˆø4(€€€€€€€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰Ü´Ğ ´ĞÉ½Õ¹‘•µ™Õ±°‰œµå•±±½Ü´ÔÀÀÍ¡…‘½ÜµÍ´ˆøğ½‘¥Øø4(€€€€€€€€€€€€€€€€€€ñÍÁ…¸±…ÍÍ9…µ”ô‰Ñ•áĞµÍ´™½¹Ğµµ•‘¥Õ´Ñ•áĞµÑ•áĞµÁÉ¥µ…Éäˆù=ÉÑ„ğ½ÍÁ…¸ø4(€€€€€€€€€€€€€€€€ğ½‘¥Øø4(€€€€€€€€€€€€€€€€ñÍÁ…¸±…ÍÍ9…µ”ô‰™½¹Ğµ‰½±Ñ•áĞµ±œÑ•áĞµå•±±½Ü´ØÀÀˆùí…±•ÉÑÌ¹™¥±Ñ•È¡„€ôø„¹Í•Ù•É¥Ñä€ôôô€µ•‘¥Õ´œ€˜˜„¹…Ñ¥Ù”¤¹±•¹Ñ¡ôğ½ÍÁ…¸ø4(€€€€€€€€€€€€€€ğ½‘¥Øø4(€€€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰™±•à¥Ñ•µÌµ•¹Ñ•È©ÕÍÑ¥™äµ‰•Ñİ••¸¡½Ù•Èé‰œµÍÕÉ™…”µ¡½Ù•È€µµà´ÄÁà´ÄÁä´ÄÉ½Õ¹‘•ÑÉ…¹Í¥Ñ¥½¸µ½±½ÉÌˆø4(€€€€€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰™±•à¥Ñ•µÌµ•¹Ñ•È…À´Èˆø4(€€€€€€€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰ÜŠÜ´Ğ ´ĞÉ½Õ¹‘•µ™Õ±°‰œµÉ••¸´ÔÀÀÍ¡…‘½ÜµÍ´ˆøğ½‘¥Øø4(€€€€€€€€€€€€€€€€€€ñÍÁ…¸±…ÍÍ9…µ”ô‰Ñ•áĞµÍ´™½¹Ğµµ•‘¥Õ´Ñ•áĞµÑ•áĞµÁÉ¥µ…Éäˆùó|;ìğ½ÍÁ…¸ø4(€€€€€€€€€€€€€€€€ğ½‘¥Øø4(€€€€€€€€€€€€€€€€ñÍÁ…¸±…ÍÍ9…µ”ô‰™½¹Ğµ‰½±Ñ•áĞµ±œÑ•áĞµÉ••¸´ØÀÀˆùí…±•ÉÑÌ¹™¥±Ñ•È¡„€ôø„¹Í•Ù•É¥Ñä€ôôô€±½Üœ€˜˜„¹…Ñ¥Ù”¤¹±•¹Ñ¡ôğ½ÍÁ…¸ø4(€€€€€€€€€€€€€€ğ½‘¥Øø4(€€€€€€€€€€€€ğ½‘¥Øø4(€€€€€€€€€€ğ½‘¥Øø4(4(€€€€€€€€€ì¼¨…Ñ•½Éä	É•…­‘½İ¸…É€¨½ô4(€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰‰œµÍÕÉ™…”É½Õ¹‘•µ±œ‰½É‘•È‰½É‘•Èµ‰½É‘•ÈÀ´Ôˆø4(€€€€€€€€€€€€ñ Ì±…ÍÍ9…µ”ô‰™½¹Ğµ‰½±Ñ•áĞµÑ•áĞµÁÉ¥µ…Éäµˆ´Ô™±•à¥Ñ•µÌµ•¹Ñ•È…À´Èˆø4(€€€€€€€€€€€€€€ñi…ÀÍ¥é”õìÄáô±…ÍÍ9…µ”ô‰Ñ•áĞµÁÉ¥µ…Éäˆ€¼ø4(€€€€€€€€€€€€€-…Ñ•½É¤‡Å•Ì4(€€€€€€€€€€€€ğ½ Ìø4(€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰ÍÁ…”µä´Èˆø4(€€€€€€€€€€€€€í™¥±Ñ•É…Ñ•½É¥•Ì¹™¥±Ñ•È¡Œ€ôøŒ¹¥€„ôô€…±°œ¤¹µ…À ¡…Ñ•½Éä¤€ôøì4(€€€€€€€€€€€€€€€½¹ÍĞ½Õ¹Ğ€ô…±•ÉÑÌ¹™¥±Ñ•È¡„€ôø„¹…Ñ•½Éä€ôôô…Ñ•½Éä¹¥€˜˜„¹…Ñ¥Ù”¤¹±•¹Ñ ì4(€€€€€€€€€€€€€€€É•ÑÕÉ¸€ 4(€€€€€€€€€€€€€€€€€€ñ‘¥Ø­•äõí…Ñ•½Éä¹¥‘ô±…ÍÍ9…µ”ô‰™±•à¥Ñ•µÌµ•¹Ñ•È©ÕÍÑ¥™äµ‰•Ñİ••¸Ñ•áĞµÍ´¡½Ù•Èé‰œµÍÕÉ™…”µ¡½Ù•È€µµà´ÄÁà´ÄÁä´Ä¸ÔÉ½Õ¹‘•ÑÉ…¹Í¥Ñ¥½¸µ½±½ÉÌˆø4(€€€€€€€€€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰™±•à¥Ñ•µÌµ•¹Ñ•È…À´Èˆø4(€€€€€€€€€€€€€€€€€€€€€€ñÍÁ…¸±…ÍÍ9…µ”ô‰Ñ•áĞµÁÉ¥µ…Éäˆùí…Ñ•½Éä¹¥½¹ôğ½ÍÁ…¸ø4(€€€€€€€€€€€€€€€€€€€€€€ñÍÁ…¸±…ÍÍ9…µ”ô‰Ñ•áĞµÑ•áĞµÁÉ¥µ…Éä™½¹Ğµµ•‘¥Õ´ˆùí…Ñ•½Éä¹±…‰•±ôğ½ÍÁ…¸ø4(€€€€€€€€€€€€€€€€€€€€ğ½‘¥Øø4(€€€€€€€€€€€€€€€€€€€€ñÍÁ…¸±…ÍÍ9…µ”ô‰™½¹Ğµ‰½±Ñ•áĞµÁÉ¥µ…Éä‰œµÁÉ¥µ…Éäµ±¥¡ĞÁà´È¸ÔÁä´À¸ÔÉ½Õ¹‘•µ™Õ±°Ñ•áĞµáÌˆø4(€€€€€€€€€€€€€€€€€€€€€í½Õ¹Ñô4(€€€€€€€€€€€€€€€€€€€€ğ½ÍÁ…¸ø4(€€€€€€€€€€€€€€€€€€ğ½‘¥Øø4(€€€€€€€€€€€€€€€€¤ì4(€€€€€€€€€€€€€ô¥ô4(€€€€€€€€€€€€ğ½‘¥Øø4(€€€€€€€€€€ğ½‘¥Øø4(€€€€€€€€ğ½‘¥Øø4(4(€€€€€€€ì¼¨É•…Ñ”±•ÉĞ5½‘…°€¨½ô4(€€€€€€€í¥Í5½‘…±=Á•¸€˜˜€ 4(€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰™¥á•¥¹Í•Ğ´À‰œµ‰±…¬¼ÔÀè´ÔÀ™±•à¥Ñ•µÌµ•¹Ñ•È©ÕÍÑ¥™äµ•¹Ñ•ÈÀ´Ğˆø4(€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰‰œµÍÕÉ™…”É½Õ¹‘•µ±œµ…àµÜµµÜµ™Õ±°µ…àµ µläÁÙ¡t½Ù•É™±½Üµäµ…ÕÑ¼ˆø4(€€€€€€€€€€€€€ì¼¨5½‘…°!•…‘•È€¨½ô4(€€€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰™±•à¥Ñ•µÌµ•¹Ñ•È©ÕÍÑ¥™äµ‰•Ñİ••¸À´Ğ‰½É‘•Èµˆ‰½É‘•Èµ‰½É‘•Èˆø4(€€€€€€€€€€€€€€€€ñ È±…ÍÍ9…µ”ô‰Ñ•áĞµ±œ™½¹Ğµ‰½±Ñ•áĞµÑ•áĞµÁÉ¥µ…Éäˆùe•¹¤Uå…ËÄ=±×}ÕÉĞ4(€€€€€€€€€€€€€€€€ğ½ Èø4(€€€€€€€€€€€€€€€€ñ‰ÕÑÑ½¸4(€€€€€€€€€€€€€€€€€½¹±¥¬õì ¤€ôøÍ•Ñ%Í5½‘…±=Á•¸¡šŒì{ÜİBˆÛ\ÜÓ˜[YOHœLHİ™\˜™ËYÜ˜^KLL›İ[™Y[È˜[œÚ][Û‹XÛÛÜœÈƒBˆƒBˆÚ^™O^ÌŒHÛ\ÜÓ˜[YOH^]^[]]YˆÏƒBˆØ]ÛƒBˆÙ]ƒBƒBˆËÊˆ[Ù[›ÙH
-‹ßCBˆ›Ü›HÛ”İX›Z]^Ú[™PÜ™X]P[\HÛ\ÜÓ˜[YOHœMÜXÙK^KMƒBˆËÊˆ]H
-‹ßCBˆ]ƒBˆX™[Û\ÜÓ˜[YOH˜›ØÚÈ^\ÛH›Û[YY][H^]^\š[X\HX‹Lˆ˜qgÛ1,ZÏÛX™[ƒBˆ[œ]Bˆ\OH^ƒBˆ˜[YO^Ù›Ü›Q]K]_CBˆÛÚ[™ÙO^ÊJHOˆÙ]›Ü›Q]JË‹‹™›Ü›Q]K]NˆK\™Ù]˜[Y_J_CBˆXÙZÛ\H•^X\±,H˜q'Û1,Zñ,[±,HX^±,[±,^ˆƒBˆÛ\ÜÓ˜[YOHÈ[LÈKLˆ›Ü™\ˆ›Ü™\‹X›Ü™\ˆ›İ[™Y[È^]^\š[X\HXÙZÛ\^]^[]]Y›Øİ\Î›İ][™K[›Û™H›Øİ\Î˜›Ü™\‹\š[X\H›Øİ\Îœš[™ËLH›Øİ\Îœš[™Ë\š[X\HƒBˆ™\]Z\™YBˆÏƒBˆÙ]ƒBƒBˆËÊˆ\ØÜš\[Ûˆ
-‹ßCBˆ]ƒBˆX™[Û\ÜÓ˜[YOH˜›ØÚÈ^\ÛH›Û[YY][H^]^\š[X\HX‹Lˆpéñ,ZÏ[X|kKˆ^\™XCBˆ˜[YO^Ù›Ü›Q]K™\ØÜš\[ÛŸCBˆÛÚ[™ÙO^ÊJHOˆÙ]›Ü›Q]JË‹‹™›Ü›Q]K\ØÜš\[ÛˆK\™Ù]˜[Y_J_CBˆXÙZÛ\H•^X\±,[±,[ˆ]^[\±,[±,HX^±,[±,^ˆƒBˆÛ\ÜÓ˜[YOHËY[LÈKLˆ›Ü™\ˆ›Ü™\‹X›Ü™\ˆ›İ[™Y[È^]^\š[X\HXÙZÛ\^]^[]]Y›Øİ\Î›İ][™K[›Û™H›Øİ\Î˜›Ü™\‹\š[X\H›Øİ\Îœš[™ËLH›Øİ\Îœš[™Ë\š[X\H™\Ú^™K[›Û™HƒBˆ›İÜÏ^ÌßCBˆ™\]Z\™YBˆÏƒBˆÙ]ƒBƒBˆËÊˆØØ][Ûˆ
-‹ßCBˆ]ƒBˆX™[Û\ÜÓ˜[YOH˜›ØÚÈ^\ÛH›Û[YY][H^]^\š[X\HX‹Lˆ’ÛÛ[OÛX™[ƒBˆ[œ]Bˆ\OH^ƒBˆ˜[YO^Ù›Ü›Q]K›ØØ][ÛŸCBˆÛÚ[™ÙO^ÊJHOˆÙ]›Ü›Q]JË‹‹™›Ü›Q]KØØ][ÛˆK\™Ù]˜[Y_J_CBˆXÙZÛ\H•^X\±,HÛÛ[][HX^±,[±,^ˆƒBˆÛ\ÜÓ˜[YOHÈ[LÈKLˆ›Ü™\ˆ›Ü™\‹X›Ü™\ˆ›İ[™Y[È^]^\š[X\HXÙZÛ\^]^[]]Y›Øİ\Î›İ][™K[›Û™H›Øİ\Î˜›Ü™\‹\š[X\H›Øİ\Îœš[™ËLH›Øİ\Îœš[™Ë\š[X\HƒBˆ™\]Z\™YBˆÏƒBˆÙ]ƒBƒBˆËÊˆØ]YÛÜH
-‹ßCBˆ]ƒBˆX™[Û\ÜÓ˜[YOH˜›ØÚÈ^\ÛH›Û[YY][H^]^\š[X\HX‹Lˆ’Ø[YYÛÜšOÛX™[ƒBˆÙ[XİBˆ˜[YO^Ù›Ü›Q]K˜Ø]YÛÜ_CBˆÛÚ[™ÙO^ÊJHOˆÙ]›Ü›Q]JË‹‹™›Ü›Q]KØ]YÛÜNˆK\™Ù]˜[Y_J_CBˆÛ\ÜÓ˜[YOHËY[LÈKLˆ›Ü™\ˆ›Ü™\‹X›Ü™\ˆ›İ[™Y[È^]^\š[X\H›Øİ\Î›İ][™K[›Û™H›Øİ\Î˜›Ü™\‹\š[X\H›Øİ\Îœš[™ËLH›Øİ\Îœš[™Ë\š[X\HƒBˆƒBˆÜ[Ûˆ˜[YOHœÙXİ\š]H‘ğï™[›ZÏÛÜ[ÛƒBˆÜ[Ûˆ˜[YOHÙX]\ˆ’]¸H\[]OÛÜ[ÛƒBˆÜ[Ûˆ˜[YOH˜Y™šXÈ•˜YšZÏÛÜ[ÛƒBˆÜ[Ûˆ˜[YOHš[™œ˜\İXİ\™H[X\1,HÛÜ[ÛƒBˆÜ[Ûˆ˜[YOH™\Ø\İ\ˆ‘ñ'Ø[Y™]ÛÜ[ÛƒBˆÜ[Ûˆ˜[YOH›İ\ˆ‘q'Ù\ÛÜ[ÛƒBˆÜÙ[XİƒBˆÙ]ƒBƒBˆËÊˆÙ]™\š]H
-‹ßCBˆ]ƒBˆX™[Û\ÜÓ˜[YOH˜›ØÚÈ^\ÛH›Û[YY][H^]^\š[X\HX‹LˆXÚ[^Y]\™XÙ\ÚOÛX™[ƒBˆÙ[XİBˆ˜[YO^Ù›Ü›Q]KœÙ]™\š]_CBˆÛÚ[™ÙO^ÊJHOˆÙ]›Ü›Q]JË‹‹™›Ü›Q]KÙ]™\š]NˆK\™Ù]˜[Y_J_CBˆÛ\ÜÓ˜[YOHËY[LÈKLˆ›Ü™\ˆ›Ü™\‹X›Ü™\ˆ›İ[™Y[È^]^\š[X\H›Øİ\Î›İ][™K[›Û™H›Øİ\Î˜›Ü™\‹\š[X\H›Øİ\Îœš[™ËLH›Øİ\Îœš[™Ë\š[X\HƒBˆƒBˆÜ[Ûˆ˜[YOH›İÈ‘0ï1gğïÏÛÜ[ÛƒBˆÜ[Ûˆ˜[YOH›YY][H“ÜOÛÜ[ÛƒBˆÜ[Ûˆ˜[YOHšYÚ–pïÜÙZÏÛÜ[ÛƒBˆÜ[Ûˆ˜[YOH˜Üš]XØ[’Üš]ZÏÛÜ[ÛƒBˆÜÙ[XİƒBˆÙ]ƒBƒBˆËÊˆİX›Z]]Ûˆ
-‹ßCBˆ]ˆÛ\ÜÓ˜[YOH™›^Ø\LÈLˆƒBˆ]ÛƒBˆ\OH˜]ÛˆƒBˆÛÛXÚÏ^Ê
-HOˆÙ]\Ó[Ù[Ü[Š˜[ÙJ_CBˆÛ\ÜÓ˜[YOH™›^LHMKLˆ›Ü™\ˆ›Ü™\‹X›Ü™\ˆ^]^\š[X\H›Û[YY][H›İ[™Y[Èİ™\˜™ËYÜ˜^KML˜[œÚ][Û‹XÛÛÜœÈƒBˆƒBˆ1,[BˆØ]ÛƒBˆ]ÛƒBˆ\OHœİX›Z]ƒBˆÛ\ÜÓ˜[YOH™›^LHMKLˆ™Ë\š[X\Hİ™\˜™Ë\š[X\KZİ™\ˆ^]Ú]H›Û[YY][H›İ[™Y[È˜[œÚ][Û‹XÛÛÜœÈƒBˆƒBˆ^X\±,H^[qgÃBˆØ]ÛƒBˆÙ]ƒBˆÙ›Ü›OƒBˆÙ]ƒBˆÙ]ƒBˆ
-_CBˆÙ]ƒBˆ
-NÂŸB
+    description: 'BakÄ±m Ã§alÄ±ÅŸmalarÄ± nedeniyle elektrik kesintisi gerÃ§ekleÅŸecektir. Saatler belirlenmektedir.',
+    location: 'Merkez Mahalle',
+    time: '1 saat Ã¶nce',
+    severity: 'medium',
+    category: 'infrastructure',
+    source: 'Elektrik Åirketi',
+    active: true,
+    icon: <Zap size={20} />,
+  },
+  {
+    id: '6',
+    title: 'Yol Ã‡alÄ±ÅŸmasÄ± - Ana Cadde',
+    description: 'Bu hafta yapÄ±lacak yol onarÄ±mlarÄ± nedeniyle trafik dÃ¼zenlemesi uygulanacaktÄ±r.',
+    location: 'Ana Cadde',
+    time: '2 saat Ã¶nce',
+    severity: 'low',
+    category: 'traffic',
+    source: 'Belediye',
+    active: true,
+    icon: <Construction size={20} />,
+  },
+  {
+    id: '7',
+    title: 'KayÄ±p Evcil Hayvan - KÃ¶pek',
+    description: 'Kahverengi labrador kÃ¶pek kayÄ±p. Ä°smi "Max", yaklaÅŸÄ±k 3 yaÅŸÄ±nda. Bilgi iÃ§in iletiÅŸime geÃ§iniz.',
+    location: '5. Sokak',
+    time: '3 saat Ã¶nce',
+    severity: 'low',
+    category: 'other',
+    source: 'Mahalle Sakinleri',
+    active: true,
+    icon: <PawPrint size={20} />,
+  },
+  {
+    id: '8',
+    title: 'GÃ¼rÃ¼ltÃ¼ Åikayeti - Gece SaatlarÄ±',
+    description: 'GeÃ§ saatlerde mÃ¼zik ve gÃ¼rÃ¼ltÃ¼ ÅŸikayeti alÄ±nmÄ±ÅŸtÄ±r. LÃ¼tfen dikkatli olunuz.',
+    location: 'Merkez ApartmanlarÄ±',
+    time: '4 saat Ã¶nce',
+    severity: 'low',
+    category: 'other',
+    source: 'Mahalle Sakinleri',
+    active: false,
+    icon: <Volume2 size={20} />,
+  },
+  {
+    id: '9',
+    title: 'Trafik KazasÄ± - Ã‡arpÄ±ÅŸma',
+    description: 'Ä°ki araÃ§ arasÄ±nda hafif Ã§arpÄ±ÅŸma meydana gelmiÅŸtir. YaralÄ± bildirilmemiÅŸtir.',
+    location: 'DÃ¶nÃ¼ÅŸ NoktasÄ±',
+    time: '5 saat Ã¶nce',
+    severity: 'high',
+    category: 'traffic',
+    source: 'Polis',
+    active: false,
+    icon: <Car size={20} />,
+  },
+];
+
+const filterCategories = [
+  { id: 'all', label: 'TÃ¼mÃ¼', icon: null },
+  { id: 'weather', label: 'Hava Durumu', icon: <CloudRain size={16} /> },
+  { id: 'traffic', label: 'Trafik', icon: <Car size={16} /> },
+  { id: 'security', label: 'GÃ¼venlik', icon: <Shield size={16} /> },
+  { id: 'infrastructure', label: 'AltyapÄ±', icon: <Construction size={16} /> },
+  { id: 'disaster', label: 'DoÄŸal Afet', icon: <AlertTriangle size={16} /> },
+];
+
+const getSeverityColor = (severity: string) => {
+  switch (severity) {
+    case 'critical':
+      return 'border-l-4 border-red-600 bg-red-50';
+    case 'high':
+      return 'border-l-4 border-orange-500 bg-orange-50';
+    case 'medium':
+      return 'border-l-4 border-yellow-500 bg-yellow-50';
+    case 'low':
+      return 'border-l-4 border-blue-500 bg-blue-50';
+    default:
+      return 'border-l-4 border-gray-300 bg-gray-50';
+  }
+};
+
+const getSeverityBadgeColor = (severity: string) => {
+  switch (severity) {
+    case 'critical':
+      return 'bg-red-100 text-red-800';
+    case 'high':
+      return 'bg-orange-100 text-orange-800';
+    case 'medium':
+      return 'bg-yellow-100 text-yellow-800';
+    case 'low':
+      return 'bg-blue-100 text-blue-800';
+    default:
+      return 'bg-gray-100 text-gray-800';
+  }
+};
+
+const getSeverityLabel = (severity: string) => {
+  switch (severity) {
+    case 'critical':
+      return 'Kritik';
+    case 'high':
+      return 'YÃ¼ksek';
+    case 'medium':
+      return 'Orta';
+    case 'low':
+      return 'DÃ¼ÅŸÃ¼k';
+    default:
+      return 'Bilinmiyor';
+  }
+};
+
+const getSeverityIconColor = (severity: string) => {
+  switch (severity) {
+    case 'critical':
+      return 'text-red-600';
+    case 'high':
+      return 'text-orange-500';
+    case 'medium':
+      return 'text-yellow-500';
+    case 'low':
+      return 'text-blue-500';
+    default:
+      return 'text-gray-500';
+  }
+};
+
+export default function AlertsPage() {
+  const { profile } = useCurrentUser();
+  const [alerts, setAlerts] = React.useState(mockAlerts);
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [activeFilter, setActiveFilter] = React.useState('all');
+  const [showActive, setShowActive] = React.useState(true);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
+  const [formData, setFormData] = React.useState({
+    title: '',
+    description: '',
+    location: '',
+    category: 'security',
+    severity: 'medium',
+  });
+
+  // Fetch alerts from Supabase
+  useEffect(() => {
+    async function fetchAlerts() {
+      if (!(profile as any)?.neighborhood_id) return;
+      try {
+        const { data, error } = await getAlerts((profile as any).neighborhood_id, { limit: 100 });
+        if (data && !error) {
+          const mapped = data.map((alert: any) => ({
+            id: alert.id,
+            title: alert.title,
+            description: alert.description,
+            location: alert.location,
+            time: new Date(alert.created_at).toLocaleString('tr-TR'),
+            severity: alert.alert_severity,
+            category: alert.category,
+            source: alert.profiles?.full_name || 'Mahalle Sakinleri',
+            active: alert.is_active,
+            icon: null,
+          }));
+          setAlerts(mapped);
+        }
+      } catch (err) {
+        console.error('Failed to fetch alerts:', err);
+      }
+    }
+    fetchAlerts();
+  }, [profile]);
+
+  const filteredAlerts = alerts.filter((alert) => {
+    const matchesSearch = alert.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      alert.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = activeFilter === 'all' || alert.category === activeFilter;
+    const matchesStatus = alert.active === showActive;
+    return matchesSearch && matchesCategory && matchesStatus;
+  });
+
+  const handleCreateAlert = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Reset form
+    setFormData({
+      title: '',
+      description: '',
+      location: '',
+      category: 'security',
+      severity: 'medium',
+    });
+    setIsModalOpen(false);
+  };
+
+  const activeAlertCount = alerts.filter(a => a.active).length;
+  const resolvedAlertCount = alerts.filter(a => !a.active).length;
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header Section */}
+      <div className="bg-surface border-b border-border sticky top-0 z-10">
+        <div className="max-w-4xl mx-auto px-4 py-5">
+          {/* Title Row */}
+          <div className="flex items-center justify-between mb-4 gap-3">
+            <h1 className="text-2xl font-bold text-text-primary">Mahalle UyarÄ±larÄ±</h1>
+            {/* Notification Toggle */}
+            <button
+              onClick={() => setNotificationsEnabled(!notificationsEnabled)}
+              className={`p-2 rounded-lg transition-all ${
+                notificationsEnabled
+                  ? 'bg-primary text-white'
+                  : 'bg-background text-text-muted border border-border'
+              }`}
+              title={notificationsEnabled ? "Bildirimler aÃ§Ä±k" : "Bildirimler kapalÄ±"}
+            >
+              <Bell size={20} />
+            </button>
+          </div>
+
+          {/* Search Bar */}
+          <div className="relative mb-4">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
+            <input
+              type="text"
+              placeholder="UyarÄ±larda ara..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-full text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+            />
+          </div>
+
+          {/* Controls Row */}
+          <div className="flex items-center justify-between gap-3 flex-wrap mb-4">
+            {/* Active/Past Toggle */}
+            <div className="flex items-center gap-2 bg-background rounded-full p-1">
+              <button
+                onClick={() => setShowActive(true)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all flex items-center gap-1 ${
+                  showActive
+                    ? 'bg-primary text-white'
+                    : 'text-text-muted hover:text-text-primary'
+                }`}
+              >
+                <Eye size={16} />
+                Aktif
+                <span className="bg-surface/30 px-2 py-0.5 rounded-full text-xs font-bold">{activeAlertCount}</span>
+              </button>
+              <button
+                onClick={() => setShowActive(false)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all flex items-center gap-1 ${
+                  !showActive
+                    ? 'bg-primary text-white'
+                    : 'text-text-muted hover:text-text-primary'
+                }`}
+              >
+                <EyeOff size={16} />
+                GeÃ§miÅŸ
+                <span className="bg-surface/30 px-2 py-0.5 rounded-full text-xs font-bold">{resolvedAlertCount}</span>
+              </button>
+            </div>
+
+            {/* Create Alert Button */}
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="px-4 py-2 bg-primary hover:bg-primary-hover text-white font-medium rounded-lg transition-colors flex items-center gap-2"
+            >
+              <Plus size={18} />
+              UyarÄ± PaylaÅŸ
+            </button>
+          </div>
+
+          {/* Filter Pills */}
+          <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4">
+            {filterCategories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => setActiveFilter(category.id)}
+                className={`px-4 py-2 rounded-full font-medium whitespace-nowrap transition-colors flex items-center gap-2 ${
+                  activeFilter === category.id
+                    ? 'bg-primary text-white'
+                    : 'bg-surface text-text-primary border border-border hover:border-primary'
+                }`}
+              >
+                {category.icon && <span className={activeFilter === category.id ? 'text-white' : 'text-gray-600'}>{category.icon}</span>}
+                {category.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto px-2 sm:px-4 py-4 sm:py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Alerts List */}
+        <div className="lg:col-span-2 space-y-4">
+          {filteredAlerts.length === 0 ? (
+            <div className="bg-surface rounded-lg border border-border p-12 text-center">
+              <AlertCircle size={48} className="mx-auto text-text-muted mb-3" />
+              <p className="text-text-primary font-medium">UyarÄ± bulunamadÄ±</p>
+              <p className="text-text-muted text-sm mt-1">
+                {showActive
+                  ? 'Åu anda aktif uyarÄ± bulunmamaktadÄ±r'
+                  : 'GeÃ§miÅŸ uyarÄ± bulunmamaktadÄ±r'}
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filteredAlerts.map((alert) => (
+                <Link
+                  key={alert.id}
+                  href={`/uyarilar/${alert.id}`}
+                  className={`block ${getSeverityColor(alert.severity)} rounded-lg p-5 border-2 border-l-4 hover:shadow-lg transition-all hover:-translate-y-0.5 cursor-pointer`}
+                >
+                  <div className="flex items-start gap-4">
+                    {/* Large Severity Icon */}
+                    <div className={`flex-shrink-0 p-2 rounded-lg ${getSeverityIconColor(alert.severity)} bg-surface/50`}>
+                      {alert.icon}
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      {/* Header with Title and Severity Badge */}
+                      <div className="flex items-start justify-between gap-3 mb-2 flex-wrap">
+                        <div className="flex-1">
+                          <h3 className="font-bold text-lg text-text-primary">{alert.title}</h3>
+                          <p className="text-xs text-text-muted mt-0.5 font-medium">Kaynak: {alert.source}</p>
+                        </div>
+                        <span className={`text-xs font-bold px-3 py-1.5 rounded-full flex-shrink-0 uppercase tracking-wide ${getSeverityBadgeColor(alert.severity)}`}>
+                          {getSeverityLabel(alert.severity)}
+                        </span>
+                      </div>
+
+                      {/* Description */}
+                      <p className="text-sm text-text-secondary mb-4 leading-relaxed">{alert.description}</p>
+
+                      {/* Footer: Location and Time */}
+                      <div className="flex items-center gap-4 text-xs text-text-muted flex-wrap pt-3 border-t border-white/30">
+                        <div className="flex items-center gap-2 font-medium">
+                          <MapPin size={16} className="text-primary" />
+                          <span>{alert.location}</span>
+                        </div>
+                        <span className="hidden sm:inline">â€¢</span>
+                        <div className="flex items-center gap-2 font-medium">
+                          <Clock size={16} className="text-primary" />
+                          <span>{alert.time}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Sidebar */}
+        <div className="lg:col-span-1 space-y-4">
+          {/* Map */}
+          <div className="bg-surface rounded-lg border border-border overflow-hidden">
+            <LeafletMap
+              center={[41.0370, 28.9850]}
+              zoom={13}
+              className="w-full h-48"
+              markers={[
+                { lat: 41.0422, lng: 29.0050, title: 'Su Kesintisi', color: 'blue' },
+                { lat: 41.0350, lng: 28.9900, title: 'Yol Ã‡alÄ±ÅŸmasÄ±', color: 'orange' },
+                { lat: 41.0300, lng: 28.9780, title: 'GÃ¼venlik UyarÄ±sÄ±', color: 'red' },
+                { lat: 41.0450, lng: 28.9750, title: 'GÃ¼rÃ¼ltÃ¼ Åikayeti', color: 'orange' },
+              ]}
+              interactive={false}
+            />
+            <div className="p-3">
+              <p className="text-xs text-text-muted text-center">UyarÄ± konumlarÄ± haritada gÃ¶sterilmektedir</p>
+            </div>
+          </div>
+
+          {/* Statistics Card */}
+          <div className="bg-surface rounded-lg border border-border p-5">
+            <h3 className="font-bold text-text-primary mb-5 flex items-center gap-2">
+              <AlertCircle size={18} className="text-primary" />
+              Aciliyet Ä°statistikleri
+            </h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between pb-3 border-b border-border hover:bg-surface-hover -mx-1 px-1 py-1 rounded transition-colors">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full bg-red-600 shadow-sm"></div>
+                  <span className="text-sm font-medium text-text-primary">Kritik</span>
+                </div>
+                <span className="font-bold text-lg text-red-600">{alerts.filter(a => a.severity === 'critical' && a.active).length}</span>
+              </div>
+              <div className="flex items-center justify-between pb-3 border-b border-border hover:bg-surface-hover -mx-1 px-1 py-1 rounded transition-colors">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full bg-orange-500 shadow-sm"></div>
+                  <span className="text-sm font-medium text-text-primary">YÃ¼ksek</span>
+                </div>
+                <span className="font-bold text-lg text-orange-500">{alerts.filter(a => a.severity === 'high' && a.active).length}</span>
+              </div>
+              <div className="flex items-center justify-between pb-3 border-b border-border hover:bg-surface-hover -mx-1 px-1 py-1 rounded transition-colors">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full bg-yellow-500 shadow-sm"></div>
+                  <span className="text-sm font-medium text-text-primary">Orta</span>
+                </div>
+                <span className="font-bold text-lg text-yellow-600">{alerts.filter(a => a.severity === 'medium' && a.active).length}</span>
+              </div>
+              <div className="flex items-center justify-between hover:bg-surface-hover -mx-1 px-1 py-1 rounded transition-colors">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full bg-green-500 shadow-sm"></div>
+                  <span className="text-sm font-medium text-text-primary">DÃ¼ÅŸÃ¼k</span>
+                </div>
+                <span className="font-bold text-lg text-green-600">{alerts.filter(a => a.severity === 'low' && a.active).length}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Category Breakdown Card */}
+          <div className="bg-surface rounded-lg border border-border p-5">
+            <h3 className="font-bold text-text-primary mb-5 flex items-center gap-2">
+              <Zap size={18} className="text-primary" />
+              Kategori DaÄŸÄ±lÄ±mÄ±
+            </h3>
+            <div className="space-y-2">
+              {filterCategories.filter(c => c.id !== 'all').map((category) => {
+                const count = alerts.filter(a => a.category === category.id && a.active).length;
+                return (
+                  <div key={category.id} className="flex items-center justify-between text-sm hover:bg-surface-hover -mx-1 px-1 py-1.5 rounded transition-colors">
+                    <div className="flex items-center gap-2">
+                      <span className="text-primary">{category.icon}</span>
+                      <span className="text-text-primary font-medium">{category.label}</span>
+                    </div>
+                    <span className="font-bold text-primary bg-primary-light px-2.5 py-0.5 rounded-full text-xs">
+                      {count}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Create Alert Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-surface rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h2 className="text-lg font-bold text-text-primary">Yeni UyarÄ± OluÅŸtur</h2>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X size={20} className="text-text-muted" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <form onSubmit={handleCreateAlert} className="p-4 space-y-4">
+              {/* Title */}
+              <div>
+                <label className="block text-sm font-medium text-text-primary mb-2">BaÅŸlÄ±k</label>
+                <input
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  placeholder="UyarÄ± baÅŸlÄ±ÄŸÄ±nÄ± yazÄ±nÄ±z"
+                  className="w-full px-3 py-2 border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                  required
+                />
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-sm font-medium text-text-primary mb-2">AÃ§Ä±klama</label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  placeholder="UyarÄ±nÄ±n detaylarÄ±nÄ± yazÄ±nÄ±z"
+                  className="w-full px-3 py-2 border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none"
+                  rows={3}
+                  required
+                />
+              </div>
+
+              {/* Location */}
+              <div>
+                <label className="block text-sm font-medium text-text-primary mb-2">Konum</label>
+                <input
+                  type="text"
+                  value={formData.location}
+                  onChange={(e) => setFormData({...formData, location: e.target.value})}
+                  placeholder="UyarÄ± konumunu yazÄ±nÄ±z"
+                  className="w-full px-3 py-2 border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                  required
+                />
+              </div>
+
+              {/* Category */}
+              <div>
+                <label className="block text-sm font-medium text-text-primary mb-2">Kategori</label>
+                <select
+                  value={formData.category}
+                  onChange={(e) => setFormData({...formData, category: e.target.value})}
+                  className="w-full px-3 py-2 border border-border rounded-lg text-text-primary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                >
+                  <option value="security">GÃ¼venlik</option>
+                  <option value="weather">Hava Durumu</option>
+                  <option value="traffic">Trafik</option>
+                  <option value="infrastructure">AltyapÄ±</option>
+                  <option value="disaster">DoÄŸal Afet</option>
+                  <option value="other">DiÄŸer</option>
+                </select>
+              </div>
+
+              {/* Severity */}
+              <div>
+                <label className="block text-sm font-medium text-text-primary mb-2">Aciliyet Derecesi</label>
+                <select
+                  value={formData.severity}
+                  onChange={(e) => setFormData({...formData, severity: e.target.value})}
+                  className="w-full px-3 py-2 border border-border rounded-lg text-text-primary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                >
+                  <option value="low">DÃ¼ÅŸÃ¼k</option>
+                  <option value="medium">Orta</option>
+                  <option value="high">YÃ¼ksek</option>
+                  <option value="critical">Kritik</option>
+                </select>
+              </div>
+
+              {/* Submit Button */}
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="flex-1 px-4 py-2 border border-border text-text-primary font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Ä°ptal
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-2 bg-primary hover:bg-primary-hover text-white font-medium rounded-lg transition-colors"
+                >
+                  UyarÄ± PaylaÅŸ
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
