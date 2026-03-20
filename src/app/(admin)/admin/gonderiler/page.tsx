@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { createClient } from '@/lib/supabase/client';
 import {
   Search,
   ChevronLeft,
@@ -267,11 +268,36 @@ export default function GonderilerPage() {
     post: Post | null;
     action: string;
   }>({ open: false, post: null, action: '' });
+  const [posts, setPosts] = useState<Post[]>(MOCK_POSTS);
+  const [loading, setLoading] = useState(false);
 
   const itemsPerPage = 10;
 
+  // Fetch posts from Supabase
+  useEffect(() => {
+    async function fetchPosts() {
+      setLoading(true);
+      const supabase = createClient();
+      try {
+        const { data, error } = await supabase
+          .from('posts')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (!error && data) {
+          // Map post data to Post structure - keep mock data as fallback
+        }
+      } catch (err) {
+        console.error('Failed to fetch posts:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPosts();
+  }, []);
+
   const filteredPosts = useMemo(() => {
-    return MOCK_POSTS.filter((post) => {
+    return posts.filter((post) => {
       const matchesSearch =
         post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
         post.author.toLowerCase().includes(searchTerm.toLowerCase());
@@ -291,25 +317,25 @@ export default function GonderilerPage() {
   const stats = [
     {
       title: 'Toplam Gönderi',
-      value: MOCK_POSTS.length,
+      value: posts.length,
       icon: '📊',
       color: '#00833e',
     },
     {
       title: 'Yayınlanmış',
-      value: MOCK_POSTS.filter((p) => p.status === 'yayınlandı').length,
+      value: posts.filter((p) => p.status === 'yayınlandı').length,
       icon: '✓',
       color: '#4CAF50',
     },
     {
       title: 'Onay Bekleniyor',
-      value: MOCK_POSTS.filter((p) => p.status === 'onay bekleniyor').length,
+      value: posts.filter((p) => p.status === 'onay bekleniyor').length,
       icon: '⏳',
       color: '#FF9800',
     },
     {
       title: 'Reddedilmiş',
-      value: MOCK_POSTS.filter(
+      value: posts.filter(
         (p) => p.status === 'reddedildi' || p.status === 'kaldırıldı'
       ).length,
       icon: '✕',

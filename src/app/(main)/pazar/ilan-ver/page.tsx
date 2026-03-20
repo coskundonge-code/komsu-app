@@ -8,7 +8,10 @@ import {
   ChevronDown,
   Check,
   X,
+  AlertCircle,
 } from 'lucide-react';
+import { createListing } from '@/lib/hooks/use-listings';
+import { createClient } from '@/lib/supabase/client';
 
 interface Photo {
   id: string;
@@ -69,6 +72,7 @@ export default function CreateListingPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [dragActive, setDragActive] = useState(false);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Check if form can be submitted (no side effects - safe to call during render)
   const canSubmit = () => {
@@ -232,16 +236,76 @@ export default function CreateListingPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!isFormValid()) {
       return;
     }
 
-    console.log('New listing:', formData);
-    // In a real app, this would submit to your API
-    router.push('/pazar');
+    setIsSubmitting(true);
+    try {
+      const supabase = createClient() as any;
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        setErrors({ submit: 'Lütfen giriş yapın' });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Upload images to storage and get URLs
+      const imageUrls: string[] = [];
+      for (let i = 0; i < formData.photos.length; i++) {
+        const file = formData.photos[i].file;
+        const fileName = `${Date.now()}-${i}-${file.name}`;
+        const { data: uploadData, error: uploadError } = await (supabase as any).storage
+          .from('listing-images')
+          .upload(`marketplace/${user.id}/${fileName}`, file);
+
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          continue;
+        }
+
+        if (uploadData) {
+          const { data: publicUrlData } = (supabase as any).storage
+            .from('listing-images')
+            .getPublicUrl(`marketplace/${user.id}/${fileName}`);
+          if (publicUrlData?.publicUrl) {
+            imageUrls.push(publicUrlData.publicUrl);
+          }
+        }
+      }
+
+      // Create listing record
+      const { data, error } = await createListing({
+        title: formData.title,
+        description: formData.description,
+        price: formData.isFree ? 0 : parseInt(formData.price),
+        category_id: null, // Will need category mapping
+        user_id: user.id,
+        image_url: imageUrls[0] || null,
+        images: imageUrls,
+        item_condition: formData.condition,
+        neighborhood: formData.location.split(',')[0],
+        delivery_options: formData.deliveryOptions,
+        listing_status: 'pending',
+        listing_type: 'marketplace',
+      } as any);
+
+      if (error) {
+        setErrors({ submit: 'İlan oluşturulurken hata oluştu' });
+        console.error('Create listing error:', error);
+      } else {
+        router.push('/pazar');
+      }
+    } catch (err) {
+      console.error('Submit error:', err);
+      setErrors({ submit: 'Bir hata oluştu' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCancel = () => {
@@ -680,31 +744,46 @@ export default function CreateListingPage() {
             </button>
             <button
               type="submit"
-              disabled={!canSubmit()}
+              disabled={!canSubmit() || isSubmitting}
               className={`flex-1 px-4 py-3 rounded-lg font-semibold transition-colors ${
-                canSubmit()
+                canSubmit() && !isSubmitting
                   ? 'bg-primary text-white hover:bg-primary-hover shadow-md'
                   : 'bg-[#e0e0e0] text-text-muted cursor-not-allowed'
               }`}
             >
-              İlanı Yayınla
+              {isSubmitting ? 'Yayınlanıyor...' : 'İlanı Yayınla'}
             </button>
           </div>
 
           {/* Form Validation Info */}
           {Object.keys(errors).length > 0 && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <p className="text-sm font-medium text-red-800 mb-2">
-                Lütfen aşağıdaki hataları düzeltin:
-              </p>
-              <ul className="text-sm text-red-700 space-y-1">
-                {Object.entries(errors).map(([key, message]) => (
-                  <li key={key} className="flex items-start gap-2">
-                    <span className="text-red-500 font-bold">•</span>
-                    <span>{message}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-red-800 mb-2">
+                    Lütfen aşağıdaki hataları düzeltin:
+                  </p>
+                  <ul className="text-sm text-red-700 space-y-1">
+                    {Object.entries(errors).map(([key, message]) => (
+                      <li key={key} className="flex items-start gap-2">
+                        <span className="text-red-500 font-bold">•</span>
+                        <span>{message}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Submit Button Loading State */}
+          {isSubmitting && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center gap-3">
+              <div className="animate-spin">
+                <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+              </div>
+              <p className="text-sm text-blue-800">İlan yayınlanıyor...</p>
             </div>
           )}
         </form>

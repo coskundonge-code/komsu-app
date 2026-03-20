@@ -20,6 +20,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { useCurrentUser } from "@/lib/hooks/use-auth";
 
 const alertTypes = [
   { value: "weather", label: "Hava Durumu", icon: Cloud },
@@ -87,6 +89,7 @@ const neighborhoods = [
 
 export default function NewAlertPage() {
   const router = useRouter();
+  const { user, profile } = useCurrentUser();
   const [currentStep, setCurrentStep] = useState(1);
   const [alertType, setAlertType] = useState("");
   const [severity, setSeverity] = useState("medium");
@@ -123,8 +126,47 @@ export default function NewAlertPage() {
     setShowConfirmation(true);
   };
 
-  const handleConfirmSubmit = () => {
-    router.push("/uyarilar");
+  const handleConfirmSubmit = async () => {
+    if (!user?.id) {
+      alert("Lütfen önce giriş yapınız");
+      return;
+    }
+
+    const supabase = createClient();
+    try {
+      // Create alert as a post with post_type='safety'
+      const { error } = await (supabase as any)
+        .from('posts')
+        .insert({
+          user_id: user.id,
+          neighborhood_id: (profile as any)?.neighborhood_id || 'default',
+          post_type: 'safety',
+          title: title,
+          content: description,
+          visibility: 'public',
+          is_archived: false,
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      // If using alerts table instead:
+      // await supabase
+      //   .from('alerts')
+      //   .insert({
+      //     neighborhood_id: (profile as any)?.neighborhood_id,
+      //     title: title,
+      //     content: description,
+      //     alert_severity: severity,
+      //     created_by: user.id,
+      //   });
+
+      router.push("/uyarilar");
+    } catch (error) {
+      console.error('Failed to create alert:', error);
+      alert("Uyarı oluşturulamadı");
+    }
   };
 
   const stepContent = {

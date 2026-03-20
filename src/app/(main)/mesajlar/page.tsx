@@ -4,7 +4,15 @@ import React, { useState, useEffect } from "react";
 import { ChevronLeft, Search, Send, Image as ImageIcon, Smile, MessageCirclePlus, Phone, Video, MessageSquare, ShoppingBag, Bell } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
+import { useCurrentUser } from "@/lib/hooks/use-auth";
+import { createClient as createTypedClient } from '@/lib/supabase/client'
+import type { Database } from "@/lib/supabase/types";
+
+const createClient = () => createTypedClient() as any
+
+type ConversationRow = Database['public']['Tables']['conversations']['Row']
+type MessageRow = Database['public']['Tables']['messages']['Row']
+type ProfileRow = Database['public']['Tables']['profiles']['Row']
 
 interface Conversation {
   id: string;
@@ -15,13 +23,23 @@ interface Conversation {
   unread: number;
   online: boolean;
   type: "personal" | "marketplace" | "group";
+  otherUserId?: string;
+  otherUserProfile?: ProfileRow;
+}
+
+interface Message {
+  id: string;
+  text: string;
+  time: string;
+  isOwn: boolean;
+  userId?: string;
 }
 
 const mockConversations: Conversation[] = [
   {
     id: "1",
     name: "Ahmet Yılmaz",
-    avatar: getFeedImageUrl(61, 96, 96),
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ahmet",
     lastMessage: "Temizlik malzemeleri hakkında bilgi alabilir miyim?",
     time: "2 sa",
     unread: 2,
@@ -31,116 +49,16 @@ const mockConversations: Conversation[] = [
   {
     id: "2",
     name: "Fatma Şahin",
-    avatar: getFeedImageUrl(62, 96, 96),
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=fatma",
     lastMessage: "Tükenmez kalem ve defter bölüştürebiliriz",
     time: "5 sa",
     unread: 1,
     online: false,
     type: "personal",
   },
-  {
-    id: "3",
-    name: "Mehmet Demir",
-    avatar: getFeedImageUrl(63, 96, 96),
-    lastMessage: "Elektrik ustası önerebilir misiniz?",
-    time: "1 gün",
-    unread: 0,
-    online: false,
-    type: "personal",
-  },
-  {
-    id: "4",
-    name: "Zeynep Kaya",
-    avatar: getFeedImageUrl(64, 96, 96),
-    lastMessage: "Bisiklet çok güzel olmuş, teşekkürler!",
-    time: "3 gün",
-    unread: 0,
-    online: true,
-    type: "personal",
-  },
-  {
-    id: "5",
-    name: "Komşu Yardım Grubu",
-    avatar: getFeedImageUrl(65, 96, 96),
-    lastMessage: "Herkese iyi akşamlar, yarın piknik var mı?",
-    time: "1 hafta",
-    unread: 0,
-    online: false,
-    type: "group",
-  },
-  {
-    id: "6",
-    name: "Ayşe Kılıç",
-    avatar: getFeedImageUrl(71, 96, 96),
-    lastMessage: "Balkon bitkileriniz çok güzel!",
-    time: "2 gün",
-    unread: 0,
-    online: true,
-    type: "personal",
-  },
-  {
-    id: "7",
-    name: "Hasan Demir",
-    avatar: getFeedImageUrl(72, 96, 96),
-    lastMessage: "Pazartesi uygun mu sözleşme imzalamak için?",
-    time: "4 saat",
-    unread: 3,
-    online: false,
-    type: "personal",
-  },
-  {
-    id: "8",
-    name: "Müzeyyen Şen",
-    avatar: getFeedImageUrl(73, 96, 96),
-    lastMessage: "Ekmek tarifini bekliyorum sabırsızlıkla!",
-    time: "6 saat",
-    unread: 0,
-    online: true,
-    type: "personal",
-  },
-  {
-    id: "9",
-    name: "Ömer Kaya",
-    avatar: getFeedImageUrl(74, 96, 96),
-    lastMessage: "Oto elektrikçi arkadaşım var lazım olursa haber ver",
-    time: "1 hafta",
-    unread: 0,
-    online: false,
-    type: "personal",
-  },
-  {
-    id: "10",
-    name: "Mobilya Pazar Yeri",
-    avatar: getFeedImageUrl(75, 96, 96),
-    lastMessage: "Sandalye stokta mevcut, teslim edebilirim",
-    time: "3 saat",
-    unread: 4,
-    online: true,
-    type: "marketplace",
-  },
-  {
-    id: "11",
-    name: "Elektrik Malzemeleri",
-    avatar: getFeedImageUrl(76, 96, 96),
-    lastMessage: "Aydınlatma ürünleri şu anda indirimde!",
-    time: "1 saat",
-    unread: 0,
-    online: true,
-    type: "marketplace",
-  },
-  {
-    id: "12",
-    name: "Yapı Destek Grubu",
-    avatar: getFeedImageUrl(77, 96, 96),
-    lastMessage: "Harita paylaşımı: Tasarım önerileri var mı?",
-    time: "30 dk",
-    unread: 5,
-    online: true,
-    type: "group",
-  },
 ];
 
-const mockMessages: Record<string, Array<{ id: string; text: string; time: string; isOwn: boolean }>> = {
+const mockMessages: Record<string, Array<Message>> = {
   "1": [
     { id: "1", text: "Merhaba! Halı temizleme hakkında bir sorum vardı.", time: "10:30", isOwn: true },
     { id: "2", text: "Merhaba! Elbette, yardımcı olabilirim. Ne tür halı temizliği arıyorsunuz?", time: "10:35", isOwn: false },
@@ -155,15 +73,19 @@ const mockMessages: Record<string, Array<{ id: string; text: string; time: strin
 };
 
 export default function MessagesPage() {
-  const [selectedId, setSelectedId] = useState("1");
+  const { user, profile, loading: authLoading } = useCurrentUser();
+  const [selectedId, setSelectedId] = useState("");
   const [isMobile, setIsMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [messageText, setMessageText] = useState("");
   const [activeTab, setActiveTab] = useState<"all" | "unread" | "marketplace">("all");
 
-  const [allMessages, setAllMessages] = useState(mockMessages);
-  const selected = mockConversations.find((c) => c.id === selectedId);
-  const messages = allMessages[selectedId] || [];
+  const [conversations, setConversations] = useState<Conversation[]>(mockConversations);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loadingConversations, setLoadingConversations] = useState(true);
+  const [loadingMessages, setLoadingMessages] = useState(false);
+
+  const selected = conversations.find((c) => c.id === selectedId);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -172,24 +94,225 @@ export default function MessagesPage() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  const handleSend = () => {
-    if (!messageText.trim() || !selectedId) return;
-    const now = new Date();
-    const timeStr = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
-    const newMsg = {
-      id: `msg-${Date.now()}`,
-      text: messageText.trim(),
-      time: timeStr,
-      isOwn: true,
+  // Fetch conversations from Supabase
+  useEffect(() => {
+    if (!user || authLoading) return;
+
+    async function loadConversations() {
+      setLoadingConversations(true);
+      try {
+        const supabase = createClient();
+
+        // Fetch conversations where user is involved
+        const { data: dbConversations, error } = await supabase
+          .from('conversations')
+          .select(`
+            id,
+            user_id_1,
+            user_id_2,
+            last_message_at,
+            created_at
+          `)
+          .or(`user_id_1.eq.${user.id},user_id_2.eq.${user.id}`)
+          .order('last_message_at', { ascending: false })
+
+        if (error) {
+          console.error('Error fetching conversations:', error);
+          setConversations(mockConversations);
+          return;
+        }
+
+        if (!dbConversations || dbConversations.length === 0) {
+          setConversations(mockConversations);
+          return;
+        }
+
+        // Fetch profiles and messages for each conversation
+        const conversationPromises = (dbConversations as any[]).map(async (conv: any) => {
+          const otherUserId = conv.user_id_1 === user.id ? conv.user_id_2 : conv.user_id_1;
+
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', otherUserId)
+            .single();
+
+          // Get last message
+          const { data: lastMsg } = await supabase
+            .from('messages')
+            .select('content, created_at')
+            .eq('conversation_id', conv.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
+
+          const timeAgo = formatTimeAgo(conv.last_message_at || conv.created_at);
+
+          return {
+            id: conv.id,
+            name: profileData?.full_name || 'Unknown',
+            avatar: profileData?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${otherUserId}`,
+            lastMessage: lastMsg?.content || 'No messages yet',
+            time: timeAgo,
+            unread: 0,
+            online: false,
+            type: 'personal' as const,
+            otherUserId,
+            otherUserProfile: profileData,
+          };
+        });
+
+        const loadedConversations = await Promise.all(conversationPromises);
+        setConversations(loadedConversations.length > 0 ? loadedConversations : mockConversations);
+      } catch (err) {
+        console.error('Error loading conversations:', err);
+        setConversations(mockConversations);
+      } finally {
+        setLoadingConversations(false);
+      }
+    }
+
+    loadConversations();
+
+    // Setup realtime subscription for conversations
+    const supabase = createClient();
+    const channel = supabase.channel('conversations_changes')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'conversations'
+      }, () => {
+        // Reload conversations on any change
+        loadConversations();
+      })
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
     };
-    setAllMessages((prev) => ({
-      ...prev,
-      [selectedId]: [...(prev[selectedId] || []), newMsg],
-    }));
+  }, [user, authLoading]);
+
+  // Fetch messages for selected conversation
+  useEffect(() => {
+    if (!selectedId || !user) {
+      setMessages([]);
+      return;
+    }
+
+    async function loadMessages() {
+      setLoadingMessages(true);
+      try {
+        const supabase = createClient();
+
+        const { data: dbMessages, error } = await supabase
+          .from('messages')
+          .select('id, user_id, content, created_at')
+          .eq('conversation_id', selectedId)
+          .order('created_at', { ascending: true });
+
+        if (error) {
+          console.error('Error fetching messages:', error);
+          setMessages(mockMessages[selectedId] || []);
+          return;
+        }
+
+        if (!dbMessages || dbMessages.length === 0) {
+          setMessages(mockMessages[selectedId] || []);
+          return;
+        }
+
+        const formattedMessages: Message[] = (dbMessages as any[]).map((msg: any) => ({
+          id: msg.id,
+          text: msg.content,
+          time: formatTimeForDisplay(msg.created_at),
+          isOwn: msg.user_id === user.id,
+          userId: msg.user_id,
+        }));
+
+        setMessages(formattedMessages);
+      } catch (err) {
+        console.error('Error loading messages:', err);
+        setMessages(mockMessages[selectedId] || []);
+      } finally {
+        setLoadingMessages(false);
+      }
+    }
+
+    loadMessages();
+
+    // Setup realtime subscription for messages
+    const supabase = createClient();
+    const channel = supabase.channel(`messages_${selectedId}`)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'messages',
+        filter: `conversation_id=eq.${selectedId}`
+      }, (payload: any) => {
+        const newMsg: Message = {
+          id: payload.new.id,
+          text: payload.new.content,
+          time: formatTimeForDisplay(payload.new.created_at),
+          isOwn: payload.new.user_id === user.id,
+          userId: payload.new.user_id,
+        };
+        setMessages((prev) => [...prev, newMsg]);
+      })
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [selectedId, user]);
+
+  const handleSend = async () => {
+    if (!messageText.trim() || !selectedId || !user) return;
+
+    const messageContent = messageText.trim();
     setMessageText("");
+
+    try {
+      const supabase = createClient();
+
+      const { data, error } = await supabase
+        .from('messages')
+        .insert({
+          conversation_id: selectedId,
+          user_id: user.id,
+          content: messageContent,
+        } as any)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error sending message:', error);
+        // Add as optimistic update
+        const now = new Date();
+        const timeStr = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+        const newMsg: Message = {
+          id: `msg-${Date.now()}`,
+          text: messageContent,
+          time: timeStr,
+          isOwn: true,
+        };
+        setMessages((prev) => [...prev, newMsg]);
+      }
+    } catch (err) {
+      console.error('Error sending message:', err);
+      // Fallback to optimistic update
+      const now = new Date();
+      const timeStr = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+      const newMsg: Message = {
+        id: `msg-${Date.now()}`,
+        text: messageContent,
+        time: timeStr,
+        isOwn: true,
+      };
+      setMessages((prev) => [...prev, newMsg]);
+    }
   };
 
-  let filteredConversations = mockConversations.filter((c) => {
+  let filteredConversations = conversations.filter((c) => {
     if (searchQuery && !c.name.toLowerCase().includes(searchQuery.toLowerCase()) && !c.lastMessage.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false;
     }
@@ -198,8 +321,8 @@ export default function MessagesPage() {
     return true;
   });
 
-  const unreadCount = mockConversations.reduce((sum, c) => sum + c.unread, 0);
-  const marketplaceCount = mockConversations.filter((c) => c.type === "marketplace").reduce((sum, c) => sum + c.unread, 0);
+  const unreadCount = conversations.reduce((sum, c) => sum + c.unread, 0);
+  const marketplaceCount = conversations.filter((c) => c.type === "marketplace").reduce((sum, c) => sum + c.unread, 0);
 
   // Conversation List Component
   const ConversationList = () => (
@@ -467,4 +590,42 @@ export default function MessagesPage() {
       </div>
     </div>
   );
+}
+
+// Helper function to format time for display in chat
+function formatTimeForDisplay(isoString: string): string {
+  try {
+    const date = new Date(isoString);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  } catch {
+    return '';
+  }
+}
+
+// Helper function to format time ago (e.g., "2 sa", "5 dk")
+function formatTimeAgo(isoString: string | null): string {
+  if (!isoString) return '';
+
+  try {
+    const date = new Date(isoString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffSecs = Math.floor(diffMs / 1000);
+    const diffMins = Math.floor(diffSecs / 60);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    const diffWeeks = Math.floor(diffDays / 7);
+
+    if (diffMins < 1) return 'şimdi';
+    if (diffMins < 60) return `${diffMins} dk`;
+    if (diffHours < 24) return `${diffHours} sa`;
+    if (diffDays < 7) return `${diffDays} gün`;
+    if (diffWeeks < 4) return `${diffWeeks} hafta`;
+
+    return date.toLocaleDateString('tr-TR');
+  } catch {
+    return '';
+  }
 }

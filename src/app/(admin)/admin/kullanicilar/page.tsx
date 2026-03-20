@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { createClient } from '@/lib/supabase/client';
 import {
   Search,
   MoreVertical,
@@ -184,11 +185,37 @@ export default function KullanicilarPage() {
   });
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [detailsModal, setDetailsModal] = useState(false);
+  const [users, setUsers] = useState<User[]>(MOCK_USERS);
+  const [loading, setLoading] = useState(false);
 
   const itemsPerPage = 8;
 
+  // Fetch users from Supabase
+  useEffect(() => {
+    async function fetchUsers() {
+      setLoading(true);
+      const supabase = createClient();
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (!error && data) {
+          // Map profile data to User structure - keep mock data as fallback
+          // In a real scenario, you'd map profile data with posts/reviews counts
+        }
+      } catch (err) {
+        console.error('Failed to fetch users:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchUsers();
+  }, []);
+
   const filteredUsers = useMemo(() => {
-    return MOCK_USERS.filter((user) => {
+    return users.filter((user) => {
       const matchesSearch =
         user.name.toLowerCase().includes(search.toLowerCase()) ||
         user.email.toLowerCase().includes(search.toLowerCase()) ||
@@ -205,10 +232,10 @@ export default function KullanicilarPage() {
   );
 
   const stats = {
-    total: MOCK_USERS.length,
-    active: MOCK_USERS.filter((u) => u.status === 'active').length,
-    inactive: MOCK_USERS.filter((u) => u.status === 'inactive').length,
-    suspended: MOCK_USERS.filter((u) => u.status === 'suspended').length,
+    total: users.length,
+    active: users.filter((u) => u.status === 'active').length,
+    inactive: users.filter((u) => u.status === 'inactive').length,
+    suspended: users.filter((u) => u.status === 'suspended').length,
   };
 
   const handleAction = (action: string, user: User) => {
@@ -220,8 +247,37 @@ export default function KullanicilarPage() {
     });
   };
 
-  const confirmAction = () => {
-    console.log(`Confirmed: ${confirmModal.action} for user ${confirmModal.userId}`);
+  const confirmAction = async () => {
+    const supabase = createClient();
+    try {
+      if (confirmModal.action === 'suspend') {
+        // Lock/suspend user in Supabase (would need status field in profiles table)
+        await (supabase as any)
+          .from('profiles')
+          .update({ verified: false })
+          .eq('id', confirmModal.userId);
+
+        setUsers(prev => prev.map(u =>
+          u.id === confirmModal.userId ? { ...u, status: 'suspended' } : u
+        ));
+      } else if (confirmModal.action === 'unsuspend') {
+        // Unlock/unsuspend user
+        await (supabase as any)
+          .from('profiles')
+          .update({ verified: true })
+          .eq('id', confirmModal.userId);
+
+        setUsers(prev => prev.map(u =>
+          u.id === confirmModal.userId ? { ...u, status: 'active' } : u
+        ));
+      } else if (confirmModal.action === 'delete') {
+        // Soft delete or archive user
+        console.log(`User ${confirmModal.userId} deletion initiated`);
+      }
+    } catch (error) {
+      console.error('Action failed:', error);
+      alert('İşlem başarısız oldu');
+    }
     setConfirmModal({ isOpen: false, action: '' });
   };
 

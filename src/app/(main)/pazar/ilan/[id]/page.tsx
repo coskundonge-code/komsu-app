@@ -169,37 +169,44 @@ export default function ListingDetailPage({
           console.warn('Error fetching listing, using mock data:', error);
           setMockListing(mockListingsDB[params.id] || mockListingsDB['1']);
         } else if (data) {
-          // Map DB fields to UI format - enhanced detail page
+          // Map DB fields to UI format
+          const conditionMap: Record<string, string> = {
+            'new': 'Sıfır',
+            'barely-used': 'Az Kullanılmış',
+            'good': 'İyi Durumda',
+            'fair': 'Orta',
+          };
+
           const listing = {
             id: (data as any).id,
             title: (data as any).title,
             price: (data as any).price || 0,
-            condition: (data as any).item_condition || 'good',
+            condition: conditionMap[(data as any).item_condition] || 'İyi',
             conditionBadgeColor: 'bg-green-100 text-green-800',
             category: (data as any).listing_categories?.name || 'Diğer',
             categoryColor: 'bg-blue-100 text-blue-800',
             neighborhood: (data as any).neighborhood || 'Bilinmiyor',
             location: (data as any).neighborhood || 'Bilinmiyor',
             timeAgo: (data as any).created_at ? formatTimeAgo(new Date((data as any).created_at)) : '1 saat',
-            views: 324,
-            favorites: 45,
-            description: (data as any).description || '',
-            images: (data as any).image_url ? [(data as any).image_url] : [getFeedImageUrl(1, 800, 600)],
+            views: Math.floor(Math.random() * 500) + 100,
+            favorites: Math.floor(Math.random() * 100) + 10,
+            description: (data as any).description || 'Açıklama bulunamadı',
+            images: (data as any).image_url ? [(data as any).image_url] : (data as any).images && (data as any).images.length > 0 ? (data as any).images : [getFeedImageUrl(1, 800, 600)],
             seller: {
               id: (data as any).profiles?.id || 'seller1',
               name: (data as any).profiles?.full_name || 'Bilinmiyor',
               avatar: (data as any).profiles?.avatar_url || getFeedImageUrl(5, 200, 200),
-              rating: 4.8,
-              reviewCount: 23,
+              rating: (Math.random() * 1 + 4).toFixed(1) as any,
+              reviewCount: Math.floor(Math.random() * 20) + 5,
               responseTime: '< 1 saat',
               joinDate: '2 yıl önce',
-              listings: 45,
+              listings: Math.floor(Math.random() * 40) + 10,
               verified: true,
-              soldCount: 42,
+              soldCount: Math.floor(Math.random() * 30) + 10,
             },
             specs: [
               { label: 'Kategori', value: (data as any).listing_categories?.name || 'Diğer' },
-              { label: 'Durum', value: (data as any).item_condition || 'good' },
+              { label: 'Durum', value: conditionMap[(data as any).item_condition] || 'İyi' },
             ],
           };
           setMockListing(listing);

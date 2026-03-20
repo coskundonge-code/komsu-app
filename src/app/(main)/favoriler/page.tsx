@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
 import {
   Search,
@@ -12,6 +12,7 @@ import {
   Filter,
   ArrowUpDown,
 } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 interface Business {
   id: string;
@@ -186,19 +187,71 @@ export default function FavorilerPage() {
   const [selectedCategory, setSelectedCategory] = useState("Tümü");
   const [sortBy, setSortBy] = useState("recommendations");
   const [searchQuery, setSearchQuery] = useState("");
-  const [favorites, setFavorites] = useState(
-    BUSINESSES.reduce(
-      (acc, business) => {
-        if (business.isFavorite) {
-          acc[business.id] = true;
-        }
-        return acc;
-      },
-      {} as Record<string, boolean>
-    )
-  );
+  const [favorites, setFavorites] = useState<Record<string, boolean>>({});
+  const [businessesData, setBusinessesData] = useState(BUSINESSES);
+  const [loading, setLoading] = useState(true);
 
-  const filteredBusinesses = BUSINESSES.filter((business) => {
+  // Fetch user's favorited listings from Supabase
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const supabase = createClient() as any;
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+          setLoading(false);
+          return;
+        }
+
+        // Fetch user's favorites from listing_favorites table
+        const { data: favoriteData, error } = await (supabase as any)
+          .from('listing_favorites')
+          .select('listing_id')
+          .eq('user_id', user.id);
+
+        if (error) {
+          console.warn('Error fetching favorites:', error);
+          // Fallback to mock data
+          const mockFavorites = BUSINESSES.reduce(
+            (acc, business) => {
+              if (business.isFavorite) {
+                acc[business.id] = true;
+              }
+              return acc;
+            },
+            {} as Record<string, boolean>
+          );
+          setFavorites(mockFavorites);
+        } else if (favoriteData) {
+          // Convert favorite listings to favorites map
+          const favMap: Record<string, boolean> = {};
+          (favoriteData as any[]).forEach((fav: any) => {
+            favMap[fav.listing_id] = true;
+          });
+          setFavorites(favMap);
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        // Fallback to mock data
+        const mockFavorites = BUSINESSES.reduce(
+          (acc, business) => {
+            if (business.isFavorite) {
+              acc[business.id] = true;
+            }
+            return acc;
+          },
+          {} as Record<string, boolean>
+        );
+        setFavorites(mockFavorites);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFavorites();
+  }, []);
+
+  const filteredBusinesses = businessesData.filter((business) => {
     const categoryMatch =
       selectedCategory === "Tümü" || business.category === selectedCategory;
     const searchMatch =
@@ -216,15 +269,42 @@ export default function FavorilerPage() {
     return 0;
   });
 
-  const popularBusinesses = BUSINESSES.filter((b) => b.isPopular).sort(
+  const popularBusinesses = businessesData.filter((b) => b.isPopular).sort(
     (a, b) => b.recommendations - a.recommendations
   );
 
-  const toggleFavorite = (id: string) => {
+  const toggleFavorite = async (id: string) => {
     setFavorites((prev) => ({
       ...prev,
       [id]: !prev[id],
     }));
+
+    // Update in Supabase
+    try {
+      const supabase = createClient() as any;
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) return;
+
+      if (favorites[id]) {
+        // Remove from favorites
+        await (supabase as any)
+          .from('listing_favorites')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('listing_id', id);
+      } else {
+        // Add to favorites
+        await (supabase as any)
+          .from('listing_favorites')
+          .insert({
+            user_id: user.id,
+            listing_id: id,
+          });
+      }
+    } catch (err) {
+      console.error('Error toggling favorite:', err);
+    }
   };
 
   const renderStars = (rating: number) => {

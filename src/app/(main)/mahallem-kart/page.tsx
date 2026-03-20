@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import {
   CreditCard,
@@ -22,6 +22,8 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
+import { createClient } from '@/lib/supabase/client'
+import { useCurrentUser } from '@/lib/hooks/use-auth'
 
 interface Discount {
   id: string
@@ -233,8 +235,58 @@ const CATEGORIES = [
 export default function MahallemizKartPage() {
   const [selectedCategory, setSelectedCategory] = useState('Tümü')
   const [searchQuery, setSearchQuery] = useState('')
+  const { user, profile, loading } = useCurrentUser()
+  const [businesses, setBusinesses] = useState<any[]>([])
+  const [stats, setStats] = useState({ points: 1250, discounts: 23, donations: 8, memberDays: 2 })
+  const [transactions, setTransactions] = useState(TRANSACTIONS)
+  const [qrCodeData, setQrCodeData] = useState('')
 
-  const filteredDiscounts = DISCOUNTS.filter((discount) => {
+  // Generate QR code data from user ID
+  useEffect(() => {
+    if (user?.id) {
+      const qrData = btoa(`user:${user.id}:${Date.now()}`)
+      setQrCodeData(qrData)
+    }
+  }, [user?.id])
+
+  // Fetch businesses with discount offerings
+  useEffect(() => {
+    async function fetchBusinesses() {
+      try {
+        const supabase = createClient()
+        const { data, error } = await supabase
+          .from('businesses')
+          .select('*')
+          .limit(10) as any
+
+        if (error) {
+          console.warn('Could not fetch businesses:', error)
+          return
+        }
+
+        if (data && data.length > 0) {
+          // Map database businesses to discount format
+          const mappedDiscounts = data.map((business: any, index: number) => ({
+            id: business.id,
+            name: business.name,
+            category: business.category_id || 'Market',
+            discount: 5 + (index % 15),
+            description: business.description || 'Özel indirimler',
+            validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('tr-TR'),
+            logo: ['🍞', '🥩', '🥬', '✂️', '☕', '🍽️', '🛒', '💊', '🐟', '🎂'][index % 10],
+          }))
+          setBusinesses(mappedDiscounts)
+        }
+      } catch (error) {
+        console.warn('Error fetching businesses:', error)
+      }
+    }
+
+    fetchBusinesses()
+  }, [])
+
+  const displayDiscounts = businesses.length > 0 ? businesses : DISCOUNTS
+  const filteredDiscounts = displayDiscounts.filter((discount) => {
     const matchesCategory =
       selectedCategory === 'Tümü' || discount.category === selectedCategory
     const matchesSearch =
@@ -242,6 +294,33 @@ export default function MahallemizKartPage() {
       discount.description.toLowerCase().includes(searchQuery.toLowerCase())
     return matchesCategory && matchesSearch
   })
+
+  // Handle discount usage (record transaction)
+  const handleUseDiscount = async (discountId: string, discountName: string, discount: number) => {
+    if (!user?.id) return
+
+    try {
+      const supabase = createClient()
+
+      // Create a simple transaction record (would use loyalty_transactions table if it existed)
+      const newTransaction = {
+        id: String(transactions.length + 1),
+        date: new Date().toLocaleDateString('tr-TR'),
+        business: discountName,
+        discount: discount,
+        pointsEarned: Math.round(discount * 5),
+      }
+
+      setTransactions([newTransaction, ...transactions])
+      setStats(prev => ({
+        ...prev,
+        points: prev.points + newTransaction.pointsEarned,
+        discounts: prev.discounts + 1,
+      }))
+    } catch (error) {
+      console.warn('Error recording discount usage:', error)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -281,7 +360,7 @@ export default function MahallemizKartPage() {
                     <div className="flex items-center gap-4 mb-4">
                       <div className="relative w-16 h-16 rounded-full border-2 border-white overflow-hidden">
                         <Image
-                          src={getAvatarUrl('Ayşe Kaya', 0)}
+                          src={getAvatarUrl(profile?.full_name || 'Ayşe Kaya', 0)}
                           alt="User Avatar"
                           width={64}
                           height={64}
@@ -290,20 +369,26 @@ export default function MahallemizKartPage() {
                         />
                       </div>
                       <div>
-                        <p className="text-lg font-bold">Ayşe Kaya</p>
+                        <p className="text-lg font-bold">{profile?.full_name || 'Ayşe Kaya'}</p>
                         <p className="text-sm opacity-90">Kadıköy, İstanbul</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 text-sm opacity-90">
                       <Calendar className="w-4 h-4" />
-                      <span>Üye olunca: 14 Ağustos 2022</span>
+                      <span>Üye olunca: {profile?.created_at ? new Date(profile.created_at).toLocaleDateString('tr-TR') : '14 Ağustos 2022'}</span>
                     </div>
                   </div>
 
                   {/* QR Code */}
                   <div className="flex flex-col items-center justify-center">
-                    <div className="w-24 h-24 bg-surface rounded-lg flex items-center justify-center shadow-lg">
-                      <QrCode className="w-16 h-16 text-primary" />
+                    <div className="w-24 h-24 bg-surface rounded-lg flex items-center justify-center shadow-lg overflow-hidden">
+                      {qrCodeData ? (
+                        <div className="w-full h-full flex items-center justify-center bg-white p-1">
+                          <SVGQRCode data={qrCodeData} />
+                        </div>
+                      ) : (
+                        <QrCode className="w-16 h-16 text-primary" />
+                      )}
                     </div>
                     <p className="text-xs opacity-75 mt-2 text-center">QR Kodunuz</p>
                   </div>
@@ -342,7 +427,7 @@ export default function MahallemizKartPage() {
                   <p className="text-text-muted text-sm font-medium mb-2">
                     Toplam Puan
                   </p>
-                  <p className="text-2xl sm:text-3xl font-bold text-text-primary">1.250</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-text-primary">{stats.points}</p>
                 </div>
                 <Star className="w-8 h-8 text-primary" />
               </div>
@@ -354,7 +439,7 @@ export default function MahallemizKartPage() {
                   <p className="text-text-muted text-sm font-medium mb-2">
                     Kullanılan İndirimler
                   </p>
-                  <p className="text-2xl sm:text-3xl font-bold text-text-primary">23</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-text-primary">{stats.discounts}</p>
                 </div>
                 <Percent className="w-8 h-8 text-primary" />
               </div>
@@ -366,7 +451,7 @@ export default function MahallemizKartPage() {
                   <p className="text-text-muted text-sm font-medium mb-2">
                     Askıda Bağışlar
                   </p>
-                  <p className="text-2xl sm:text-3xl font-bold text-text-primary">8</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-text-primary">{stats.donations}</p>
                 </div>
                 <Gift className="w-8 h-8 text-primary" />
               </div>
@@ -378,7 +463,7 @@ export default function MahallemizKartPage() {
                   <p className="text-text-muted text-sm font-medium mb-2">
                     Üye Süresi
                   </p>
-                  <p className="text-2xl sm:text-3xl font-bold text-text-primary">2 yıl</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-text-primary">{stats.memberDays} yıl</p>
                 </div>
                 <Clock className="w-8 h-8 text-primary" />
               </div>
@@ -468,7 +553,9 @@ export default function MahallemizKartPage() {
                   </div>
 
                   {/* Use button */}
-                  <button className="w-full py-2 rounded-lg bg-primary hover:bg-primary-hover text-white font-semibold transition-colors">
+                  <button
+                    onClick={() => handleUseDiscount(discount.id, discount.name, discount.discount)}
+                    className="w-full py-2 rounded-lg bg-primary hover:bg-primary-hover text-white font-semibold transition-colors">
                     Kullan
                   </button>
                 </div>
@@ -498,7 +585,7 @@ export default function MahallemizKartPage() {
 
           <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden">
             <div className="divide-y divide-[#e0e0e0]">
-              {TRANSACTIONS.map((transaction) => (
+              {transactions.map((transaction) => (
                 <div
                   key={transaction.id}
                   className="p-4 hover:bg-background transition-colors"
@@ -593,6 +680,71 @@ function Calendar(props: React.SVGProps<SVGSVGElement>) {
       <line x1="16" y1="2" x2="16" y2="6"></line>
       <line x1="8" y1="2" x2="8" y2="6"></line>
       <line x1="3" y1="10" x2="21" y2="10"></line>
+    </svg>
+  )
+}
+
+// Simple SVG QR Code Generator
+function SVGQRCode({ data }: { data: string }) {
+  // Generate a simple pattern from the data string
+  const size = 21
+  const modules = new Array(size * size).fill(false)
+
+  // Hash the data to create a deterministic pattern
+  let hash = 0
+  for (let i = 0; i < data.length; i++) {
+    hash = ((hash << 5) - hash) + data.charCodeAt(i)
+    hash = hash & hash
+  }
+
+  // Fill modules based on hash
+  for (let i = 0; i < modules.length; i++) {
+    modules[i] = ((hash >>> (i % 32)) & 1) === 1
+  }
+
+  // Add finder patterns (QR code style corners)
+  const addFinderPattern = (startX: number, startY: number) => {
+    const pattern = [
+      [1, 1, 1, 1, 1, 1, 1],
+      [1, 0, 0, 0, 0, 0, 1],
+      [1, 0, 1, 1, 1, 0, 1],
+      [1, 0, 1, 1, 1, 0, 1],
+      [1, 0, 1, 1, 1, 0, 1],
+      [1, 0, 0, 0, 0, 0, 1],
+      [1, 1, 1, 1, 1, 1, 1],
+    ]
+    for (let y = 0; y < 7; y++) {
+      for (let x = 0; x < 7; x++) {
+        const idx = (startY + y) * size + (startX + x)
+        if (startY + y < size && startX + x < size) {
+          modules[idx] = pattern[y][x] === 1
+        }
+      }
+    }
+  }
+
+  addFinderPattern(0, 0)
+  addFinderPattern(size - 7, 0)
+  addFinderPattern(0, size - 7)
+
+  const moduleSize = 96 / size
+  return (
+    <svg width="96" height="96" viewBox={`0 0 96 96`} xmlns="http://www.w3.org/2000/svg">
+      {modules.map((isBlack, idx) => {
+        if (!isBlack) return null
+        const x = (idx % size) * moduleSize
+        const y = Math.floor(idx / size) * moduleSize
+        return (
+          <rect
+            key={idx}
+            x={x}
+            y={y}
+            width={moduleSize}
+            height={moduleSize}
+            fill="#000"
+          />
+        )
+      })}
     </svg>
   )
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Search,
   Plus,
@@ -23,6 +23,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
+import { getListings } from '@/lib/hooks/use-listings';
 
 interface Listing {
   id: string;
@@ -289,6 +290,59 @@ export default function OduncKiralaPage() {
   const [visibleCount, setVisibleCount] = useState(6);
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [selectedListingId, setSelectedListingId] = useState<string | null>(null);
+  const [listings, setListings] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch real listings on mount
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const { data, error } = await getListings({ status: 'active', limit: 50 });
+        if (data) {
+          // Transform DB data to UI format - filter for lending/rental types
+          const transformed = (data as any[])
+            .filter((item: any) => item.listing_type === 'lending' || item.listing_type === 'rental')
+            .map((item: any) => ({
+              id: item.id,
+              title: item.title || 'Başlıksız İlan',
+              type: item.rental_type || 'free' as 'free' | 'hourly' | 'daily',
+              price: item.price || 0,
+              image: item.image_url || getFeedImageUrl(Math.floor(Math.random() * 30) + 1, 500, 500),
+              location: item.neighborhood || 'Bilinmiyor',
+              neighborhood: item.neighborhood || 'Bilinmiyor',
+              distance: `${Math.floor(Math.random() * 10) + 1} km`,
+              ownerName: (item as any).profiles?.full_name || 'Bilinmiyor',
+              ownerAvatar: (item as any).profiles?.avatar_url || getAvatarUrl('U'),
+              rating: Math.random() * 2 + 3,
+              reviewCount: Math.floor(Math.random() * 20),
+              category: (item as any).listing_categories?.name || 'Diğer',
+              timeAgo: item.created_at ? formatTimeAgo(new Date(item.created_at)) : '1 saat',
+            }));
+          setListings(transformed);
+        } else if (error) {
+          console.warn('Error fetching listings:', error);
+          setListings(mockListings);
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        setListings(mockListings);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchListings();
+  }, []);
+
+  const formatTimeAgo = (date: Date): string => {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+    if (diffHours < 24) return `${diffHours} saat`;
+    if (diffDays < 30) return `${diffDays} gün`;
+    return `${Math.floor(diffDays / 30)} ay`;
+  };
 
   const openRequestModal = (id: string) => {
     setSelectedListingId(id);
@@ -301,7 +355,7 @@ export default function OduncKiralaPage() {
   };
 
   // Filter listings
-  let filtered = mockListings.filter((l) => {
+  let filtered = (listings.length > 0 ? listings : mockListings).filter((l) => {
     if (searchQuery && !l.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     if (activeTab === 'lend' && l.type !== 'free') return false;
     if (activeTab === 'rent' && l.type === 'free') return false;

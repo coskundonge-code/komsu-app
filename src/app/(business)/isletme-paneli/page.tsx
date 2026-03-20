@@ -1,7 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
+import { useCurrentUser } from '@/lib/hooks/use-auth';
 import {
   Eye,
   Star,
@@ -108,11 +110,55 @@ const UPCOMING_EVENTS = [
 ];
 
 export default function IsletmePaneliPage() {
+  const { user, profile } = useCurrentUser();
+  const [business, setBusiness] = useState<any>(null);
+  const [reviews, setReviews] = useState(RECENT_REVIEWS);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch business data for current user
+  useEffect(() => {
+    async function fetchBusiness() {
+      if (!user?.id) return;
+      setLoading(true);
+      const supabase = createClient();
+      try {
+        const { data, error } = await supabase
+          .from('businesses')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+
+        if (!error && data) {
+          setBusiness(data);
+
+          // Fetch reviews for this business
+          const { data: reviewData, error: reviewError } = await (supabase as any)
+            .from('business_reviews')
+            .select('*')
+            .eq('business_id', (data as any).id)
+            .order('created_at', { ascending: false })
+            .limit(3);
+
+          if (!reviewError && reviewData) {
+            // Map review data to RECENT_REVIEWS structure
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch business:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchBusiness();
+  }, [user?.id]);
+
+  const businessName = business?.name || 'Kahvehane Keyif';
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header Section */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-text-primary mb-2">Hoşgeldiniz, Kahvehane Keyif</h1>
+        <h1 className="text-4xl font-bold text-text-primary mb-2">Hoşgeldiniz, {businessName}</h1>
         <p className="text-text-muted text-lg">
           İşletmenizin günlük performansını ve müşteri etkileşimini takip edin
         </p>

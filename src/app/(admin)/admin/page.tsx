@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Users,
   MessageSquare,
@@ -22,9 +22,10 @@ import {
   ArrowUp,
   TrendingDown,
 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
-// Main stats cards
-const STATS = [
+// Main stats cards - default/fallback
+const DEFAULT_STATS = [
   {
     id: 1,
     label: 'Toplam Kullanıcı',
@@ -212,8 +213,63 @@ const SYSTEM_STATUS = [
 ];
 
 export default function AdminDashboard() {
+  const [stats, setStats] = useState(DEFAULT_STATS);
   const [sortedNeighborhoods, setSortedNeighborhoods] = React.useState(TOP_NEIGHBORHOODS);
   const [sortKey, setSortKey] = React.useState('score');
+
+  useEffect(() => {
+    async function fetchStats() {
+      const supabase = createClient();
+      try {
+        // Fetch user count
+        const { count: userCount } = await supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true });
+
+        // Fetch post count
+        const { count: postCount } = await supabase
+          .from('posts')
+          .select('*', { count: 'exact', head: true });
+
+        // Fetch business count
+        const { count: businessCount } = await supabase
+          .from('businesses')
+          .select('*', { count: 'exact', head: true });
+
+        // Fetch pending reports count
+        const { count: pendingReports } = await supabase
+          .from('reports')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'open');
+
+        // Update stats with real data
+        const newStats = [
+          {
+            ...DEFAULT_STATS[0],
+            value: (userCount ?? 0).toLocaleString('tr-TR'),
+          },
+          {
+            ...DEFAULT_STATS[1],
+            value: (postCount ?? 0).toLocaleString('tr-TR'),
+          },
+          {
+            ...DEFAULT_STATS[2],
+            value: (businessCount ?? 0).toLocaleString('tr-TR'),
+          },
+          {
+            ...DEFAULT_STATS[3],
+            value: (pendingReports ?? 0).toString(),
+            change: `${pendingReports ?? 0} beklemede`,
+          },
+        ];
+        setStats(newStats);
+      } catch (error) {
+        console.error('Failed to fetch stats:', error);
+        // Keep default stats on error
+      }
+    }
+    fetchStats();
+  }, []);
 
   const handleSort = (key: string) => {
     const isAsc = sortKey === key;
@@ -241,7 +297,7 @@ export default function AdminDashboard() {
 
       {/* Stats Cards Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {STATS.map((stat) => {
+        {stats.map((stat) => {
           const Icon = stat.icon;
 
           return (

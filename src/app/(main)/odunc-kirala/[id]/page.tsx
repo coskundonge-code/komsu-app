@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
+import { getListingById } from '@/lib/hooks/use-listings';
 
 interface ListingDetail {
   id: string;
@@ -122,8 +123,42 @@ export default function ListingDetailPage({ params }: { params: { id: string } }
   const [selectedDate, setSelectedDate] = useState('');
   const [duration, setDuration] = useState('');
   const [message, setMessage] = useState('');
+  const [listing, setListing] = useState(mockListingDetail);
+  const [loading, setLoading] = useState(true);
 
-  const listing = mockListingDetail;
+  useEffect(() => {
+    const fetchListing = async () => {
+      try {
+        const { data, error } = await getListingById(params.id);
+        if (data) {
+          const transformed = {
+            ...mockListingDetail,
+            id: (data as any).id,
+            title: (data as any).title,
+            description: (data as any).description || mockListingDetail.description,
+            category: (data as any).listing_categories?.name || mockListingDetail.category,
+            neighborhood: (data as any).neighborhood || mockListingDetail.neighborhood,
+            ownerName: (data as any).profiles?.full_name || mockListingDetail.ownerName,
+            ownerAvatar: (data as any).profiles?.avatar_url || mockListingDetail.ownerAvatar,
+            images: (data as any).image_url ? [(data as any).image_url] : (data as any).images || mockListingDetail.images,
+            type: (data as any).rental_type || mockListingDetail.type,
+            price: (data as any).price || mockListingDetail.price,
+          };
+          setListing(transformed);
+        } else if (error) {
+          console.warn('Error fetching listing:', error);
+          setListing(mockListingDetail);
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        setListing(mockListingDetail);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchListing();
+  }, [params.id]);
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % listing.images.length);

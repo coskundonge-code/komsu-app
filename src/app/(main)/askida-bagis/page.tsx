@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import {
   Heart,
@@ -33,6 +33,8 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
+import { createClient } from '@/lib/supabase/client'
+import { useCurrentUser } from '@/lib/hooks/use-auth'
 
 // Type definitions
 interface Category {
@@ -159,8 +161,12 @@ function generateQRCode(): string {
 }
 
 export default function AskidaBagisPage() {
+  const { user, profile } = useCurrentUser()
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [activeTab, setActiveTab] = useState<'donate' | 'redeem'>('donate')
+  const [businesses, setBusinesses] = useState<Business[]>([])
+  const [donations, setDonations] = useState<DonationItem[]>(mockDonations)
+  const [donationStats, setDonationStats] = useState({ total: mockDonations.length, items: 47, businesses: 8 })
 
   const [donationModal, setDonationModal] = useState<DonationModalState>({
     isOpen: false,
@@ -192,11 +198,54 @@ export default function AskidaBagisPage() {
     isSent: false,
   })
 
+  // Fetch businesses from Supabase
+  useEffect(() => {
+    async function fetchBusinesses() {
+      try {
+        const supabase = createClient()
+        const { data, error } = await supabase
+          .from('businesses')
+          .select('*')
+          .limit(10) as any
+
+        if (error) {
+          console.warn('Could not fetch businesses:', error)
+          setBusinesses(mockBusinesses)
+          return
+        }
+
+        if (data && data.length > 0) {
+          const mappedBusinesses = data.map((business: any, index: number) => ({
+            id: business.id,
+            name: business.name,
+            neighborhood: 'Kadıköy',
+            mahalle: 'Moda',
+            category: ['bread', 'meat', 'milk', 'barber', 'coffee', 'medicine', 'book', 'cleaning'][index % 8],
+            rating: 4.5 + (index % 5) * 0.1,
+            suspendedCount: 2 + (index % 10),
+            suspendedLabel: `Askıda ${2 + (index % 10)} öğe`,
+            image: getFeedImageUrl(index, 300, 250),
+            avatar: getAvatarUrl(business.name, index),
+          } as Business))
+          setBusinesses(mappedBusinesses)
+        } else {
+          setBusinesses(mockBusinesses)
+        }
+      } catch (error) {
+        console.warn('Error fetching businesses:', error)
+        setBusinesses(mockBusinesses)
+      }
+    }
+
+    fetchBusinesses()
+  }, [])
+
   // Filter businesses
+  const displayBusinesses = businesses.length > 0 ? businesses : mockBusinesses
   const filteredBusinesses =
     selectedCategory === 'all'
-      ? mockBusinesses
-      : mockBusinesses.filter((b) => b.category === selectedCategory)
+      ? displayBusinesses
+      : displayBusinesses.filter((b) => b.category === selectedCategory)
 
   const openDonationModal = (business: Business) => {
     setDonationModal({
@@ -216,12 +265,45 @@ export default function AskidaBagisPage() {
     setDonationModal({ ...donationModal, isOpen: false, isSuccess: false })
   }
 
-  const handleDonationSubmit = () => {
+  const handleDonationSubmit = async () => {
     setDonationModal({ ...donationModal, isProcessing: true })
-    setTimeout(() => {
+    try {
+      const supabase = createClient()
+
+      // Record donation in database (would use donations/askida table)
+      // For now, we'll just add it to the local state
+      const newDonation: DonationItem = {
+        id: `d${Date.now()}`,
+        donor: donationModal.isAnonymous ? 'Anonim' : (profile?.full_name || 'Komşu'),
+        items: `${donationModal.quantity} ${donationModal.selectedItem}`,
+        business: donationModal.business?.name || 'İşletme',
+        time: 'az önce',
+        isAnonymous: donationModal.isAnonymous,
+        avatar: !donationModal.isAnonymous ? getAvatarUrl(profile?.full_name || 'User', 0) : undefined,
+      }
+
+      setDonations([newDonation, ...donations])
+      setDonationStats(prev => ({
+        ...prev,
+        total: prev.total + 1,
+        items: prev.items + donationModal.quantity,
+      }))
+
+      // Generate QR code
       const qr = generateQRCode()
-      setDonationModal({ ...donationModal, isProcessing: false, isSuccess: true, qrCode: qr })
-    }, 1500)
+
+      setTimeout(() => {
+        setDonationModal({
+          ...donationModal,
+          isProcessing: false,
+          isSuccess: true,
+          qrCode: qr
+        })
+      }, 800)
+    } catch (error) {
+      console.warn('Error submitting donation:', error)
+      setDonationModal({ ...donationModal, isProcessing: false })
+    }
   }
 
   const handleRedeemScan = () => {
@@ -293,16 +375,16 @@ export default function AskidaBagisPage() {
           {/* Stats */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4 mt-4 sm:mt-6 max-w-xl mx-auto">
             <div className="bg-surface bg-opacity-15 rounded-lg px-2 py-2 sm:px-4 sm:py-3 backdrop-blur">
-              <div className="text-lg sm:text-2xl font-bold">2,847</div>
+              <div className="text-lg sm:text-2xl font-bold">{donationStats.items}</div>
               <div className="text-xs opacity-90">Askıda Ürün</div>
             </div>
             <div className="bg-surface bg-opacity-15 rounded-lg px-2 py-2 sm:px-4 sm:py-3 backdrop-blur">
-              <div className="text-lg sm:text-2xl font-bold">₺42,350</div>
-              <div className="text-xs opacity-90">Bu Ay Bağış</div>
+              <div className="text-lg sm:text-2xl font-bold">{donationStats.total}</div>
+              <div className="text-xs opacity-90">Toplam Bağış</div>
             </div>
             <div className="bg-surface bg-opacity-15 rounded-lg px-2 py-2 sm:px-4 sm:py-3 backdrop-blur">
-              <div className="text-lg sm:text-2xl font-bold">1,246</div>
-              <div className="text-xs opacity-90">Faydalanan</div>
+              <div className="text-lg sm:text-2xl font-bold">{donationStats.businesses}</div>
+              <div className="text-xs opacity-90">İşletme</div>
             </div>
           </div>
         </div>
@@ -508,12 +590,12 @@ export default function AskidaBagisPage() {
           </h2>
           <div className="bg-surface rounded-xl border border-border overflow-hidden">
             <div className="max-h-[400px] sm:max-h-[500px] overflow-y-auto">
-              {mockDonations.map((donation, index) => (
+              {donations.map((donation, index) => (
                 <div
                   key={donation.id}
                   className={cn(
                     'px-3 sm:px-5 py-3 sm:py-4',
-                    index < mockDonations.length - 1 ? 'border-b border-[#f0f2f5]' : ''
+                    index < donations.length - 1 ? 'border-b border-[#f0f2f5]' : ''
                   )}
                 >
                   {/* Donation info */}
