@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import { generatePageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "Yardım Merkezi | Mahallem",
+  title: "Yardım Merkezi | Mahallemiz",
   description:
-    "Mahallem Yardım Merkezi. Sık sorulan sorulara ve destek kaynağına erişin.",
+    "Mahallemiz Yardım Merkezi. Sık sorulan sorulara ve destek kaynağına erişin.",
   openGraph: {
     url: "https://mahallem.com/yardim",
-    title: "Yardım Merkezi | Mahallem",
+    title: "Yardım Merkezi | Mahallemiz",
     description:
-      "Mahallem Yardım Merkezi. Sık sorulan sorulara ve destek kaynağına erişin.",
+      "Mahallemiz Yardım Merkezi. Sık sorulan sorulara ve destek kaynağına erişin.",
   },
   twitter: {
-    title: "Yardım Merkezi | Mahallem",
+    title: "Yardım Merkezi | Mahallemiz",
     description:
-      "Mahallem Yardım Merkezi. Sık sorulan sorulara ve destek kaynağına erişin.",
+      "Mahallemiz Yardım Merkezi. Sık sorulan sorulara ve destek kaynağına erişin.",
   },
 });
 

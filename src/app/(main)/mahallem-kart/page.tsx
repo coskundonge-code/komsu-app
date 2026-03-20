@@ -212,7 +212,7 @@ const EARN_METHODS: EarnMethod[] = [
   {
     id: '4',
     title: 'Komşu Davet Et',
-    description: 'Arkadaşlarını Mahallem uygulamasına davet et',
+    description: 'Arkadaşlarını Mahallemiz uygulamasına davet et',
     points: 150,
     icon: <Zap className="w-6 h-6" />,
   },
@@ -230,7 +230,7 @@ const CATEGORIES = [
   'Eczane',
 ]
 
-export default function MahallemKartPage() {
+export default function MahallemizKartPage() {
   const [selectedCategory, setSelectedCategory] = useState('Tümü')
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -266,7 +266,7 @@ export default function MahallemKartPage() {
                 {/* Header with card number and badge */}
                 <div className="flex justify-between items-start mb-6 sm:mb-8">
                   <div>
-                    <p className="text-sm font-semibold opacity-90">Mahallem Kartı</p>
+                    <p className="text-sm font-semibold opacity-90">Mahallemiz Kartı</p>
                     <p className="text-xs opacity-75 mt-1">MK-2024-00847</p>
                   </div>
                   <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full text-sm font-semibold">

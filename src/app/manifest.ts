@@ -2,8 +2,8 @@ import { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Mahallem - Mahalle Sosyal Ağı",
-    short_name: "Mahallem",
+    name: "Mahallemiz - Mahalle Sosyal Ağı",
+    short_name: "Mahallemiz",
     description: "Türkiye'nin mahalle sosyal ağı. Komşularınızla tanışın, etkinliklere katılın, pazar yerde alışveriş yapın.",
     start_url: "/",
     scope: "/",

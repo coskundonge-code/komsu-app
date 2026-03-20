@@ -93,13 +93,13 @@ export default function CommunityGuidelinesPage() {
           {/* Header */}
           <div className="bg-gradient-to-br from-primary to-primary-hover p-8 text-white">
             <h1 className="text-3xl font-bold mb-2">Topluluk Kuralları</h1>
-            <p className="text-green-100">Mahallem'de herkese saygılı, güvenli ve aydınlık bir ortam</p>
+            <p className="text-green-100">Mahallemiz'de herkese saygılı, güvenli ve aydınlık bir ortam</p>
           </div>
 
           {/* Giriş */}
           <div className="p-8 md:p-12 bg-blue-50 border-b border-border">
             <p className="text-text-secondary leading-relaxed">
-              Mahallem, komşularımızın birbirine güvenle bağlanabileceği, bilgi paylaşabileceği ve
+              Mahallemiz, komşularımızın birbirine güvenle bağlanabileceği, bilgi paylaşabileceği ve
               yardımlaşabileceği bir topluluktur. Bu kurallar, platforma katılan herkesi saygılı
               bir ortam oluşturmaya çağırır. Kuralları ihlal eden kullanıcılar uyarı, hesap askıya
               alma veya kalıcı silme cezasına tabi tutulabilirler.
@@ -187,7 +187,7 @@ export default function CommunityGuidelinesPage() {
             <div className="text-center">
               <h2 className="text-2xl font-bold text-text-primary mb-3">Kuralları İhlal Gördünüz mü?</h2>
               <p className="text-text-secondary mb-6 max-w-2xl mx-auto">
-                Mahallem topluluğunun güvenliğini sağlamak bizim ortak sorumluluğumuz. Sorunlu içeriği
+                Mahallemiz topluluğunun güvenliğini sağlamak bizim ortak sorumluluğumuz. Sorunlu içeriği
                 gördüğünüzde lütfen bildirin.
               </p>
               <Link
@@ -243,7 +243,7 @@ export default function CommunityGuidelinesPage() {
           {/* Footer */}
           <div className="border-t border-border bg-background py-6 px-8 text-center">
             <p className="text-sm text-text-muted mb-4">
-              © 2026 Mahallem — Trendex Lojistik tarafından geliştirilmiştir.
+              © 2026 Mahallemiz — Trendex Lojistik tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link

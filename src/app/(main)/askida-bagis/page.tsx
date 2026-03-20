@@ -481,7 +481,7 @@ export default function AskidaBagisPage() {
             <div className="space-y-3">
               {[
                 { step: '1', title: 'Esnafa Git', desc: 'Askıda bağışı olan bir esnafa git' },
-                { step: '2', title: 'Karekod Okut', desc: 'Esnaftaki Mahallem karekodunu telefonunla tara' },
+                { step: '2', title: 'Karekod Okut', desc: 'Esnaftaki Mahallemiz karekodunu telefonunla tara' },
                 { step: '3', title: 'Gizlilik Seç', desc: 'Kimliğini göster ya da gizle — senin tercihin' },
                 { step: '4', title: 'Hizmeti Al', desc: 'Ürünü veya hizmeti teslim al' },
                 { step: '5', title: 'Teşekkür Gönder', desc: 'İstersen bağışçıya gizli/açık teşekkür mesajı gönder' },

@@ -99,7 +99,7 @@ export default function ContactPage() {
       a: "Gönderi altındaki \"⋮\" menüsünü açıp \"İhbar Et\" seçeneğini tıklayın. Sorunun türünü ve detaylı açıklamasını belirtin.",
     },
     {
-      q: "Mahallem mobil uygulaması ne zaman çıkacak?",
+      q: "Mahallemiz mobil uygulaması ne zaman çıkacak?",
       a: "Mobil uygulamalar (iOS ve Android) 2026 Q2 içinde yayınlanacak. Bildirim almak için bize abone olabilirsiniz.",
     },
     {
@@ -409,7 +409,7 @@ export default function ContactPage() {
           {/* Footer */}
           <div className="border-t border-border bg-background py-6 px-8 text-center">
             <p className="text-sm text-text-muted mb-4">
-              © 2026 Mahallem — Trendex Lojistik tarafından geliştirilmiştir.
+              © 2026 Mahallemiz — Trendex Lojistik tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link

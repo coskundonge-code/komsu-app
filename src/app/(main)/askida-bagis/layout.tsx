@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Askıda Bağış | Mahallem',
+  title: 'Askıda Bağış | Mahallemiz',
   description: 'Askıda ekmek, et, süt, traş ve daha fazlası. Komşuna bir iyilik bırak, mahalleni güzelleştir.',
 }
 

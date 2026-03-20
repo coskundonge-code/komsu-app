@@ -32,7 +32,7 @@ export default function KVKKPage() {
             {/* Giriş */}
             <section>
               <p className="text-text-secondary leading-relaxed">
-                Mahallem ("Uygulama"), kullanıcılarının kişisel verilerinin korunmasına büyük önem
+                Mahallemiz ("Uygulama"), kullanıcılarının kişisel verilerinin korunmasına büyük önem
                 vermektedir. Bu aydınlatma metni, uygulamayı kullanan tüm kişileri, Kişisel
                 Verilerin Korunması Kanunu ("KVKK") uyarınca, kişisel verilerinin nasıl
                 işlendiği, korunduğu ve kullanıldığı hakkında bilgilendirmektedir.
@@ -68,7 +68,7 @@ export default function KVKKPage() {
                 Kişisel Verilerin İşlenme Amacı
               </h2>
               <p className="text-text-secondary leading-relaxed mb-4">
-                Mahallem, kullanıcılardan toplanan kişisel verileri aşağıda belirtilen meşru
+                Mahallemiz, kullanıcılardan toplanan kişisel verileri aşağıda belirtilen meşru
                 amaçlarla işlemektedir:
               </p>
               <div className="space-y-3">
@@ -99,7 +99,7 @@ export default function KVKKPage() {
                 Toplanan Kişisel Veriler
               </h2>
               <p className="text-text-secondary leading-relaxed mb-4">
-                Mahallem aşağıdaki kategorilerde kişisel veri toplamaktadır:
+                Mahallemiz aşağıdaki kategorilerde kişisel veri toplamaktadır:
               </p>
               <div className="grid gap-4">
                 {[
@@ -253,7 +253,7 @@ export default function KVKKPage() {
               </h2>
               <div className="bg-background p-6 rounded-lg border border-border text-text-secondary leading-relaxed space-y-3">
                 <p>
-                  Mahallem, kişisel verilerinizin korunması için aşağıdaki önlemleri almaktadır:
+                  Mahallemiz, kişisel verilerinizin korunması için aşağıdaki önlemleri almaktadır:
                 </p>
                 <ul className="space-y-2 ml-4">
                   <li className="flex items-start gap-2">
@@ -346,7 +346,7 @@ export default function KVKKPage() {
           {/* Footer */}
           <div className="border-t border-border bg-background py-6 px-8 text-center">
             <p className="text-sm text-text-muted mb-4">
-              © 2026 Mahallem — Trendex Lojistik tarafından geliştirilmiştir.
+              © 2026 Mahallemiz — Trendex Lojistik tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link

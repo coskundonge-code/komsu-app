@@ -151,7 +151,7 @@ function SifreSifirlaContent() {
             </div>
           </div>
           <div>
-            <h2 className="text-4xl font-bold mb-3">Mahallem</h2>
+            <h2 className="text-4xl font-bold mb-3">Mahallemiz</h2>
             <p className="text-lg text-green-100">Komşuluğu Keşfedin</p>
           </div>
           <p className="text-sm text-green-50 max-w-xs leading-relaxed">

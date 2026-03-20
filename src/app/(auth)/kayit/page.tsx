@@ -175,7 +175,7 @@ export default function KayitPage() {
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-sm">K</span>
           </div>
-          <span className="text-lg font-bold text-text-primary">Mahallem</span>
+          <span className="text-lg font-bold text-text-primary">Mahallemiz</span>
         </Link>
       </div>
 

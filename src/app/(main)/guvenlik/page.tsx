@@ -58,7 +58,7 @@ const securityTips = [
       },
       {
         title: "Ödeme Bilgilerinizi Koruyun",
-        desc: "Asla para göndermek veya ödemeleri Mahallem aracılığıyla kabul etmeyin.",
+        desc: "Asla para göndermek veya ödemeleri Mahallemiz aracılığıyla kabul etmeyin.",
       },
       {
         title: "Sosyal Mühendislik Hilelerine Karşı Dikkat",
@@ -72,7 +72,7 @@ const securityTips = [
     tips: [
       {
         title: "Komşularınızı Tanıyın",
-        desc: "Mahallem aracılığıyla mahallenizdeki insanları tanıyın ve güven oluşturun.",
+        desc: "Mahallemiz aracılığıyla mahallenizdeki insanları tanıyın ve güven oluşturun.",
       },
       {
         title: "Güvenlik Gözlemlerinizi Paylaşın",
@@ -270,7 +270,7 @@ export default function SecurityPage() {
               </h2>
               <div className="bg-background p-6 rounded-lg border border-border">
                 <p className="text-text-secondary leading-relaxed text-base">
-                  Mahallem'de güvenli olmak, hem çevrimiçi güvenlik hem de mahalle güvenliği hakkında
+                  Mahallemiz'de güvenli olmak, hem çevrimiçi güvenlik hem de mahalle güvenliği hakkında
                   bilinçli olmak demektir. Bu rehber, seni ve mahalleni daha güvenli hale getirmek için tasarlanmış pratik ipuçları ve kaynaklarla dolu.
                 </p>
               </div>
@@ -425,7 +425,7 @@ export default function SecurityPage() {
               </h2>
 
               <p className="text-text-secondary leading-relaxed mb-8">
-                Mahallem, herkesin güvende ve saygılı hissetmesi için tasarlanmıştır. Bu kurallar platformumuzun
+                Mahallemiz, herkesin güvende ve saygılı hissetmesi için tasarlanmıştır. Bu kurallar platformumuzun
                 ve mahallelerimizin güvenli, saygılı ve faydalı kalmasını sağlar.
               </p>
 
@@ -499,7 +499,7 @@ export default function SecurityPage() {
           {/* Footer */}
           <div className="border-t border-border bg-background py-8 px-8 text-center">
             <p className="text-sm text-text-muted mb-6">
-              © 2026 Mahallem — Trendex Lojistik tarafından geliştirilmiştir.
+              © 2026 Mahallemiz — Trendex Lojistik tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-6 flex-wrap">
               <Link

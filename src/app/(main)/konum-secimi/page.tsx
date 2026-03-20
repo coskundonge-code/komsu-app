@@ -115,7 +115,7 @@ export default function KonumSecimi() {
         setIsLoading(false)
         if (err.code === err.PERMISSION_DENIED) {
           setPermissionDenied(true)
-          setError('Konum izni reddedildi. Mahallem\'i kullanabilmek için konum izni vermeniz gerekmektedir.')
+          setError('Konum izni reddedildi. Mahallemiz\'i kullanabilmek için konum izni vermeniz gerekmektedir.')
         } else if (err.code === err.POSITION_UNAVAILABLE) {
           setError('Konumunuz belirlenemedi. Lütfen il/ilçe seçerek devam edin.')
           setStep('select')
@@ -267,7 +267,7 @@ export default function KonumSecimi() {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-sm font-bold text-white">K</span>
             </div>
-            <span className="text-lg font-bold text-text-primary">Mahallem</span>
+            <span className="text-lg font-bold text-text-primary">Mahallemiz</span>
           </div>
           <div className="flex items-center gap-2 text-xs text-text-muted">
             <MapPin className="w-3.5 h-3.5" />
@@ -310,7 +310,7 @@ export default function KonumSecimi() {
               </div>
               <h1 className="text-2xl font-bold text-text-primary mb-2">Konum İzni Gerekli</h1>
               <p className="text-text-muted text-sm mb-6 max-w-md mx-auto">
-                Mahallem, size en yakın mahalle topluluğunu gösterebilmek için konum bilginize ihtiyaç duyar.
+                Mahallemiz, size en yakın mahalle topluluğunu gösterebilmek için konum bilginize ihtiyaç duyar.
                 Konum izni vermeden üyelik işleminizi tamamlayamazsınız.
               </p>
 
@@ -355,7 +355,7 @@ export default function KonumSecimi() {
                       <p className="font-semibold mb-1">Konum izni reddedildi</p>
                       <p className="text-amber-700">
                         Tarayıcınızın adres çubuğundaki kilit/konum simgesine tıklayarak konum iznini etkinleştirin ve sayfayı yenileyin.
-                        Mahallem, konum izni olmadan kullanılamaz.
+                        Mahallemiz, konum izni olmadan kullanılamaz.
                       </p>
                       <button
                         onClick={requestLocation}

@@ -3,7 +3,7 @@ import SettingsLayoutClient from './layout-client';
 
 export const metadata: Metadata = {
   title: 'Ayarlar',
-  description: 'Mahallem hesap ayarlarınızı yönetin. Gizlilik, güvenlik, bildirim tercihlerini ve mahalle ayarlarınızı özelleştirin.',
+  description: 'Mahallemiz hesap ayarlarınızı yönetin. Gizlilik, güvenlik, bildirim tercihlerini ve mahalle ayarlarınızı özelleştirin.',
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

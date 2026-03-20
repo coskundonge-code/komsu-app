@@ -6,16 +6,16 @@ export const DEFAULT_OG_IMAGE = {
   url: `${BASE_URL}/icon-512.png`,
   width: 512,
   height: 512,
-  alt: "Mahallem Logo",
+  alt: "Mahallemiz Logo",
 };
 
 export const SEO_DEFAULTS = {
   title: {
-    default: "Mahallem - Mahalleni Keşfet",
-    template: "%s | Mahallem",
+    default: "Mahallemiz - Mahalleni Keşfet",
+    template: "%s | Mahallemiz",
   },
   description:
-    "Mahallem ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın ve birlikte etkinlikler düzenleyin. Türkiye'nin mahalle sosyal ağı.",
+    "Mahallemiz ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın ve birlikte etkinlikler düzenleyin. Türkiye'nin mahalle sosyal ağı.",
   keywords: [
     "komşu",
     "mahalle",
@@ -31,7 +31,7 @@ export const SEO_DEFAULTS = {
   openGraph: {
     type: "website" as const,
     locale: "tr_TR",
-    siteName: "Mahallem",
+    siteName: "Mahallemiz",
   },
   twitter: {
     card: "summary_large_image" as const,
@@ -78,112 +78,112 @@ export function getPageUrl(path: string): string {
  */
 export const PAGE_METADATA = {
   home: {
-    title: "Mahallem - Mahalleni Keşfet",
+    title: "Mahallemiz - Mahalleni Keşfet",
     description:
-      "Mahallem ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın ve birlikte etkinlikler düzenleyin.",
+      "Mahallemiz ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın ve birlikte etkinlikler düzenleyin.",
   },
   about: {
-    title: "Hakkında | Mahallem",
+    title: "Hakkında | Mahallemiz",
     description:
-      "Mahallem hakkında, misyonumuz, vizyonumuz ve değerlerimiz hakkında bilgi edinin. Mahalle topluluklarını güçlendiren platform.",
+      "Mahallemiz hakkında, misyonumuz, vizyonumuz ve değerlerimiz hakkında bilgi edinin. Mahalle topluluklarını güçlendiren platform.",
   },
   marketplace: {
-    title: "Pazar | Mahallem",
+    title: "Pazar | Mahallemiz",
     description:
-      "Mahallem Pazar'da yerel ürün ve hizmetleri bulun. Komşularınızdan güvenilir ilan ve alışveriş imkanları.",
+      "Mahallemiz Pazar'da yerel ürün ve hizmetleri bulun. Komşularınızdan güvenilir ilan ve alışveriş imkanları.",
   },
   events: {
-    title: "Etkinlikler | Mahallem",
+    title: "Etkinlikler | Mahallemiz",
     description:
       "Mahallenizdeki etkinlikleri keşfedin ve katılın. Komşularınızla birlikte yapılacak etkinlikleri planlayın.",
   },
   groups: {
-    title: "Gruplar | Mahallem",
+    title: "Gruplar | Mahallemiz",
     description:
-      "Mahallem Grupları ile ilgi alanlarına göre komşuları birleştirin. Mahalle bazlı grup oluşturun ve yönetin.",
+      "Mahallemiz Grupları ile ilgi alanlarına göre komşuları birleştirin. Mahalle bazlı grup oluşturun ve yönetin.",
   },
   businesses: {
-    title: "İşletmeler | Mahallem",
+    title: "İşletmeler | Mahallemiz",
     description:
       "Mahallenizdeki yerel işletmeleri keşfedin. Dükkân, resepsiyon, salon ve çok daha fazlası.",
   },
   search: {
-    title: "Ara | Mahallem",
+    title: "Ara | Mahallemiz",
     description:
-      "Mahallem'de komşuları, grupları, etkinlikleri ve ürünleri arayın.",
+      "Mahallemiz'de komşuları, grupları, etkinlikleri ve ürünleri arayın.",
   },
   terms: {
-    title: "Kullanım Koşulları | Mahallem",
+    title: "Kullanım Koşulları | Mahallemiz",
     description:
-      "Mahallem Kullanım Koşulları. Hizmetlerimizi kullanırken uymanız gereken kuralları öğrenin.",
+      "Mahallemiz Kullanım Koşulları. Hizmetlerimizi kullanırken uymanız gereken kuralları öğrenin.",
   },
   privacy: {
-    title: "Gizlilik Politikası | Mahallem",
+    title: "Gizlilik Politikası | Mahallemiz",
     description:
-      "Mahallem Gizlilik Politikası. Verileriniz nasıl korunduğunu ve kullanıldığını öğrenin.",
+      "Mahallemiz Gizlilik Politikası. Verileriniz nasıl korunduğunu ve kullanıldığını öğrenin.",
   },
   cookies: {
-    title: "Çerez Politikası | Mahallem",
+    title: "Çerez Politikası | Mahallemiz",
     description:
-      "Mahallem Çerez Politikası. Çerezlerin nasıl kullanıldığını ve ayarlarınızı nasıl yönetebileceğinizi öğrenin.",
+      "Mahallemiz Çerez Politikası. Çerezlerin nasıl kullanıldığını ve ayarlarınızı nasıl yönetebileceğinizi öğrenin.",
   },
   help: {
-    title: "Yardım Merkezi | Mahallem",
+    title: "Yardım Merkezi | Mahallemiz",
     description:
-      "Mahallem Yardım Merkezi. Sık sorulan sorulara ve destek kaynağına erişin.",
+      "Mahallemiz Yardım Merkezi. Sık sorulan sorulara ve destek kaynağına erişin.",
   },
   contact: {
-    title: "İletişim | Mahallem",
+    title: "İletişim | Mahallemiz",
     description:
-      "Mahallem ile iletişime geçin. Sorular, öneriler ve destek için bize yazın.",
+      "Mahallemiz ile iletişime geçin. Sorular, öneriler ve destek için bize yazın.",
   },
   howitworks: {
-    title: "Nasıl Çalışır? | Mahallem",
+    title: "Nasıl Çalışır? | Mahallemiz",
     description:
-      "Mahallem nasıl çalışıyor öğrenin. Adım adım rehberimizi izleyin ve başlayın.",
+      "Mahallemiz nasıl çalışıyor öğrenin. Adım adım rehberimizi izleyin ve başlayın.",
   },
   communityRules: {
-    title: "Topluluk Kuralları | Mahallem",
+    title: "Topluluk Kuralları | Mahallemiz",
     description:
-      "Mahallem Topluluk Kuralları. Güvenli ve saygılı bir topluluk oluşturmak için bizimle yapın.",
+      "Mahallemiz Topluluk Kuralları. Güvenli ve saygılı bir topluluk oluşturmak için bizimle yapın.",
   },
   security: {
-    title: "Güvenlik | Mahallem",
+    title: "Güvenlik | Mahallemiz",
     description:
-      "Mahallem Güvenlik. Hesabınızı nasıl koruyabileceğinizi ve güvenli kalabileceğinizi öğrenin.",
+      "Mahallemiz Güvenlik. Hesabınızı nasıl koruyabileceğinizi ve güvenli kalabileceğinizi öğrenin.",
   },
   careers: {
-    title: "Kariyer | Mahallem",
+    title: "Kariyer | Mahallemiz",
     description:
-      "Mahallem Kariyer. Ekibimize katılın ve mahalle topluluklarını güçlendirmeye yardımcı olun.",
+      "Mahallemiz Kariyer. Ekibimize katılın ve mahalle topluluklarını güçlendirmeye yardımcı olun.",
   },
   kvkk: {
-    title: "KVKK | Mahallem",
+    title: "KVKK | Mahallemiz",
     description:
-      "Mahallem KVKK Aydınlatma Metni. Kişisel verilerinizin korunması hakkında bilgi edinin.",
+      "Mahallemiz KVKK Aydınlatma Metni. Kişisel verilerinizin korunması hakkında bilgi edinin.",
   },
   blog: {
-    title: "Blog | Mahallem",
+    title: "Blog | Mahallemiz",
     description:
-      "Mahallem Blog. Mahalle hayatı, komşuluk ve yerel topluluklar hakkında yazılar.",
+      "Mahallemiz Blog. Mahalle hayatı, komşuluk ve yerel topluluklar hakkında yazılar.",
   },
   discover: {
-    title: "Keşfet | Mahallem",
+    title: "Keşfet | Mahallemiz",
     description:
-      "Mahallem Keşfet. Mahallenizdeki yeni komşuları, etkinlikleri ve fırsatları keşfedin.",
+      "Mahallemiz Keşfet. Mahallenizdeki yeni komşuları, etkinlikleri ve fırsatları keşfedin.",
   },
   oduncKirala: {
-    title: "Ödünç Ver & Kirala | Mahallem",
+    title: "Ödünç Ver & Kirala | Mahallemiz",
     description:
       "Mahallenizdeki komşularınızla eşya paylaşın. Matkap, testere, masa, sandalye gibi eşyaları ücretsiz ödünç verin veya saatlik/günlük kiralayın.",
   },
   mahallemKart: {
-    title: "Mahallem Kart | Mahallem",
+    title: "Mahallemiz Kart | Mahallemiz",
     description:
       "Dijital mahalle kartınızla yerel esnaflardan indirim kazanın, puan biriktirin ve askıda bağış yapın.",
   },
   askidaBagis: {
-    title: "Askıda Bağış | Mahallem",
+    title: "Askıda Bağış | Mahallemiz",
     description:
       "Askıda ekmek, et, süt, traş ve daha fazlası. Komşuna bir iyilik bırak, mahalleni güzelleştir.",
   },

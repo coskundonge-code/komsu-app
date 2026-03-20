@@ -66,7 +66,7 @@ export default function PrivacyPage() {
                 {/* Intro */}
                 <div className="mb-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
                   <p className="text-sm text-text-secondary">
-                    Mahallem, verilerinizin gizliliğini çok ciddiye almaktadır. Bu politika, verilerinizi nasıl topladığımız, kullandığımız, korumadığımız ve haklarınız hakkında tam bilgi sağlamak için hazırlanmıştır.
+                    Mahallemiz, verilerinizin gizliliğini çok ciddiye almaktadır. Bu politika, verilerinizi nasıl topladığımız, kullandığımız, korumadığımız ve haklarınız hakkında tam bilgi sağlamak için hazırlanmıştır.
                   </p>
                 </div>
 
@@ -77,7 +77,7 @@ export default function PrivacyPage() {
                       <span className="w-1 h-6 bg-primary rounded-full"></span>
                       Toplanan Bilgiler
                     </h2>
-                    <p>Mahallem, hizmetlerimizi sunmak ve iyileştirmek amacıyla belirli kişisel bilgilerinizi toplar:</p>
+                    <p>Mahallemiz, hizmetlerimizi sunmak ve iyileştirmek amacıyla belirli kişisel bilgilerinizi toplar:</p>
                     <div className="mt-4 space-y-3">
                       <div className="flex gap-3 p-3 bg-background rounded-lg">
                         <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
@@ -163,7 +163,7 @@ export default function PrivacyPage() {
                       Çerezler ve Takip Teknolojileri
                     </h2>
                     <p>
-                      Mahallem, çerezler ve benzer takip teknolojileri kullanarak deneyiminizi geliştirmektedir. Tarayıcı ayarlarından çerezleri kontrol edebilirsiniz. Çerezleri devre dışı bırakmanız bazı özelikleri kullanmanızı engelliyebilir.
+                      Mahallemiz, çerezler ve benzer takip teknolojileri kullanarak deneyiminizi geliştirmektedir. Tarayıcı ayarlarından çerezleri kontrol edebilirsiniz. Çerezleri devre dışı bırakmanız bazı özelikleri kullanmanızı engelliyebilir.
                     </p>
                   </section>
 

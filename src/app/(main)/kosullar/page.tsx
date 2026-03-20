@@ -50,7 +50,7 @@ export default function TermsPage() {
               {/* Header */}
               <div className="bg-gradient-to-br from-primary to-primary-hover p-8 text-white">
                 <h1 className="text-3xl font-bold mb-2">Kullanım Koşulları</h1>
-                <p className="text-green-100">Mahallem Platformunun Hukuki Anlaşması</p>
+                <p className="text-green-100">Mahallemiz Platformunun Hukuki Anlaşması</p>
               </div>
 
               <div className="p-8">
@@ -68,7 +68,7 @@ export default function TermsPage() {
                       Hizmet Tanımı
                     </h2>
                     <p>
-                      Mahallem ("Platform"), komşuların birbirleriyle bağlantı kurmasını, bilgi paylaşmasını, etkinlikler organize etmesini ve yerel toplulukları güçlendirmesini sağlayan bir sosyal ağ platformudur. Platform, Trendex Lojistik tarafından işletilir.
+                      Mahallemiz ("Platform"), komşuların birbirleriyle bağlantı kurmasını, bilgi paylaşmasını, etkinlikler organize etmesini ve yerel toplulukları güçlendirmesini sağlayan bir sosyal ağ platformudur. Platform, Trendex Lojistik tarafından işletilir.
                     </p>
                   </section>
 
@@ -137,7 +137,7 @@ export default function TermsPage() {
                       Fikri Mülkiyet
                     </h2>
                     <p>
-                      Mahallem platformu, tasarımı, logosu, yazılımı ve diğer tüm unsurları Trendex Lojistik'e aittir. Bu öğelerin hiçbir bölümünü izinsiz kullanamazsınız. İzinsiz kullanım yasal işlem başlatılmasına neden olabilir.
+                      Mahallemiz platformu, tasarımı, logosu, yazılımı ve diğer tüm unsurları Trendex Lojistik'e aittir. Bu öğelerin hiçbir bölümünü izinsiz kullanamazsınız. İzinsiz kullanım yasal işlem başlatılmasına neden olabilir.
                     </p>
                   </section>
 

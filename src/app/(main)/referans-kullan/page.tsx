@@ -46,7 +46,7 @@ export default function UseReferralPage() {
               Referans kodu başarıyla kullanıldı. Hesabınız artık doğrulanmış olarak işaretlendi.
             </p>
             <p className="text-sm text-text-muted mb-6">
-              Adres doğrulaması yapmanıza gerek kalmadı. Tüm Mahallem özelliklerini kullanabilirsiniz.
+              Adres doğrulaması yapmanıza gerek kalmadı. Tüm Mahallemiz özelliklerini kullanabilirsiniz.
             </p>
             <div className="bg-primary-light border border-primary rounded-lg p-4 mb-6">
               <div className="flex items-center gap-3">
@@ -94,7 +94,7 @@ export default function UseReferralPage() {
             </div>
             <h1 className="text-2xl font-bold text-text-primary mb-2">Referans Kodu Kullan</h1>
             <p className="text-[#666]">
-              Komşunuzdan aldığınız referans kodunu girin ve adres doğrulama adımını atlayarak hemen Mahallem&apos;ı kullanmaya başlayın.
+              Komşunuzdan aldığınız referans kodunu girin ve adres doğrulama adımını atlayarak hemen Mahallemiz&apos;ı kullanmaya başlayın.
             </p>
           </div>
 
@@ -154,7 +154,7 @@ export default function UseReferralPage() {
           <div className="bg-surface rounded-xl border border-border p-5">
             <h3 className="font-semibold text-text-primary mb-2">Referans kodu nedir?</h3>
             <p className="text-sm text-[#666]">
-              Mahallem&apos;taki mevcut bir komşunuzun size verdiği özel koddur. Bu kod ile adres doğrulama adımını atlar, hemen sisteme dahil olursunuz.
+              Mahallemiz&apos;taki mevcut bir komşunuzun size verdiği özel koddur. Bu kod ile adres doğrulama adımını atlar, hemen sisteme dahil olursunuz.
             </p>
           </div>
 

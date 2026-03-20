@@ -85,7 +85,7 @@ export default function GirisPage() {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-sm font-bold text-white">K</span>
             </div>
-            <span className="text-lg font-bold text-text-primary">Mahallem</span>
+            <span className="text-lg font-bold text-text-primary">Mahallemiz</span>
           </Link>
           <Link
             href="/kayit"
