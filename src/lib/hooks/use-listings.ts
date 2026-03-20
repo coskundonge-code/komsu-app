@@ -61,6 +61,6 @@ export async function updateListing(id: string, updates: Database['public']['Tab
 
 export async function deleteListing(id: string) {
   const supabase = createClient()
-  const { error } = await supabase.from('listings').update({ status: 'removed' } as any).eq('id', id)
+  const { error } = await supabase.from('listings').update({ status: 'expired' } as any).eq('id', id)
   return { error }
 }

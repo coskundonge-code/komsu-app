@@ -118,7 +118,7 @@ export default function NewListingPage() {
   };
 
   const isStep1Valid = formData.title && formData.description && formData.category && formData.condition && formData.pickupLocation;
-  const isStep2Valid = formData.photos.length > 0;
+  const isStep2Valid = true; // Photos are optional
   const isStep3Valid = formData.terms && (formData.type === 'free' || formData.price) && (formData.type === 'free' || formData.maxDuration);
 
   const goToStep = (newStep: Step) => {

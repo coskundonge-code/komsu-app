@@ -130,10 +130,14 @@ export default function MessagesPage() {
         }
 
         // Fetch participants and messages for each conversation
-        // Note: Should use conversation_participants table to get actual user IDs
         const conversationPromises = (dbConversations as any[]).map(async (conv: any) => {
-          // Placeholder - would need to fetch from conversation_participants
-          const otherUserId = conv.id;
+          // Get the other participant from conversation_participants
+          const { data: participants } = await supabase
+            .from('conversation_participants')
+            .select('user_id')
+            .eq('conversation_id', conv.id);
+
+          const otherUserId = (participants as any[])?.find((p: any) => p.user_id !== user.id)?.user_id || '';
 
           const { data: profileData } = await supabase
             .from('profiles')

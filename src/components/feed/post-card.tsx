@@ -10,13 +10,13 @@ import { useCurrentUser } from '@/lib/hooks/use-auth'
 
 export const POST_CATEGORIES = [
   { id: 'tumu', label: 'Tümü', badgeColor: 'bg-surface-active text-text-secondary' },
-  { id: 'genel', label: 'Genel', badgeColor: 'bg-cat-general-light text-cat-general' },
-  { id: 'guvenlik', label: 'Güvenlik', badgeColor: 'bg-cat-safety-light text-cat-safety' },
-  { id: 'satilik', label: 'Satılık', badgeColor: 'bg-cat-sale-light text-cat-sale' },
-  { id: 'etkinlikler', label: 'Etkinlikler', badgeColor: 'bg-cat-event-light text-cat-event' },
-  { id: 'oneriler', label: 'Öneriler', badgeColor: 'bg-cat-recommend-light text-cat-recommend' },
-  { id: 'sorular', label: 'Sorular', badgeColor: 'bg-cat-question-light text-cat-question' },
-  { id: 'kayipbuluntu', label: 'Kayıp/Buluntu', badgeColor: 'bg-cat-lostfound-light text-cat-lostfound' },
+  { id: 'general', label: 'Genel', badgeColor: 'bg-cat-general-light text-cat-general' },
+  { id: 'safety', label: 'Güvenlik', badgeColor: 'bg-cat-safety-light text-cat-safety' },
+  { id: 'classified', label: 'Satılık', badgeColor: 'bg-cat-sale-light text-cat-sale' },
+  { id: 'event', label: 'Etkinlikler', badgeColor: 'bg-cat-event-light text-cat-event' },
+  { id: 'recommendation', label: 'Öneriler', badgeColor: 'bg-cat-recommend-light text-cat-recommend' },
+  { id: 'lost_found', label: 'Kayıp/Buluntu', badgeColor: 'bg-cat-lostfound-light text-cat-lostfound' },
+  { id: 'poll', label: 'Anket', badgeColor: 'bg-cat-question-light text-cat-question' },
 ]
 
 export function getCategoryInfo(categoryId: string) {

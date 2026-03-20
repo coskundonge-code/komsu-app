@@ -8,9 +8,9 @@ import { useCurrentUser } from '@/lib/hooks/use-auth';
 
 const POST_TYPES = [
   { id: 'general', label: 'Genel', icon: Tag },
-  { id: 'security', label: 'Güvenlik', icon: Shield },
+  { id: 'safety', label: 'Güvenlik', icon: Shield },
   { id: 'recommendation', label: 'Öneri', icon: HelpCircle },
-  { id: 'lost-found', label: 'Kayıp/Buluntu', icon: Tag },
+  { id: 'lost_found', label: 'Kayıp/Buluntu', icon: Tag },
   { id: 'poll', label: 'Anket', icon: BarChart3 },
 ];
 
@@ -22,11 +22,11 @@ const VISIBILITY_OPTIONS = [
 
 const getPlaceholderText = (postType: string): string => {
   switch (postType) {
-    case 'security':
+    case 'safety':
       return 'Dikkat çeken bir durum var mı? Güvenlik uyarısını paylaş...';
     case 'recommendation':
       return 'Mahallede beğendiğin bir mekan veya hizmet? Fikrinizi paylaş...';
-    case 'lost-found':
+    case 'lost_found':
       return 'Kayıp veya bulunan bir eşya mı? Detaylarını paylaş...';
     case 'poll':
       return 'Anket konusu hakkında bilgi ver...';
@@ -144,7 +144,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
         neighborhood_id: '51ded332-1c5c-428f-9022-4f5956bef2a4',
         title: title.trim() || null,
         body: body.trim(),
-        type: postType === 'general' ? 'general' : postType === 'security' ? 'safety' : postType === 'recommendation' ? 'recommendation' : postType === 'lost-found' ? 'lost_found' : 'general',
+        type: postType,
         visibility: visibility || 'neighborhood',
         media_urls: images.length > 0 ? images : null,
       };

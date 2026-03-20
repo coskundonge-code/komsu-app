@@ -47,7 +47,7 @@ const CATEGORIES = [
 
 const CONDITIONS = [
   { value: 'new', label: 'Sıfır' },
-  { value: 'barely-used', label: 'Az Kullanılmış' },
+  { value: 'like_new', label: 'Az Kullanılmış' },
   { value: 'good', label: 'İyi' },
   { value: 'fair', label: 'Orta' },
 ];
