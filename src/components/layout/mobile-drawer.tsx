@@ -8,9 +8,9 @@ import {
   MessageCircle, Bell, Heart, Settings, User, LogOut, Repeat, CreditCard,
   AlertTriangle, Newspaper
 } from 'lucide-react'
-import { cn } from 'A/lib/utils'
+import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
-import { getAvatarUrl } from 'A/lib/demo-images'
+import { getAvatarUrl } from '@/lib/demo-images'
 
 interface MobileDrawerProps {
   isOpen: boolean
@@ -30,11 +30,11 @@ const primaryNavItems = [
   { icon: Newspaper, label: 'Yerel Haberler', href: '/kesfet' },
   { icon: AlertTriangle, label: 'Uyarılar', href: '/uyarilar' },
   { icon: ShoppingBag, label: 'Satılık & Ücretsiz', href: '/pazar' },
-  { icon: Repeat, label: 'Kirala & Ö]ünç Ver', href: '/odunc-kirala' },
+  { icon: Repeat, label: 'Kirala & Ödünç Ver', href: '/odunc-kirala' },
   { icon: Users, label: 'Gruplar', href: '/gruplar' },
   { icon: Calendar, label: 'Etkinlikler', href: '/etkinlikler' },
   { icon: CreditCard, label: 'Mahallemiz Kart', href: '/mahallem-kart' },
-  { icon: Heart, label: 'Askıda Bağı na', href: '/askida-bagys' },
+  { icon: Heart, label: 'Askıda Bağış', href: '/askida-bagis' },
 ]
 
 // Secondary navigation items
@@ -44,6 +44,7 @@ const secondaryNavItems = [
   { icon: Bell, label: 'Bildirimler', href: '/bildirimler' },
   { icon: Settings, label: 'Ayarlar', href: '/ayarlar' },
 ]
+
 export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
   const pathname = usePathname()
   const router = useRouter()
