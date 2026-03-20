@@ -220,7 +220,7 @@ export default function BildirimlerPage() {
 
       const { error } = await supabase
         .from('notification_preferences')
-        .upsert(prefsToUpsert, { onConflict: 'user_id,type' });
+        .upsert(prefsToUpsert as any, { onConflict: 'user_id,type' });
 
       if (!error) {
         setSaved(true);
