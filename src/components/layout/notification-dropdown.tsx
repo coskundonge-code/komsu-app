@@ -50,33 +50,61 @@ const MOCK_NOTIFICATIONS: Notification[] = [
     userAvatar: 'O',
     userName: 'Osman YÄ±ldÄ±z',
     text: 'Market ilanÄ±nÄ±z hakkÄ±nda soru sordu',
-    timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 gğ¯ƒ¶yn à¿ƒ¶nce
+    timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 gÃ¼n Ã¶nce
     isRead: true,
   },
   {
     id: '5',
     type: 'event_reminder',
     userAvatar: 'K',
-    userName: 'Komzok EtkinlikÄŸi',
-    text: 'YarÄ°n saat 14:00\'de mahalle pikniÄŸi baÅŸlayacak',
-    timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 gğ¯ƒ¶yn à¿ƒ¶nce
+    userName: 'KomÅŸu EtkinliÄŸi',
+    text: 'YarÄ±n saat 14:00\'de mahalle pikniÄŸi baÅŸlayacak',
+    timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 gÃ¼n Ã¶nce
     isRead: true,
   },
   {
     id: '6',
     type: 'safety_alert',
     userAvatar: 'G',
-    userName: 'GÃ¼venlik UyarÄ±lÄ°H',
+    userName: 'GÃ¼venlik UyarÄ±sÄ±',
     text: 'Mahallenizde kayÄ±p bir Ã§ocuk raporu verildi',
-    timestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000), // 4 gÂ¾Ùå¸ƒ‚şÙ¹”(€€€¥ÍI•…èÑÉÕ”°(€ô°(€ì(€€€¥è€œÜœ°(€€€ÑåÁ”è€¹•İ}½µµ•¹Ğœ°(€€€ÕÍ•ÉÙ…Ñ…Èè€Lœ°(€€€ÕÍ•É9…µ”è€M•±¥´-…É„œ°(€€€Ñ•áĞè€Ñ­¥¹±¥¬¥±…»Å¹„å½ÉÕ´å…Ë´è€‹½¬¥å¤½±ÕÈ„ˆœ°(€€€Ñ¥µ•ÍÑ…µÀè¹•Ü…Ñ”¡…Ñ”¹¹½Ü ¤€´€Ô€¨€ÈĞ€¨€ØÀ€¨€ØÀ€¨€ÄÀÀÀ¤°€¼¼€ÔŸ
-ø;g–âø;fæ6P¢—5&VC¢G'VRÀ¢ÒÀ¢°¢–C¢s‚rÀ¢G—S¢vÖ&¶WGÆ6UöÖW76vRrÀ¢W6W$fF#¢u¢rÀ¢W6W$æÖS¢u¦W–æW–LKârÀ¢FW‡C¢u6GLK\IÿÅ¼K¦¢	ø9½
-’W¬Kâ†²K¸Yv&–Æv’v÷fæFW&LKrÀ¢F–ÖW7F×¢æWrFFR„FFRææ÷r‚’Òb¢#B¢c¢c¢’Âòòbø;fâø;fæ6P¢—5&VC¢G'VRÀ¢ÒÀ¢°¢–C¢s’rÀ¢G—S¢væWuöföÆÆ÷vW"rÀ¢W6W$fF#¢t‚rÀ¢W6W$æÖS¢t†¶â9væÂrÀ¢FW‡C¢u6—¦’F¶—WFÖW–R&YöÆLKrÀ¢F–ÖW7F×¢æWrFFR„FFRææ÷r‚’Òr¢#B¢c¢c¢’Âòòr|+àí[ˆ8/àí›˜ÙBˆ\Ô™XYˆYKˆKˆÂˆYˆ	ÌL	Ëˆ\Nˆ	Û™]×Ü™XXİ[Û‰Ëˆ\Ù\]˜]\ˆ	ÑIËˆ\Ù\“˜[YNˆ	Ñ[Yˆñ'Øq,H‹ˆ^ˆ	Ñ›İÙñ'Ü˜Y±,[±,^˜H<'äcH\ÚH™\™H‹ˆ[Y\İ[\ˆ™]È]J]K››İÊ
-HH
-ˆ
-ˆŒ
-ˆŒ
-ˆL
-KËÈğ¯ƒ¶yn à¿ƒ¶nce
+    timestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000), // 4 gÃ¼n Ã¶nce
+    isRead: true,
+  },
+  {
+    id: '7',
+    type: 'new_comment',
+    userAvatar: 'S',
+    userName: 'Selim Kara',
+    text: 'Etkinlik ilanÄ±na yorum yaptÄ±: "Ã‡ok iyi olur!"',
+    timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 gÃ¼n Ã¶nce
+    isRead: true,
+  },
+  {
+    id: '8',
+    type: 'marketplace_message',
+    userAvatar: 'Z',
+    userName: 'Zeynep AydÄ±n',
+    text: 'SattÄ±ÄŸÄ±nÄ±z Ã¼rÃ¼n hakkÄ±nda mesaj gÃ¶nderdi',
+    timestamp: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), // 6 gÃ¼n Ã¶nce
+    isRead: true,
+  },
+  {
+    id: '9',
+    type: 'new_follower',
+    userAvatar: 'H',
+    userName: 'Hakan Ãœnal',
+    text: 'Sizi takip etmeye baÅŸladÄ±',
+    timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 gÃ¼n Ã¶nce
+    isRead: true,
+  },
+  {
+    id: '10',
+    type: 'new_reaction',
+    userAvatar: 'E',
+    userName: 'Elif DoÄŸan',
+    text: 'FotoÄŸrafÄ±nÄ±za ğŸ‘ tepki verdi',
+    timestamp: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000), // 8 gÃ¼n Ã¶nce
     isRead: true,
   },
 ]
@@ -86,13 +114,162 @@ function getTimeAgo(date: Date): string {
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
 
   if (diffInSeconds < 60) {
-    return 'az ğ¯ƒ¶ynce'
+    return 'az Ã¶nce'
   } else if (diffInSeconds < 3600) {
     const minutes = Math.floor(diffInSeconds / 60)
-    return `${minutes} dakika Â¯3Ã¶ynce`
+    return `${minutes} dakika Ã¶nce`
   } else if (diffInSeconds < 86400) {
     const hours = Math.floor(diffInSeconds / 3600)
-    return @${hours} saat Â¯3Ã¶ynce`
+    return `${hours} saat Ã¶nce`
   } else if (diffInSeconds < 604800) {
     const days = Math.floor(diffInSeconds / 86400)
-    return `${days} gÂ¾Ùå¸ƒ‚şÙ¹•€(€ô•±Í”ì(€€€É•ÑÕÉ¸‘…Ñ”¹Ñ½1½…±•…Ñ•MÑÉ¥¹œ ÑÈµQHœ¤(€ô)ô()™Õ¹Ñ¥½¸•Ñ9½Ñ¥™¥…Ñ¥½¹%½¸¡ÑåÁ”èÍÑÉ¥¹œ¤èÍÑÉ¥¹œì(€Íİ¥Ñ €¡ÑåÁ”¤ì(€€€…Í”€¹•İ}½µµ•¹Ğœè(€€€€€É•ÑÕÉ¸€ŸÂ~N°œ(€€€…Í”€¹•İ}É•…Ñ¥½¸œè(€€€€€É•ÑÕÉ¸€ŸŠv“¾â<œ(€€€…Í”€¹•İ}™½±±½İ•Èœè(€€€€€É•ÑÕÉ¸€ŸÂ~F”œ(€€€…Í”€•Ù•¹Ñ}É•µ¥¹‘•Èœè(€€€€€É•ÑÕÉ¸€ŸÂ~N”(€€€…Í”€Í…™•Ñå}…±•ÉĞœè(€€€€€É•ÑÕÉ¸€ŸŠjƒ¾â<œ(€€€…Í”€µ…É­•ÑÁ±…•}µ•ÍÍ…”œè(€€€€€É•ÑÕÉ¸€ŸÂ~nHœ(€€€‘•™…Õ±Ğè(€€€€€É•ÑÕÉ¸€ŸÂ~RPÕÍÉÖCåĞ9½Ñ¥™¥…Ñ¥½¹É½Á‘½İ¹AÉ½ÁÌì(€¥Í=Á•¸è‰½½±•…¸(€½¹±½Í”è€ ¤€ôøÙ½¥(€Õ¹É•…‘½Õ¹Ğè¹Õµ‰•È)ô()•áÁ½ÉĞ™Õ¹Ñ¥½¸9½Ñ¥™¥…Ñ¥½¹É½Á‘½İ¸¡ì(€¥Í=Á•¸°(€½¹±½Í”°(€Õ¹É•…‘½Õ¹Ğ°)ôè9½Ñ¥™¥…Ñ¥½¹É½Á‘½İ¹AÉ½ÁÌ¤ì(€½¹ÍĞm¹½Ñ¥™¥…Ñ¥½¹Ì°Í•Ñ9½Ñ¥™¥…Ñ¥½¹Ít€ôÕÍ•MÑ…Ñ”ñ9½Ñ¥™¥…Ñ¥½¹mtø¡5=-}9=Q%%Q%=9L¤(€½¹ÍĞm…±±I•…°Í•Ñ±±I•…‘t€ôÕÍ•MÑ…Ñ”¡™…±Í”¤((€ÕÍ•™™•Ğ  ¤€ôøì(€€€¥˜€ …¥Í=Á•¸¤É•ÑÕÉ¸((€€€½¹ÍĞ¡…¹‘±•±¥­=ÕÑÍ¥‘”€ô€¡”è5½ÕÍ•Ù•¹Ğ¤€ôøì(€€€€€½¹ÍĞÑ…É•Ğ€ô”¹Ñ…É•Ğ…Ì!Q51±•µ•¹Ğ(€€€€€¥˜€ …Ñ…É•Ğ¹±½Í•ÍĞ m‘…Ñ„µ¹½Ñ¥™¥…Ñ¥½¸µ‘É½Á‘½İ¹tœ¤¤ì(€€€€€€€½¹±½Í” ¤(€€€€€ô(€€€ô((€€€‘½Õµ•¹Ğ¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•È µ½ÕÍ•‘½İ¸œ°¡…¹‘±•±¥­=ÕÑÍ¥‘”¤(€€€É•ÑÕÉ¸€ ¤€ôø‘½Õµ•¹Ğ¹É•µ½Ù•Ù•¹Ñ1¥ÍÑ•¹•È µ½ÕÍ•‘½İ¸œ°¡…¹‘±•±¥­=ÕÑÍ¥‘”¤(€ô°m¥Í=Á•¸°½¹±½Í•t¤((€½¹ÍĞ¡…¹‘±•5…É­±±ÍI•…€ô€ ¤€ôøì(€€€Í•Ñ9½Ñ¥™¥…Ñ¥½¹Ì¡¹½Ñ¥™¥…Ñ¥½¹Ì¹µ…À¡¸€ôø€¡ì€¸¸¹¸°¥ÍI•…èÑÉÕ”ô¤¤¤(€€€Í•Ñ±±I•…¡ÑÉÕ”¤(€ô((€¥˜€ …¥Í=Á•¸¤É•ÑÕÉ¸¹Õ±°((€É•ÑÕÉ¸€ (€€€€ñ‘¥Ø(€€€€€‘…Ñ„µ¹½Ñ¥™¥…Ñ¥½¸µ‘É½Á‘½İ¸(€€€€€±…ÍÍ9…µ”ô‰…‰Í½±ÕÑ”Ñ½Àµ™Õ±°É¥¡Ğ´ÀµĞ´ÈÜµm…±Œ ÄÀÁÙÜ´ÉÉ•´¥tÍ´éÜµlÌØÁÁátµ…àµÜµlÌØÁÁát‰œµÍÕÉ™…”É½Õ¹‘•µ±œÍ¡…‘½Üµ±œ‰½É‘•È‰½É‘•Èµ‰½É‘•Èè´ÔÀˆ(€€€€ø(€€€€€ì¼¨!•…‘•È€¨½ô(€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰™±•à¥Ñ•µÌµ•¹Ñ•È©ÕÍÑ¥™äµ‰•Ñİ••¸À´Ğ‰½É‘•Èµˆ‰½É‘•Èµ‰½É‘•Èˆø(€€€€€€€€ñ Ì±…ÍÍ9…µ”ô‰Ñ•áĞµ±œ™½¹ĞµÍ•µ¥‰½±Ñ•áĞµÑ•áĞµÍ•½¹‘…Éä‰9½Ñ¥™¥…Ñ¥½¹Ìğ½ Ìø(€€€€€€€€ñ‰ÕÑÑ½¸(€€€€€€€€€½¹±¥¬õí½¹±½Í•ô(€€€€€€€€€±…ÍÍ9…µ”ô‰À´Ä¡½Ù•Èé‰œµ‰…­É½Õ¹É½Õ¹‘•µ™Õ±°ÑÉ…¹Í¥Ñ¥½¸µ½±½ÉÌˆ(€€€€€€€€€…É¥„µ±…‰•°ô‰-…Á…Ğˆ(€€€€€€€€ø(€€€€€€€€€€ñ`±…ÍÍ9…µ”ô‰Ü´Ô ´ÔÑ•áĞµÉ…ä´ÔÀÀˆ€¼ø(€€€€€€€€ğ½‰ÕÑÑ½¸ø(€€€€€€ğ½‘¥Øø((€€€€€ì¼¨9½Ñ¥™¥…Ñ¥½¹Ì1¥ÍĞ€¨½ô(€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰µ…àµ µlÔÀÁÁát½Ù•É™±½Üµäµ…ÕÑ¼ˆø(€€€€€€€í¹½Ñ¥™¥…Ñ¥½¹Ì¹±•¹Ñ €ôôô€À€ü€ (€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰™±•à™±•àµ½°¥Ñ•µÌµ•¹Ñ•È©ÕÍÑ¥™äµ•¹Ñ•ÈÁä´ÄÈÁà´Ğˆø(€€€€€€€€€€€€ñ	•±°±…ÍÍ9…µ”ô‰Ü´ÄÀ ´ÄÀÑ•áĞµÉ…ä´ÌÀÀµˆ´Èˆ€¼ø(€€€€€€€€€€€€ñÀ±…ÍÍ9…µ”ô‰Ñ•áĞµÉ…ä´ÔÀÀÑ•áĞµÍ´ˆù	¥±‘¥É¥µ¥¹¥èå½¬ğ½Àø(€€€€€€€€€€ğ½‘¥Øø(€€€€€€€€¤€è€ (€€€€€€€€€¹½Ñ¥™¥…Ñ¥½¹Ì¹µ…À ¡¹½Ñ¥™¥…Ñ¥½¸¤€ôø€ (€€€€€€€€€€€€ñ‘¥Ø(€€€€€€€€€€€€€­•äõí¹½Ñ¥™¥…Ñ¥½¸¹¥‘ô(€€€€€€€€€€€€€±…ÍÍ9…µ”õí¸ (€€€€€€€€€€€€€€€€Áà´ĞÁä´Ì‰½É‘•Èµˆ‰½É‘•Èµl˜Á˜É˜Õt¡½Ù•Èé‰œµ‰…­É½Õ¹ÑÉ…¹Í¥Ñ¥½¸µ½±½ÉÌÕÉÍ½ÈµÁ½¥¹Ñ•Èœ°(€€€€€€€€€€€€€€€€…¹½Ñ¥™¥…Ñ¥½¸¹¥ÍI•…€˜˜€‰œµ‰±Õ”´ÔÀœ(€€€€€€€€€€€€€€¥ô(€€€€€€€€€€€€ø(€€€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰™±•à…À´Ìˆø(€€€€€€€€€€€€€€€ì¼¨Ù…Ñ…È€¨½ô(€€€€€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰™±•àµÍ¡É¥¹¬´Àˆø(€€€€€€€€€€€€€€€€€€ñ‘¥Ø(€€€€€€€€€€€€€€€€€€€±…ÍÍ9…µ”õí¸ (€€€€€€€€€€€€€€€€€€€€€€Ü´ÄÀ ´ÄÀÉ½Õ¹‘•µ™Õ±°™±•à¥Ñ•µÌµ•¹Ñ•È©ÕÍÑ¥™äµ•¹Ñ•ÈÑ•áĞµÍ´™½¹ĞµÍ•µ¥‰½±Ñ•áĞµİ¡¥Ñ”œ°(€€€€€€€€€€€€€€€€€€€€€€…¹½Ñ¥™¥…Ñ¥½¸¹¥ÍI•…€ü€‰œµÁÉ¥µ…Éäœ€è€‰œµÉ…ä´ĞÀÀœ(€€€€€€€€€€€€€€€€€€€€¥ô(€€€€€€€€€€€€€€€€€€ø(€€€€€€€€€€€€€€€€€€€í¹½Ñ¥™¥…Ñ¥½¸¹ÕÍ•ÉÙ…Ñ…Éô(€€€€€€€€€€€€€€€€€€ğ½‘¥Øø(€€€€€€€€€€€€€€€€ğ½‘¥Øø((€€€€€€€€€€€€€€€ì¼¨½¹Ñ•¹Ğ€¨½ô(€€€€€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰™±•à´Äµ¥¸µÜ´Àˆø(€€€€€€€€€€€€€€€€€€ñÀ±…ÍÍ9…µ”ô‰Ñ•áĞµÍ´Ñ•áĞµÑ•áĞµÍ•½¹‘…Éä‰É•…¬µİ½É‘Ìˆø(€€€€€€€€€€€€€€€€€€€€ñÍÁ…¸±…ÍÍ9…µ”ô‰™½¹ĞµÍ•µ¥‰½±ˆùí¹½Ñ¥™¥…Ñ¥½¸¹ÕÍ•É9…µ•ôğ½ÍÁ…¸ùìœ€ô(€€€€€€€€€€€€€€€€€€€í¹½Ñ¥™¥…Ñ¥½¸¹Ñ•áÑô(€€€€€€€€€€€€€€€€€€ğ½Àø(€€€€€€€€€€€€€€€€€€ñÀ±…ÍÍ9…µ”ô‰Ñ•áĞµáÌÑ•áĞµÉ…ä´ÔÀÀµĞ´Äˆø(€€€€€€€€€€€€€€€€€€€í•ÑQ¥µ•¼¡¹½Ñ¥™¥…Ñ¥½¸¹Ñ¥µ•ÍÑ…µÀ¥ô(€€€€€€€€€€€€€€€€€€ğ½Àø(€€€€€€€€€€€€€€€€ğ½‘¥Øø((€€€€€€€€€€€€€€€ì¼¨U¹É•…%¹‘¥…Ñ½È€¨½ô(€€€€€€€€€€€€€€€ì…¹½Ñ¥™¥…Ñ¥½¸¹¥ÍI•…€˜˜€ (€€€€€€€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰™±•àµÍ¡É¥¹¬´Àˆø(€€€€€€€€€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰Ü´È ´È‰œµÁÉ¥µ…ÉäÉ½Õ¹‘•µ™Õ±°µĞ´Äˆ€¼ø(€€€€€€€€€€€€€€€€€€ğ½‘¥Øø(€€€€€€€€€€€€€€€€¥ô(€€€€€€€€€€€€€€ğ½‘¥Øø(€€€€€€€€€€€€ğ½‘¥Øø(€€€€€€€€€€¤¤(€€€€€€€€¥ô(€€€€€€ğ½‘¥Øø((€€€€€ì¼¨½½Ñ•È€¨½ô(€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰À´Ì‰½É‘•ÈµĞ‰½É‘•Èµ‰½É‘•È™±•à™±•àµ½°…À´Èˆø(€€€€€€€ì……±±I•…€˜˜Õ¹É•…‘½Õ¹Ğ€ø€À€˜˜€ (€€€€€€€€€€ñ‰ÕÑÑ½¸(€€€€€€€€€€€½¹±¥¬õí¡…¹‘±•5…É­±±ÍI•…‘ô(€€€€€€€€€€€±…ÍÍ9…µ”ô‰Üµ™Õ±°Áà´ĞÁä´ÈÑ•áĞµÍ´™½¹Ğµµ•‘¥Õ´Ñ•áĞµÁÉ¥µ…Éä¡½Ù•Èé‰œµ‰…­É½Õ¹É½Õ¹‘•ÑÉ…¹Í¥Ñ¥½¸µ½±½ÉÌˆ(€€€€€€€€€€ø(€€€€€€€€€€€SÙµ³ñ»ğ=­Õ¹‘Ô'}…É•Ñ±”(€€€€€€€€€€ğ½‰ÕÑÑ½¸ø(€€€€€€€€¥ô(€€€€€€€€ñ1¥¹¬(€€€€€€€€€¡É•˜ôˆ½‰¥±‘¥É¥µ±•Èˆ(€€€€€€€€€½¹±¥¬õí½¹±½Í•ô(€€€€€€€€€±…ÍÍ9…µ”ô‰Üµ™Õ±°Áà´ĞÁä´ÈÑ•áĞµÍ´™½¹Ğµµ•‘¥Õ´Ñ•áĞµ•¹Ñ•ÈÑ•áĞµÁÉ¥µ…Éä¡½Ù•Èé‰œµ‰…­É½Õ¹É½Õ¹‘•ÑÉ…¹Í¥Ñ¥½¸µ½±½ÉÌˆ(€€€€€€€€ø(€€€€€€€€€QÕ´	¥±‘¥É¥µ±•È(€€€€€€€€ğ½1¥¹¬ø(€€€€€€ğ½‘¥Øø(€€€€ğ½‘¥Øø(€€(€Š=!t
+    return `${days} gÃ¼n Ã¶nce`
+  } else {
+    return date.toLocaleDateString('tr-TR')
+  }
+}
+
+function getNotificationIcon(type: string): string {
+  switch (type) {
+    case 'new_comment':
+      return 'ğŸ’¬'
+    case 'new_reaction':
+      return 'â¤ï¸'
+    case 'new_follower':
+      return 'ğŸ‘¥'
+    case 'event_reminder':
+      return 'ğŸ“…'
+    case 'safety_alert':
+      return 'âš ï¸'
+    case 'marketplace_message':
+      return 'ğŸ›’'
+    default:
+      return 'ğŸ””'
+  }
+}
+
+interface NotificationDropdownProps {
+  isOpen: boolean
+  onClose: () => void
+  unreadCount: number
+}
+
+export function NotificationDropdown({
+  isOpen,
+  onClose,
+  unreadCount,
+}: NotificationDropdownProps) {
+  const [notifications, setNotifications] = useState<Notification[]>(MOCK_NOTIFICATIONS)
+  const [allRead, setAllRead] = useState(false)
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      if (!target.closest('[data-notification-dropdown]')) {
+        onClose()
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isOpen, onClose])
+
+  const handleMarkAllAsRead = () => {
+    setNotifications(notifications.map(n => ({ ...n, isRead: true })))
+    setAllRead(true)
+  }
+
+  if (!isOpen) return null
+
+  return (
+    <div
+      data-notification-dropdown
+      className="absolute top-full right-0 mt-2 w-[calc(100vw-2rem)] sm:w-[360px] max-w-[360px] bg-surface rounded-lg shadow-lg border border-border z-50"
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between p-4 border-b border-border">
+        <h3 className="text-lg font-semibold text-text-secondary">Bildirimler</h3>
+        <button
+          onClick={onClose}
+          className="p-1 hover:bg-background rounded-full transition-colors"
+          aria-label="Kapat"
+        >
+          <X className="w-5 h-5 text-gray-500" />
+        </button>
+      </div>
+
+      {/* Notifications List */}
+      <div className="max-h-[500px] overflow-y-auto">
+        {notifications.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 px-4">
+            <Bell className="w-10 h-10 text-gray-300 mb-2" />
+            <p className="text-gray-500 text-sm">Bildiriminiz yok</p>
+          </div>
+        ) : (
+          notifications.map((notification) => (
+            <div
+              key={notification.id}
+              className={cn(
+                'px-4 py-3 border-b border-[#f0f2f5] hover:bg-background transition-colors cursor-pointer',
+                !notification.isRead && 'bg-blue-50'
+              )}
+            >
+              <div className="flex gap-3">
+                {/* Avatar */}
+                <div className="flex-shrink-0">
+                  <div
+                    className={cn(
+                      'w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold text-white',
+                      !notification.isRead ? 'bg-primary' : 'bg-gray-400'
+                    )}
+                  >
+                    {notification.userAvatar}
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-text-secondary break-words">
+                    <span className="font-semibold">{notification.userName}</span>{' '}
+                    {notification.text}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {getTimeAgo(notification.timestamp)}
+                  </p>
+                </div>
+
+                {/* Unread Indicator */}
+                {!notification.isRead && (
+                  <div className="flex-shrink-0">
+                    <div className="w-2 h-2 bg-primary rounded-full mt-1" />
+                  </div>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Footer */}
+      <div className="p-3 border-t border-border flex flex-col gap-2">
+        {!allRead && unreadCount > 0 && (
+          <button
+            onClick={handleMarkAllAsRead}
+            className="w-full px-4 py-2 text-sm font-medium text-primary hover:bg-background rounded transition-colors"
+          >
+            TÃ¼mÃ¼nÃ¼ Okundu Ä°ÅŸaretle
+          </button>
+        )}
+        <Link
+          href="/bildirimler"
+          onClick={onClose}
+          className="w-full px-4 py-2 text-sm font-medium text-center text-primary hover:bg-background rounded transition-colors"
+        >
+          TÃ¼m Bildirimler
+        </Link>
+      </div>
+    </div>
+  )
+}
