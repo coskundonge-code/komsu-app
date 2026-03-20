@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
+import { useCurrentUser } from '@/lib/hooks/use-auth';
+import { getProfile, updateProfile } from '@/lib/hooks/use-profile';
 import {
   User,
   Mail,
@@ -32,6 +34,7 @@ const mockUser = {
 };
 
 export default function AyarlarPage() {
+  const { user, profile } = useCurrentUser();
   const [profileData, setProfileData] = useState({
     name: mockUser.name,
     email: mockUser.email,
@@ -44,7 +47,20 @@ export default function AyarlarPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [language, setLanguage] = useState("tr");
   const [saved, setSaved] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [editingField, setEditingField] = useState<string | null>(null);
+
+  // Load profile data on mount
+  useEffect(() => {
+    if (profile) {
+      setProfileData({
+        name: profile.full_name || mockUser.name,
+        email: profile.email || mockUser.email,
+        phone: profile.phone || mockUser.phone,
+        bio: profile.bio || mockUser.bio,
+      });
+    }
+  }, [profile]);
 
   const handleProfileChange = (field: string, value: string) => {
     setProfileData((prev) => ({
@@ -53,9 +69,34 @@ export default function AyarlarPage() {
     }));
   };
 
-  const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  const handleSave = async () => {
+    if (!user?.id) {
+      alert('Giriş yapmanız gerekir');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const { error } = await updateProfile(user.id, {
+        full_name: profileData.name,
+        email: profileData.email,
+        phone: profileData.phone,
+        bio: profileData.bio,
+      });
+
+      if (!error) {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2000);
+      } else {
+        console.error('Failed to save profile:', error);
+        alert('Profil kaydedilirken bir hata oluştu.');
+      }
+    } catch (err) {
+      console.error('Error saving profile:', err);
+      alert('Profil kaydedilirken bir hata oluştu.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const settingsSections = [
@@ -86,7 +127,7 @@ export default function AyarlarPage() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-surface border-b border-border sticky top-0 z-10">
-        <div className="max-w-2xl mx-auto px-4 py-4">
+        <div className="max-w-2xl mx-auto px-2 sm:px-4 py-3 sm:py-4">
           <div>
             <h1 className="text-2xl font-bold text-text-primary">Hesap Ayarları</h1>
             <p className="text-sm text-text-muted mt-1">
@@ -97,7 +138,7 @@ export default function AyarlarPage() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-2xl mx-auto px-4 py-6">
+      <div className="max-w-2xl mx-auto px-2 sm:px-4 py-4 sm:py-6">
         {/* Profile Section */}
         <div className="bg-surface rounded-lg border border-border p-6 mb-6">
           <h2 className="text-lg font-semibold text-text-primary mb-6">Profil Bilgileri</h2>
@@ -374,7 +415,8 @@ export default function AyarlarPage() {
         <div className="flex gap-3 mb-12">
           <button
             onClick={handleSave}
-            className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all ${
+            disabled={isLoading}
+            className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
               saved
                 ? "bg-primary text-white"
                 : "bg-primary text-white hover:bg-primary-hover"
@@ -384,6 +426,8 @@ export default function AyarlarPage() {
               <span className="flex items-center justify-center gap-2">
                 <Check className="w-5 h-5" /> Kaydedildi
               </span>
+            ) : isLoading ? (
+              "Kaydediliyor..."
             ) : (
               "Değişiklikleri Kaydet"
             )}

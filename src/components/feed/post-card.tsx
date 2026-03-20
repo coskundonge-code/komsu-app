@@ -5,16 +5,18 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { MoreHorizontal, Globe, Heart, MessageCircle, Share2, Pin, Send, X, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { toggleReaction, createComment } from '@/lib/hooks/use-posts'
+import { useCurrentUser } from '@/lib/hooks/use-auth'
 
 export const POST_CATEGORIES = [
-  { id: 'tumu', label: 'Tumu', badgeColor: 'bg-surface-active text-text-secondary' },
-  { id: 'genel', label: 'Genel', badgeColor: 'bg-info-light text-info' },
-  { id: 'guvenlik', label: 'Guvenlik', badgeColor: 'bg-error-light text-error' },
-  { id: 'satilik', label: 'Satilik', badgeColor: 'bg-warning-light text-amber-700' },
-  { id: 'etkinlikler', label: 'Etkinlikler', badgeColor: 'bg-purple-100 text-purple-700' },
-  { id: 'oneriler', label: 'Oneriler', badgeColor: 'bg-success-light text-success' },
-  { id: 'sorular', label: 'Sorular', badgeColor: 'bg-cyan-100 text-cyan-700' },
-  { id: 'kayipbuluntu', label: 'Kayip/Buluntu', badgeColor: 'bg-orange-100 text-orange-700' },
+  { id: 'tumu', label: 'Tümü', badgeColor: 'bg-surface-active text-text-secondary' },
+  { id: 'genel', label: 'Genel', badgeColor: 'bg-cat-general-light text-cat-general' },
+  { id: 'guvenlik', label: 'Güvenlik', badgeColor: 'bg-cat-safety-light text-cat-safety' },
+  { id: 'satilik', label: 'Satılık', badgeColor: 'bg-cat-sale-light text-cat-sale' },
+  { id: 'etkinlikler', label: 'Etkinlikler', badgeColor: 'bg-cat-event-light text-cat-event' },
+  { id: 'oneriler', label: 'Öneriler', badgeColor: 'bg-cat-recommend-light text-cat-recommend' },
+  { id: 'sorular', label: 'Sorular', badgeColor: 'bg-cat-question-light text-cat-question' },
+  { id: 'kayipbuluntu', label: 'Kayıp/Buluntu', badgeColor: 'bg-cat-lostfound-light text-cat-lostfound' },
 ]
 
 export function getCategoryInfo(categoryId: string) {
@@ -41,22 +43,46 @@ interface FeedPostCardProps {
 }
 
 export function FeedPostCard({ post }: FeedPostCardProps) {
+  const { user, profile } = useCurrentUser()
   const [liked, setLiked] = useState(false)
   const [showComment, setShowComment] = useState(false)
   const [commentText, setCommentText] = useState('')
   const [expanded, setExpanded] = useState(false)
+  const [submittingComment, setSubmittingComment] = useState(false)
   const categoryInfo = getCategoryInfo(post.category)
   const isLongText = post.body.length > 200
+
+  const handleLike = async () => {
+    if (!user) return
+    const { error } = await toggleReaction(post.id, user.id, 'like')
+    if (!error) {
+      setLiked(!liked)
+    }
+  }
+
+  const handleCommentSubmit = async () => {
+    if (!commentText.trim() || !user) return
+    setSubmittingComment(true)
+    try {
+      const { error } = await createComment(post.id, user.id, commentText)
+      if (!error) {
+        setCommentText('')
+        setShowComment(false)
+      }
+    } finally {
+      setSubmittingComment(false)
+    }
+  }
 
   return (
     <article className={cn(
       'bg-surface rounded-xl shadow-card border transition-all duration-200 animate-fadeIn overflow-hidden',
-      post.isPinned ? 'border-orange-200' : 'border-border'
+      post.isPinned ? 'border-cat-lostfound/30' : 'border-border'
     )}>
       {post.isPinned && (
-        <div className="bg-orange-50 text-orange-600 px-4 py-2 flex items-center gap-2 text-xs font-semibold border-b border-orange-100">
+        <div className="bg-cat-lostfound-light text-cat-lostfound px-4 py-2 flex items-center gap-2 text-xs font-semibold border-b border-cat-lostfound/20">
           <Pin className="w-3.5 h-3.5" />
-          Sabitlenmis Gonderi
+          Sabitlenmiş Gönderi
         </div>
       )}
 
@@ -88,7 +114,7 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
         </p>
         {isLongText && !expanded && (
           <button onClick={() => setExpanded(true)} className="text-sm font-medium text-primary hover:text-primary-hover mt-1">
-            daha fazla goster
+            daha fazla göster
           </button>
         )}
       </div>
@@ -128,14 +154,14 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
           <div className="px-3 py-1 border-t border-border-light">
             <div className="flex items-center">
               <button
-                onClick={() => setLiked(!liked)}
+                onClick={handleLike}
                 className={cn(
                   'flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg transition-all duration-200',
                   liked ? 'text-error' : 'text-text-secondary hover:bg-surface-hover'
                 )}
               >
                 <Heart className={cn('w-5 h-5', liked && 'fill-current')} />
-                {liked ? 'Begendin' : 'Begen'}
+                {liked ? 'Beğendin' : 'Beğen'}
               </button>
               <button
                 onClick={() => setShowComment(!showComment)}
@@ -154,7 +180,7 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
           {showComment && (
             <div className="px-4 py-3 border-t border-border-light bg-surface-hover/30">
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">C</div>
+                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">{profile?.full_name?.[0]?.toUpperCase() || 'K'}</div>
                 <div className="flex-1">
                   <textarea
                     value={commentText}
@@ -168,15 +194,15 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
                       <X className="w-4 h-4" />
                     </button>
                     <button
-                      onClick={() => { setCommentText(''); setShowComment(false) }}
-                      disabled={!commentText.trim()}
+                      onClick={handleCommentSubmit}
+                      disabled={!commentText.trim() || !user || submittingComment}
                       className={cn(
                         'px-4 py-1.5 text-sm font-semibold rounded-lg flex items-center gap-2 transition-all',
-                        commentText.trim() ? 'bg-primary text-white hover:bg-primary-hover' : 'bg-surface-active text-text-muted cursor-not-allowed'
+                        commentText.trim() && user && !submittingComment ? 'bg-primary text-white hover:bg-primary-hover' : 'bg-surface-active text-text-muted cursor-not-allowed'
                       )}
                     >
                       <Send className="w-4 h-4" />
-                      Gonder
+                      {submittingComment ? 'Gönderiliyor...' : 'Gönder'}
                     </button>
                   </div>
                 </div>

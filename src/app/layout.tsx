@@ -5,21 +5,23 @@ import { JsonLd } from "@/components/shared/json-ld";
 import { CookieBanner } from "@/components/shared/cookie-banner";
 import { PWAInstallPrompt } from "@/components/shared/pwa-install-prompt";
 import { BackToTop } from "@/components/shared/back-to-top";
+import { NativeAppInit } from "@/components/shared/native-app-init";
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  viewportFit: "cover",
   themeColor: "#00833e",
 };
 
 export const metadata: Metadata = {
   title: {
-    default: "Mahallem - Mahalleni Keşfet, Komşularınla Bağlan",
-    template: "%s | Mahallem",
+    default: "Mahallemiz - Mahalleni Keşfet, Komşularınla Bağlan",
+    template: "%s | Mahallemiz",
   },
   description:
-    "Türkiye'nin mahalle sosyal ağı. Mahallem ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın, etkinliklere katılın ve yerel işletmeleri keşfedin.",
+    "Türkiye'nin mahalle sosyal ağı. Mahallemiz ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın, etkinliklere katılın ve yerel işletmeleri keşfedin.",
   keywords: [
     "komşu",
     "mahalle",
@@ -39,35 +41,35 @@ export const metadata: Metadata = {
   ],
   authors: [
     {
-      name: "Mahallem",
-      url: "https://mahallem.com",
+      name: "Mahallemiz",
+      url: "https://www.mahallemiz.com.tr",
     },
   ],
-  creator: "Mahallem",
-  publisher: "Mahallem",
+  creator: "Mahallemiz",
+  publisher: "Mahallemiz",
   openGraph: {
-    title: "Mahallem - Mahalleni Keşfet, Komşularınla Bağlan",
+    title: "Mahallemiz - Mahalleni Keşfet, Komşularınla Bağlan",
     description:
-      "Türkiye'nin mahalle sosyal ağı. Mahallem ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın ve etkinliklere katılın.",
+      "Türkiye'nin mahalle sosyal ağı. Mahallemiz ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın ve etkinliklere katılın.",
     type: "website",
-    siteName: "Mahallem",
+    siteName: "Mahallemiz",
     locale: "tr_TR",
-    url: "https://mahallem.com",
+    url: "https://www.mahallemiz.com.tr",
     images: [
       {
         url: "/icon-512.png",
         width: 512,
         height: 512,
-        alt: "Mahallem Logo",
+        alt: "Mahallemiz Logo",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    site: "@mahallem",
-    creator: "@mahallem",
-    title: "Mahallem - Mahalleni Keşfet, Komşularınla Bağlan",
+    site: "@mahallemiz",
+    creator: "@mahallemiz",
+    title: "Mahallemiz - Mahalleni Keşfet, Komşularınla Bağlan",
     description:
       "Türkiye'nin mahalle sosyal ağı. Komşularınızla bağlanın, etkinliklere katılın, alışveriş yapın.",
     images: ["/icon-512.png"],
@@ -76,7 +78,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Mahallem",
+    title: "Mahallemiz",
     startupImage: "/icon-192.png",
   },
   robots: {
@@ -112,6 +114,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <Providers>
+          <NativeAppInit />
           {children}
           <PWAInstallPrompt />
           <CookieBanner />

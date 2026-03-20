@@ -11,7 +11,7 @@ export function BottomBar() {
 
   const items = [
     { icon: Home, label: 'Ana Sayfa', href: '/' },
-    { icon: Compass, label: 'Kesfet', href: '/kesfet' },
+    { icon: Compass, label: 'Keşfet', href: '/kesfet' },
     { icon: Bell, label: 'Bildirimler', href: '/bildirimler' },
     { icon: User, label: 'Profil', href: '/profil/me' },
   ]
@@ -56,12 +56,12 @@ export function BottomBar() {
         <Link
           href="/?post=new"
           className="flex flex-col items-center justify-center -mt-5 active:scale-95 transition-transform"
-          aria-label="Yeni gonderi olustur"
+          aria-label="Yeni gönderi oluştur"
         >
           <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all">
             <Plus className="w-6 h-6 text-white" strokeWidth={2.5} />
           </div>
-          <span className="text-[10px] font-bold text-primary mt-1">Olustur</span>
+          <span className="text-[10px] font-bold text-primary mt-1">Oluştur</span>
         </Link>
 
         {items.slice(2).map((item) => {

@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { X, Send, ImagePlus, MapPin, Globe, BarChart3, Shield, HelpCircle, Tag, ChevronDown, Video } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { createPost } from '@/lib/hooks/use-posts';
+import { useCurrentUser } from '@/lib/hooks/use-auth';
 
 const POST_TYPES = [
   { id: 'general', label: 'Genel', icon: Tag },
@@ -40,6 +42,7 @@ interface PostFormModalProps {
 }
 
 export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps) {
+  const { user, profile } = useCurrentUser();
   const [postType, setPostType] = useState('general');
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
@@ -129,32 +132,63 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
       }
     }
 
+    if (!user) {
+      alert('Gönderi oluşturmak için giriş yapmanız gerekir');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      const newPost = {
-        id: Date.now().toString(),
-        type: postType,
-        title: title.trim() || undefined,
-        body: body.trim(),
+      const postData = {
+        user_id: user.id,
+        neighborhood_id: 'default',
+        title: title.trim() || null,
+        content: body.trim(),
+        post_type: postType === 'general' ? 'genel' : postType === 'security' ? 'guvenlik' : postType === 'recommendation' ? 'oneriler' : postType === 'lost-found' ? 'kayipbuluntu' : 'genel',
         visibility,
-        images,
-        location,
-        poll:
-          postType === 'poll' && pollQuestion.trim()
-            ? {
-                question: pollQuestion.trim(),
-                options: pollOptions.filter((opt) => opt.trim()),
-              }
-            : undefined,
-        author: { name: 'Siz', initial: 'S', neighborhood: 'Kadıköy, Moda', profileId: 'you' },
-        timeAgo: 'Az önce',
-        reactions: 0,
-        comments: 0,
+        image_urls: images,
       };
 
-      onSubmit(newPost);
-      resetForm();
-      onClose();
+      const { data, error } = await createPost(postData as any);
+
+      if (data && !error) {
+        const postResult = data as any;
+        const newPost = {
+          id: postResult.id,
+          type: postType,
+          title: postResult.title || undefined,
+          body: postResult.content,
+          visibility,
+          images,
+          location,
+          author: { name: profile?.full_name || 'Siz', initial: profile?.full_name?.[0]?.toUpperCase() || 'S', neighborhood: 'Kadıköy, Moda', profileId: user.id },
+          timeAgo: 'Az önce',
+          reactions: 0,
+          comments: 0,
+        };
+
+        onSubmit(newPost);
+        resetForm();
+        onClose();
+      } else {
+        // Fallback to mock data on error
+        const fallbackPost = {
+          id: Date.now().toString(),
+          type: postType,
+          title: title.trim() || undefined,
+          body: body.trim(),
+          visibility,
+          images,
+          location,
+          author: { name: profile?.full_name || 'Siz', initial: profile?.full_name?.[0]?.toUpperCase() || 'S', neighborhood: 'Kadıköy, Moda', profileId: user.id },
+          timeAgo: 'Az önce',
+          reactions: 0,
+          comments: 0,
+        };
+        onSubmit(fallbackPost);
+        resetForm();
+        onClose();
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -188,7 +222,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
       />
 
       {/* Modal Container */}
-      <div className="relative bg-surface rounded-lg shadow-2xl w-full max-w-[600px] max-h-[90vh] flex flex-col mx-4 animate-in fade-in scale-in duration-300">
+      <div className="relative bg-surface rounded-none sm:rounded-lg shadow-2xl w-full sm:max-w-[600px] h-full sm:h-auto sm:max-h-[90vh] flex flex-col sm:mx-4 animate-in fade-in scale-in duration-300">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border">
           <h2 className="text-lg font-bold text-text-primary">Gönderi Oluştur</h2>
@@ -229,11 +263,11 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
 
           {/* Author Info */}
           <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
-            <div className="w-10 h-10 bg-[#404040] rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-              S
+            <div className="w-10 h-10 bg-text-secondary rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+              {profile?.full_name?.[0]?.toUpperCase() || 'K'}
             </div>
             <div>
-              <p className="text-sm font-bold text-text-primary">Siz</p>
+              <p className="text-sm font-bold text-text-primary">{profile?.full_name || 'Siz'}</p>
               <p className="text-xs text-text-muted">Kadıköy, Moda</p>
             </div>
           </div>
@@ -244,7 +278,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Başlık ekleyin (isteğe bağlı)"
-            className="w-full px-3 py-2 bg-background border border-border rounded-lg text-[15px] text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+            className="w-full px-3 py-2 bg-surface-hover border border-border rounded-lg text-[15px] text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
           />
 
           {/* Body Textarea */}
@@ -253,7 +287,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
               value={body}
               onChange={(e) => setBody(e.target.value)}
               placeholder={getPlaceholderText(postType)}
-              className="w-full min-h-[120px] p-3 bg-background border border-border rounded-lg text-[15px] text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none transition-colors"
+              className="w-full min-h-[120px] p-3 bg-surface-hover border border-border rounded-lg text-[15px] text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none transition-colors"
             />
             {/* Character count */}
             <div className="absolute bottom-2 right-3 text-xs text-text-muted">
@@ -267,7 +301,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
               onDragOver={handleDragOver}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-primary hover:bg-background transition-colors"
+              className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-primary hover:bg-surface-hover transition-colors"
             >
               <input
                 ref={fileInputRef}
@@ -306,7 +340,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
           )}
 
           {/* Location Tag */}
-          <div className="flex items-center justify-between p-3 bg-background rounded-lg">
+          <div className="flex items-center justify-between p-3 bg-surface-hover rounded-lg">
             <div className="flex items-center gap-2">
               <MapPin className="w-4 h-4 text-text-muted" />
               {location ? (
@@ -336,7 +370,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
           <div className="relative">
             <button
               onClick={() => setShowVisibilityMenu(!showVisibilityMenu)}
-              className="w-full flex items-center justify-between p-3 bg-background rounded-lg border border-border hover:border-primary transition-colors"
+              className="w-full flex items-center justify-between p-3 bg-surface-hover rounded-lg border border-border hover:border-primary transition-colors"
             >
               <div className="flex items-center gap-2">
                 <Globe className="w-4 h-4 text-text-muted" />
@@ -360,7 +394,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
                       'w-full text-left px-4 py-2.5 text-sm transition-colors first:rounded-t-lg last:rounded-b-lg',
                       visibility === option.id
                         ? 'bg-primary-light text-primary font-medium'
-                        : 'text-text-primary hover:bg-background'
+                        : 'text-text-primary hover:bg-surface-hover'
                     )}
                   >
                     {option.label}
@@ -372,7 +406,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
 
           {/* Poll Section - Show when poll type is selected */}
           {postType === 'poll' && (
-            <div className="space-y-3 p-3 bg-background rounded-lg border border-border">
+            <div className="space-y-3 p-3 bg-surface-hover rounded-lg border border-border">
               <p className="text-xs font-semibold text-text-muted">ANKET DETAYLARI</p>
 
               <input
@@ -418,7 +452,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
         </div>
 
         {/* Footer with Buttons */}
-        <div className="flex items-center justify-between gap-2 p-4 border-t border-border bg-[#f9f9f9]">
+        <div className="flex items-center justify-between gap-2 p-4 border-t border-border bg-surface-hover">
           <button
             onClick={handleClose}
             disabled={isSubmitting}
@@ -433,7 +467,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
               'flex items-center gap-2 px-5 py-2 text-sm font-semibold rounded-full transition-colors',
               body.trim() && (postType !== 'poll' || (pollQuestion.trim() && pollOptions.filter((o) => o.trim()).length >= 2)) && !isSubmitting
                 ? 'bg-primary text-white hover:bg-primary-hover'
-                : 'bg-[#e0e0e0] text-text-muted cursor-not-allowed'
+                : 'bg-border text-text-muted cursor-not-allowed'
             )}
           >
             <Send className="w-4 h-4" />

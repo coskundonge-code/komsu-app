@@ -48,6 +48,15 @@
   --color-cat-question: #06b6d4;
   --color-cat-lostfound: #f97316;
 
+  /* === CATEGORY COLORS - LIGHT === */
+  --color-cat-general-light: #eff6ff;
+  --color-cat-safety-light: #fef2f2;
+  --color-cat-sale-light: #fef3c7;
+  --color-cat-event-light: #f5f3ff;
+  --color-cat-recommend-light: #e6f4ec;
+  --color-cat-question-light: #ecfeff;
+  --color-cat-lostfound-light: #fff7ed;
+
   /* === SHADOWS === */
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -151,6 +160,14 @@
   --color-cat-question: var(--color-cat-question);
   --color-cat-lostfound: var(--color-cat-lostfound);
 
+  --color-cat-general-light: var(--color-cat-general-light);
+  --color-cat-safety-light: var(--color-cat-safety-light);
+  --color-cat-sale-light: var(--color-cat-sale-light);
+  --color-cat-event-light: var(--color-cat-event-light);
+  --color-cat-recommend-light: var(--color-cat-recommend-light);
+  --color-cat-question-light: var(--color-cat-question-light);
+  --color-cat-lostfound-light: var(--color-cat-lostfound-light);
+
   /* Shadows */
   --shadow-xs: var(--shadow-xs);
   --shadow-sm: var(--shadow-sm);
@@ -170,14 +187,6 @@
   --radius-2xl: var(--radius-2xl);
   --radius-full: var(--radius-full);
 
-  /* Backward compat aliases */
-  --color-nd-green: var(--color-primary);
-  --color-nd-green-hover: var(--color-primary-hover);
-  --color-nd-dark: #333333;
-  --color-nd-text: var(--color-text-secondary);
-  --color-nd-text-secondary: var(--color-text-muted);
-  --color-nd-border: var(--color-border);
-  --color-nd-bg: var(--color-background);
 }
 
 /* === BASE STYLES === */
@@ -359,6 +368,44 @@ select:focus {
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* === SAFE AREA SUPPORT === */
+@supports (padding: env(safe-area-inset-top)) {
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .safe-area-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  .safe-area-right {
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* === MOBILE VIEWPORT FIX === */
+html {
+  height: -webkit-fill-available;
+}
+body {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+/* === TOUCH ACTION OPTIMIZATION === */
+.touch-pan-y {
+  touch-action: pan-y;
+}
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+/* === MOBILE TAP HIGHLIGHT === */
+* {
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* === FOCUS VISIBLE === */

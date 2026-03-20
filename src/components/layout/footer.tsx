@@ -9,10 +9,10 @@ export function Footer({ className, ...props }: FooterProps) {
 
   const footerSections = [
     {
-      title: "Mahallem",
+      title: "Mahallemiz",
       links: [
-        { label: "Hakkinda", href: "/hakkinda" },
-        { label: "Nasil Calisir", href: "/nasil-calisir" },
+        { label: "Hakkında", href: "/hakkinda" },
+        { label: "Nasıl Çalışır", href: "/nasil-calisir" },
         { label: "Blog", href: "/blog" },
         { label: "Kariyer", href: "/kariyer" },
       ],
@@ -20,23 +20,23 @@ export function Footer({ className, ...props }: FooterProps) {
     {
       title: "Destek",
       links: [
-        { label: "Yardim Merkezi", href: "/yardim" },
-        { label: "Guvenlik", href: "/guvenlik" },
-        { label: "Topluluk Kurallari", href: "/topluluk-kurallari" },
-        { label: "Iletisim", href: "/iletisim" },
+        { label: "Yardım Merkezi", href: "/yardim" },
+        { label: "Güvenlik", href: "/guvenlik" },
+        { label: "Topluluk Kuralları", href: "/topluluk-kurallari" },
+        { label: "İletişim", href: "/iletisim" },
       ],
     },
     {
       title: "Yasal",
       links: [
-        { label: "Kullanim Kosullari", href: "/kosullar" },
-        { label: "Gizlilik Politikasi", href: "/gizlilik" },
-        { label: "Cerez Politikasi", href: "/cerez-politikasi" },
+        { label: "Kullanım Koşulları", href: "/kosullar" },
+        { label: "Gizlilik Politikası", href: "/gizlilik" },
+        { label: "Çerez Politikası", href: "/cerez-politikasi" },
         { label: "KVKK", href: "/kvkk" },
       ],
     },
     {
-      title: "Indir",
+      title: "İndir",
       links: [
         { label: "App Store", href: "#" },
         { label: "Google Play", href: "#" },
@@ -78,7 +78,7 @@ export function Footer({ className, ...props }: FooterProps) {
         <div className="border-t border-border pt-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-text-muted">
-              © {currentYear} Mahallem. Tum haklari saklidir.
+              © {currentYear} Mahallemiz. Tüm hakları saklıdır.
             </p>
             <div className="flex gap-3">
               {socialLinks.map((social) => {

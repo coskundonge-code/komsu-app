@@ -62,7 +62,7 @@ export default function GizlilikPage() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-surface border-b border-border sticky top-0 z-10">
-        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-3">
+        <div className="max-w-2xl mx-auto px-2 sm:px-4 py-3 sm:py-4 flex items-center gap-3">
           <Link
             href="/ayarlar"
             className="p-2 hover:bg-background rounded-lg transition-colors"
@@ -84,7 +84,7 @@ export default function GizlilikPage() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-2xl mx-auto px-4 py-6">
+      <div className="max-w-2xl mx-auto px-2 sm:px-4 py-4 sm:py-6">
         {/* Profile Visibility */}
         <div className="bg-surface rounded-lg border border-border p-6 mb-6">
           <div className="flex items-center gap-3 mb-6">

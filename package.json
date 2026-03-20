@@ -1,5 +1,5 @@
 {
-  "name": "mahallem-app-dev",
+  "name": "mahallemiz-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,7 +7,14 @@
     "postinstall": "cp node_modules/pdfjs-dist/build/pdf.worker.min.mjs public/pdf.worker.min.mjs 2>/dev/null || true && cp -r node_modules/pdfjs-dist/cmaps public/cmaps 2>/dev/null || true && cp -r node_modules/pdfjs-dist/standard_fonts public/standard_fonts 2>/dev/null || true",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "cap:init": "npx cap init Mahallemiz com.mahallemiz.app --web-dir=out",
+    "cap:add:ios": "npx cap add ios",
+    "cap:add:android": "npx cap add android",
+    "cap:sync": "npx cap sync",
+    "cap:open:ios": "npx cap open ios",
+    "cap:open:android": "npx cap open android",
+    "app:build": "next build && npx cap sync"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.11",
@@ -41,7 +48,19 @@
     "tailwind-merge": "^3.5.0",
     "tesseract.js": "^7.0.0",
     "zod": "^4.3.6",
-    "zustand": "^5.0.11"
+    "zustand": "^5.0.11",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/ios": "^7.0.0",
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/app": "^7.0.0",
+    "@capacitor/haptics": "^7.0.0",
+    "@capacitor/keyboard": "^7.0.0",
+    "@capacitor/status-bar": "^7.0.0",
+    "@capacitor/splash-screen": "^7.0.0",
+    "@capacitor/push-notifications": "^7.0.0",
+    "@capacitor/geolocation": "^7.0.0",
+    "@capacitor/camera": "^7.0.0",
+    "@capacitor/share": "^7.0.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -51,6 +70,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "@capacitor/cli": "^7.0.0"
   }
 }

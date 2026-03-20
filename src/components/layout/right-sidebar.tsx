@@ -19,10 +19,10 @@ export function RightSidebar() {
               <MapPin className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-sm font-bold text-text-primary">Kadikoy, Moda</p>
+              <p className="text-sm font-bold text-text-primary">Kadıköy, Moda</p>
               <p className="text-xs text-text-muted flex items-center gap-1">
                 <Users className="w-3 h-3" />
-                1.247 uye
+                1.247 üye
               </p>
             </div>
           </div>
@@ -31,7 +31,7 @@ export function RightSidebar() {
           href="/uyarilar"
           className="flex items-center justify-between px-4 py-2.5 border-t border-border-light hover:bg-surface-hover transition-colors"
         >
-          <span className="text-xs font-medium text-text-secondary">Tum uyarilari gor</span>
+          <span className="text-xs font-medium text-text-secondary">Tüm uyarıları gör</span>
           <ChevronRight className="w-4 h-4 text-text-muted" />
         </Link>
       </div>
@@ -45,13 +45,13 @@ export function RightSidebar() {
         <div className="p-4">
           <p className="text-sm font-semibold text-text-primary flex items-center gap-2 mb-3">
             <Shield className="w-4 h-4 text-primary" />
-            Guvenlik Durumu
+            Güvenlik Durumu
           </p>
           <div className="flex items-center gap-3">
             <div className="w-3 h-3 bg-primary rounded-full animate-pulse" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-text-primary">Mahalle Guvenli</p>
-              <p className="text-xs text-text-muted">Son uyari: 3 gun once</p>
+              <p className="text-sm font-medium text-text-primary">Mahalle Güvenli</p>
+              <p className="text-xs text-text-muted">Son uyarı: 3 gün önce</p>
             </div>
           </div>
           <Link
@@ -59,7 +59,7 @@ export function RightSidebar() {
             className="mt-3 text-xs text-primary font-medium hover:text-primary-hover flex items-center gap-1"
           >
             <AlertCircle className="w-3 h-3" />
-            Tum uyarilari goruntule
+            Tüm uyarıları göruntule
           </Link>
         </div>
       </div>
@@ -77,12 +77,12 @@ export function RightSidebar() {
         <div className="p-3">
           <p className="text-[10px] text-text-muted font-semibold uppercase tracking-wider">Sponsorlu</p>
           <p className="text-sm font-semibold text-text-primary mt-1">Moda Kafe & Bistro</p>
-          <p className="text-xs text-text-muted mt-0.5">Kahvalti ve brunch menusu</p>
+          <p className="text-xs text-text-muted mt-0.5">Kahvaltı ve brunch menüsü</p>
           <Link
             href="/isletme/moda-kafe"
             className="mt-2 text-xs font-medium text-primary hover:text-primary-hover flex items-center gap-1"
           >
-            Sayfayi ziyaret et
+            Sayfayı ziyaret et
             <ChevronRight className="w-3 h-3" />
           </Link>
         </div>
@@ -90,9 +90,9 @@ export function RightSidebar() {
 
       <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-card border border-blue-100 overflow-hidden">
         <div className="p-4">
-          <p className="text-sm font-bold text-text-primary mb-1">Komsularini Davet Et</p>
+          <p className="text-sm font-bold text-text-primary mb-1">Komşularını Davet Et</p>
           <p className="text-xs text-text-muted mb-3">
-            Referans kodunla en fazla 3 komsunu sisteme davet et.
+            Referans kodunla en fazla 3 komşunu sisteme davet et.
           </p>
           <Link
             href="/davet"
@@ -109,16 +109,16 @@ export function RightSidebar() {
           <Building2 className="w-12 h-12 text-white/30" />
         </div>
         <div className="p-4">
-          <p className="text-sm font-bold text-text-primary">Isletme sahibi misiniz?</p>
+          <p className="text-sm font-bold text-text-primary">İşletme sahibi misiniz?</p>
           <p className="text-xs text-text-muted mt-1">
-            Isletme sayfanizi olusturun, komsularinizla baglanti kurun.
+            İşletme sayfanızı oluşturun, komşularınızla bağlantı kurun.
           </p>
         </div>
         <Link
           href="/isletme-ekle"
           className="flex items-center justify-between px-4 py-2.5 border-t border-border-light hover:bg-surface-hover transition-colors"
         >
-          <span className="text-xs font-medium text-primary">Sayfa olustur</span>
+          <span className="text-xs font-medium text-primary">Sayfa oluştur</span>
           <ChevronRight className="w-4 h-4 text-primary" />
         </Link>
       </div>
@@ -127,13 +127,13 @@ export function RightSidebar() {
         <div className="flex flex-wrap gap-x-2 gap-y-1 text-[11px] text-text-muted">
           <Link href="/gizlilik" className="hover:text-text-secondary">Gizlilik</Link>
           <span>·</span>
-          <Link href="/kosullar" className="hover:text-text-secondary">Kosullar</Link>
+          <Link href="/kosullar" className="hover:text-text-secondary">Koşullar</Link>
           <span>·</span>
-          <Link href="/hakkinda" className="hover:text-text-secondary">Hakkinda</Link>
+          <Link href="/hakkinda" className="hover:text-text-secondary">Hakkında</Link>
           <span>·</span>
-          <Link href="/yardim" className="hover:text-text-secondary">Yardim</Link>
+          <Link href="/yardim" className="hover:text-text-secondary">Yardım</Link>
         </div>
-        <p className="text-[11px] text-text-muted mt-1">© 2026 Mahallem</p>
+        <p className="text-[11px] text-text-muted mt-1">© 2026 Mahallemiz</p>
       </div>
     </div>
   )
