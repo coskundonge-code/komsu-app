@@ -81,7 +81,6 @@ export default function CreateListingPage() {
     if (!formData.condition) return false;
     if (!formData.isFree && !formData.price.trim()) return false;
     if (!formData.description.trim()) return false;
-    if (formData.photos.length === 0) return false;
     if (!formData.deliveryOptions.pickup && !formData.deliveryOptions.shipping) return false;
     return true;
   };
@@ -104,9 +103,6 @@ export default function CreateListingPage() {
     }
     if (!formData.description.trim()) {
       newErrors.description = 'Açıklama gereklidir';
-    }
-    if (formData.photos.length === 0) {
-      newErrors.photos = 'En az bir fotoğraf ekleyin';
     }
     if (!formData.deliveryOptions.pickup && !formData.deliveryOptions.shipping) {
       newErrors.delivery = 'En az bir teslimat yöntemi seçin';
@@ -290,7 +286,7 @@ export default function CreateListingPage() {
         item_condition: formData.condition,
         neighborhood: formData.location.split(',')[0],
         delivery_options: formData.deliveryOptions,
-        listing_status: 'pending',
+        listing_status: 'active',
         listing_type: 'marketplace',
       } as any);
 
