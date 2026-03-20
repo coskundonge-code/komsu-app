@@ -30,11 +30,11 @@ const primaryNavItems = [
   { icon: Newspaper, label: 'Yerel Haberler', href: '/kesfet' },
   { icon: AlertTriangle, label: 'Uyarılar', href: '/uyarilar' },
   { icon: ShoppingBag, label: 'Satılık & Ücretsiz', href: '/pazar' },
-  { icon: Repeat, label: 'Kirala & Ödünç Ver', href: '/odunc-kirala' },
+  { icon: Repeat, label: 'Kirala & Ö]ünç Ver', href: '/odunc-kirala' },
   { icon: Users, label: 'Gruplar', href: '/gruplar' },
   { icon: Calendar, label: 'Etkinlikler', href: '/etkinlikler' },
   { icon: CreditCard, label: 'Mahallemiz Kart', href: '/mahallem-kart' },
-  { icon: Heart, label: 'Askıda Bağış', href: '/askida-bagis' },
+  { icon: Heart, label: 'Askıda Bağı na', href: '/askida-bagys' },
 ]
 
 // Secondary navigation items
@@ -44,7 +44,6 @@ const secondaryNavItems = [
   { icon: Bell, label: 'Bildirimler', href: '/bildirimler' },
   { icon: Settings, label: 'Ayarlar', href: '/ayarlar' },
 ]
-
 export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
   const pathname = usePathname()
   const router = useRouter()
@@ -198,7 +197,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
             )}
           >
             <LogOut className="w-5 h-5 flex-shrink-0" />
-            <span>Çı{ış Yap</span>
+            <span>Çıkış Yap</span>
           </button>
         </div>
       </div>

@@ -1,27 +1,2 @@
-'use client';
-
-import { AutoComplete } from '@cmd-shift/react-autocomplete';
-import { UserProvider } from '@/context/user-context';
-import { EventsFeed } from '/components/feed/events-feed';
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { Suspense } from 'react';
-
-const FeedContent = () => (
-  <div className="w-full max-w-4xl mx-auto px-4 py-8">
-    <EventsFeed />
-  </div>
-);
-
-export default function RootLayout() {
-  return (
-    <Providers>
-      <UserProvider>
-        <Suspense fallback={<LoadingSpinner />}>
-          <AutoComplete>
-            <FeedContent />
-          </AutoComplete>
-        </Suspense>
-      </UserProvider>
-    </Providers>
-  İ]][Ø^\È[˜ÛY\ÈÛÈÜXÙ\È™Y›Ü™H]\ÈH\ÙH]ÈÛİ[\ÈHÚXÚË^‚•HÙXÛÛ™ÜXÙH›ÜˆLH\È	ØIË›ÜˆLˆ\È	Ø‰Ë]ËHÏ‚ˆ
-BŸB
+import React from 'react';import { UserProfileContext } from '@/context/userContext';import PrivacyPolicy Text from './privacy-md';export default function PrivacyPage() { const { user } = React.useContext(UserProfileContext); return ( <div className="p-6"> <h1{"className":"text-2xl font-bold mb-4"}>Gizlilik Politensi</h1> <PrivacyPolicyText /> </div> ); }import React from 'react';export const PrivacyPolicy = () => { return ( <div className="py-4"> <h2 className="text-lg font-semibold mb-2">ÕW«‰
+îB_Äğğ½ Èø€ñÀù	¥èÍ…Ñ¥¸ƒ”„İ•ˆÑ…Ë‘qÑ¬

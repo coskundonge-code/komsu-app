@@ -52,7 +52,7 @@ export function Navbar() {
             <button
               onClick={() => setIsMobileDrawerOpen(true)}
               className="lg:hidden p-2 hover:bg-surface-hover rounded-full transition-colors"
-              aria-label="Menüyü aç"
+              aria-label="Menüy\u aç"
             >
               <Menu className="w-5 h-5 text-text-secondary" />
             </button>
