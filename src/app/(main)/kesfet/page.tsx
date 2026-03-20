@@ -103,7 +103,7 @@ const nearbyActivities: ActivityItem[] = [
   {
     id: "4",
     title: "SatÄ±lÄ±k: Eviniz iÃ§in DoÄŸru Fiyat",
-    description: "Mahallede gayrimenkul fiyatlarÄ±&èÄ±zla artÄ±yor. Tavsiyelerimizi okuyun.",
+    description: "Mahallede gayrimenkul fiyatlarÄ± hÄ±zla artÄ±yor. Tavsiyelerimizi okuyun.",
     distance: "600m",
     category: "SatÄ±lÄ±k",
     categoryId: "forsale",
@@ -128,75 +128,647 @@ const nearbyActivities: ActivityItem[] = [
     description: "Mahalle halkÄ±na yoÄŸun ilgi gÃ¶ren elektrik ustasÄ± Serkan, hizmetleri hakkÄ±nda konuÅŸuyor.",
     distance: "320m",
     category: "Ä°ÅŸletmeler",
-    categoryId: "busin\İ[˜ÙNˆH‹ˆØ]YÛÜNˆ‘]Ú[›ZÛ\ˆ‹ˆØ]YÛÜRYˆ™]™[È‹ˆ\Nˆ™]™[‹ˆ[YNˆØX]0í›˜ÙH‹ˆXÛÛˆ™]™[‹ˆKˆÂˆYˆˆ‹ˆ]Nˆ–Y\™[[ZİšZğéÚH^›Y]\š[š^šH[›]1,^[Üˆ‹ˆ\ØÜš\[Ûˆ“XZ[H[ñ,[˜H[ñ'İ[ˆ[ÚHğíœ™[ˆ[ZİšZÈ\İ\ñ,HÙ\šØ[‹^›Y]\šHZÚñ,[™HÛÛqgİ^[Ü‹ˆ‹ˆ\İ[˜ÙNˆŒÌŒH‹ˆØ]YÛÜNˆ±,1gÛ]Y[\ˆ‹ˆØ]YÛÜRYˆ˜\Ú[™\ÜÈ‹ˆ\Nˆ˜\Ú[™\ÜÈ‹ˆ[YNˆŒHğïˆ0í›˜ÙH‹ˆXÛÛˆœİÜ™H‹ˆKˆÂˆYˆÈ‹ˆ]Nˆ‘ğï™[›ZÎˆ˜YšZÈÛÛ›Û0ïX\1,[XØZÈ‹ˆ\ØÜš\[Ûˆ”^˜\ˆğï°ïØX]LŒLMŒ\˜\ñ,[™H°í›ÙYH˜YšZÈÛÛ›Û0ïX\1,[XØZİ1,\‹ˆ‹ˆ\İ[˜ÙNˆLH‹ˆØ]YÛÜNˆ•^X\±,[\ˆ‹ˆØ]YÛÜRYˆ˜[\È‹ˆ\Nˆ˜[\‹ˆ[YNˆŒÈØX]0í›˜ÙH‹ˆXÛÛˆœÙXİ\š]H‹ˆKˆÂˆYˆ‹ˆ]Nˆ–Y[šHš]™\ÜÈY\šÙ^šHpéñ,[1,qgÈ0å™[1,™\š[ZH‹ˆ\ØÜš\[Ûˆ–Y[šHpéñ,[[ˆš]™\ÜÈY\šÙ^š[™H[ÈÈ^H	LÌ[™\š[HX\1,[XZİY1,\‹ˆ‹ˆ\İ[˜ÙNˆÍLH‹ˆØ]YÛÜNˆ±,1gÛ]Y[\ˆ‹ˆØ]YÛÜRYˆ˜\Ú[™\ÜÈ‹ˆ\Nˆ˜\Ú[™\ÜÈ‹ˆ[YNˆHØX]0í›˜ÙH‹ˆXÛÛˆœİÜ™H‹ˆKˆÂˆYˆH‹ˆ]Nˆ”Ø]1,[1,ZÎˆ\\X[ˆZ\™\ÚHHÊÌH‹ˆ\ØÜš\[Ûˆ“Y\šÙ^ÈÚØ\Ş[Û™Kğï™qgÛKY[šHš[˜YHÊÌHZ\™HØ]1,[XZİY1,\‹ˆ‹ˆ\İ[˜ÙNˆLH‹ˆØ]YÛÜNˆ”Ø]1,[1,ZÈ‹ˆØ]YÛÜRYˆ™›ÜœØ[H‹ˆ\Nˆ™›ÜœØ[H‹ˆ[YNˆŒˆØX]0í›˜ÙH‹ˆXÛÛˆšÛYH‹ˆKˆÂˆYˆŒL‹ˆ]Nˆ‘]Ú[›ZÎˆXZ[H[Z^›ZÈğï°íÈ‹ˆ\ØÜš\[Ûˆ°áÙ]œ™H[Z^›q'ÚHpéÚ[ˆğí›°ï0ï\˜[±,^[Ü‹ˆİ[XHğï°ïØX]MŒ	İHÜ[˜XØq'ñ,^‹ˆ‹ˆ\İ[˜ÙNˆH‹ˆØ]YÛÜNˆ‘]Ú[›ZÛ\ˆ‹ˆØ]YÛÜRYˆ™]™[È‹ˆ\Nˆ™]™[‹ˆ[YNˆÈØX]0í›˜ÙH‹ˆXÛÛˆ™]™[‹ˆKˆÂˆYˆŒLH‹ˆ]Nˆ’Ø^q,\ˆÚ^XZ™^X^ˆÙYH‹ˆ\ØÜš\[Ûˆ“Y\šÙ^HXZ[YHØ^X›Û[ˆÙ]š[[HÙY[Z^‹ˆ1,0éÚ[™H0éÚ\[[›XZİY1,\‹ˆ‹ˆ\İ[˜ÙNˆŒÌH‹ˆØ]YÛÜNˆ±,1gÛ]Y[\ˆ‹ˆØ]YÛÜRYˆ˜\Ú[™\ÜÈ‹ˆ\Nˆ˜\Ú[™\ÜÈ‹ˆ[YNˆŒŒØX]0í›˜ÙH‹ˆXÛÛˆœİÜ™H‹ˆKˆÂˆYˆŒLÈ‹ˆ]Nˆ[Y[^I]ˆØYñ,H[YZÈÙX²e]³ §2"À¢FW67&—F–öã¢-
-ÍMmR
-Â=½ı}
-İÃò½½Ò"À¢F—7Fæ6S¢##SÒ"À¢6FVv÷'“¢$WF¶–æÆ–¶ÆW""À¢6FVv÷'”–C¢&WfVçG2"À¢G—S¢&WfVçB"À¢F–ÖS¢#"6B;fæ6R"À¢–6öã¢&WfVçB"À¢ÒÀ¢°¢–C¢#B"À¢F—FÆS¢-		Ò
-í½]Ò"À¢FW67&—F–öã¢-²­½¢,ê-í-""À¢F—7Fæ6S¢#3Ò"À¢6FVv÷'“¢$WF¶–æÆ–¶ÆW""À¢6FVv÷'”–C¢&WfVçG2"À¢G—S¢&WfVçB"À¢F–ÖS¢#b6B;fæ6R"À¢–6öã¢&WfVçB"À¢ÒÀ¢°¢–C¢#R"À¢F—FÆS¢-	-íÍ=ıí-²İ],ú$‹ˆ\ØÜš\[Ûˆ•²h#£4`\{¼&÷F
-ö4pH‹ˆ\İ[˜ÙNˆŒÍLH‹ˆØ]YÛÜNˆ‘›ÜœØ[H‹ˆØ]YÛÜRYˆ™›ÜœØ[H‹ˆ\Nˆ™›ÜœØ[H‹ˆ[YNˆŒLØX]0í›˜ÙH‹ˆXÛÛˆšÛYH‹ˆKˆÂˆYˆŒMˆ‹ˆ]Nˆ´-3­t`3¨‹ˆ\ØÜš\[Ûˆ”İÜ™H‹ˆ\İ[˜ÙNˆH‹ˆØ]YÛÜNˆ\Ú[™\ÜÙ\È‹ˆØ]YÛÜRYˆ˜\Ú[™\ÜÈ‹ˆ\Nˆ˜\Ú[™\ÜÈ‹ˆ[YNˆŒNØX]0í›˜ÙH‹ˆXÛÛˆœİÜ™H‹ˆKˆÂˆYˆŒMÈ‹ˆ]Nˆ´.3©Vòl‚ˆ\ØÜš\[Ûˆ”ÛÛYH‹ˆ\İ[˜ÙNˆLH‹ˆØ]YÛÜNˆ‘]™[È‹ˆØ]YÛÜRYˆ™]™[È‹ˆ\Nˆ™]™[‹ˆ[YNˆŒŒˆØX]0í›˜ÙH‹ˆXÛÛˆ™]™[‹ˆKˆÂˆYˆŒN‹ˆ]Nˆ´$4.ô-t.´.4/t.4,t/´,´`t`ˆ‹ˆ\ØÜš\[Ûˆ“İ]š]ÛÛXİ[Ûˆ‹ˆ\İ[˜ÙNˆLH‹ˆØ]YÛÜNˆ\Ú[™\ÜÙ\È‹ˆØ]YÛÜRYˆ˜\Ú[™\ÜÈ‹ˆ\Nˆ˜\Ú[™\ÜÈ‹ˆ[YNˆŒØX]0í›˜ÙH‹ˆXÛÛˆœİÜ™H‹ˆKˆÂˆYˆŒNH‹ˆ]Nˆ´-4-t.´.4/t.4,t/´,´-t/H‹ˆ\ØÜš\[Ûˆ•˜Z[š[™È‹ˆ\İ[˜ÙNˆMLH‹ˆØ]YÛÜNˆ‘]™[È‹ˆØ]YÛÜRYˆ™]™[È‹ˆ\Nˆ™]™[‹ˆ[YNˆŒˆØX]0í›˜ÙH‹ˆXÛÛˆ™]™[‹ˆKˆÂˆYˆŒŒ‹ˆ]Nˆ´$t't%t,4/t.4,t/´,´`r"À¢FW67&—F–öã¢$æWw2"À¢F—7Fæ6S¢#cÒ"À¢6FVv÷'“¢$'W6–æW76W2"À¢6FVv÷'”–C¢&'W6–æW72"À¢G—S¢&'W6–æW72"À¢F–ÖS¢#’6B;fæ6R"À¢–6öã¢'7F÷&R"À¢ÒÀ¢°¢–C¢##"À¢F—FÆS¢-	M=İí-ˆ‹ˆ\ØÜš\[Ûˆ‘Ü›ØÙ\H‹ˆ\İ[˜ÙNˆLH‹ˆØ]YÛÜNˆ•TÛ[YNˆŒˆØX]0í›˜ÙHˆK—NÂ‚˜ÛÛœİØ]YÛÜRXÛÛœÎˆ™XÛÜ™İš[™Ë™XXİ”™XXİ›ÙOˆHÂˆ\Ú[™\ÜÎˆİÜ™HÚ^™O^ÌMŸHÏ‹ˆ]™[ÎˆZ[[™ÌˆÚ^™O^ÌMŸHÏ‹ˆ[\Îˆ[\šX[™ÛHÚ^™O^ÌMŸHÏ‹ˆ›ÜœØ[NˆÛYHÚ^™O^ÌMŸHÏ‹ˆÜİˆX\[™ÚZÙHÚ^™O^ÌMŸHÏ‹ŸNÂ‚˜ÛÛœİÙ]Ø]YÛÜPÛÛÜˆH
-Ø]YÛÜRYˆİš[™ÊHOˆÂˆİÚ]Ú
-Ø]YÛÜRY
-HÂˆØ\ÙH˜\Ú[™\ÜÈ‚ˆ™]\›ˆ˜™ËX›YKLL^X›YKMÌ›Ü™\‹X›YKLŒÂˆØ\ÙH™]™[È‚ˆ™]\›ˆ˜™Ë\\œKLL^\\œKMÌ›Ü™\‹\\œKLŒÂˆØ\ÙH˜[\È‚ˆ™]\›ˆ˜™Ë\™YLL^\™YMÌ›Ü™\‹\™YLŒÂˆØ\ÙH™›ÜœØ[H‚ˆ™]\›ˆ˜™Ë^Y[İËLL^^Y[İËMÌ›Ü™\‹^Y[İËLŒÂˆØ\ÙH›Üİ‚ˆ™]\›ˆ˜™Ë\[šËLL^\[šËMÌ›Ü™\‹\[šËLŒÂˆY˜][‚ˆ™]\›ˆ˜™ËYÜ˜^KLL^YÜ˜^KMÌ›Ü™\‹YÜ˜^KLŒÂˆBŸNÂ‚™^ÜY˜][[˜İ[ÛˆÙ\Ù™]YÙJ
-HÂˆÛÛœİÜÙX\˜Ú]Y\KÙ]ÙX\˜Ú]Y\WHH™XXİ\ÙTİ]JˆŠNÂˆÛÛœİØXİ]™UX‹Ù]Xİ]™UX—HH™XXİ\ÙTİ]J˜[ŠNÂˆÛÛœİÙ\İ[˜ÙQš[\‹Ù]\İ[˜ÙQš[\—HH™XXİ\ÙTİ]J˜[ŠNÂˆÛÛœİÙXİ]š]Y\ËÙ]Xİ]š]Y\×HH\ÙTİ]OXİ]š]R][V×OŠ™X\˜PXİ]š]Y\ÊNÂˆÛÛœİÙ\Ú[™\ÜÙ\ËÙ]\Ú[™\ÜÙ\×HH\ÙTİ]O\Ú[™\ÜÒ][V×OŠ™X\˜P\Ú[™\ÜÙ\ÊNÂ‚ˆËÈ™]Ú™[™[™ÈÛÛ[œ›ÛHİ\X˜\ÙHÛˆ[İ[ˆ\ÙQY™™Xİ
+    categoryId: "business",
+    type: "business",
+    time: "1 gÃ¼n Ã¶nce",
+    icon: "store",
+  },
+  {
+    id: "7",
+    title: "GÃ¼venlik: Trafik KontrolÃ¼ YapÄ±lacak",
+    description: "Pazar gÃ¼nÃ¼ saat 10:00-14:00 arasÄ±nda bÃ¶lgede trafik kontrolÃ¼ yapÄ±lacaktÄ±r.",
+    distance: "450m",
+    category: "UyarÄ±lar",
+    categoryId: "alerts",
+    type: "alert",
+    time: "3 saat Ã¶nce",
+    icon: "security",
+  },
+  {
+    id: "8",
+    title: "Yeni Fitness Merkezi AÃ§Ä±lÄ±ÅŸ Ã–zel Ä°ndirimi",
+    description: "Yeni aÃ§Ä±lan fitness merkezinde ilk 3 ay %30 indirim yapÄ±lmaktadÄ±r.",
+    distance: "750m",
+    category: "Ä°ÅŸletmeler",
+    categoryId: "business",
+    type: "business",
+    time: "5 saat Ã¶nce",
+    icon: "store",
+  },
+  {
+    id: "9",
+    title: "SatÄ±lÄ±k: Apartman Dairesi - 3+1",
+    description: "Merkez lokasyonda, gÃ¼neÅŸli, yeni binada 3+1 daire satÄ±lmaktadÄ±r.",
+    distance: "900m",
+    category: "SatÄ±lÄ±k",
+    categoryId: "forsale",
+    type: "forsale",
+    time: "2 saat Ã¶nce",
+    icon: "home",
+  },
+  {
+    id: "10",
+    title: "Etkinlik: Mahalle Temizlik GÃ¼nÃ¼",
+    description: "Ã‡evre temizliÄŸi iÃ§in gÃ¶nÃ¼llÃ¼ aranÄ±yor. Cuma gÃ¼nÃ¼ saat 14:00'te toplanacaÄŸÄ±z.",
+    distance: "400m",
+    category: "Etkinlikler",
+    categoryId: "events",
+    type: "event",
+    time: "7 saat Ã¶nce",
+    icon: "event",
+  },
+  {
+    id: "11",
+    title: "KayÄ±p: Siyah Beyaz Kedi",
+    description: "Merkez mahallede kaybolan sevimli kedimiz. Ä°Ã§inde Ã§ip bulunmaktadÄ±r.",
+    distance: "350m",
+    category: "KayÄ±p/Buluntu",
+    categoryId: "lost",
+    type: "lost",
+    time: "4 saat Ã¶nce",
+    icon: "home",
+  },
+  {
+    id: "12",
+    title: "UyarÄ±: Elektrik Kesintisi",
+    description: "AÄŸ bakÄ±m Ã§alÄ±ÅŸmalarÄ± nedeniyle Ã‡arÅŸamba 09:00-17:00 arasÄ±nda kesinti olabilir.",
+    distance: "200m",
+    category: "UyarÄ±lar",
+    categoryId: "alerts",
+    type: "alert",
+    time: "6 saat Ã¶nce",
+    icon: "security",
+  },
+];
 
+const nearbyBusinesses: BusinessItem[] = [
+  {
+    id: 'b1',
+    name: 'Kahvehane Express',
+    category: 'Kahvehane',
+    rating: 4.8,
+    reviews: 124,
+    distance: '250m',
+    address: 'Merkez Cad. No: 45',
+  },
+  {
+    id: 'b2',
+    name: 'Berber Hasan',
+    category: 'Berberlik',
+    rating: 4.6,
+    reviews: 89,
+    distance: '180m',
+    address: 'AÃ§Ä± Sokak No: 12',
+  },
+  {
+    id: 'b3',
+    name: 'EczacÄ± Plus Eczanesi',
+    category: 'Eczane',
+    rating: 4.9,
+    reviews: 156,
+    distance: '320m',
+    address: 'Ä°ÅŸ Merkezi Kat: 2',
+  },
+  {
+    id: 'b4',
+    name: 'Fitness Plus Spor Salonu',
+    category: 'Spor Salonu',
+    rating: 4.7,
+    reviews: 203,
+    distance: '750m',
+    address: 'Park Cad. No: 78',
+  },
+];
 
-HOˆÂˆÛÛœİ™]Ú™[™[™ĞÛÛ[H\Ş[˜È
+const safetyAlerts: SafetyAlert[] = [
+  {
+    id: "sa1",
+    type: "weather",
+    title: "Hava Durumu UyarÄ±sÄ±",
+    description: "Cuma gÃ¼nÃ¼ kuvvetli rÃ¼zgar beklenmektedir.",
+    time: "2 saat Ã¶nce",
+    severity: "low",
+  },
+  {
+    id: "sa2",
+    type: "traffic",
+    title: "Trafik UyarÄ±sÄ±",
+    description: "Ana Caddede saat 17:00-19:00 arasÄ±nda yoÄŸunluk beklenmektedir.",
+    time: "3 saat Ã¶nce",
+    severity: "medium",
+  },
+  {
+    id: "sa3",
+    type: "outage",
+    title: "Elektrik Kesintisi",
+    description: "Ã‡arÅŸamba 09:00-17:00 arasÄ± aÄŸ bakÄ±m nedeniyle kesinti olabilir.",
+    time: "6 saat Ã¶nce",
+    severity: "high",
+  },
+];
 
-HOˆÂˆHÂˆÛÛœİİ\X˜\ÙHHÜ™X]PÛY[
+const trendingTopics = [
+  { id: "1", title: "Mahalle TemizliÄŸi", count: 234 },
+  { id: "2", title: "Yeni BahÃ§e Projesi", count: 189 },
+  { id: "3", title: "GÃ¼venlik KameralarÄ±", count: 156 },
+  { id: "4", title: "Spor AlanÄ± Renovasyonu", count: 142 },
+  { id: "5", title: "KomÅŸu AÄŸÄ± EtkinliÄŸi", count: 128 },
+];
 
-NÂ‚ˆËÈ™]ÚÜ[\ˆÜİÂˆÛÛœİÈ]NˆÜİÈHH]ØZ]İ\X˜\ÙBˆ™œ›ÛJœÜİÈŠBˆœÙ[Xİ
-šY]K›ÙKÜ™X]YØ]›Ùš[\Ê[Û˜[YJHŠBˆ›Ü™\Šœ™XXİ[Û—ØÛİ[‹È\ØÙ[™[™Îˆ˜[ÙHJBˆ›[Z]
-JB‚ˆËÈ™]Ú™X\˜H\Ú[™\ÜÙ\ÂˆÛÛœİÈ]Nˆ\Ú[™\ÜÙ\ÈHH]ØZ]İ\X˜\ÙBˆ™œ›ÛJ˜\Ú[™\ÜÙ\ÈŠBˆœÙ[Xİ
-šY˜[YKØ]YÛÜK˜][™×Ø]™Ë™]šY]ÜÎ˜\Ú[™\Ü×Ü™]šY]ÜÊÛİ[
-HŠBˆ›[Z]
-JB‚ˆYˆ
-\Ú[™\ÜÙ\ÊHÂˆÙ]\Ú[™\ÜÙ\Êˆ\Ú[™\ÜÙ\Ë›X\
+const recentActivityFeed = [
+  { id: "1", user: "AyÅŸe K.", action: "yeni etkinlik oluÅŸturdu", time: "5 dakika Ã¶nce" },
+  { id: "2", user: "Mehmet Y.", action: "SatÄ±lÄ±k: 2+1 Daire", time: "15 dakika Ã¶nce" },
+  { id: "3", user: "Fatih D.", action: "Ä°ÅŸletmeler kategorisinde paylaÅŸtÄ±", time: "23 dakika Ã¶nce" },
+  { id: "4", user: "Zeynep S.", action: "GÃ¼venlik uyarÄ±sÄ± gÃ¶nderdi", time: "1 saat Ã¶nce" },
+  { id: "5", user: "Emre T.", action: "EtkinliÄŸe katÄ±ldÄ±", time: "2 saat Ã¶nce" },
+];
 
-ˆ[JHOˆ
-ÂˆYˆ‹šYˆ˜[YNˆ‹›˜[YKˆØ]YÛÜNˆ‹˜Ø]YÛÜKˆ˜][™Îˆ‹œ˜][™×Ø]™ÈKˆ™]šY]ÜÎˆ‹œ™]šY]ÜÏË–ÌOË˜Ûİ[ˆ\İ[˜ÙNˆŒHÛH‹ˆY™\ÜÎˆY™\ÜÈ‘‹ˆJJBˆ
-NÂˆB‚ˆYˆ
-ÜİÊHÂˆÛÛœİXİ]š]Y\ÎˆXİ]š]R][V×HHÜİË›X\
+const categoryIcons: Record<string, React.ReactNode> = {
+  business: <Store size={16} />,
+  events: <Building2 size={16} />,
+  alerts: <AlertTriangle size={16} />,
+  forsale: <Home size={16} />,
+  lost: <HeartHandshake size={16} />,
+};
 
-ˆ[JHOˆ
-ÂˆYˆšYˆ]Nˆ]Kˆ\ØÜš\[Ûˆ˜›ÙHOH[È˜›ÙKœÛXÙJL
-Hˆˆ‹ˆ\İ[˜ÙNˆŒHÛH‹ˆØ]YÛÜNˆœÜİ‹ˆØ]YÛÜRYˆœÜİ‹ˆ\Nˆ˜\Ú[™\ÜÈ‹ˆ[YNˆ	Û™]È]J˜Ü™X]YØ]
-KÓØØ[Tİš[™Ê
-_XˆXÛÛˆ›™]ÜÜ\\ˆ‹ˆJJNÂ‚ˆÙ]Xİ]š]Y\ÊXİ]š]Y\ÊNÂˆBˆHØ]Ú
-\œ›ÜŠHÂˆÛÛœÛÛK™\œ›ÜŠ™™]Ú\œ›Üˆ‹\œ›ÜŠNÂˆBˆNÂ‚ˆ™]Ú™[™[™ĞÛÛ[
+const getCategoryColor = (categoryId: string) => {
+  switch (categoryId) {
+    case "business":
+      return "bg-blue-100 text-blue-700 border-blue-200";
+    case "events":
+      return "bg-purple-100 text-purple-700 border-purple-200";
+    case "alerts":
+      return "bg-red-100 text-red-700 border-red-200";
+    case "forsale":
+      return "bg-yellow-100 text-yellow-700 border-yellow-200";
+    case "lost":
+      return "bg-pink-100 text-pink-700 border-pink-200";
+    default:
+      return "bg-gray-100 text-gray-700 border-gray-200";
+  }
+};
 
-NÂˆK×JNÂ‚ˆÛÛœİš[\™YXİ]š]Y\ÈHXİ]š]Y\Ë™š[\Š
-][JHOˆÂˆÛÛœİX]Ú\ÔÙX\˜ÚH][K]KÓİÙ\Ø\ÙJ
-Kš[˜ÛY\ÊÙX\˜Ú]Y\KÓİÙ\Ø\ÙJ
-JNÂ‚ˆ]X]Ú\Ñ\İ[˜ÙHHYNÂˆYˆ
-\İ[˜ÙQš[\ˆOOH˜[ŠHÂˆÛÛœİ\İ[˜ÙU˜[YHH\œÙR[
-\İ[˜ÙQš[\ŠNÂˆÛÛœİ][Q\İ[˜ÙHH\œÙR[
-][K™\İ[˜ÙJNÂˆX]Ú\Ñ\İ[˜ÙHH][Q\İ[˜ÙHH\İ[˜ÙU˜[YNÂˆB‚ˆ™]\›ˆX]Ú\ÔÙX\˜Ú	‰ˆX]Ú\Ñ\İ[˜ÙNÂˆJNÂ‚ˆÛÛœİ\İ[˜ÙSÜ[ÛœÈHÂˆÈ˜[YNˆ˜[‹X™[ˆ[\İ[˜Ù\ÈˆKˆÈ˜[YNˆŒL‹X™[ˆŒLHˆKˆÈ˜[YNˆL‹X™[ˆLHˆKˆÈ˜[YNˆŒZÛH‹X™[ˆŒZÛHˆKˆÈ˜[YNˆŒšÛH‹X™[ˆŒšÛHˆBˆÍB6öã¢Å7F÷&R6—¦S×³GÒóâÀ¢6öÆ÷#¢&&rÖ&ÇVRÓS"À¢ÒÀ¢°¢–C¢&Æö3""À¢F—FÆS¢%&²&ö¦W6’"À¢6FVv÷'“¢$WF¶–æÆ–¶ÆW""À¢F—7Fæ6S¢#SÒ"À¢F÷¢#CRR"À¢ÆVgC¢#cR"À¢–6öã¢Ä'V–ÆF–æs"6—¦S×³GÒóâÀ¢6öÆ÷#¢&&r×W'ÆRÓS"À¢ÒÀ¢°¢–C¢&Æö32"À¢F—FÆS¢$–LKæÆFÖ,K¦<K"À¢6FVv÷'“¢%W–,KÆ""À¢F—7Fæ6S¢#ƒÒ"À¢F÷¢#3RR"À¢ÆVgC¢#sRR"À¢–6öã¢ÄÆW'EG&–ævÆR6—¦S×³GÒóâÀ¢6öÆ÷#¢&&r×&VBÓS"À¢ÒÀ¢°¢–C¢&Æö3B"À¢F—FÆS¢$f—FæW72ÖW&¶W¦’"À¢6FVv÷'“¢,KYöÆWFÖVÆW""À¢F—7Fæ6S¢#sSÒ"À¢F÷¢#cRR"À¢ÆVgC¢#ƒRR"À¢–6öã¢Å7F÷&R6—¦S×³GÒóâÀ¢6öÆ÷#¢&&rÖ&ÇVRÓS"À¢ÒÂˆNÂ‚ˆ™]\›ˆ
-ˆ]ˆÛ\ÜÓ˜[YOH›Z[‹Z\ØÜ™Y[ˆ™ËX˜XÚÙÜ›İ[™‚ˆËÊˆXY\ˆÙXİ[Ûˆ
-‹ßBˆ]ˆÛ\ÜÓ˜[YOH˜™Ë\İ\™˜XÙH›Ü™\‹Xˆ›Ü™\‹X›Ü™\ˆİXÚŞHÜL‹LL‚ˆ]ˆÛ\ÜÓ˜[YOH›X^]ËMŞ^X]]ÈLˆÛNœMKLÈÛNœKM‚ˆËÊˆÙX\˜Ú˜\ˆ
-‹ßBˆ]ˆÛ\ÜÓ˜[YOHœ™[]]™HX‹M‚ˆÙX\˜ÚÛ\ÜÓ˜[YOH˜XœÛÛ]HYLÈÜLKÌˆ]˜[œÛ]K^KLKÌˆËMHMH^]^[]]YˆÏ‚ˆ[œ]ˆ\OH^‚ˆXÙZÛ\H“XZ[[™H]Ú[›ZÈ™HqgÛ]Y[\ˆ\˜K‹‹ˆ‚ˆ˜[YO^ÜÙX\˜Ú]Y\_BˆÛÚ[™ÙO^ÊJHOˆÙ]ÙX\˜Ú]Y\JK\™Ù]˜[YJ_BˆÛ\ÜÓ˜[YOHšËY[LL‹MKL‹H™ËX˜XÚÙÜ›İ[™›Ü™\ˆ›Ü™\‹X›Ü™\ˆ›İ[™YY[^]^\š[X\HXÙZÛ\^]^[]]Y›Øİ\Î›İ][™K[›Û™H›Øİ\Î˜›Ü™\‹\š[X\H›Øİ\Îœš[™ËLH›Øİ\Îœš[™Ë\š[X\H‚ˆÏ‚ˆÙ]‚ˆÈÊˆ]H
-‹ßBˆHÛ\ÜÓ˜[YOH^L›ÛX›Û^]^\š[X\H°áÙ]œ™YZÚ[\šHÙqgÙ™]ÚO‚ˆÙ]‚ˆÙ]‚‚ˆÈÊˆİ]È˜[›™\ˆ
-‹ßBˆ]ˆÛ\ÜÓ˜[YOH›X^]ËMŞ^X]]ÈLˆÛNœMKLÈÛNœKM‚ˆ]ˆÛ\ÜÓ˜[YOH™ÜšYÜšYXÛÛËLÈØ\LÈ™Ë\İ\™˜XÙH›İ[™Y[È›Ü™\ˆ›Ü™\‹X›Ü™\ˆM‚ˆ]ˆÛ\ÜÓ˜[YOH^XÙ[\ˆ‚ˆ]ˆÛ\ÜÓ˜[YOH™›^][\ËXÙ[\ˆ\İYKXÙ[\ˆX‹Lˆ‚ˆ\Ù\œÈÚ^™O^ÌŒHÛ\ÜÓ˜[YOH^\š[X\HˆÏ‚ˆÙ]‚ˆÛ\ÜÓ˜[YOH^L›ÛX›Û^]^\š[X\HŒKÏÜ‚ˆÛ\ÜÓ˜[YOH^^È^]^[]]YZİYˆ¶öÜY÷SÂ÷à¢ÂöF—cà¢ÆF—b6Æ74æÖSÒ'FW‡BÖ6VçFW"#à¢ÆF—b6Æ74æÖSÒ&fÆW‚—FV×2Ö6VçFW"§W7F–g’Ö6VçFW"Ö"Ó"#à¢Ä6ÆVæF"6—¦S×³#Ò6Æ74æÖSÒ'FW‡B×&–Ö'’"óà¢ÂöF—cà¢Ç6Æ74æÖSÒ'FW‡BÓ'†ÂföçBÖ&öÆBFW‡B×FW‡B×&–Ö'’#ã#S3Â÷à¢Ç6Æ74æÖSÒ'FW‡B×‡2FW‡B×FW‡BÖ×WFVB#ä|Hòw—RÂ6K²t$Ò)ÉL+Çp¢ÂöF—cà¢ÆF—b6Æ74æÖSÒ'FW‡BÖ6VçFW"#à¢ÆF—b6Æ74æÖSÒ&fÆW‚—FV×2Ö6VçFW"§W7F–g’Ö6VçFW"Ö"Ó"#à¢Äæf–vF–öâ6—¦S×³#Ò6Æ74æÖSÒ'FW‡B×&–Ö'’"óà¢ÂöF—cà¢Ç6Æ74æÖSÒ'FW‡BÓ'†ÂföçBÖ&öÆBFW‡B×FW‡B×&–Ö'’#ã##Â÷à¢Ç6Æ74æÖSÒ'FW‡B×‡2FW‡B×FW‡BÖ×WFVB#ì8G¦ÛXÕ+Í¨–[)<Ã²WG…ú"bä
-€¢ÂöF—cà¢ÂöF—cà¢ÂöF—cà ¢²ò¢F"&÷GFöç2¢÷Ğ¢ÆF—b6Æ74æÖSÒ&Ö‚×rÓw†Â×‚ÖWFò‚Ó"6Ó§‚ÓB’ÓBfÆW‚vÓ"÷fW&fÆ÷r×‚ÖWFò67&öÆÂ×6Öö÷F‚#à¢Æ'WGFöà¢öä6Æ–6³×²‚’Óâ6WD7F—fUF"‚&ÆÂ"—Ğ¢6Æ74æÖS×¶’Ó"‚ÓBv†—FW76RÖæ÷w&FW‡B×6ÒföçBÖÖVF—VÒG&ç6—F–öâÖ6öÆ÷'2fÆW‚×6‡&–æ²F¶7F—fUF"ÓÓÒ&ÆÂ ¢ò&&÷&FW"Ö"Ó"&÷&FW"×&–Ö'’FW‡B×&–Ö'’ ¢¢'FW‡B×FW‡BÖ×WFVB†÷fW#§FW‡B×FW‡B×&–Ö'’'ÖĞ¢à¢ÆÂFF¢Âö'WGFöãà¢Æ'WGFöà¢öä6Æ–6³×²‚’Óâ6WD7F—fUF"‚&'W6–æW72"—Ğ¢6Æ74æÖS×¶’Ó"‚ÓBv†—FW76RÖæ÷w&FW‡B×6ÒföçBÖÖVF—VÒG&ç6—F–öâÖ6öÆ÷'2fÆW‚×6‡&–æ²G¶7F—fUF"ÓÓÒ&'W6–æW72 ¢ò&&÷&FW"Ö"Ó"&÷&FW"×&–Ö'’FW‡B×&–Ö'’ ¢¢'FW‡B×FW‡BÖ×WFVB†÷fW#§FW‡B×FW‡B×&–Ö'’'ÖĞ¢à¢Å7F÷&R6Æ74æÖSÒ&×"Ó""6—¦S×³gÒóà¢'W6–æW76W0¢Âö'WGFöãà¢Æ'WGFöà¢öä6Æ–6³×²‚’Óâ6WD7F—fUF"‚&WfVçG2"—Ğ¢6Æ74æÖS×¶’Ó"‚ÓBv†—FW76RÖæ÷w&FW‡B×6ÒföçBÖÖVF—VÒG&ç6—F–öâÖ6öÆ÷'2fÆW‚×6‡&–æ²F¶7F—fUF"ÓÓÒ&WfVçG2 ¢ò&&÷&FW"Ö"Ó"&÷&FW"×&–Ö'’FW‡B×&–Ö'’ ¢¢'FW‡B×FW‡BÖ×WFVB†÷fW#§FW‡B×FW‡B×&–Ö'’'ÖĞ¢à¢Ä'V–ÆF–æs"6Æ74æÖSÒ&×"Ó""6—¦S×³gÒóà¢WfVç@¢Âö'WGFöãà¢Æ'WGFöà¢öä6Æ–6³×²‚’Óâ6WD7F—fUF"‚'6VÆÂ"—Ğ¢6Æ74æÖS×¶’Ó"‚ÓBv†—FW76RÖæ÷w&FW‡B×6ÒföçBÖÖVF—VÒG&ç6—F–öâÖ6öÆ÷'2fÆW‚×6‡&–æ²G¶7F—fUF"ÓÓÒ'6VÆÂ ¢ò&&÷&FW"Ö"Ó"&÷&FW"×&–Ö'’FW‡B×&–Ö'’ ¢¢'FW‡B×FW‡BÖ×WFVB†÷fW#§FW‡B×FW‡B×&–Ö'’'ÖĞ¢à¢Ä†öÖR6Æ74æÖSÒ&×"Ó""6—¦S×³gÒóà¢6LK°¢Âö'WGFöãà¢Æ'WGFöà¢öä6Æ–6³×²‚’Óâ6WD7F—fUF"‚&ÆW'G2"—Ğ¢6Æ74æÖS×¶’Ó"‚ÓBv†—FW76RÖæ÷w&FW‡B×6ÒföçBÖÖVF—VÒG&ç6—F–öâÖ6öÆ÷'2fÆW‚×6‡&–æ²G¶7F—fUF"ÓÓÒ&ÆW'G2 ¢ò&&÷&FW"Ö"Ó"&÷&FW"×&–Ö'’FW‡B×&–Ö'’ ¢¢'FW‡B×FW‡BÖ×WFVB†÷fW#§FW‡B×FW‡B×&–Ö'’'×Ğ¢à¢ÄÆW'D6—&6ÆR6Æ74æÖSÒ&×"Ó""6—¦S×³gÒóà¢ÆW'@¢Âö'WGFöãà¢ÂöF—cà ¢²ò¢6öçFVçB6V7F–öâ¢÷Ğ¢ÆF—b6Æ74æÖSÒ&fÆW‚Ó÷fW&fÆ÷r×’ÖWFò#à¢ÆF—b6Æ74æÖSÒ&Ö‚×rÓw†Â×‚ÖWFò‚Ó"6Ó§‚ÓB’ÓBsfRrÓ‚‚Ó‚G¶6&Bæ6öÆ÷'Ò&÷VæFVBÖgVÆÂfÆW‚—FV×2Ö6VçFW"§W7F–g’Ö6VçFW"#à¢¶ö7F÷æ6&G2æÖ‚†6&B’Óâ€¢ÄÆ–æ²¶W“×¶6&Bæ–GÒ‡&VcÒ"2#à¢¶6&Bæ–6öçĞ¢ÂôÆ–æ³à¢’—Ğ¢ÂöF—cà¢ÆF—b6Æ74æÖSÒ'FW‡BÖ6VçFW"#à¢Ç6Æ74æÖSÒ&föçB×6VÖ–&öÆBFW‡B×FW‡B×&–Ö'’#ç¶6&BçF—FÆWÓÂ÷à¢Ç6Æ74æÖSÒ'FW‡B×†rFW‡B×FW‡BÖ×WFVB×BÓ#ç¶6&Bæ6FVv÷'—ÓÂ÷à¢ÂöF—cà¢ÂöF—cà¢’—Ğ¢ÂöF—cà¢ÂöF—cà ¢²ò¢Æö6F–öç2w&–B¢÷Ğ¢ÆF—b6Æ74æÖSÒ&'6öÇWFR–ç6WBÓ¢ÓÓ"6ĞçÓB#à¢¶Æö6F–öä6&G2æÖ‚†6&B’Óâ€¢ÆF—b¶W“×¶6&Bæ–GÒ6Æ74æÖS×¶›ØÏY˜[ÙH
-ˆ™Ë\İ\™˜XÙH›İ[™YYˆ›Ü™\ˆ›Ü™\‹X›Ü™\ˆÈËLİ™\˜™Ë[]]Y˜[œÚ][Û‹XÛÛÜœÈİ\œÛÜ‹\Ú[\‰ØØ\™˜ÛÛÜŸXBˆİ[O^ŞÈÜˆØ\™ÜYˆØ\™›Y_Bˆ‚ˆ]ˆÛ\ÜÓ˜[YOH™›^][\ËXÙ[\ˆ\İYKXÙ[\ˆËNN™ËYÜ˜^KLL›İ[™YY[‚ˆØØ\™šXÛÛŸBˆÙ]‚ˆÛ\ÜÓ˜[YOH™›Û\Ù[ZX›Û^\ÛH]LˆØØ\™]_OÜ‚ˆÛ\ÜÓ˜[YOH^^È^]^[]]YØØ\™˜Ø]YÛÜ_OÜ‚ˆÙ]‚ˆ
-J_BˆÙ]‚‚ˆÈÊˆÛÛ[Ø\™È
-‹ßBˆ]ˆÛ\ÜÓ˜[YOH“ÓRUQÜ[ÛœÈ‹ˆÛ\ÜÓ˜[YOH˜™Ë\š[X\H›Û\Ù[ZX›Û‚ˆÛÛXÚÏ^Ê
-HOˆÙ]\İ[˜ÙQš[\Š	İ˜[YIÊ_B‚ˆÛÛœİ™Y‘š[\ˆH™XXİ\ÙT™YS[Y[[Š[
-NÂ‚ˆÛÛœİÚYÙ]˜[YHH°á›Û[K‘ÑUØ\KÙÙ]™YY‹ÈXY\œÎˆÈ]]Üš^˜][ÛˆØ]]ÚÙ[—XHJBˆ
-BˆJBŸB‚“[Ù[K™^ÜÈHÙ\Ù™]YÙNÂ className="bg-surface rounded-lg border border-border p-4",
-              key={id}
-            >
-              <div className="flex justify-between items-center">
-                <h 3 className="font-bold text-text-primary">{item.name}</h3>
-                <div className="flex items-center gap-1">
-                  <Star className="w-4 h-4 text-yellow-400" fill="true" />
-                  <span className="text-text-muted text-sm">
-{)¥Ñ•´¹É…Ñ¥¹ô€¡í¥Ñ•´¹É•Ù¥•İÍô‰§&ûg7IL(€€€€€€€€€€€€€€€€ğ½‘¥Øø(€€€€€€€€€€€€€€ğ½‘¥Øø(€€€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰™±•à¥Ñ•µÌµ•¹Ñ•È©ÕÍÑ¥™äµ‰•Ñİ••¸…À´Èµˆ´Èˆø(€€€€€€€€€€€€€€€€ñÍÁ…¸±…ÍÍ9…µ”ô‰Ñ•áĞµáÌÑ•áĞµÑ•áĞµµÕÑ•ˆûé½±…´èí¥Ñ•´¹‘¥ÍÑ…¹•ôğ½ÍÁ…¸ø(€€€€€€€€€€€€€€ğ½‘¥Øø(€€€€€€€€€€€€€€ñÀ±…ÍÍ9…µ”ô‰Ñ•áĞµÍ´Ñ•áĞµÑ•áĞµµÕÑ•±¥¹”µ±…µÀ´Èˆùí¥Ñ•´¹…‘‘É•ÍÍôğ½Àø(€€€€€€€€€€€€ğ½‘¥Øø(€€€€€€€€€€¤¥ô(€€€€€€€€ğ½‘¥Øø(€€€€€€ğ½‘¥Øø(€€€€ğ½‘¥Øø(€€ğ½‘¥Øø(¤ì)ô(2t justify-between gap-2 mb-1">
-            <div className="flex"items-center justify-between w£”whitespace-nowrap">
-              <span className="text-sm font-medium text-text-primary">{item.title}</span>
-              <span className="text-xs text-text-muted bg-text-muted px-2 py-1 rounded">{item.time}</span>
+export default function KesfetPage() {
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [activeTab, setActiveTab] = React.useState("all");
+  const [distanceFilter, setDistanceFilter] = React.useState("all");
+  const [dbActivities, setDbActivities] = useState<ActivityItem[]>(nearbyActivities);
+  const [dbBusinesses, setDbBusinesses] = useState<BusinessItem[]>(nearbyBusinesses);
+
+  // Fetch trending content from Supabase on mount
+  useEffect(() => {
+    const fetchTrendingContent = async () => {
+      try {
+        const supabase = createClient();
+
+        // Fetch popular posts
+        const { data: posts } = await supabase
+          .from("posts")
+          .select("id, title, body, created_at, profiles(full_name)")
+          .order("reaction_count", { ascending: false })
+          .limit(5)
+
+        // Fetch nearby businesses
+        const { data: businesses } = await supabase
+          .from("businesses")
+          .select("id, name, category, rating_avg, reviews:business_reviews(count)")
+          .limit(5)
+
+        if (businesses) {
+          setDbBusinesses(
+            businesses.map((b: any) => ({
+              id: b.id,
+              name: b.name,
+              category: b.category,
+              rating: b.rating_avg || 4.5,
+              reviews: b.reviews?.[0]?.count || 0,
+              distance: "0.5 km",
+              address: "Address TBD",
+            }))
+          );
+        }
+
+        if (posts) {
+          const activities: ActivityItem[] = posts.map((p: any) => ({
+            id: p.id,
+            title: p.title,
+            description: p.body?.substring(0, 100) || "",
+            distance: "250m",
+            category: "Posts",
+            categoryId: "posts",
+            type: "post",
+            time: new Date(p.created_at).toLocaleDateString("tr-TR"),
+            icon: "store",
+          }));
+          setDbActivities([...activities, ...nearbyActivities.slice(activities.length)]);
+        }
+      } catch (error) {
+        console.error("Error fetching trending content:", error);
+      }
+    };
+
+    fetchTrendingContent();
+  }, []);
+
+  const filterCategories = [
+    { id: "all", label: "TÃ¼mÃ¼" },
+    { id: "events", label: "Etkinlikler" },
+    { id: "business", label: "Ä°ÅŸletmeler" },
+    { id: "alerts", label: "UyarÄ±lar" },
+    { id: "forsale", label: "SatÄ±lÄ±k" },
+    { id: "lost", label: "KayÄ±p/Buluntu" },
+  ];
+
+  const distanceOptions = [
+    { value: "all", label: "TÃ¼m mesafeler" },
+    { value: "500m", label: "500m" },
+    { value: "1km", label: "1km" },
+    { value: "2km", label: "2km" },
+    { value: "5km", label: "5km" },
+  ];
+
+  const parseDistance = (distStr: string): number => {
+    const num = parseInt(distStr);
+    return distStr.includes("km") ? num * 1000 : num;
+  };
+
+  const isWithinDistance = (distance: string, filter: string): boolean => {
+    if (filter === "all") return true;
+    const filterDist = parseDistance(filter);
+    const itemDist = parseDistance(distance);
+    return itemDist <= filterDist;
+  };
+
+  const filteredActivities = dbActivities.filter((item) => {
+    const matchesSearch =
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesTab = activeTab === "all" || item.categoryId === activeTab;
+    const matchesDistance = isWithinDistance(item.distance, distanceFilter);
+    return matchesSearch && matchesTab && matchesDistance;
+  });
+
+  const locationCards: LocationCard[] = [
+    {
+      id: "loc1",
+      title: "Kahvehane AÃ§Ä±lÄ±ÅŸÄ±",
+      category: "Ä°ÅŸletmeler",
+      distance: "250m",
+      top: "25%",
+      left: "20%",
+      icon: <Store size={14} />,
+      color: "bg-blue-500",
+    },
+    {
+      id: "loc2",
+      title: "Park Projesi",
+      category: "Etkinlikler",
+      distance: "500m",
+      top: "45%",
+      left: "60%",
+      icon: <Building2 size={14} />,
+      color: "bg-purple-500",
+    },
+    {
+      id: "loc3",
+      title: "AydÄ±nlatma ArÄ±zasÄ±",
+      category: "UyarÄ±lar",
+      distance: "180m",
+      top: "35%",
+      left: "75%",
+      icon: <AlertTriangle size={14} />,
+      color: "bg-red-500",
+    },
+    {
+      id: "loc4",
+      title: "Fitness Merkezi",
+      category: "Ä°ÅŸletmeler",
+      distance: "750m",
+      top: "65%",
+      left: "85%",
+      icon: <Store size={14} />,
+      color: "bg-blue-500",
+    },
+  ];
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header Section */}
+      <div className="bg-surface border-b border-border sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 sm:py-4">
+          {/* Search Bar */}
+          <div className="relative mb-4">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
+            <input
+              type="text"
+              placeholder="Mahallende etkinlik ve iÅŸletmeler ara..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-full text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+            />
+          </div>
+
+          {/* Title */}
+          <h1 className="text-2xl font-bold text-text-primary">Ã‡evredekileri KeÅŸfet</h1>
+        </div>
+      </div>
+
+      {/* Stats Banner */}
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 sm:py-4">
+        <div className="grid grid-cols-3 gap-3 bg-surface rounded-lg border border-border p-4">
+          <div className="text-center">
+            <div className="flex items-center justify-center mb-2">
+              <Users size={20} className="text-primary" />
             </div>
-            <p className="text-sm text-text-muted"n{item.description}</p>
-            <div className="flex gap-1">
-              <span className={getCategoryColor(item.categoryId)} className="text-xs font-medium px-2 py-1 rounded"}>{item.category}</span>
-              <span className="text-xs text-text-muted">{"uîÚ][K™\İ[˜Ù_OÜÜ[‚ˆÙ]‚ˆÙ]‚ˆ
-J_BˆÙ]‚ˆÙ]‚ˆÙ]‚ŠNÂŸB‚
+            <p className="text-2xl font-bold text-text-primary">1,247</p>
+            <p className="text-xs text-text-muted">Aktif KomÅŸu</p>
+          </div>
+          <div className="text-center">
+            <div className="flex items-center justify-center mb-2">
+              <Newspaper size={20} className="text-primary" />
+            </div>
+            <p className="text-2xl font-bold text-text-primary">34</p>
+            <p className="text-xs text-text-muted">BugÃ¼nkÃ¼ PaylaÅŸÄ±mlar</p>
+          </div>
+          <div className="text-center">
+            <div className="flex items-center justify-center mb-2">
+              <Calendar size={20} className="text-primary" />
+            </div>
+            <p className="text-2xl font-bold text-text-primary">8</p>
+            <p className="text-xs text-text-muted">Bu Haftaki Etkinlik</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-6">
+        {/* Fullscreen Map Placeholder Section */}
+        <div className="mb-6 rounded-lg overflow-hidden border border-border bg-surface">
+          <div className="relative h-80 md:h-96 bg-gradient-to-br from-primary to-[#004d23] overflow-hidden">
+            {/* Grid pattern background */}
+            <svg className="absolute inset-0 w-full h-full opacity-5" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <defs>
+                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                  <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" strokeWidth="0.5" />
+                </pattern>
+              </defs>
+              <rect width="100" height="100" fill="url(#grid)" />
+            </svg>
+
+            {/* Location Cards on Map */}
+            {locationCards.map((card) => (
+              <div
+                key={card.id}
+                className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+                style={{ top: card.top, left: card.left }}
+              >
+                <div className="relative">
+                  {/* Pulsing ring */}
+                  <div className={`absolute inset-0 ${card.color} rounded-full opacity-30 animate-pulse`} style={{ width: "32px", height: "32px", margin: "-16px 0 0 -16px" }} />
+                  {/* Pin */}
+                  <div className={`relative w-8 h-8 ${card.color} rounded-full border-2 border-white shadow-lg flex items-center justify-center text-white`}>
+                    {card.icon}
+                  </div>
+                </div>
+                {/* Tooltip on hover */}
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 bg-black bg-opacity-80 text-white px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 hover:opacity-100 transition-opacity z-20 pointer-events-none">
+                  {card.title} â€¢ {card.distance}
+                </div>
+              </div>
+            ))}
+
+            {/* Center message */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+              <MapPin size={48} className="text-white mb-3 opacity-90" />
+              <p className="text-white font-bold text-lg text-center px-4">Mahalleni Harita Ãœzerinde KeÅŸfet</p>
+              <p className="text-white text-sm opacity-80 mt-2">YakÄ±ndaki etkinlikleri ve iÅŸletmeleri gÃ¶rmek iÃ§in tÄ±klayÄ±n</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Main Content - Left Side */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Filter Chips */}
+            <div className="bg-surface rounded-lg border border-border p-4">
+              <p className="text-sm font-semibold text-text-primary mb-3">Filtrele:</p>
+              <div className="flex gap-2 overflow-x-auto pb-2 -mx-2 px-2">
+                {filterCategories.map((chip) => (
+                  <button
+                    key={chip.id}
+                    onClick={() => setActiveTab(chip.id)}
+                    className={`px-4 py-1.5 font-medium whitespace-nowrap rounded-full transition-all duration-200 border text-sm ${
+                      activeTab === chip.id
+                        ? "bg-primary text-white border-primary"
+                        : "bg-surface text-text-primary border-border hover:border-primary"
+                    }`}
+                  >
+                    {chip.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Distance Filter */}
+            <div className="bg-surface rounded-lg border border-border p-4">
+              <p className="text-sm font-semibold text-text-primary mb-3">Mesafe Filtresi</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {distanceOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => setDistanceFilter(option.value)}
+                    className={`px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 border ${
+                      distanceFilter === option.value
+                        ? "bg-primary text-white border-primary"
+                        : "bg-surface text-text-primary border-border hover:border-primary"
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Activity Feed */}
+            {filteredActivities.length === 0 ? (
+              <div className="bg-surface rounded-lg border border-border p-12 text-center">
+                <Newspaper size={48} className="mx-auto text-text-muted mb-3" />
+                <p className="text-text-primary font-medium">Etkinlik bulunamadÄ±</p>
+                <p className="text-text-muted text-sm mt-1">Arama kriterlerinize eÅŸleÅŸen etkinlik yok</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {filteredActivities.map((item) => (
+                  <Link
+                    key={item.id}
+                    href={`/kesfet/${item.id}`}
+                    className="block bg-surface border border-border rounded-lg p-4 transition-all duration-200 hover:shadow-lg hover:border-primary cursor-pointer"
+                  >
+                    <div className="flex gap-4">
+                      {/* Icon */}
+                      <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-background flex items-center justify-center text-primary">
+                        {categoryIcons[item.categoryId] || <MapPin size={16} />}
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2 mb-1">
+                          <h3 className="font-semibold text-text-primary line-clamp-2">{item.title}</h3>
+                          <span className={`flex-shrink-0 text-xs font-medium px-2.5 py-1 rounded-full border whitespace-nowrap ${getCategoryColor(item.categoryId)}`}>
+                            {item.category}
+                          </span>
+                        </div>
+
+                        <p className="text-sm text-text-secondary line-clamp-1 mb-2">{item.description}</p>
+
+                        <div className="flex items-center gap-4 text-xs text-text-muted">
+                          <div className="flex items-center gap-1">
+                            <Navigation size={14} />
+                            <span>{item.distance}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Clock size={14} />
+                            <span>{item.time}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Arrow */}
+                      <div className="flex-shrink-0 flex items-center text-text-muted">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Sidebar - Right Side */}
+          <div className="space-y-6">
+            {/* Activity Feed Sidebar */}
+            <div className="bg-surface rounded-lg border border-border p-4">
+              <div className="flex items-center gap-2 mb-4">
+                <Flame size={20} className="text-primary" />
+                <h2 className="font-bold text-text-primary">Son Aktiviteler</h2>
+              </div>
+
+              <div className="space-y-2">
+                {recentActivityFeed.map((activity) => (
+                  <div key={activity.id} className="pb-2 border-b border-border last:border-0 cursor-pointer hover:bg-surface-hover p-2 -mx-2 rounded transition-colors">
+                    <p className="text-xs text-text-primary">
+                      <span className="font-semibold">{activity.user}</span>{" "}
+                      <span className="text-text-muted">{activity.action}</span>
+                    </p>
+                    <p className="text-xs text-text-muted mt-1">{activity.time}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Trending Topics */}
+            <div className="bg-surface rounded-lg border border-border p-4">
+              <div className="flex items-center gap-2 mb-4">
+                <TrendingUp size={20} className="text-primary" />
+                <h2 className="font-bold text-text-primary">Trend Konular</h2>
+              </div>
+
+              <div className="space-y-2">
+                {trendingTopics.map((topic, index) => (
+                  <div key={topic.id} className="cursor-pointer hover:bg-surface-hover p-2 -mx-2 rounded transition-colors">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-primary min-w-6">{index + 1}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-text-primary truncate">{topic.title}</p>
+                        <p className="text-xs text-text-muted">{topic.count} konu</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Nearby Businesses Section */}
+            <div className="bg-surface rounded-lg border border-border p-4">
+              <div className="flex items-center gap-2 mb-4">
+                <Store size={20} className="text-primary" />
+                <h2 className="font-bold text-text-primary">YakÄ±nda Ä°ÅŸletmeler</h2>
+              </div>
+
+              <div className="space-y-3">
+                {dbBusinesses.map((business) => (
+                  <div key={business.id} className="p-3 bg-background rounded-lg hover:bg-surface-active transition-colors cursor-pointer">
+                    <div className="flex justify-between items-start gap-2 mb-1">
+                      <h3 className="font-semibold text-sm text-text-primary line-clamp-1">{business.name}</h3>
+                      <span className="flex-shrink-0 text-xs font-medium text-text-muted">{business.distance}</span>
+                    </div>
+                    <p className="text-xs text-text-muted mb-2">{business.category}</p>
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-0.5">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            size={12}
+                            className={i < Math.floor(business.rating) ? "fill-yellow-400 text-yellow-400" : "text-[#ccc]"}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-xs text-text-muted">{business.rating}</span>
+                      <span className="text-xs text-text-muted">({business.reviews})</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Safety Alerts Section */}
+            <div className="bg-surface rounded-lg border border-border p-4">
+              <div className="flex items-center gap-2 mb-4">
+                <AlertCircle size={20} className="text-primary" />
+                <h2 className="font-bold text-text-primary">Mahallenin Durumu</h2>
+              </div>
+
+              <div className="space-y-2 mb-4 p-3 bg-background rounded-lg">
+                <p className="text-xs font-semibold text-text-primary">GÃ¼venlik Durumu</p>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-primary rounded-full" />
+                  <span className="text-sm text-text-primary font-medium">GÃ¼venli</span>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                {safetyAlerts.map((alert) => (
+                  <div
+                    key={alert.id}
+                    className={`p-3 rounded-lg border ${
+                      alert.severity === "high"
+                        ? "bg-red-50 border-red-200"
+                        : alert.severity === "medium"
+                          ? "bg-yellow-50 border-yellow-200"
+                          : "bg-blue-50 border-blue-200"
+                    }`}
+                  >
+                    <div className="flex items-start gap-2">
+                      <div className="flex-shrink-0 mt-0.5">
+                        {alert.type === "weather" && <Wind size={14} className="text-blue-600" />}
+                        {alert.type === "traffic" && <AlertTriangle size={14} className="text-yellow-600" />}
+                        {alert.type === "outage" && <Zap size={14} className="text-red-600" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-text-primary">{alert.title}</p>
+                        <p className="text-xs text-text-secondary mt-1">{alert.description}</p>
+                        <p className="text-xs text-text-muted mt-1">{alert.time}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
