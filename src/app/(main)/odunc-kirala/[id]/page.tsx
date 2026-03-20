@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
-import { getListingById } from '@/lib/hooks/use-listings';
+import { getLendingItemById } from '@/lib/hooks/use-lending';
 
 interface ListingDetail {
   id: string;
@@ -129,7 +129,7 @@ export default function ListingDetailPage({ params }: { params: { id: string } }
   useEffect(() => {
     const fetchListing = async () => {
       try {
-        const { data, error } = await getListingById(params.id);
+        const { data, error } = await getLendingItemById(params.id);
         if (data) {
           const transformed = {
             ...mockListingDetail,

@@ -52,6 +52,17 @@ const CONDITIONS = [
   { value: 'fair', label: 'Orta' },
 ];
 
+const CATEGORY_ID_MAP: Record<string, string> = {
+  'Elektronik': 'fcea98f1-d3e8-4b84-82b2-ae36994f809d',
+  'Mobilya': '836be50c-4d0d-4186-8808-df634fe8da56',
+  'Giyim': '90e53ece-6792-4d12-82d4-6c2c27fb2ce9',
+  'Ev & Yaşam': '418789ca-ca21-49f5-a473-2c8cea7f72be',
+  'Spor': '65848553-fb70-4ba4-b20a-4514a0262843',
+  'Araç': 'd8fc0ab3-cac4-4f2f-a622-75efa1f59435',
+  'Kitap': '24865efd-a9f5-4e4e-964b-68d681c1be56',
+  'Diğer': 'cfbe68e2-dcee-4524-a1c6-7586fe3059bc',
+};
+
 export default function CreateListingPage() {
   const router = useRouter();
   const [formData, setFormData] = useState<ListingFormData>({
@@ -279,15 +290,12 @@ export default function CreateListingPage() {
         title: formData.title,
         description: formData.description,
         price: formData.isFree ? 0 : parseInt(formData.price),
-        category_id: null, // Will need category mapping
-        user_id: user.id,
-        image_url: imageUrls[0] || null,
-        images: imageUrls,
-        item_condition: formData.condition,
-        neighborhood: formData.location.split(',')[0],
-        delivery_options: formData.deliveryOptions,
-        listing_status: 'active',
-        listing_type: 'marketplace',
+        category_id: CATEGORY_ID_MAP[formData.category] || null,
+        seller_id: user.id,
+        neighborhood_id: '51ded332-1c5c-428f-9022-4f5956bef2a4',
+        media_urls: imageUrls.length > 0 ? imageUrls : null,
+        condition: formData.condition,
+        status: 'active',
       } as any);
 
       if (error) {

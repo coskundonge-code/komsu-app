@@ -18,8 +18,8 @@ export async function getListings(options?: {
   const supabase = createClient()
   let query = supabase
     .from('listings')
-    .select('*, profiles!listings_user_id_fkey(full_name, avatar_url), listing_categories(name)')
-    .eq('listing_status', options?.status || 'active')
+    .select('*, profiles!listings_seller_id_fkey(full_name, avatar_url), listing_categories(name)')
+    .eq('status', options?.status || 'active')
 
   if (options?.neighborhoodId) query = query.eq('neighborhood_id', options.neighborhoodId)
   if (options?.categoryId) query = query.eq('category_id', options.categoryId)
@@ -41,7 +41,7 @@ export async function getListingById(id: string) {
   const supabase = createClient()
   const { data, error } = await supabase
     .from('listings')
-    .select('*, profiles!listings_user_id_fkey(full_name, avatar_url, phone), listing_categories(name)')
+    .select('*, profiles!listings_seller_id_fkey(full_name, avatar_url, phone), listing_categories(name)')
     .eq('id', id)
     .single()
   return { data, error }
@@ -61,6 +61,6 @@ export async function updateListing(id: string, updates: Database['public']['Tab
 
 export async function deleteListing(id: string) {
   const supabase = createClient()
-  const { error } = await supabase.from('listings').update({ listing_status: 'removed' } as any).eq('id', id)
+  const { error } = await supabase.from('listings').update({ status: 'removed' } as any).eq('id', id)
   return { error }
 }

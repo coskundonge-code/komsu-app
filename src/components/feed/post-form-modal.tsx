@@ -140,13 +140,13 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
     setIsSubmitting(true);
     try {
       const postData = {
-        user_id: user.id,
-        neighborhood_id: 'default',
+        author_id: user.id,
+        neighborhood_id: '51ded332-1c5c-428f-9022-4f5956bef2a4',
         title: title.trim() || null,
-        content: body.trim(),
-        post_type: postType === 'general' ? 'genel' : postType === 'security' ? 'guvenlik' : postType === 'recommendation' ? 'oneriler' : postType === 'lost-found' ? 'kayipbuluntu' : 'genel',
-        visibility,
-        image_urls: images,
+        body: body.trim(),
+        type: postType === 'general' ? 'general' : postType === 'security' ? 'safety' : postType === 'recommendation' ? 'recommendation' : postType === 'lost-found' ? 'lost_found' : 'general',
+        visibility: visibility || 'neighborhood',
+        media_urls: images.length > 0 ? images : null,
       };
 
       const { data, error } = await createPost(postData as any);
@@ -157,7 +157,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
           id: postResult.id,
           type: postType,
           title: postResult.title || undefined,
-          body: postResult.content,
+          body: postResult.body,
           visibility,
           images,
           location,

@@ -58,8 +58,8 @@ export default function PostDetailPage() {
           category: postData.post_type || 'Genel',
           categoryColor: 'bg-cat-event-light text-cat-event',
           title: postData.title || '',
-          body: postData.content || '',
-          image: postData.image_urls?.[0] || undefined,
+          body: postData.body || '',
+          image: postData.media_urls?.[0] || undefined,
           reactions: postData.reaction_count || 0,
           comments: postData.comment_count || 0,
         })
@@ -69,7 +69,7 @@ export default function PostDetailPage() {
               id: c.id,
               author: c.profiles?.full_name || 'Anonim',
               initial: (c.profiles?.full_name || 'A')[0].toUpperCase(),
-              text: c.content,
+              text: c.body,
               timeAgo: new Date(c.created_at).toLocaleDateString('tr-TR'),
               likes: 0,
             }))
@@ -96,7 +96,7 @@ export default function PostDetailPage() {
             id: commentData.id,
             author: profile?.full_name || 'Siz',
             initial: profile?.full_name?.[0]?.toUpperCase() || 'S',
-            text: commentData.content,
+            text: commentData.body,
             timeAgo: 'Az önce',
             likes: 0,
           },

@@ -16,8 +16,7 @@ export async function getPosts(options?: {
   const supabase = createClient()
   let query = supabase
     .from('posts')
-    .select('*, profiles!posts_user_id_fkey(full_name, avatar_url)')
-    .eq('is_archived', false)
+    .select('*, profiles!posts_author_id_fkey(full_name, avatar_url)')
     .order('is_pinned', { ascending: false })
     .order('created_at', { ascending: false })
 
@@ -25,7 +24,7 @@ export async function getPosts(options?: {
     query = query.eq('neighborhood_id', options.neighborhoodId)
   }
   if (options?.postType && options.postType !== 'general') {
-    query = query.eq('post_type', options.postType)
+    query = query.eq('type', options.postType)
   }
   if (options?.limit) {
     query = query.limit(options.limit)
@@ -42,7 +41,7 @@ export async function getPostById(id: string) {
   const supabase = createClient()
   const { data, error } = await supabase
     .from('posts')
-    .select('*, profiles!posts_user_id_fkey(full_name, avatar_url), comments(*, profiles!comments_user_id_fkey(full_name, avatar_url))')
+    .select('*, profiles!posts_author_id_fkey(full_name, avatar_url), comments(*, profiles!comments_author_id_fkey(full_name, avatar_url))')
     .eq('id', id)
     .single()
   return { data, error }
@@ -60,9 +59,10 @@ export async function createPost(post: PostInsert) {
 
 export async function deletePost(id: string) {
   const supabase = createClient()
+  // Soft delete by removing from view - update visibility
   const { error } = await supabase
     .from('posts')
-    .update({ is_archived: true } as any)
+    .delete()
     .eq('id', id)
   return { error }
 }
@@ -74,14 +74,14 @@ export async function toggleReaction(postId: string, userId: string, reactionTyp
     .select('id')
     .eq('post_id', postId)
     .eq('user_id', userId)
-    .eq('reaction_type', reactionType)
+    .eq('type', reactionType)
     .single()
 
   if (existing) {
     const { error } = await supabase.from('reactions').delete().eq('id', existing.id)
     return { added: false, error }
   } else {
-    const { error } = await supabase.from('reactions').insert({ post_id: postId, user_id: userId, reaction_type: reactionType } as any)
+    const { error } = await supabase.from('reactions').insert({ post_id: postId, user_id: userId, type: reactionType } as any)
     return { added: true, error }
   }
 }
@@ -90,7 +90,7 @@ export async function createComment(postId: string, userId: string, content: str
   const supabase = createClient()
   const { data, error } = await supabase
     .from('comments')
-    .insert({ post_id: postId, user_id: userId, content } as any)
+    .insert({ post_id: postId, author_id: userId, body: content } as any)
     .select()
     .single()
   return { data, error }

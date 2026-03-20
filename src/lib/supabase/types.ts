@@ -156,16 +156,16 @@ export type Database = {
       posts: {
         Row: {
           id: string
-          user_id: string
+          author_id: string
           neighborhood_id: string
-          post_type: 'general' | 'safety' | 'recommendation' | 'lost_found' | 'classified' | 'event' | 'poll'
-          title: string
-          content: string
-          image_urls: string[] | null
-          location: { lat: number; lng: number } | null
-          visibility: 'public' | 'members_only'
+          type: string
+          title: string | null
+          body: string
+          media_urls: string[] | null
+          category: string | null
           is_pinned: boolean
-          is_archived: boolean
+          is_urgent: boolean
+          visibility: string
           comment_count: number
           reaction_count: number
           created_at: string
@@ -173,16 +173,16 @@ export type Database = {
         }
         Insert: {
           id?: string
-          user_id: string
+          author_id: string
           neighborhood_id: string
-          post_type: 'general' | 'safety' | 'recommendation' | 'lost_found' | 'classified' | 'event' | 'poll'
-          title: string
-          content: string
-          image_urls?: string[] | null
-          location?: { lat: number; lng: number } | null
-          visibility?: 'public' | 'members_only'
+          type: string
+          title?: string | null
+          body: string
+          media_urls?: string[] | null
+          category?: string | null
           is_pinned?: boolean
-          is_archived?: boolean
+          is_urgent?: boolean
+          visibility?: string
           comment_count?: number
           reaction_count?: number
           created_at?: string
@@ -190,16 +190,16 @@ export type Database = {
         }
         Update: {
           id?: string
-          user_id?: string
+          author_id?: string
           neighborhood_id?: string
-          post_type?: 'general' | 'safety' | 'recommendation' | 'lost_found' | 'classified' | 'event' | 'poll'
-          title?: string
-          content?: string
-          image_urls?: string[] | null
-          location?: { lat: number; lng: number } | null
-          visibility?: 'public' | 'members_only'
+          type?: string
+          title?: string | null
+          body?: string
+          media_urls?: string[] | null
+          category?: string | null
           is_pinned?: boolean
-          is_archived?: boolean
+          is_urgent?: boolean
+          visibility?: string
           comment_count?: number
           reaction_count?: number
           created_at?: string
@@ -210,33 +210,30 @@ export type Database = {
         Row: {
           id: string
           post_id: string
-          user_id: string
-          content: string
-          image_urls: string[] | null
-          reaction_count: number
-          is_archived: boolean
+          author_id: string
+          parent_id: string | null
+          body: string
+          media_urls: string[] | null
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
           post_id: string
-          user_id: string
-          content: string
-          image_urls?: string[] | null
-          reaction_count?: number
-          is_archived?: boolean
+          author_id: string
+          parent_id?: string | null
+          body: string
+          media_urls?: string[] | null
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
           post_id?: string
-          user_id?: string
-          content?: string
-          image_urls?: string[] | null
-          reaction_count?: number
-          is_archived?: boolean
+          author_id?: string
+          parent_id?: string | null
+          body?: string
+          media_urls?: string[] | null
           created_at?: string
           updated_at?: string
         }
@@ -247,7 +244,7 @@ export type Database = {
           user_id: string
           post_id: string | null
           comment_id: string | null
-          reaction_type: string
+          type: string
           created_at: string
         }
         Insert: {
@@ -255,7 +252,7 @@ export type Database = {
           user_id: string
           post_id?: string | null
           comment_id?: string | null
-          reaction_type: string
+          type: string
           created_at?: string
         }
         Update: {
@@ -263,7 +260,7 @@ export type Database = {
           user_id?: string
           post_id?: string | null
           comment_id?: string | null
-          reaction_type?: string
+          type?: string
           created_at?: string
         }
       }
@@ -296,52 +293,55 @@ export type Database = {
       listings: {
         Row: {
           id: string
-          user_id: string
+          seller_id: string
           neighborhood_id: string
           category_id: string
           title: string
           description: string
           price: number | null
-          image_urls: string[] | null
-          listing_status: 'active' | 'sold' | 'expired' | 'removed'
-          listing_condition: 'new' | 'like_new' | 'good' | 'fair' | 'poor'
-          location: { lat: number; lng: number } | null
+          currency: string
+          condition: string
+          media_urls: string[] | null
+          status: 'active' | 'sold' | 'expired' | 'removed'
+          lat: number | null
+          lng: number | null
           view_count: number
-          favorite_count: number
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
-          user_id: string
+          seller_id: string
           neighborhood_id: string
           category_id: string
           title: string
           description: string
           price?: number | null
-          image_urls?: string[] | null
-          listing_status?: 'active' | 'sold' | 'expired' | 'removed'
-          listing_condition?: 'new' | 'like_new' | 'good' | 'fair' | 'poor'
-          location?: { lat: number; lng: number } | null
+          currency?: string
+          condition?: string
+          media_urls?: string[] | null
+          status?: 'active' | 'sold' | 'expired' | 'removed'
+          lat?: number | null
+          lng?: number | null
           view_count?: number
-          favorite_count?: number
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
-          user_id?: string
+          seller_id?: string
           neighborhood_id?: string
           category_id?: string
           title?: string
           description?: string
           price?: number | null
-          image_urls?: string[] | null
-          listing_status?: 'active' | 'sold' | 'expired' | 'removed'
-          listing_condition?: 'new' | 'like_new' | 'good' | 'fair' | 'poor'
-          location?: { lat: number; lng: number } | null
+          currency?: string
+          condition?: string
+          media_urls?: string[] | null
+          status?: 'active' | 'sold' | 'expired' | 'removed'
+          lat?: number | null
+          lng?: number | null
           view_count?: number
-          favorite_count?: number
           created_at?: string
           updated_at?: string
         }
@@ -679,25 +679,25 @@ export type Database = {
       conversations: {
         Row: {
           id: string
-          user_id_1: string
-          user_id_2: string
-          last_message_at: string | null
+          type: string
+          listing_id: string | null
+          title: string | null
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
-          user_id_1: string
-          user_id_2: string
-          last_message_at?: string | null
+          type: string
+          listing_id?: string | null
+          title?: string | null
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
-          user_id_1?: string
-          user_id_2?: string
-          last_message_at?: string | null
+          type?: string
+          listing_id?: string | null
+          title?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -729,35 +729,47 @@ export type Database = {
         Row: {
           id: string
           conversation_id: string
-          user_id: string
-          content: string
-          image_urls: string[] | null
-          is_edited: boolean
-          is_deleted: boolean
+          topic: string | null
+          sender_id: string
+          extension: string | null
+          body: string
+          media_urls: string[] | null
+          payload: any
           created_at: string
+          event: string | null
+          private: boolean
           updated_at: string
+          inserted_at: string
         }
         Insert: {
           id?: string
           conversation_id: string
-          user_id: string
-          content: string
-          image_urls?: string[] | null
-          is_edited?: boolean
-          is_deleted?: boolean
+          topic?: string | null
+          sender_id: string
+          extension?: string | null
+          body: string
+          media_urls?: string[] | null
+          payload?: any
           created_at?: string
+          event?: string | null
+          private?: boolean
           updated_at?: string
+          inserted_at?: string
         }
         Update: {
           id?: string
           conversation_id?: string
-          user_id?: string
-          content?: string
-          image_urls?: string[] | null
-          is_edited?: boolean
-          is_deleted?: boolean
+          topic?: string | null
+          sender_id?: string
+          extension?: string | null
+          body?: string
+          media_urls?: string[] | null
+          payload?: any
           created_at?: string
+          event?: string | null
+          private?: boolean
           updated_at?: string
+          inserted_at?: string
         }
       }
       notifications: {

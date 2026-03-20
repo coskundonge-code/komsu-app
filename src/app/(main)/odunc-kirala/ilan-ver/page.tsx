@@ -150,21 +150,23 @@ export default function NewListingPage() {
         imageUrls.push(photoUrl);
       }
 
-      // Create listing
-      const { data, error } = await createListing({
-        title: formData.title,
-        description: formData.description,
-        price: formData.type === 'free' ? 0 : parseInt(formData.price),
-        category_id: null,
-        user_id: user.id,
-        image_url: imageUrls[0] || null,
-        images: imageUrls,
-        item_condition: formData.condition,
-        neighborhood: formData.pickupLocation,
-        listing_status: 'pending',
-        listing_type: 'lending',
-        rental_type: formData.type,
-      } as any);
+      // Create lending item
+      const { data, error } = await supabase
+        .from('lending_items')
+        .insert({
+          title: formData.title,
+          description: formData.description,
+          price_per_unit: formData.type === 'free' ? 0 : parseInt(formData.price),
+          user_id: user.id,
+          neighborhood_id: '51ded332-1c5c-428f-9022-4f5956bef2a4',
+          image_urls: imageUrls.length > 0 ? imageUrls : null,
+          condition: formData.condition || 'good',
+          status: 'available',
+          lending_type: formData.type === 'free' ? 'free' : 'paid',
+          category: formData.category || 'other',
+        } as any)
+        .select()
+        .single();
 
       if (error) {
         console.error('Error creating listing:', error);

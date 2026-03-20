@@ -23,7 +23,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
-import { getListings } from '@/lib/hooks/use-listings';
+import { getLendingItems } from '@/lib/hooks/use-lending';
 
 interface Listing {
   id: string;
@@ -297,30 +297,28 @@ export default function OduncKiralaPage() {
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        const { data, error } = await getListings({ status: 'active', limit: 50 });
-        if (data) {
-          // Transform DB data to UI format - filter for lending/rental types
+        const { data, error } = await getLendingItems({ status: 'available', limit: 50 });
+        if (data && (data as any[]).length > 0) {
           const transformed = (data as any[])
-            .filter((item: any) => item.listing_type === 'lending' || item.listing_type === 'rental')
             .map((item: any) => ({
               id: item.id,
               title: item.title || 'Başlıksız İlan',
-              type: item.rental_type || 'free' as 'free' | 'hourly' | 'daily',
-              price: item.price || 0,
-              image: item.image_url || getFeedImageUrl(Math.floor(Math.random() * 30) + 1, 500, 500),
-              location: item.neighborhood || 'Bilinmiyor',
-              neighborhood: item.neighborhood || 'Bilinmiyor',
+              type: item.lending_type || 'free' as 'free' | 'hourly' | 'daily',
+              price: item.price_per_unit || 0,
+              image: item.image_urls?.[0] || getFeedImageUrl(Math.floor(Math.random() * 30) + 1, 500, 500),
+              location: 'Kadıköy, Moda',
+              neighborhood: 'Kadıköy, Moda',
               distance: `${Math.floor(Math.random() * 10) + 1} km`,
               ownerName: (item as any).profiles?.full_name || 'Bilinmiyor',
               ownerAvatar: (item as any).profiles?.avatar_url || getAvatarUrl('U'),
               rating: Math.random() * 2 + 3,
               reviewCount: Math.floor(Math.random() * 20),
-              category: (item as any).listing_categories?.name || 'Diğer',
+              category: item.category || 'Diğer',
               timeAgo: item.created_at ? formatTimeAgo(new Date(item.created_at)) : '1 saat',
             }));
           setListings(transformed);
         } else if (error) {
-          console.warn('Error fetching listings:', error);
+          console.warn('Error fetching lending items:', error);
           setListings(mockListings);
         }
       } catch (err) {
