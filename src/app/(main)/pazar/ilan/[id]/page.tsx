@@ -79,7 +79,7 @@ const mockListingsDB: Record<string, any> = {
     views: 156,
     favorites: 28,
     description:
-      'IKEA Ektorp serisi 3 kiÅŸilik kanepe. AÃ§Ä±k gri renk, harika durumda. Temiz, hiÃ§ hasarÄ± yok. Ã‡ok konforlu oturuÅŸ. Kanepenin boyutlarÄ±: GeniÅŸlik 242cm, Derinlik 88cm, YÃ¼kseklik 88cm. KapÄ± altÄ±ndan kolaylÄ±kla geÃ§ebilir. KÄ±lÄ±fÄ±,Ã§Ä±k arÄ±labilir ve yÄ±kanabilir.',
+      'IKEA Ektorp serisi 3 kiÅŸilik kanepe. AÃ§Ä±k gri renk, harika durumda. Temiz, hiÃ§ hasarÄ± yok. Ã‡ok konforlu oturuÅŸ. Kanepenin boyutlarÄ±: GeniÅŸlik 242cm, Derinlik 88cm, YÃ¼kseklik 88cm. KapÄ± altÄ±ndan kolaylÄ±kla geÃ§ebilir. KÄ±lÄ±fÄ± Ã§Ä±karÄ±labilir ve yÄ±kanabilir.',
     images: [
       getFeedImageUrl(6, 800, 600),
       getFeedImageUrl(7, 800, 600),
@@ -91,7 +91,183 @@ const mockListingsDB: Record<string, any> = {
       avatar: getFeedImageUrl(9, 200, 200),
       rating: 4.9,
       reviewCount: 18,
-    €É•ÍÁ½¹Í•Q¥µ”è€œð€ÌÀ‘…­¥­„œ°(€€€€€©½¥¹…Ñ”è€œÄçÅ°ƒÙ¹”œ°(€€€€€±¥ÍÑ¥¹Ìè€ÌÈ°(€€€€€Ù•É¥™¥•èÑÉÕ”°(€€€€€Í½±‘½Õ¹Ðè€ÌÀ°(€€€ô°(€€€ÍÁ•Ìèl(€€€€€ì±…‰•°è€•¹§}±¥¬œ°Ù…±Õ”è€œÈÐÈ´œô°(€€€€€ì±…‰•°è€•É¥¹±¥¬œ°Ù…±Õ”è€œàà´œô°(€€€€€ì±…‰•°è€gñ­Í•­±¥¬œ°Ù…±Õ”è€œàà´œô°(€€€€€ì±…‰•°è€I•¹¬œ°Ù…±Õ”è€ŸÅ¬É¤œô°(€€€€€ì±…‰•°è€5½‘•°œ°Ù…±Õ”è€­Ñ½ÉÀM•É¥Í¤œô°(€€€€€ì±…‰•°è€/Å³Å˜œ°Ù…±Õ”è€ŸÅ­…ËÅ±…‰¥±¥Èœô°(€€€t°(€ô°(€€œÌœèì(€€€¥è€œÌœ°(€€€Ñ¥Ñ±”è€A±…åMÑ…Ñ¥½¸€Ô€´=É©¥¹…°-ÕÑÔ¥±”M…ÓÅ³Åå½Èœ°(€€€ÁÉ¥”è€ØÔÀÀ°(€€€½¹‘¥Ñ¥½¸è€OÅ›ÅÈœ°(€€€½¹‘¥Ñ¥½¹	…‘•½±½Èè€‰œµÉ••¸´ÄÀÀÑ•áÐµÉ••¸´àÀÀœ°(€€€…Ñ•½Éäè€±•­ÑÉ½¹¥¬œ°(€€€…Ñ•½Éå½±½Èè€‰œµ‰±Õ”´ÄÀÀÑ•áÐµ‰±Õ”´àÀÀœ°(€€€¹•¥¡‰½É¡½½è€•¹•É‰…£”œ°(€€€±½…Ñ¥½¸è€•¹•É‰…£”°-…“Å¯Ùäœ°(€€€Ñ¥µ•¼è€œÄŸñ¸ƒÙ¹”œ°(€€€Ù¥•ÝÌè€àäÈ°(€€€™…Ù½É¥Ñ•Ìè€ÄÔØ°(€€€‘•ÍÉ¥ÁÑ¥½¸è(€€€€€€A±…åMÑ…Ñ¥½¸€Ô°½É©¥¹…°­ÕÑÕÍÕ¹‘„°¡§œ­Õ±±…»Å±µ…·Ç|°Ù¥¹¥°Í•…±¥å±”Á…­•Ñ±¤¸M…ÓÇ|‰•±•Í¤Ù”€ÈçÅ³Å¬…É…¹Ñ¥Í¤µ•ÙÕÑÑÕÈ¸ƒ½¬¹…‘¥È‰Õ±Õ¹ÕÈ‰Ô­¿}Õ±‘„¸Sñ´­½¹ÑÉ½±±•Èå…ÃÅ±·Ç}ÓÅÈ¸¥°Á…É„¥¡Ñ¥å…Ä¹•‘•¹¥å±”Í…ÓÅ³Åå½È¸±‘•¸Ñ•Í±¥´Ñ•É¥ •‘¥±¥È¸Q•ÍÑ¥¹¤çñèçñé”å…Á…‰¥±¥ÉÍ¥¹¥è¸œ°(€€€¥µ…•Ìèl(€€€€€•Ñ••‘%µ…•UÉ° ÄÀ°€àÀÀ°€ØÀÀ¤°(€€€€€•Ñ••‘%µ…•UÉ° ÄÄ°€àÀÀ°€ØÀÀ¤°(€€€€€•Ñ••‘%µ…•UÉ° ÄÈ°€àÀÀ°€ØÀÀ¤°(€€€t°(€€€Í•±±•Èèì(€€€€€¥è€Í•±±•ÈÌœ°(€€€€€¹…µ”è€5•ÉÐ•µ¥Èœ°(€€€€€…Ù…Ñ…Èè•Ñ••‘%µ…•UÉ° ÄÌ°€ÈÀÀ°€ÈÀÀ¤°(€€€€€É…Ñ¥¹œè€Ð¸Ü°(€€€€€É•Ù¥•Ý½Õ¹Ðè€ÄÈ°(€€€€€É•ÍÁ½¹Í•Q¥µ”è€œð€ÈÍ……Ðœ°(€€€€€©½¥¹…Ñ”è€œØ…äƒÙ¹”œ°(€€€€€±¥ÍÑ¥¹Ìè€à°(€€€€€Ù•É¥™¥•è™…±Í”°(€€€€€Í½±‘½Õ¹Ðè€Ü°(€€€ô°(€€€ÍÁ•Ìèl(€€€€€ì±…‰•°è€5½‘•°œ°Ù…±Õ”è€ALÔMÑ…¹‘…É‘¥Ñ¥½¸œô°(€€€€€ì±…‰•°è€ÕÉÕ´œ°Ù…±Õ”è€OÅ›ÅÈ€´ŸÅ±µ…·Ç|œô°(€€€€€ì±…‰•°è€­Í•ÍÕ…Èœ°Ù…±Õ”è€Sñ´½É¥©¥¹…°…­Í•ÍÕ…ÈÙ”½åÕ¸€¬­½°œô°(€€€€€ì±…‰•°è€…É…¹Ñ¥Í¤œ°Ù…±Õ”è€œÈçÅ°­…±…¸œô°(€€€€€ì±…‰•°è€M…ÓÇ|	•±•Í¤œ°Ù…±Õ”è€5•ÙÕÑÑÕÈœô°(€€€t°(€ô°)ôì()•áÁ½ÉÐ‘•™…Õ±Ð™Õ¹Ñ¥½¸1¥ÍÑ¥¹•Ñ…¥±A…”¡ì(€Á…É…µÌ°)ôèì(€Á…É…µÌèì¥èÍÑÉ¥¹œôì)ô¤ì(€½¹ÍÐmµ½­1¥ÍÑ¥¹œ°Í•Ñ5½­1¥ÍÑ¥¹t€ôÕÍ•MÑ…Ñ”¡µ½­1¥ÍÑ¥¹Í	mÁ…É…µÌ¹¥‘tñðµ½­1¥ÍÑ¥¹Í	lœÄt¤ì(€½¹ÍÐm±½…‘¥¹œ°Í•Ñ1½…‘¥¹t€ôÕÍ•MÑ…Ñ”¡ÑÉÕ”¤ì(€½¹ÍÐmÕÉÉ•¹Ñ%µ…•%¹‘•à°Í•ÑÕÉÉ•¹Ñ%µ…•%¹‘•át€ôÕÍ•MÑ…Ñ” À¤ì(€½¹ÍÐm¥Í…Ù½É¥Ñ”°Í•Ñ%Í…Ù½É¥Ñ•t€ôÕÍ•MÑ…Ñ”¡™…±Í”¤ì(€½¹ÍÐmÍ¡½ÝM¡…É•5•¹Ô°Í•ÑM¡½ÝM¡…É•5•¹Õt€ôÕÍ•MÑ…Ñ”¡™…±Í”¤ì((€ÕÍ•™™•Ð  ¤€ôøì(€€€½¹ÍÐ™•Ñ¡1¥ÍÑ¥¹œ€ô…Íå¹Œ€ ¤€ôøì(€€€€€ÑÉäì(€€€€€€€Í•Ñ1½…‘¥¹œ¡ÑÉÕ”¤ì(€€€€€€€½¹ÍÐì‘…Ñ„°•ÉÉ½Èô€ô…Ý…¥Ð•Ñ1¥ÍÑ¥¹	å%¡Á…É…µÌ¹¥¤ì((€€€€€€€¥˜€¡•ÉÉ½È¤ì(€€€€€€€€€½¹Í½±”¹Ý…É¸ ÉÉ½È™•Ñ¡¥¹œ±¥ÍÑ¥¹œ°ÕÍ¥¹œµ½¬‘…Ñ„èœ°•ÉÉ½È¤ì(€€€€€€€€€Í•Ñ5½­1¥ÍÑ¥¹œ¡µ½­1¥ÍÑ¥¹Í	mÁ…É…µÌ¹¥‘tñðµ½­1¥ÍÑ¥¹Í	lœÄt¤ì(€€€€€€€ô•±Í”¥˜€¡‘…Ñ„¤ì(€€€€€€€€€€¼¼5…À™¥•±‘ÌÑ¼U$™½Éµ…Ð€´•¹¡…¹•‘•Ñ…¥°Á…”(€€€€€€€€€½¹ÍÐ±¥ÍÑ¥¹œ€ôì(€€€€€€€€€€€¥è€¡‘…Ñ„…Ì…¹ä¤¹¥°(€€€€€€€€€€€Ñ¥Ñ±”è€¡‘…Ñ„…Ì…¹ä¤¹Ñ¥Ñ±”°(€€€€€€€€€€€ÁÉ¥”è€¡‘…Ñ„…Ì…¹ä¤¹ÁÉ¥”ñð€À°(€€€€€€€€€€€½¹‘¥Ñ¥½¸è€¡‘…Ñ„…Ì…¹ä¤¹¥Ñ•µ}½¹‘¥Ñ¥½¸ñð€½½œ°(€€€€€€€€€€€½¹‘¥Ñ¥½¹	…‘•½±½Èè€‰œµÉ••¸´ÄÀÀÑ•áÐµÉ••¸´àÀÀœ°(€€€€€€€€€€€…Ñ•½Éäè€¡‘…Ñ„…Ì…¹ä¤¹±¥ÍÑ¥¹}…Ñ•½É¥•Ìü¹¹…µ”ñð€§}•Èœ°(€€€€€€€€€€€…Ñ•½Éå½±½Èè€‰œµ‰±Õ”´ÄÀÀÑ•áÐµ‰±Õ”´àÀÀœ°(€€€€€€€€€€€¹•¥¡‰½É¡½½è€¡‘…Ñ„…Ì…¹ä¤¹¹•¥¡‰½É¡½½ñð€	¥±¥¹µ¥å½Èœ°(€€€€€€€€€€€±½…Ñ¥½¸è€¡‘…Ñ„…Ì…¹ä¤¹¹•¥¡‰½É¡½½ñð€	¥±¥¹µ¥å½Èœ°(€€€€€€€€€€€Ñ¥µ•¼è€¡‘…Ñ„…Ì…¹ä¤¹É•…Ñ•‘}…Ð€ü™½Éµ…ÑQ¥µ•¼¡¹•Ü…Ñ” ¡‘…Ñ„…Ì…¹ä¤¹É•…Ñ•‘}…Ð¤¤€è€œÄÍ……Ðœ°(€€€€€€€€€€€Ù¥•ÝÌè€ÌÈÐ°(€€€€€€€€€€€™…Ù½É¥Ñ•Ìè€ÐÔ°(€€€€€€€€€€€‘•ÍÉ¥ÁÑ¥½¸è€¡‘…Ñ„…Ì…¹ä¤¹‘•ÍÉ¥ÁÑ¥½¸ñð€œœ°(€€€€€€€€€€€¥µ…•Ìè€¡‘…Ñ„…Ì…¹ä¤¹¥µ…•}ÕÉ°ül¡‘…Ñ„…Ì…¹ä¤¹¥µ…•}ÕÉ±t€èm•Ñ••‘%µ…•UÉ° Ä°€àÀÀ°€ØÀÀ¥t°(€€€€€€€€€€€Í•±±•Èèì(€€€€€€€€€€€€€¥è€¡‘…Ñ„…Ì…¹ä¤¹ÁÉ½™¥±•Ìü¹¥ñð€Í•±±•ÈÄœ°(€€€€€€€€€€€€€¹…µ”è€¡‘…Ñ„…Ì…¹ä¤¹ÁÉ½™¥±•Ìü¹™Õ±±}¹…µ”ñð€	¥±¥¹µ¥å½Èœ°(€€€€€€€€€€€€€…Ù…Ñ…Èè€¡‘…Ñ„…Ì…¹ä¤¹ÁÉ½™¥±•Ìü¹…Ù…Ñ…É}ÕÉ°ñð•Ñ••‘%µ…•UÉ° Ô°€ÈÀÀ°€ÈÀÀ¤°(€€€€€€€€€€€€€É…Ñ¥¹œè€Ð¸à°(€€€€€€€€€€€€€É•Ù¥•Ý½Õ¹Ðè€ÈÌ°(€€€€€€€€€€€€€É•ÍÁ½¹Í•Q¥µ”è€œð€ÄÍ……Ðœ°(€€€€€€€€€€€€€©½¥¹…Ñ”è€œÈçÅ°ƒÙ¹”œ°(€€€€€€€€€€€€€±¥ÍÑ¥¹Ìè€ÐÔ°(€€€€€€€€€€€€€Ù•É¥™¥•èÑÉÕ”°(€€€€€€€€€€€€€Í½±‘½Õ¹Ðè€ÐÈ°(€€€€€€€€€€€ô°(€€€€€€€€€€€ÍÁ•Ìèl(€€€€€€€€€€€€€ì±…‰•°è€-…Ñ•½É¤œ°Ù…±Õ”è€¡‘…Ñ„…Ì…¹ä¤¹±¥ÍÑ¥¹}…Ñ•½É¥•Ìü¹¹…µ”ñð€§}•Èœô°(€€€€€€€€€€€€€ì±…‰•°è€ÕÉÕ´œ°Ù…±Õ”è€¡‘…Ñ„…Ì…¹ä¤¹¥Ñ•µ}½¹‘¥Ñ¥½¸ñð€½½œô°(€€€€€€€€€€€t°(€€€€€€€€€ôì(€€€€€€€€€Í•Ñ5½­1¥ÍÑ¥¹œ¡±¥ÍÑ¥¹œ¤ì(€€€€€€€ô•±Í”ì(€€€€€€€€€Í•Ñ5½­1¥ÍÑ¥¹œ¡µ½­1¥ÍÑ¥¹Í	mÁ…É…µÌ¹¥‘tñðµ½­1¥ÍÑ¥¹Í	lœÄt¤ì(€€€€€€€ô(€€€€€ô…Ñ €¡•ÉÈ¤ì(€€€€€€€½¹Í½±”¹•ÉÉ½È ÉÉ½È™•Ñ¡¥¹œ±¥ÍÑ¥¹œèœ°•ÉÈ¤ì(€€€€€€€Í•Ñ5½­1¥ÍÑ¥¹œ¡µ½­1¥ÍÑ¥¹Í	mÁ…É…µÌ¹¥‘tñðµ½­1¥ÍÑ¥¹Í	lœÄt¤ì(€€€€€ô™¥¹…±±äì(€€€€€€€Í•Ñ1½…‘¥¹œ¡™…±Í”¤ì(€€€€€ô(€€€ôì((€€€™•Ñ¡1¥ÍÑ¥¹œ ¤ì(€ô°mÁ…É…µÌ¹¥‘t¤ì((€½¹ÍÐ™½Éµ…ÑQ¥µ•¼€ô€¡‘…Ñ”è…Ñ”¤èÍÑÉ¥¹œ€ôøì(€€€½¹ÍÐ¹½Ü€ô¹•Ü…Ñ” ¤ì(€€€½¹ÍÐ‘¥™™5Ì€ô¹½Ü¹•ÑQ¥µ” ¤€´‘…Ñ”¹•ÑQ¥µ” ¤ì(€€€½¹ÍÐ‘¥™™!½ÕÉÌ€ô5…Ñ ¹™±½½È¡‘¥™™5Ì€¼€ÌØÀÀÀÀÀ¤ì(€€€½¹ÍÐ‘¥™™…åÌ€ô5…Ñ ¹™±½½È¡‘¥™™5Ì€¼€àØÐÀÀÀÀÀ¤ì((€€€¥˜€¡‘¥™™!½ÕÉÌ€ð€ÈÐ¤É•ÑÕÉ¸€‘í‘¥™™!½ÕÉÍôÍ……ÐƒÙ¹•€ì(€€€¥˜€¡‘¥™™…åÌ€ð€ÌÀ¤É•ÑÕÉ¸€‘í‘¥™™…åÍôŸñ¸ƒÙ¹•€ì(€€€É•ÑÕÉ¸€‘í5…Ñ ¹™±½½È¡‘¥™™…åÌ€¼€ÌÀ¥ô…äƒÙ¹•€ì(€ôì((€½¹ÍÐÁÉ•Ù%µ…”€ô€ ¤€ôøì(€€€Í•ÑÕÉÉ•¹Ñ%µ…•%¹‘•à (€€€€€€¡ÁÉ•Ø¤€ôø(€€€€€€€€¡ÁÉ•Ø€´€Ä€¬µ½­1¥ÍÑ¥¹œ¹¥µ…•Ì¹±•¹Ñ ¤€”µ½­1¥ÍÑ¥¹œ¹¥µ…•Ì¹±•¹Ñ (€€€€¤ì(€ôì((€½¹ÍÐ¹•áÑ%µ…”€ô€ ¤€ôøì(€€€Í•ÑÕÉÉ•¹Ñ%µ…•%¹‘•à (€€€€€€¡ÁÉ•Ø¤€ôø€¡ÁÉ•Ø€¬€Ä¤€”µ½­1¥ÍÑ¥¹œ¹¥µ…•Ì¹±•¹Ñ (€€€€¤ì(€ôì((€½¹ÍÐÍ¥µ¥±…É1¥ÍÑ¥¹Ì€ôl(€€€ì(€€€€€¥è€œÐœ°(€€€€€Ñ¥Ñ±”è€•±°%¹ÍÁ¥É½¸€ÄÔ€´e•¹¤5½‘•°œ°(€€€€€ÁÉ¥”è€ÜÈÀÀ°(€€€€€¥µ…”è(€€€€€€€•Ñ••‘%µ…•UÉ° ÄÐ°€ÔÀÀ°€ÔÀÀ¤°(€€€€€±½…Ñ¥½¸è€Ÿy§}±¤œ°(€€€€€Ñ¥µ•¼è€œÌÍ……Ðœ°(€€€€€¥ÍÉ•”è™…±Í”°(€€€ô°(€€€ì(€€€€€¥è€œÔœ°(€€€€€Ñ¥Ñ±”è€!@A…Ù¥±¥½¸€´€ÄÌ¥»œU±ÑÉ…‰½½¬œ°(€€€€€ÁÉ¥”è€ØàÀÀ°(€€€€€¥µ…”è(€€€€€€€•Ñ••‘%µ…•UÉ° ÄÔ°€ÔÀÀ°€ÔÀÀ¤°(€€€€€±½…Ñ¥½¸è€Q…­Í¥´œ°(€€€€€Ñ¥µ•¼è€œÔÍ……Ðœ°(€€€€€¥ÍÉ•”è™…±Í”°(€€€ô°(€€€ì(€€€€€¥è€œØœ°(€€€€€Ñ¥Ñ±”è€ÍÕÌY¥Ù½	½½¬€ÄÔ€´ƒÁ¤¥å…Ðœ°(€€€€€ÁÉ¥”è€ÔäÀÀ°(€€€€€¥µ…”è(€€€€€€€•Ñ••‘%µ…•UÉ° ÄØ°€ÔÀÀ, 500),
+      responseTime: '< 30 dakika',
+      joinDate: '1 yÄ±l Ã¶nce',
+      listings: 32,
+      verified: true,
+      soldCount: 30,
+    },
+    specs: [
+      { label: 'GeniÅŸlik', value: '242 cm' },
+      { label: 'Derinlik', value: '88 cm' },
+      { label: 'YÃ¼kseklik', value: '88 cm' },
+      { label: 'Renk', value: 'AÃ§Ä±k Gri' },
+      { label: 'Model', value: 'Ektorp Serisi' },
+      { label: 'KÄ±lÄ±f', value: 'Ã‡Ä±karÄ±labilir' },
+    ],
+  },
+  '3': {
+    id: '3',
+    title: 'PlayStation 5 - Orjinal Kutu ile SatÄ±lÄ±yor',
+    price: 6500,
+    condition: 'SÄ±fÄ±r',
+    conditionBadgeColor: 'bg-green-100 text-green-800',
+    category: 'Elektronik',
+    categoryColor: 'bg-blue-100 text-blue-800',
+    neighborhood: 'FenerbahÃ§e',
+    location: 'FenerbahÃ§e, KadÄ±kÃ¶y',
+    timeAgo: '1 gÃ¼n Ã¶nce',
+    views: 892,
+    favorites: 156,
+    description:
+      'PlayStation 5, orjinal kutusunda, hiÃ§ kullanÄ±lmamÄ±ÅŸ, vinil sealiyle paketli. SatÄ±ÅŸ belgesi ve 2 yÄ±lÄ±k garantisi mevcuttur. Ã‡ok nadir bulunur bu koÅŸulda. TÃ¼m kontroller yapÄ±lmÄ±ÅŸtÄ±r. Acil para ihtiyacÄ± nedeniyle satÄ±lÄ±yor. Elden teslim tercih edilir. Testini yÃ¼z yÃ¼ze yapabilirsiniz.',
+    images: [
+      getFeedImageUrl(10, 800, 600),
+      getFeedImageUrl(11, 800, 600),
+      getFeedImageUrl(12, 800, 600),
+    ],
+    seller: {
+      id: 'seller3',
+      name: 'Mert Demir',
+      avatar: getFeedImageUrl(13, 200, 200),
+      rating: 4.7,
+      reviewCount: 12,
+      responseTime: '< 2 saat',
+      joinDate: '6 ay Ã¶nce',
+      listings: 8,
+      verified: false,
+      soldCount: 7,
+    },
+    specs: [
+      { label: 'Model', value: 'PS5 Standard Edition' },
+      { label: 'Durum', value: 'SÄ±fÄ±r - AÃ§Ä±lmamÄ±ÅŸ' },
+      { label: 'Aksesuar', value: 'TÃ¼m orijinal aksesuar ve oyun + kol' },
+      { label: 'Garantisi', value: '2 yÄ±l kalan' },
+      { label: 'SatÄ±ÅŸ Belgesi', value: 'Mevcuttur' },
+    ],
+  },
+};
+
+export default function ListingDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const [mockListing, setMockListing] = useState(mockListingsDB[params.id] || mockListingsDB['1']);
+  const [loading, setLoading] = useState(true);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
+
+  useEffect(() => {
+    const fetchListing = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await getListingById(params.id);
+
+        if (error) {
+          console.warn('Error fetching listing, using mock data:', error);
+          setMockListing(mockListingsDB[params.id] || mockListingsDB['1']);
+        } else if (data) {
+          // Map DB fields to UI format - enhanced detail page
+          const listing = {
+            id: (data as any).id,
+            title: (data as any).title,
+            price: (data as any).price || 0,
+            condition: (data as any).item_condition || 'good',
+            conditionBadgeColor: 'bg-green-100 text-green-800',
+            category: (data as any).listing_categories?.name || 'DiÄŸer',
+            categoryColor: 'bg-blue-100 text-blue-800',
+            neighborhood: (data as any).neighborhood || 'Bilinmiyor',
+            location: (data as any).neighborhood || 'Bilinmiyor',
+            timeAgo: (data as any).created_at ? formatTimeAgo(new Date((data as any).created_at)) : '1 saat',
+            views: 324,
+            favorites: 45,
+            description: (data as any).description || '',
+            images: (data as any).image_url ? [(data as any).image_url] : [getFeedImageUrl(1, 800, 600)],
+            seller: {
+              id: (data as any).profiles?.id || 'seller1',
+              name: (data as any).profiles?.full_name || 'Bilinmiyor',
+              avatar: (data as any).profiles?.avatar_url || getFeedImageUrl(5, 200, 200),
+              rating: 4.8,
+              reviewCount: 23,
+              responseTime: '< 1 saat',
+              joinDate: '2 yÄ±l Ã¶nce',
+              listings: 45,
+              verified: true,
+              soldCount: 42,
+            },
+            specs: [
+              { label: 'Kategori', value: (data as any).listing_categories?.name || 'DiÄŸer' },
+              { label: 'Durum', value: (data as any).item_condition || 'good' },
+            ],
+          };
+          setMockListing(listing);
+        } else {
+          setMockListing(mockListingsDB[params.id] || mockListingsDB['1']);
+        }
+      } catch (err) {
+        console.error('Error fetching listing:', err);
+        setMockListing(mockListingsDB[params.id] || mockListingsDB['1']);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchListing();
+  }, [params.id]);
+
+  const formatTimeAgo = (date: Date): string => {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffHours < 24) return `${diffHours} saat Ã¶nce`;
+    if (diffDays < 30) return `${diffDays} gÃ¼n Ã¶nce`;
+    return `${Math.floor(diffDays / 30)} ay Ã¶nce`;
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex(
+      (prev) =>
+        (prev - 1 + mockListing.images.length) % mockListing.images.length
+    );
+  };
+
+  const nextImage = () => {
+    setCurrentImageIndex(
+      (prev) => (prev + 1) % mockListing.images.length
+    );
+  };
+
+  const similarListings = [
+    {
+      id: '4',
+      title: 'Dell Inspiron 15 - Yeni Model',
+      price: 7200,
+      image:
+        getFeedImageUrl(14, 500, 500),
+      location: 'ÅžiÅŸli',
+      timeAgo: '3 saat',
+      isFree: false,
+    },
+    {
+      id: '5',
+      title: 'HP Pavilion - 13 inÃ§ Ultrabook',
+      price: 6800,
+      image:
+        getFeedImageUrl(15, 500, 500),
+      location: 'Taksim',
+      timeAgo: '5 saat',
+      isFree: false,
+    },
+    {
+      id: '6',
+      title: 'Asus VivoBook 15 - Ä°i Fiyat',
+      price: 5900,
+      image:
+        getFeedImageUrl(16, 500, 500),
       location: 'BeÅŸiktaÅŸ',
       timeAgo: '6 saat',
       isFree: false,

@@ -3,7 +3,7 @@ import "./globals.css";
 import { Providers } from "@/lib/providers";
 import { JsonLd } from "@/components/shared/json-ld";
 import { CookieBanner } from "@/components/shared/cookie-banner";
-import { PWAInstallPrompt } from "A/components/shared/pwa-install-prompt";
+import { PWAInstallPrompt } from "@/components/shared/pwa-install-prompt";
 import { BackToTop } from "@/components/shared/back-to-top";
 import { NativeAppInit } from "@/components/shared/native-app-init";
 
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     template: "%s | Mahallemiz",
   },
   description:
-    "Türkiye'nin mahalle sosyal ağı. Mahallemiz ile mahallenizdeki komwularılızla tan­ını haberleşin, alışverg�| yapı etkinliklere katılın ve yerel işletmeleri keşedin.",
+    "Türkiye'nin mahalle sosyal ağı. Mahallemiz ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın, etkinliklere katılın ve yerel işletmeleri keşfedin.",
   keywords: [
     "komşu",
     "mahalle",
@@ -30,11 +30,11 @@ export const metadata: Metadata = {
     "yerel",
     "etkinlik",
     "pazar yeri",
-    "komwuluk",
+    "komşuluk",
     "mahalle haberleri",
     "yerel işletmeler",
     "mahalle pazarı",
-    "komu�u ağı",
+    "komşu ağı",
     "mahalle uygulaması",
     "yerel iş",
     "mahalle grupları",
@@ -48,9 +48,9 @@ export const metadata: Metadata = {
   creator: "Mahallemiz",
   publisher: "Mahallemiz",
   openGraph: {
-    title: "Mahallemiz - Mahalleni Keşee· Komwularınla Bağlan",
+    title: "Mahallemiz - Mahalleni Keşfet, Komşularınla Bağlan",
     description:
-      "Türkiye'nin mahalle sosyal ağ. Mahallemiz ile mahallenizdeki komwuların­la ta­ışľ,haberleşin, alışveriş yapın ve etkinliklere katılın.",
+      "Türkiye'nin mahalle sosyal ağı. Mahallemiz ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın ve etkinliklere katılın.",
     type: "website",
     siteName: "Mahallemiz",
     locale: "tr_TR",
@@ -69,9 +69,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@mahallemiz",
     creator: "@mahallemiz",
-    title: "Mahallemiz - Mahalleni Keşfvt, Komşularınla Bağlan",
+    title: "Mahallemiz - Mahalleni Keşfet, Komşularınla Bağlan",
     description:
-      "Türkiye'nin mahalle sosyal ağı. Komşularınızla bağlanın, etkinliklere katılın yerel işletmeleri keşfedin.",
+      "Türkiye'nin mahalle sosyal ağı. Komşularınızla bağlanın, etkinliklere katılın, alışveriş yapın.",
     images: ["/icon-512.png"],
   },
   manifest: "/manifest.json",
@@ -92,7 +92,8 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  formatDetection: {J email: false,
+  formatDetection: {
+    email: false,
     telephone: false,
   },
   icons: {
@@ -115,7 +116,7 @@ export default function RootLayout({
         <Providers>
           <NativeAppInit />
           {children}
-          <PVAInstallPrompt />
+          <PWAInstallPrompt />
           <CookieBanner />
           <BackToTop />
         </Providers>

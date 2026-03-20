@@ -23,19 +23,83 @@ export function Footer({ className, ...props }: FooterProps) {
         { label: "YardÄ±m Merkezi", href: "/yardim" },
         { label: "GÃ¼venlik", href: "/guvenlik" },
         { label: "Topluluk KurallarÄ±", href: "/topluluk-kurallari" },
-        { label: "Ä°letiãŠ}¥´ˆ°¡É•˜è€ˆ½¥±•Ñ¥Í¥´ˆô°(€€€€€t°(€€€ô°(€€€ì(€€€€€Ñ¥Ñ±”è€‰e…Í…°ˆ°(€€€€€±¥¹­Ìèl(€€€€€€€ì±…‰•°è€‰-Õ±±…»Å´-½ÍÕ±±…ËÄˆ°¡É•˜è€ˆ½­½ÍÕ±±…Èˆô°(€€€€€€€ì±…‰•°è€‰¥é±¥±¥¬A½±¥Ñ¥­…ÏÄˆ°¡É•˜è€ˆ½¥é±¥±¥¬ˆô°(€€€€€€€ì±…‰•°è€‹ŠÃÈÛ]ZØ\ñ,H‹™Yˆ‹ØÙ\™^‹\Û]ZØ\ÚHˆKˆÈX™[ˆ’Õ’ÒÈ‹™Yˆ‹ÚİšÚÈˆKˆKˆKˆÂˆ]Nˆ±,™\ˆ‹ˆ[šÜÎˆÂˆÈX™[ˆ\İÜ™H‹™YˆˆÈˆKˆÈX™[ˆ‘ÛÛÙÛH^H‹™YˆˆÈˆKˆKˆKˆNÂ‚ˆÛÛœİÛØÚX[[šÜÈHÂˆÈXÛÛˆÚ]\‹™YˆˆÈ‹X™[ˆ•Ú]\ˆˆKˆÈXÛÛˆ[œİYÜ˜[K™YˆˆÈ‹X™[ˆ’[œİYÜ˜[HˆKˆÈXÛÛˆ˜XÙX›ÛÚË™YˆˆÈ‹X™[ˆ‘˜XÙX›ÛÚÈˆKˆNÂ‚ˆ™]\›ˆ
-ˆ›Ûİ\ˆÛ\ÜÓ˜[YO^ØÛŠ˜›Ü™\‹]›Ü™\‹X›Ü™\ˆ™ËX˜XÚÙÜ›İ[™‹Û\ÜÓ˜[YJ_HË‹‹œ›ÜßO‚ˆ]ˆÛ\ÜÓ˜[YOH›X^]ËMŞ^X]]ÈMKLLÛNœMˆÎœN‚ˆ]ˆÛ\ÜÓ˜[YOH™ÜšYÜšYXÛÛËLˆØ\NY™ÜšYXÛÛËMX‹N‚ˆÙ›Ûİ\”ÙXİ[ÛœË›X\
+        { label: "Ä°letiÅŸim", href: "/iletisim" },
+      ],
+    },
+    {
+      title: "Yasal",
+      links: [
+        { label: "KullanÄ±m KoÅŸullarÄ±", href: "/kosullar" },
+        { label: "Gizlilik PolitikasÄ±", href: "/gizlilik" },
+        { label: "Ã‡erez PolitikasÄ±", href: "/cerez-politikasi" },
+        { label: "KVKK", href: "/kvkk" },
+      ],
+    },
+    {
+      title: "Ä°ndir",
+      links: [
+        { label: "App Store", href: "#" },
+        { label: "Google Play", href: "#" },
+      ],
+    },
+  ];
 
-ÙXİ[ÛŠHOˆ
-ˆ]ˆÙ^O^ÜÙXİ[Û‹]_O‚ˆÈÛ\ÜÓ˜[YOH^\ÛH›Û\Ù[ZX›Û^]^\š[X\HX‹LÈ‚ˆÜÙXİ[Û‹]_BˆÚÏ‚ˆ[Û\ÜÓ˜[YOH™›^›^XÛÛØ\Lˆ‚ˆÜÙXİ[Û‹›[šÜË›X\
+  const socialLinks = [
+    { icon: Twitter, href: "#", label: "Twitter" },
+    { icon: Instagram, href: "#", label: "Instagram" },
+    { icon: Facebook, href: "#", label: "Facebook" },
+  ];
 
-[šÊHOˆ
-ˆHÙ^O^Û[šË›X™[O‚ˆ[šÂˆ™Y^Û[šËš™YŸBˆÛ\ÜÓ˜[YOH^\ÛH^]^[]]Yİ™\^\š[X\H˜[œÚ][Û‹XÛÛÜœÈ‚ˆ‚ˆÛ[šË›X™[BˆÓ[šÏ‚ˆÛO‚ˆ
-J_Bˆİ[‚ˆÙ]‚ˆ
-J_BˆÙ]‚‚ˆ]ˆÛ\ÜÓ˜[YOH˜›Ü™\‹]›Ü™\‹X›Ü™\ˆMˆ‚ˆ]ˆÛ\ÜÓ˜[YOH™›^›^XÛÛØ\MÛN™›^\›İÈÛNš][\ËXÙ[\ˆÛNš\İYKX™]ÙY[ˆ‚ˆÛ\ÜÓ˜[YOH^^È^]^[]]Y‚ˆ0ªHØİ\œ™[YX\ŸHXZ[[Z^‹ˆ0ïHZÛ\±,HØZí1,Y1,\‹‚ˆÜ‚ˆ]ˆÛ\ÜÓ˜[YOH™›^Ø\LÈ‚ˆÜÛØÚX[[šÜË›X\
+  return (
+    <footer className={cn("border-t border-border bg-background", className)} {...props}>
+      <div className="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-4 mb-8">
+          {footerSections.map((section) => (
+            <div key={section.title}>
+              <h3 className="text-sm font-semibold text-text-primary mb-3">
+                {section.title}
+              </h3>
+              <ul className="flex flex-col gap-2">
+                {section.links.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-text-muted hover:text-primary transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
 
-ÛØÚX[
-HOˆÂˆÛÛœİXÛÛÛÛ\Û™[HÛØÚX[šXÛÛÂˆ™]\›ˆ
-ˆBˆÙ^O^ÜÛØÚX[›X™[Bˆ™Y^ÜÛØÚX[š™YŸBˆ\™Ù]H—Ø›[šÈ‚ˆ™[H››ÛÜ[™\ˆ›Ü™Y™\œ™\ˆ‚ˆ\šXK[X™[^ÜÛØÚX[›X™[BˆÛ\ÜÓ˜[YOHœLˆ^]^[]]Yİ™\^\š[X\Hİ™\˜™Ë\İ\™˜XÙKZİ™\ˆ›İ[™YY[˜[œÚ][Û‹XÛÛÜœÈ‚ˆ‚ˆXÛÛÛÛ\Û™[Ú^™O^ÌMŸHÏ‚ˆØO‚ˆ
-NÂˆJ_BˆÙ]‚ˆÙ]‚ˆÙ]‚ˆÙ]‚ˆÙ›Ûİ\‚ˆ
-NÂŸB‚ŸB
+        <div className="border-t border-border pt-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-xs text-text-muted">
+              Â© {currentYear} Mahallemiz. TÃ¼m haklarÄ± saklÄ±dÄ±r.
+            </p>
+            <div className="flex gap-3">
+              {socialLinks.map((social) => {
+                const IconComponent = social.icon;
+                return (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                    className="p-2 text-text-muted hover:text-primary hover:bg-surface-hover rounded-full transition-colors"
+                  >
+                    <IconComponent size={16} />
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}

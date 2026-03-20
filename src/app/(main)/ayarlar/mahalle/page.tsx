@@ -203,36 +203,221 @@ export default function MahallePage() {
               <div>
                 <p className="text-sm text-text-muted font-medium">
                   Konumunuz
-Ü‚ˆÈÛ\ÜÓ˜[YOH^[È›ÛX›Û^]^\š[X\žH‚ˆ™qgÚZÝqgË1,Ý[˜[ˆÚÏ‚ˆÛ\ÜÓ˜[YOH^^È^]^[]]Y]LH‚ˆñ,Y±,\ˆqgÈXZ[\ÚBˆÜ‚ˆÙ]‚ˆÙ]‚ˆÙ]‚‚ˆËÊˆÚ[™ÙH™ZYÚ›ÜšÛÙ]Ûˆ
-‹ßBˆ]ÛˆÛ\ÜÓ˜[YOHËY[KLÈM™Ë\š[X\žH^]Ú]H›Û\Ù[ZX›Û›Ý[™Y[ÈÝ™\Ž˜™Ë\š[X\žKZÝ™\ˆ˜[œÚ][Û‹XÛÛÜœÈ›^][\ËXÙ[\ˆ\ÝYžKXÙ[\ˆØ\Lˆ‚ˆX\[ˆÛ\ÜÓ˜[YOHËMHMHˆÏ‚ˆXZ[Hq'ÚqgÝ\‚ˆØ]Û‚ˆÙ]‚‚ˆËÊˆ\Ý[˜ÙH™Y™\™[˜ÙH
-‹ßBˆ]ˆÛ\ÜÓ˜[YOH˜™Ë\Ý\™˜XÙH›Ý[™Y[È›Ü™\ˆ›Ü™\‹X›Ü™\ˆMˆX‹Mˆ‚ˆ]ˆÛ\ÜÓ˜[YOH™›^][\ËXÙ[\ˆØ\LÈX‹M‚ˆ]ˆÛ\ÜÓ˜[YOHœLˆ™ËX˜XÚÙÜ›Ý[™›Ý[™Y[È‚ˆ[\ˆÛ\ÜÓ˜[YOHËMHMH^\š[X\žHˆÏ‚ˆÙ]‚ˆˆÛ\ÜÓ˜[YOH^[È›Û\Ù[ZX›Û^]^\š[X\žH‚ˆXZñ,[™ZÚHXZ[[\ˆY\ØY™\ÚBˆÚ‚ˆÙ]‚ˆÛ\ÜÓ˜[YOH^\ÛH^]^[]]YX‹M‚ˆðí›™\š[\š[šHðíœ›YZÈ\ÝYq'Ú[š^ˆXZ[[\ˆ™HØY\ˆ^˜ZÈÛXš[\ÂˆÜ‚ˆ]ˆÛ\ÜÓ˜[YOHœÜXÙK^KLÈ‚ˆ]‚ˆ]ˆÛ\ÜÓ˜[YOH™›^][\ËXÙ[\ˆ\ÝYžKX™]ÙY[ˆX‹Lˆ‚ˆX™[Û\ÜÓ˜[YOH^\ÛH›Û[YY][H^]^\š[X\žH‚ˆY\ØY™NˆÙ\Ý[˜ÙT™Y™\™[˜Ù_HÛBˆÛX™[‚ˆÙ]‚ˆ[œ]ˆ\OHœ˜[™ÙH‚ˆZ[HŒH‚ˆX^HŒMH‚ˆ˜[YO^Ù\Ý[˜ÙT™Y™\™[˜Ù_BˆÛÚ[™ÙO^ÊJHOˆÙ]\Ý[˜ÙT™Y™\™[˜ÙJK\™Ù]˜[YJ_BˆÛ\ÜÓ˜[YOHËY[Lˆ™ËVÈÙLLLH›Ý[™Y[È\X\˜[˜ÙK[›Û™HÝ\œÛÜ‹\Ú[\ˆXØÙ[VÈÌÌÙWH‚ˆÏ‚ˆ]ˆÛ\ÜÓ˜[YOH™›^\ÝYžKX™]ÙY[ˆ^^È^]^[]]Y]Lˆ‚ˆÜ[ŒHÛOÜÜ[‚ˆÜ[ŒMHÛOÜÜ[‚ˆÙ]‚ˆÙ]‚ˆÙ]‚ˆÙ]‚‚ˆËÊˆ™X\˜žH™ZYÚ›ÜšÛÙÈ
-‹ßBˆ]ˆÛ\ÜÓ˜[YOH˜™Ë\Ý\™˜XÙH›Ý[™Y[È›Ü™\ˆ›Ü™\‹X›Ü™\ˆMˆX‹Mˆ‚ˆ]ˆÛ\ÜÓ˜[YOH›X‹Mˆ‚ˆˆÛ\ÜÓ˜[YOH^[È›Û\Ù[ZX›Û^]^\š[X\žHX‹Lˆ‚ˆXZñ,[™ZÚHXZ[[\‚ˆÚ‚ˆÛ\ÜÓ˜[YOH^\ÛH^]^[]]Y‚ˆÙ[˜X›YÛÝ[HXZ[HZÚ\Y[^[Ü‚ˆÜ‚ˆÙ]‚‚ˆ]ˆÛ\ÜÓ˜[YOHœÜXÙK^KLÈ‚ˆÛ™X\˜žS™ZYÚ›ÜšÛÙË›X\
+                </p>
+                <h3 className="text-lg font-bold text-text-primary">
+                  BeÅŸiktaÅŸ, Ä°stanbul
+                </h3>
+                <p className="text-xs text-text-muted mt-1">
+                  SÄ±fÄ±r TaÅŸ Mahallesi
+                </p>
+              </div>
+            </div>
+          </div>
 
-™ZYÚ›ÜšÛÙ
-HOˆ
-ˆ]‚ˆÙ^O^Û™ZYÚ›ÜšÛÙšYBˆÛ\ÜÓ˜[YOH™›^][\ËXÙ[\ˆ\ÝYžKX™]ÙY[ˆM›Ý[™Y[È™ËX˜XÚÙÜ›Ý[™Ý™\Ž˜™ËVÈÙNXYYH˜[œÚ][Û‹XÛÛÜœÈ‚ˆ‚ˆ]ˆÛ\ÜÓ˜[YOH™›^LH‚ˆÈÛ\ÜÓ˜[YOH™›Û\Ù[ZX›Û^]^\š[X\žH‚ˆÛ™ZYÚ›ÜšÛÙ›˜[Y_BˆÚÏ‚ˆÛ\ÜÓ˜[YOH^\ÛH^]^[]]Y‚ˆÛ™ZYÚ›ÜšÛÙ™\Ý[˜Ù_BˆÜ‚ˆÙ]‚ˆ]Û‚ˆÛÛXÚÏ^Ê
-HOˆÙÙÛS™ZYÚ›ÜšÛÙ
-™ZYÚ›ÜšÛÙšY
-_BˆÛ\ÜÓ˜[YO^Ø™[]]™H[›[™KY›^MÈËLLˆ][\ËXÙ[\ˆ›Ý[™YY[˜[œÚ][Û‹XÛÛÜœÈ›^\Úš[šËL	Âˆ™ZYÚ›ÜšÛÙ™[˜X›YÈ˜™Ë\š[X\žHˆˆ˜™ËVÈÙLLLH‚ˆXBˆ‚ˆÜ[‚ˆÛ\ÜÓ˜[YO^Ø[›[™KX›ØÚÈMHËMH˜[œÙ›Ü›H›Ý[™YY[™Ë\Ý\™˜XÙH˜[œÚ][Û‹]˜[œÙ›Ü›H	Âˆ™ZYÚ›ÜšÛÙ™[˜X›YÈ˜[œÛ]K^Mˆˆˆ˜[œÛ]K^LH‚ˆXBˆÏ‚ˆØ]Û‚ˆÙ]‚ˆ
-J_BˆÙ]‚ˆÙ]‚‚ˆËÊˆ™ZYÚ›ÜšÛÙ™YY™Y™\™[˜Ù\È
-‹ßBˆ]ˆÛ\ÜÓ˜[YOH˜™Ë\Ý\™˜XÙH›Ý[™Y[È›Ü™\ˆ›Ü™\‹X›Ü™\ˆMˆX‹Mˆ‚ˆ]ˆÛ\ÜÓ˜[YOH™›^][\ËXÙ[\ˆØ\LÈX‹Mˆ‚ˆš[\ˆÛ\ÜÓ˜[YOHËMˆMˆ^\š[X\žHˆÏ‚ˆ]‚ˆˆÛ\ÜÓ˜[YOH^[È›Û\Ù[ZX›Û^]^\š[X\žH‚ˆXZ[H\˜ÚZ\šBˆÚ‚ˆÛ\ÜÓ˜[YOH^\ÛH^]^[]]Y‚ˆØØ]YÛÜžPÛÝ[HØ]YÛÜšHZÝY‚ˆÜ‚ˆÙ]‚ˆÙ]‚‚ˆ]ˆÛ\ÜÓ˜[YOHœÜXÙK^KLÈ‚ˆÜÜÝØ]YÛÜšY\Ë›X\
+          {/* Change Neighborhood Button */}
+          <button className="w-full py-3 px-4 bg-primary text-white font-semibold rounded-lg hover:bg-primary-hover transition-colors flex items-center justify-center gap-2">
+            <MapPin className="w-5 h-5" />
+            Mahalle DeÄŸiÅŸtir
+          </button>
+        </div>
 
-Ø]YÛÜžJHOˆ
-ˆX™[ˆÙ^O^ØØ]YÛÜžKšYBˆÛ\ÜÓ˜[YOH™›^][\ËXÙ[\ˆØ\LÈM›Ý[™Y[ÈÝ™\Ž˜™ËX˜XÚÙÜ›Ý[™Ý\œÛÜ‹\Ú[\ˆ˜[œÚ][Û‹XÛÛÜœÈ›Ü™\ˆ›Ü™\‹]˜[œÜ\™[Ý™\Ž˜›Ü™\‹X›Ü™\ˆ‚ˆ‚ˆ[œ]ˆ\OH˜ÚXÚØ›Þ‚ˆÚXÚÙY^ØØ]YÛÜžK™[˜X›YBˆÛÚ[™ÙO^Ê
-HOˆÙÙÛPØ]YÛÜžJØ]YÛÜžKšY
-_BˆÛ\ÜÓ˜[YOHËMMXØÙ[VÈÌÌÙWHÝ\œÛÜ‹\Ú[\ˆ‚ˆÏ‚ˆ]ˆÛ\ÜÓ˜[YOH™›^LH‚ˆ]ˆÛ\ÜÓ˜[YOH™›^][\ËXÙ[\ˆØ\Lˆ‚ˆÜ[ˆÛ\ÜÓ˜[YOH^[ÈžØØ]YÛÜžKšXÛÛŸOÜÜ[‚ˆÜ[ˆÛ\ÜÓ˜[YOH^]^\ÙXÛÛ™\žH›Û[YY][H‚ˆØØ]YÛÜžK›˜[Y_BˆÜÜ[‚ˆÙ]‚ˆÛ\ÜÓ˜[YOH^\ÛH^]^[]]Y]LH‚ˆØØ]YÛÜžK™\ØÜš\[ÛŸBˆÜ‚ˆÙ]‚ˆÛX™[‚ˆ
-J_BˆÙ]‚ˆÙ]‚‚ˆËÊˆ™YY›ÝYšXØ][ÛœÈ
-‹ßBˆ]ˆÛ\ÜÓ˜[YOH˜™Ë\Ý\™˜XÙH›Ý[™Y[È›Ü™\ˆ›Ü™\‹X›Ü™\ˆMˆX‹Mˆ‚ˆ]ˆÛ\ÜÓ˜[YOH™›^][\ËXÙ[\ˆØ\LÈX‹Mˆ‚ˆ]ˆÛ\ÜÓ˜[YOHœLˆ™ËX˜XÚÙÜ›Ý[™›Ý[™Y[È‚ˆ™[Û\ÜÓ˜[YOHËMHMH^\š[X\žHˆÏ‚ˆÙ]‚ˆˆÛ\ÜÓ˜[YOH^[È›Û\Ù[ZX›Û^]^\š[X\žH‚ˆXZ[H™YYš[\š[[\šBˆÚ‚ˆÙ]‚‚ˆ]ˆÛ\ÜÓ˜[YOHœÜXÙK^KM‚ˆÛ›ÝYšXØ][Û”™YœË›X\
+        {/* Distance Preference */}
+        <div className="bg-surface rounded-lg border border-border p-6 mb-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-background rounded-lg">
+              <Ruler className="w-5 h-5 text-primary" />
+            </div>
+            <h2 className="text-lg font-semibold text-text-primary">
+              YakÄ±ndaki Mahalleler Mesafesi
+            </h2>
+          </div>
+          <p className="text-sm text-text-muted mb-4">
+            GÃ¶nderilerini gÃ¶rmek istediÄŸiniz mahalleler ne kadar uzak olabilir?
+          </p>
+          <div className="space-y-3">
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-sm font-medium text-text-primary">
+                  Mesafe: {distancePreference} km
+                </label>
+              </div>
+              <input
+                type="range"
+                min="1"
+                max="15"
+                value={distancePreference}
+                onChange={(e) => setDistancePreference(e.target.value)}
+                className="w-full h-2 bg-[#e0e0e0] rounded-lg appearance-none cursor-pointer accent-[#00833e]"
+              />
+              <div className="flex justify-between text-xs text-text-muted mt-2">
+                <span>1 km</span>
+                <span>15 km</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-™YŠHOˆ
-ˆ]‚ˆÙ^O^Ü™Y‹šYBˆÛ\ÜÓ˜[YOH™›^][\ËXÙ[\ˆ\ÝYžKX™]ÙY[ˆLÈ›Ý[™Y[È™ËX˜XÚÙÜ›Ý[™‚ˆ‚ˆ]ˆÛ\ÜÓ˜[YOH™›^LH‚ˆÛ\ÜÓ˜[YOH™›Û[YY][H^]^\š[X\žHžÜ™Y‹›X™[OÜ‚ˆÛ\ÜÓ˜[YOH^\ÛH^]^[]]YžÜ™Y‹™\ØÜš\[ÛŸOÜ‚ˆÙ]‚ˆ]Û‚ˆÛÛXÚÏ^Ê
-HOˆÙÙÛS›ÝYšXØ][ÛŠ™Y‹šY
-_BˆÛ\ÜÓ˜[YO^Ø™[]]™H[›[™KY›^MÈËLLˆ][\ËXÙ[\ˆ›Ý[™YY[˜[œÚ][Û‹XÛÛÜœÈ›^\Úš[šËL	Âˆ™Y‹™[˜X›YÈ˜™Ë\š[X\žHˆˆ˜™ËVÈÙLLLH‚ˆXBˆ‚ˆÜ[‚ˆÛ\ÜÓ˜[YO^Ø[›[™KX›ØÚÈMHËMH˜[œÙ›Ü›H›Ý[™YY[™Ë\Ý\™˜XÙH˜[œÚ][Û‹]˜[œÙ›Ü›H	Âˆ™Y‹™[˜X›YÈ˜[œÛ]K^Mˆˆˆ˜[œÛ]K^LH‚ˆXBˆÏ‚ˆØ]Û‚ˆÙ]‚ˆ
-J_BˆÙ]‚ˆÙ]‚‚ˆËÊˆ[™›È›Þ
-‹ßBˆ]ˆÛ\ÜÓ˜[YOH˜™ËX›YKML›Ü™\ˆ›Ü™\‹X›YKLŒ›Ý[™Y[ÈMX‹LLˆ‚ˆ]ˆÛ\ÜÓ˜[YOH™›^Ø\LÈ‚ˆ[\Ú\˜ÛHÛ\ÜÓ˜[YOHËMHMH^X›YKMŒ›^\Úš[šËL]LHˆÏ‚ˆ]‚ˆÛ\ÜÓ˜[YOH^\ÛH^X›YKNL‚ˆÜ[ˆÛ\ÜÓ˜[YOH™›Û\Ù[ZX›Û±,XÝNÜÜ[ˆXZ[H^X\›\±,[±,^‚ˆ[Y[ˆ^YÝ[[±,\‹ˆq'ÚqgÚZÛZÛ\šHðíœ›YZÈpéÚ[ˆ™YY	Ú[š^šHY[š[^Z[‹‚ˆÜ‚ˆÙ]‚ˆÙ]‚ˆÙ]‚‚ˆËÊˆØ]™H]Ûˆ
-‹ßBˆ]ˆÛ\ÜÓ˜[YOH™›^Ø\LÈX‹LLˆ‚ˆ]Û‚ˆÛÛXÚÏ^Ú[™TØ]™_BˆÛ\ÜÓ˜[YO^Ø›^LHKLÈM›Ý[™Y[È›Û\Ù[ZX›Û˜[œÚ][Û‹X[	ÂˆØ]™YˆÈ˜™Ë\š[X\žH^]Ú]H‚ˆˆ˜™Ë\š[X\žH^]Ú]HÝ™\Ž˜™Ë\š[X\žKZÝ™\ˆ‚ˆXBˆ‚ˆÜØ]™YÈ
-ˆÜ[ˆÛ\ÜÓ˜[YOH™›^][\ËXÙ[\ˆ\ÝYžKXÙ[\ˆØ\Lˆ‚ˆÚXÚÈÛ\ÜÓ˜[YOHËMHMHˆÏˆØ^YY[BˆÜÜ[‚ˆ
-Hˆ
-ˆ’Ø^Y]‚ˆ
-_BˆØ]Û‚ˆ[šÂˆ™YH‹Ø^X\›\ˆ‚ˆÛ\ÜÓ˜[YOHœKLÈM›Ý[™Y[È›Û\Ù[ZX›Û™Ë\Ý\™˜XÙH›Ü™\ˆ›Ü™\‹X›Ü™\ˆ^]^\š[X\žHÝ™\Ž˜™ËX˜XÚÙÜ›Ý[™˜[œÚ][Û‹XÛÛÜœÈ‚ˆ‚ˆ1,[ˆÓ[šÏ‚ˆÙ]‚ˆÙ]‚ˆÙ]‚ˆ
-NÂŸB
+        {/* Nearby Neighborhoods */}
+        <div className="bg-surface rounded-lg border border-border p-6 mb-6">
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold text-text-primary mb-2">
+              YakÄ±ndaki Mahalleler
+            </h2>
+            <p className="text-sm text-text-muted">
+              {enabledCount} mahalle takip ediliyor
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {nearbyNeighborhoods.map((neighborhood) => (
+              <div
+                key={neighborhood.id}
+                className="flex items-center justify-between p-4 rounded-lg bg-background hover:bg-[#e8eaed] transition-colors"
+              >
+                <div className="flex-1">
+                  <h3 className="font-semibold text-text-primary">
+                    {neighborhood.name}
+                  </h3>
+                  <p className="text-sm text-text-muted">
+                    {neighborhood.distance}
+                  </p>
+                </div>
+                <button
+                  onClick={() => toggleNeighborhood(neighborhood.id)}
+                  className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors flex-shrink-0 ${
+                    neighborhood.enabled ? "bg-primary" : "bg-[#e0e0e0]"
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-5 w-5 transform rounded-full bg-surface transition-transform ${
+                      neighborhood.enabled ? "translate-x-6" : "translate-x-1"
+                    }`}
+                  />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Neighborhood Feed Preferences */}
+        <div className="bg-surface rounded-lg border border-border p-6 mb-6">
+          <div className="flex items-center gap-3 mb-6">
+            <Filter className="w-6 h-6 text-primary" />
+            <div>
+              <h2 className="text-lg font-semibold text-text-primary">
+                Mahalle Tercihleri
+              </h2>
+              <p className="text-sm text-text-muted">
+                {categoryCount} kategori aktif
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {postCategories.map((category) => (
+              <label
+                key={category.id}
+                className="flex items-center gap-3 p-4 rounded-lg hover:bg-background cursor-pointer transition-colors border border-transparent hover:border-border"
+              >
+                <input
+                  type="checkbox"
+                  checked={category.enabled}
+                  onChange={() => toggleCategory(category.id)}
+                  className="w-4 h-4 accent-[#00833e] cursor-pointer"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{category.icon}</span>
+                    <span className="text-text-secondary font-medium">
+                      {category.name}
+                    </span>
+                  </div>
+                  <p className="text-sm text-text-muted mt-1">
+                    {category.description}
+                  </p>
+                </div>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Feed Notifications */}
+        <div className="bg-surface rounded-lg border border-border p-6 mb-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 bg-background rounded-lg">
+              <Bell className="w-5 h-5 text-primary" />
+            </div>
+            <h2 className="text-lg font-semibold text-text-primary">
+              Mahalle Feed Bildirimleri
+            </h2>
+          </div>
+
+          <div className="space-y-4">
+            {notificationPrefs.map((pref) => (
+              <div
+                key={pref.id}
+                className="flex items-center justify-between p-3 rounded-lg bg-background"
+              >
+                <div className="flex-1">
+                  <p className="font-medium text-text-primary">{pref.label}</p>
+                  <p className="text-sm text-text-muted">{pref.description}</p>
+                </div>
+                <button
+                  onClick={() => toggleNotification(pref.id)}
+                  className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors flex-shrink-0 ${
+                    pref.enabled ? "bg-primary" : "bg-[#e0e0e0]"
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-5 w-5 transform rounded-full bg-surface transition-transform ${
+                      pref.enabled ? "translate-x-6" : "translate-x-1"
+                    }`}
+                  />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Info Box */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-12">
+          <div className="flex gap-3">
+            <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm text-blue-900">
+                <span className="font-semibold">Ä°pucu:</span> Mahalle ayarlarÄ±nÄ±z
+                hemen uygulanÄ±r. DeÄŸiÅŸiklikleri gÃ¶rmek iÃ§in feed'inizi yenileyin.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Save Button */}
+        <div className="flex gap-3 mb-12">
+          <button
+            onClick={handleSave}
+            className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all ${
+              saved
+                ? "bg-primary text-white"
+                : "bg-primary text-white hover:bg-primary-hover"
+            }`}
+          >
+            {saved ? (
+              <span className="flex items-center justify-center gap-2">
+                <Check className="w-5 h-5" /> Kaydedildi
+              </span>
+            ) : (
+              "Kaydet"
+            )}
+          </button>
+          <Link
+            href="/ayarlar"
+            className="py-3 px-4 rounded-lg font-semibold bg-surface border border-border text-text-primary hover:bg-background transition-colors"
+          >
+            Ä°ptal
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}

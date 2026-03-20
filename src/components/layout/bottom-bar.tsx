@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Home, Compass, Plus, Bell, User } from 'lucide-react'
-import { cn } from 'A/lib/utils'
+import { cn } from '@/lib/utils'
 
 export function BottomBar() {
   const pathname = usePathname()
@@ -95,5 +95,5 @@ export function BottomBar() {
         })}
       </div>
     </nav>
-  )ý
+  )
 }

@@ -3,11 +3,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { ChevronRight, Building2, Shield, AlertCircle, MapPin, Users } from 'lucide-react'
-import { WeatherWidget } from 'A/components/widgets/weather-widget'
-import { TrendingWidget } from 'A/components/widgets/trending-widget'
+import { WeatherWidget } from '@/components/widgets/weather-widget'
+import { TrendingWidget } from '@/components/widgets/trending-widget'
 import { UpcomingEventsWidget } from '@/components/widgets/upcoming-events-widget'
-import { NeighborhoodStatsWidget } from 'A/components/widgets/neighborhood-stats-widget'
-import { getFeedImageUrl } from 'A/lib/demo-images'
+import { NeighborhoodStatsWidget } from '@/components/widgets/neighborhood-stats-widget'
+import { getFeedImageUrl } from '@/lib/demo-images'
 
 export function RightSidebar() {
   return (
@@ -111,7 +111,7 @@ export function RightSidebar() {
         <div className="p-4">
           <p className="text-sm font-bold text-text-primary">İşletme sahibi misiniz?</p>
           <p className="text-xs text-text-muted mt-1">
-            İşletme sayfanızı oluşurun, com��ularıṉ zla bağlantı kurun.
+            İşletme sayfanızı oluşturun, komşularınızla bağlantı kurun.
           </p>
         </div>
         <Link
