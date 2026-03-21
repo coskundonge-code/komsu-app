@@ -345,7 +345,7 @@ export default function MahallemizKartPage() {
                 {/* Header with card number and badge */}
                 <div className="flex justify-between items-start mb-6 sm:mb-8">
                   <div>
-                    <p className="text-sm font-semibold opacity-90">Mahallemiz Kartı</p>
+                    <h1 className="text-sm font-semibold opacity-90">Mahallemiz Kartı</h1>
                     <p className="text-xs opacity-75 mt-1">MK-2024-00847</p>
                   </div>
                   <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full text-sm font-semibold">
