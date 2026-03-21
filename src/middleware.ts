@@ -74,6 +74,7 @@ const locationExemptRoutes = [
   '/nasil-calisir',
   '/kariyer',
   '/yardim',
+  '/yerel-haberler',
 ]
 
 function matchesRoute(path: string, routes: string[]): boolean {
