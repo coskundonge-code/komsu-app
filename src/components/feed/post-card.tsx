@@ -101,7 +101,7 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
               </p>
             </div>
           </div>
-          <button className="p-1.5 hover:bg-surface-hover rounded-full transition-colors">
+          <button aria-label="Daha fazla seçenek" className="p-1.5 hover:bg-surface-hover rounded-full transition-colors">
             <MoreHorizontal className="w-5 h-5 text-text-muted" />
           </button>
         </div>
@@ -127,7 +127,7 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
 
       {post.image && (
         <div className="relative w-full max-h-[400px] overflow-hidden">
-          <Image src={post.image} alt={post.title || ''} width={800} height={400} unoptimized className="w-full object-cover" />
+          <Image src={post.image} alt={post.title || ''} width={800} height={400} unoptimized loading="lazy" className="w-full object-cover" />
         </div>
       )}
 
@@ -155,6 +155,7 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
             <div className="flex items-center">
               <button
                 onClick={handleLike}
+                aria-label={liked ? 'Beğeni kaldır' : 'Beğen'}
                 className={cn(
                   'flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg transition-all duration-200',
                   liked ? 'text-error' : 'text-text-secondary hover:bg-surface-hover'
@@ -165,12 +166,13 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
               </button>
               <button
                 onClick={() => setShowComment(!showComment)}
+                aria-label={showComment ? 'Yorum alanını kapat' : 'Yorum yap'}
                 className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-text-secondary hover:bg-surface-hover rounded-lg transition-colors"
               >
                 <MessageCircle className="w-5 h-5" />
                 Yorum
               </button>
-              <button className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-text-secondary hover:bg-surface-hover rounded-lg transition-colors">
+              <button aria-label="Paylaş" className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-text-secondary hover:bg-surface-hover rounded-lg transition-colors">
                 <Share2 className="w-5 h-5" />
                 Paylas
               </button>
@@ -190,12 +192,13 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
                     rows={2}
                   />
                   <div className="flex gap-2 mt-2 justify-end">
-                    <button onClick={() => { setShowComment(false); setCommentText('') }} className="p-1.5 text-text-muted hover:bg-surface-active rounded-lg">
+                    <button onClick={() => { setShowComment(false); setCommentText('') }} aria-label="Yorum alanını kapat" className="p-1.5 text-text-muted hover:bg-surface-active rounded-lg">
                       <X className="w-4 h-4" />
                     </button>
                     <button
                       onClick={handleCommentSubmit}
                       disabled={!commentText.trim() || !user || submittingComment}
+                      aria-label="Yorum gönder"
                       className={cn(
                         'px-4 py-1.5 text-sm font-semibold rounded-lg flex items-center gap-2 transition-all',
                         commentText.trim() && user && !submittingComment ? 'bg-primary text-white hover:bg-primary-hover' : 'bg-surface-active text-text-muted cursor-not-allowed'

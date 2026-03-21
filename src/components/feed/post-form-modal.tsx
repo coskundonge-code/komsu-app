@@ -5,6 +5,8 @@ import { X, Send, ImagePlus, MapPin, Globe, BarChart3, Shield, HelpCircle, Tag, 
 import { cn } from '@/lib/utils';
 import { createPost } from '@/lib/hooks/use-posts';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
+import { uploadMultipleImages } from '@/lib/upload';
+import { createClient } from '@/lib/supabase/client';
 
 const POST_TYPES = [
   { id: 'general', label: 'Genel', icon: Tag },
@@ -49,11 +51,41 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
   const [visibility, setVisibility] = useState('neighborhood');
   const [showVisibilityMenu, setShowVisibilityMenu] = useState(false);
   const [images, setImages] = useState<string[]>([]);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [location, setLocation] = useState<string | null>(null);
   const [pollQuestion, setPollQuestion] = useState('');
   const [pollOptions, setPollOptions] = useState(['', '']);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [neighborhoodId, setNeighborhoodId] = useState('51ded332-1c5c-428f-9022-4f5956bef2a4');
+  const [neighborhoodName, setNeighborhoodName] = useState('Moda');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Fetch user's neighborhood on mount
+  useEffect(() => {
+    async function fetchNeighborhood() {
+      if (!user?.id) return;
+      const supabase = createClient();
+      try {
+        const { data } = await supabase
+          .from('neighborhood_members')
+          .select('neighborhood_id, neighborhoods(name, district)')
+          .eq('user_id', user.id)
+          .single();
+
+        if (data && data.neighborhood_id) {
+          setNeighborhoodId(data.neighborhood_id);
+          const neighborhood = (data as any).neighborhoods;
+          if (neighborhood && neighborhood.district && neighborhood.name) {
+            setNeighborhoodName(`${neighborhood.district}, ${neighborhood.name}`);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch neighborhood:', err);
+        // Keep default fallback
+      }
+    }
+    fetchNeighborhood();
+  }, [user?.id]);
 
   // Keyboard shortcut: Esc to close
   useEffect(() => {
@@ -72,8 +104,10 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      const newImages = Array.from(files).map((file) => URL.createObjectURL(file));
-      setImages([...images, ...newImages]);
+      const newFiles = Array.from(files);
+      setImageFiles(prev => [...prev, ...newFiles]);
+      const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
+      setImages(prev => [...prev, ...newPreviews]);
     }
   };
 
@@ -87,13 +121,16 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
     e.stopPropagation();
     const files = e.dataTransfer.files;
     if (files) {
-      const newImages = Array.from(files).map((file) => URL.createObjectURL(file));
-      setImages([...images, ...newImages]);
+      const newFiles = Array.from(files);
+      setImageFiles(prev => [...prev, ...newFiles]);
+      const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
+      setImages(prev => [...prev, ...newPreviews]);
     }
   };
 
   const removeImage = (index: number) => {
     setImages(images.filter((_, i) => i !== index));
+    setImageFiles(imageFiles.filter((_, i) => i !== index));
   };
 
   const handleAddPollOption = () => {
@@ -111,7 +148,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
   };
 
   const handleAddLocation = () => {
-    setLocation('Kadıköy, Moda');
+    setLocation(neighborhoodName);
   };
 
   const handleRemoveLocation = () => {
@@ -139,14 +176,26 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
 
     setIsSubmitting(true);
     try {
+      // Upload images to Supabase Storage if present
+      let mediaUrls: string[] | null = null;
+      if (imageFiles.length > 0) {
+        const { urls, errors } = await uploadMultipleImages(imageFiles, 'post-images', user.id);
+        if (urls.length > 0) {
+          mediaUrls = urls;
+        }
+        if (errors.length > 0) {
+          console.warn('Some images failed to upload:', errors);
+        }
+      }
+
       const postData = {
         author_id: user.id,
-        neighborhood_id: '51ded332-1c5c-428f-9022-4f5956bef2a4',
+        neighborhood_id: neighborhoodId,
         title: title.trim() || null,
         body: body.trim(),
         type: postType,
         visibility: visibility || 'neighborhood',
-        media_urls: images.length > 0 ? images : null,
+        media_urls: mediaUrls,
       };
 
       const { data, error } = await createPost(postData as any);
@@ -159,9 +208,9 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
           title: postResult.title || undefined,
           body: postResult.body,
           visibility,
-          images,
+          images: mediaUrls || images,
           location,
-          author: { name: profile?.full_name || 'Siz', initial: profile?.full_name?.[0]?.toUpperCase() || 'S', neighborhood: 'Kadıköy, Moda', profileId: user.id },
+          author: { name: profile?.full_name || 'Siz', initial: profile?.full_name?.[0]?.toUpperCase() || 'S', neighborhood: neighborhoodName, profileId: user.id },
           timeAgo: 'Az önce',
           reactions: 0,
           comments: 0,
@@ -178,9 +227,9 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
           title: title.trim() || undefined,
           body: body.trim(),
           visibility,
-          images,
+          images: mediaUrls || images,
           location,
-          author: { name: profile?.full_name || 'Siz', initial: profile?.full_name?.[0]?.toUpperCase() || 'S', neighborhood: 'Kadıköy, Moda', profileId: user.id },
+          author: { name: profile?.full_name || 'Siz', initial: profile?.full_name?.[0]?.toUpperCase() || 'S', neighborhood: neighborhoodName, profileId: user.id },
           timeAgo: 'Az önce',
           reactions: 0,
           comments: 0,
@@ -201,6 +250,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
     setVisibility('neighborhood');
     setShowVisibilityMenu(false);
     setImages([]);
+    setImageFiles([]);
     setLocation(null);
     setPollQuestion('');
     setPollOptions(['', '']);
@@ -228,6 +278,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
           <h2 className="text-lg font-bold text-text-primary">Gönderi Oluştur</h2>
           <button
             onClick={handleClose}
+            aria-label="Kapat"
             className="p-1 hover:bg-background rounded-full transition-colors"
           >
             <X className="w-5 h-5 text-text-muted" />
@@ -268,7 +319,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
             </div>
             <div>
               <p className="text-sm font-bold text-text-primary">{profile?.full_name || 'Siz'}</p>
-              <p className="text-xs text-text-muted">Kadıköy, Moda</p>
+              <p className="text-xs text-text-muted">{neighborhoodName}</p>
             </div>
           </div>
 

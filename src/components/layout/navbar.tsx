@@ -2,24 +2,22 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Bell, Search, ChevronDown, Menu, Plus } from 'lucide-react'
+import { Search, ChevronDown, Menu, Plus } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { SearchDropdown } from './search-dropdown'
 import { UserDropdown } from './user-dropdown'
 import { MobileDrawer } from './mobile-drawer'
-import { NotificationDropdown } from './notification-dropdown'
+import { NotificationBell } from './notification-bell'
 
 export function Navbar() {
   const router = useRouter()
   const [isSearchFocused, setIsSearchFocused] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] = useState(false)
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false)
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false)
   const searchRef = useRef<HTMLDivElement>(null)
-  const unreadNotificationCount = 2
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchQuery.trim()) {
@@ -100,28 +98,7 @@ export function Navbar() {
               <span className="hidden md:inline">Paylaş</span>
             </Link>
 
-            <div className="relative">
-              <button
-                onClick={() => setIsNotificationDropdownOpen(!isNotificationDropdownOpen)}
-                className={cn(
-                  "relative p-2.5 rounded-full hover:bg-surface-hover transition-colors",
-                  isNotificationDropdownOpen && "bg-surface-active"
-                )}
-                aria-label="Bildirimler"
-              >
-                <Bell className="w-5 h-5 text-text-secondary" />
-                {unreadNotificationCount > 0 && (
-                  <span className="absolute top-1 right-1 w-5 h-5 bg-error rounded-full flex items-center justify-center text-white text-[10px] font-bold ring-2 ring-surface">
-                    {unreadNotificationCount}
-                  </span>
-                )}
-              </button>
-              <NotificationDropdown
-                isOpen={isNotificationDropdownOpen}
-                onClose={() => setIsNotificationDropdownOpen(false)}
-                unreadCount={unreadNotificationCount}
-              />
-            </div>
+            <NotificationBell />
 
             <div className="relative ml-0.5">
               <button

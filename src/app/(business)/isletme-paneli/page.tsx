@@ -112,8 +112,9 @@ const UPCOMING_EVENTS = [
 export default function IsletmePaneliPage() {
   const { user, profile } = useCurrentUser();
   const [business, setBusiness] = useState<any>(null);
-  const [reviews, setReviews] = useState(RECENT_REVIEWS);
-  const [loading, setLoading] = useState(false);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [hasNoBusiness, setHasNoBusiness] = useState(false);
 
   // Fetch business data for current user
   useEffect(() => {
@@ -125,22 +126,38 @@ export default function IsletmePaneliPage() {
         const { data, error } = await supabase
           .from('businesses')
           .select('*')
-          .eq('user_id', user.id)
+          .eq('owner_id', user.id)
           .single();
+
+        if (error && error.code === 'PGRST116') {
+          // No business found
+          setHasNoBusiness(true);
+          setLoading(false);
+          return;
+        }
 
         if (!error && data) {
           setBusiness(data);
 
           // Fetch reviews for this business
-          const { data: reviewData, error: reviewError } = await (supabase as any)
+          const { data: reviewData } = await (supabase as any)
             .from('business_reviews')
             .select('*')
             .eq('business_id', (data as any).id)
             .order('created_at', { ascending: false })
             .limit(3);
 
-          if (!reviewError && reviewData) {
-            // Map review data to RECENT_REVIEWS structure
+          if (reviewData && reviewData.length > 0) {
+            const mappedReviews = reviewData.map((r: any) => ({
+              id: r.id,
+              author: r.author_name || 'Anonim',
+              rating: r.rating || 5,
+              date: r.created_at,
+              text: r.content || r.text || '',
+            }));
+            setReviews(mappedReviews);
+          } else {
+            setReviews([]);
           }
         }
       } catch (err) {
@@ -151,6 +168,41 @@ export default function IsletmePaneliPage() {
     }
     fetchBusiness();
   }, [user?.id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-text-muted">Yükleniyor...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (hasNoBusiness) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <div className="mb-6">
+            <div className="w-16 h-16 rounded-full bg-primary-light flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+            </div>
+            <h1 className="text-2xl font-bold text-text-primary mb-2">Henüz bir işletmeniz yok</h1>
+            <p className="text-text-muted mb-6">İşletme panelini kullanmaya başlamak için bir işletme oluşturun.</p>
+            <Link
+              href="/isletme-ekle"
+              className="inline-block px-6 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary-hover transition-colors"
+            >
+              İşletme Oluştur
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const businessName = business?.name || 'Kahvehane Keyif';
 
@@ -166,7 +218,44 @@ export default function IsletmePaneliPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {STATS.map((stat) => {
+        {[
+          {
+            id: 1,
+            label: 'Ortalama Değerlendirme',
+            value: business?.rating_avg ? `${business.rating_avg.toFixed(1)} ⭐` : 'N/A',
+            change: '+0.2',
+            icon: Star,
+            bgColor: '#fef3c7',
+            iconColor: '#f59e0b',
+          },
+          {
+            id: 2,
+            label: 'Toplam Yorum',
+            value: business?.review_count || '0',
+            change: '+5',
+            icon: MessageCircle,
+            bgColor: '#dbeafe',
+            iconColor: '#3b82f6',
+          },
+          {
+            id: 3,
+            label: 'Öneriler',
+            value: business?.recommendation_count || '0',
+            change: '+3',
+            icon: Heart,
+            bgColor: '#fce7f3',
+            iconColor: '#ec4899',
+          },
+          {
+            id: 4,
+            label: 'Doğrulama Durumu',
+            value: business?.is_verified ? 'Doğrulandı ✓' : 'Beklemede',
+            change: business?.is_verified ? '✓' : '⏳',
+            icon: Eye,
+            bgColor: business?.is_verified ? '#e6f4ec' : '#fef3c7',
+            iconColor: business?.is_verified ? '#00833e' : '#f59e0b',
+          },
+        ].map((stat) => {
           const Icon = stat.icon;
 
           return (
@@ -182,7 +271,7 @@ export default function IsletmePaneliPage() {
                   <Icon size={24} color={stat.iconColor} />
                 </div>
                 <div className="flex items-center gap-1 text-primary font-medium text-sm">
-                  <ArrowUpRight size={14} />
+                  {stat.change !== '✓' && stat.change !== '⏳' && <ArrowUpRight size={14} />}
                   {stat.change}
                 </div>
               </div>
@@ -193,29 +282,22 @@ export default function IsletmePaneliPage() {
         })}
       </div>
 
-      {/* Revenue Overview Card */}
+      {/* Business Info Card */}
       <div className="bg-gradient-to-br from-primary to-primary-hover rounded-lg text-white p-8 mb-8 shadow-lg">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-[#d1fae5] text-sm font-medium mb-2">Bu Ayın Toplam Geliri</p>
-            <h2 className="text-4xl font-bold mb-4">₺12,450</h2>
+            <p className="text-[#d1fae5] text-sm font-medium mb-2">İşletmeniz</p>
+            <h2 className="text-4xl font-bold mb-4">{business?.name || 'İşletme'}</h2>
             <p className="text-[#d1fae5] text-sm flex items-center gap-1">
-              <TrendingUp size={16} />
-              Geçen aya göre %18.3 artış
+              {business?.category_id && '📍'}
+              {business?.address || 'Konum belirtilmemiş'}
             </p>
           </div>
           <div className="hidden md:block text-right">
-            <p className="text-[#d1fae5] text-sm mb-2">Aylık Hedef</p>
-            <p className="text-3xl font-bold">₺15,000</p>
-            <p className="text-xs text-[#d1fae5] mt-2">%83 hedefi tamamladı</p>
+            <p className="text-[#d1fae5] text-sm mb-2">İletişim</p>
+            <p className="text-lg font-bold">{business?.phone || 'Telefon belirtilmemiş'}</p>
+            <p className="text-xs text-[#d1fae5] mt-2 truncate">{business?.website || 'Website belirtilmemiş'}</p>
           </div>
-        </div>
-        {/* Progress Bar */}
-        <div className="mt-6 bg-[#005a2b] rounded-full h-2">
-          <div
-            className="bg-primary-light h-2 rounded-full transition-all"
-            style={{ width: '83%' }}
-          ></div>
         </div>
       </div>
 
@@ -239,45 +321,51 @@ export default function IsletmePaneliPage() {
             </div>
 
             <div className="space-y-4">
-              {RECENT_REVIEWS.map((review) => (
-                <div
-                  key={review.id}
-                  className="border-b border-border pb-4 last:border-b-0"
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <p className="font-semibold text-text-primary">{review.author}</p>
-                      <p className="text-xs text-text-muted">
-                        {new Date(review.date).toLocaleDateString('tr-TR')}
-                      </p>
+              {reviews.length > 0 ? (
+                reviews.map((review) => (
+                  <div
+                    key={review.id}
+                    className="border-b border-border pb-4 last:border-b-0"
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <p className="font-semibold text-text-primary">{review.author}</p>
+                        <p className="text-xs text-text-muted">
+                          {new Date(review.date).toLocaleDateString('tr-TR')}
+                        </p>
+                      </div>
+                      <div className="flex gap-0.5">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            size={16}
+                            className={
+                              i < review.rating
+                                ? 'fill-[#f59e0b] text-[#f59e0b]'
+                                : 'text-[#e0e0e0]'
+                            }
+                          />
+                        ))}
+                      </div>
                     </div>
-                    <div className="flex gap-0.5">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          size={16}
-                          className={
-                            i < review.rating
-                              ? 'fill-[#f59e0b] text-[#f59e0b]'
-                              : 'text-[#e0e0e0]'
-                          }
-                        />
-                      ))}
-                    </div>
-                  </div>
-                  <p className="text-text-primary text-sm mb-3">{review.text}</p>
+                    <p className="text-text-primary text-sm mb-3">{review.text}</p>
 
-                  {/* Quick Actions */}
-                  <div className="flex gap-3">
-                    <button className="text-xs text-primary hover:text-primary-hover font-medium hover:underline">
-                      Cevap Ver
-                    </button>
-                    <button className="text-xs text-text-muted hover:text-text-primary font-medium hover:underline">
-                      Raporla
-                    </button>
+                    {/* Quick Actions */}
+                    <div className="flex gap-3">
+                      <button className="text-xs text-primary hover:text-primary-hover font-medium hover:underline">
+                        Cevap Ver
+                      </button>
+                      <button className="text-xs text-text-muted hover:text-text-primary font-medium hover:underline">
+                        Raporla
+                      </button>
+                    </div>
                   </div>
+                ))
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-text-muted">Henüz yorum yok</p>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>

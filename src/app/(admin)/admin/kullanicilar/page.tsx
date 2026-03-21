@@ -1,7 +1,10 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import { useCurrentUser } from '@/lib/hooks/use-auth';
 import {
   Search,
   MoreVertical,
@@ -27,14 +30,16 @@ interface User {
   id: string;
   name: string;
   email: string;
-  neighborhood: string;
+  neighborhood?: string;
   joinDate: string;
   status: 'active' | 'inactive' | 'suspended';
   posts: number;
   reviews: number;
-  lastSeen: string;
+  lastSeen?: string;
   avatar: string;
   engagement: number;
+  is_verified?: boolean;
+  is_admin?: boolean;
 }
 
 const MOCK_USERS: User[] = [
@@ -176,6 +181,8 @@ interface ConfirmModal {
 }
 
 export default function KullanicilarPage() {
+  const router = useRouter();
+  const { user: authUser, profile, loading: authLoading } = useCurrentUser();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive' | 'suspended'>('all');
   const [currentPage, setCurrentPage] = useState(1);
@@ -190,6 +197,36 @@ export default function KullanicilarPage() {
 
   const itemsPerPage = 8;
 
+  // Check admin access
+  if (!authLoading && (!authUser || profile?.is_admin !== true)) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Yetkisiz Erişim</h1>
+          <p className="text-gray-600 mb-6">
+            Bu sayfaya erişim için admin yetkisi gereklidir.
+          </p>
+          <Link
+            href="/"
+            className="inline-block px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
+          >
+            Ana Sayfaya Dön
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-gray-600">Yükleniyor...</p>
+        </div>
+      </div>
+    );
+  }
+
   // Fetch users from Supabase
   useEffect(() => {
     async function fetchUsers() {
@@ -198,15 +235,27 @@ export default function KullanicilarPage() {
       try {
         const { data, error } = await supabase
           .from('profiles')
-          .select('*')
+          .select('id, email, full_name, is_verified, is_admin, created_at')
           .order('created_at', { ascending: false });
 
         if (!error && data) {
-          // Map profile data to User structure - keep mock data as fallback
-          // In a real scenario, you'd map profile data with posts/reviews counts
+          const mappedUsers: User[] = data.map((profile: any) => ({
+            id: profile.id,
+            name: profile.full_name || 'İsimsiz Kullanıcı',
+            email: profile.email || '',
+            joinDate: profile.created_at,
+            status: profile.is_verified ? 'active' : 'inactive',
+            posts: 0,
+            reviews: 0,
+            avatar: (profile.full_name || 'U').substring(0, 2).toUpperCase(),
+            engagement: profile.is_verified ? 75 : 25,
+            is_verified: profile.is_verified,
+            is_admin: profile.is_admin,
+          }));
+          setUsers(mappedUsers);
         }
       } catch (err) {
-        console.error('Failed to fetch users:', err);
+        console.error('Kullanıcılar yüklenirken hata:', err);
       } finally {
         setLoading(false);
       }
@@ -219,7 +268,7 @@ export default function KullanicilarPage() {
       const matchesSearch =
         user.name.toLowerCase().includes(search.toLowerCase()) ||
         user.email.toLowerCase().includes(search.toLowerCase()) ||
-        user.neighborhood.toLowerCase().includes(search.toLowerCase());
+        (user.neighborhood || '').toLowerCase().includes(search.toLowerCase());
       const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
@@ -291,7 +340,7 @@ export default function KullanicilarPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Kullanıcı Yönetimi</h1>
         <p className="text-gray-600">
-          Toplam {stats.total} kullanıcı yönetiliyor
+          {loading ? 'Yükleniyor...' : `Toplam ${stats.total} kullanıcı yönetiliyor`}
         </p>
       </div>
 

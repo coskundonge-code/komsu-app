@@ -8,7 +8,7 @@ import { useCurrentUser } from "@/lib/hooks/use-auth";
 import { createClient as createTypedClient } from '@/lib/supabase/client'
 import type { Database } from "@/lib/supabase/types";
 
-const createClient = () => createTypedClient() as any
+const createClient = () => createTypedClient()
 
 type ConversationRow = Database['public']['Tables']['conversations']['Row']
 type MessageRow = Database['public']['Tables']['messages']['Row']
@@ -80,7 +80,7 @@ export default function MessagesPage() {
   const [messageText, setMessageText] = useState("");
   const [activeTab, setActiveTab] = useState<"all" | "unread" | "marketplace">("all");
 
-  const [conversations, setConversations] = useState<Conversation[]>(mockConversations);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [loadingConversations, setLoadingConversations] = useState(true);
   const [loadingMessages, setLoadingMessages] = useState(false);
@@ -120,12 +120,12 @@ export default function MessagesPage() {
 
         if (error) {
           console.error('Error fetching conversations:', error);
-          setConversations(mockConversations);
+          setConversations([]);
           return;
         }
 
         if (!dbConversations || dbConversations.length === 0) {
-          setConversations(mockConversations);
+          setConversations([]);
           return;
         }
 
@@ -143,7 +143,7 @@ export default function MessagesPage() {
             .from('profiles')
             .select('*')
             .eq('id', otherUserId)
-            .single();
+            .single() as { data: any };
 
           // Get last message
           const { data: lastMsg } = await supabase
@@ -152,7 +152,7 @@ export default function MessagesPage() {
             .eq('conversation_id', conv.id)
             .order('created_at', { ascending: false })
             .limit(1)
-            .single();
+            .single() as { data: any };
 
           const timeAgo = formatTimeAgo(conv.updated_at || conv.created_at);
 
@@ -171,10 +171,10 @@ export default function MessagesPage() {
         });
 
         const loadedConversations = await Promise.all(conversationPromises);
-        setConversations(loadedConversations.length > 0 ? loadedConversations : mockConversations);
+        setConversations(loadedConversations.length > 0 ? loadedConversations : []);
       } catch (err) {
         console.error('Error loading conversations:', err);
-        setConversations(mockConversations);
+        setConversations([]);
       } finally {
         setLoadingConversations(false);
       }
@@ -220,12 +220,12 @@ export default function MessagesPage() {
 
         if (error) {
           console.error('Error fetching messages:', error);
-          setMessages(mockMessages[selectedId] || []);
+          setMessages([]);
           return;
         }
 
         if (!dbMessages || dbMessages.length === 0) {
-          setMessages(mockMessages[selectedId] || []);
+          setMessages([]);
           return;
         }
 
@@ -240,7 +240,7 @@ export default function MessagesPage() {
         setMessages(formattedMessages);
       } catch (err) {
         console.error('Error loading messages:', err);
-        setMessages(mockMessages[selectedId] || []);
+        setMessages([]);
       } finally {
         setLoadingMessages(false);
       }
@@ -288,7 +288,7 @@ export default function MessagesPage() {
           conversation_id: selectedId,
           sender_id: user.id,
           body: messageContent,
-        } as any)
+        })
         .select()
         .single();
 
@@ -357,6 +357,7 @@ export default function MessagesPage() {
             placeholder="Kişi veya mesaj ara..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label="Kişi veya mesaj ara"
             className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
           />
         </div>
@@ -416,11 +417,19 @@ export default function MessagesPage() {
           <div className="flex flex-col items-center justify-center h-full p-8">
             <MessageSquare size={48} className="text-[#e0e0e0] mb-3" />
             <p className="text-text-muted text-sm font-medium">
-              {activeTab === "unread" ? "Okunmamış mesaj yok" : activeTab === "marketplace" ? "Pazar yeri sohbeti yok" : "Sohbet bulunamadı"}
+              {activeTab === "unread" ? "Okunmamış mesaj yok" : activeTab === "marketplace" ? "Pazar yeri sohbeti yok" : "Sohbet yok"}
             </p>
             <p className="text-text-muted text-xs mt-1">
-              {searchQuery ? "Başka bir arama terimi deneyin" : "Yeni bir sohbet başlatın"}
+              {searchQuery ? "Başka bir arama terimi deneyin" : conversations.length === 0 ? "İlk sohbetinizi başlatın" : "Yeni bir sohbet başlatın"}
             </p>
+            {!searchQuery && conversations.length === 0 && (
+              <Link
+                href="/mesajlar/new"
+                className="mt-4 px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-full text-sm font-medium transition-colors"
+              >
+                Yeni Sohbet Başlat
+              </Link>
+            )}
           </div>
         ) : (
           filteredConversations.map((convo) => (
@@ -437,6 +446,7 @@ export default function MessagesPage() {
                 <img
                   src={convo.avatar}
                   alt={convo.name}
+                  loading="lazy"
                   className="w-14 h-14 rounded-full object-cover shadow-sm"
                 />
                 {convo.online && (
@@ -479,7 +489,7 @@ export default function MessagesPage() {
       <div className="flex items-center justify-between gap-3 p-4 border-b border-border bg-surface shadow-sm">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           {isMobile && (
-            <button onClick={() => setSelectedId("")} className="p-1 hover:bg-background rounded-full transition-colors flex-shrink-0">
+            <button onClick={() => setSelectedId("")} aria-label="Geri dön" className="p-1 hover:bg-background rounded-full transition-colors flex-shrink-0">
               <ChevronLeft size={20} className="text-text-primary" />
             </button>
           )}
@@ -487,6 +497,7 @@ export default function MessagesPage() {
             <img
               src={selected?.avatar || ""}
               alt={selected?.name || ""}
+              loading="lazy"
               className="w-12 h-12 rounded-full object-cover shadow-sm"
             />
             {selected?.online && (
@@ -506,10 +517,10 @@ export default function MessagesPage() {
 
         {/* Header Actions */}
         <div className="flex items-center gap-1 flex-shrink-0">
-          <button className="p-2 hover:bg-background rounded-full transition-colors" title="Telefon ara">
+          <button className="p-2 hover:bg-background rounded-full transition-colors" aria-label="Telefon ara">
             <Phone size={20} className="text-primary" />
           </button>
-          <button className="p-2 hover:bg-background rounded-full transition-colors" title="Video ara">
+          <button className="p-2 hover:bg-background rounded-full transition-colors" aria-label="Video ara">
             <Video size={20} className="text-primary" />
           </button>
         </div>
@@ -539,7 +550,7 @@ export default function MessagesPage() {
       {/* Message Input */}
       <div className="p-4 border-t border-border bg-surface">
         <div className="flex items-center gap-2">
-          <button className="p-2.5 hover:bg-background rounded-full transition-colors flex-shrink-0" title="Fotoğraf ekle">
+          <button className="p-2.5 hover:bg-background rounded-full transition-colors flex-shrink-0" aria-label="Fotoğraf ekle">
             <ImageIcon size={20} className="text-primary" />
           </button>
           <input
@@ -552,14 +563,14 @@ export default function MessagesPage() {
             placeholder="Mesajınızı yazın..."
             className="flex-1 px-4 py-2.5 bg-background border border-border rounded-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
           />
-          <button className="p-2.5 hover:bg-background rounded-full transition-colors flex-shrink-0" title="İmoji ekle">
+          <button className="p-2.5 hover:bg-background rounded-full transition-colors flex-shrink-0" aria-label="İmoji ekle">
             <Smile size={20} className="text-primary" />
           </button>
           <button
             onClick={handleSend}
             disabled={!messageText.trim()}
+            aria-label="Mesaj gönder"
             className="p-2.5 bg-primary hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed rounded-full transition-colors flex-shrink-0"
-            title="Gönder"
           >
             <Send size={18} className="text-white" />
           </button>
@@ -586,6 +597,21 @@ export default function MessagesPage() {
       <div className="flex-1">
         {selected ? (
           <ChatView />
+        ) : conversations.length === 0 ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <MessageSquare size={48} className="mx-auto text-text-muted mb-3 opacity-50" />
+              <p className="text-text-primary font-medium">İlk sohbetinizi başlatın</p>
+              <p className="text-text-muted text-sm mt-1 mb-4">Komşularınızla bağlantı kurmaya başlayın</p>
+              <Link
+                href="/mesajlar/new"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-full text-sm font-medium transition-colors"
+              >
+                <MessageCirclePlus size={18} />
+                Yeni Sohbet Başlat
+              </Link>
+            </div>
+          </div>
         ) : (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">

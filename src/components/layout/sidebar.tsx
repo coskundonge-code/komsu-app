@@ -10,6 +10,7 @@ import {
   Compass, CreditCard, MapPin
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useCurrentUser } from '@/lib/hooks/use-auth'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -36,6 +37,7 @@ const secondaryNavItems = [
 export function Sidebar({ className, ...props }: SidebarProps) {
   const pathname = usePathname()
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const { profile, neighborhood } = useCurrentUser()
 
   const isActive = (href: string) => {
     return pathname === href || (href !== '/' && pathname?.startsWith(href))
@@ -59,16 +61,16 @@ export function Sidebar({ className, ...props }: SidebarProps) {
         )}>
           <div className="relative flex-shrink-0">
             <div className="w-9 h-9 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">
-              A
+              {profile?.full_name?.[0]?.toUpperCase() || 'K'}
             </div>
             <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full ring-2 ring-white" />
           </div>
           {!isCollapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-text-primary truncate">Ahmet Yılmaz</p>
+              <p className="text-sm font-semibold text-text-primary truncate">{profile?.full_name || 'Kullanıcı'}</p>
               <p className="text-xs text-text-muted truncate flex items-center gap-1">
                 <MapPin className="w-3 h-3" />
-                Kadıköy, İstanbul
+                {neighborhood ? `${neighborhood.district}, ${neighborhood.name}` : 'Mahalle seçilmedi'}
               </p>
             </div>
           )}

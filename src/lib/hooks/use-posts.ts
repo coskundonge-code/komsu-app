@@ -1,8 +1,9 @@
 'use client'
 
 import { createClient as createTypedClient } from '@/lib/supabase/client'
-const createClient = () => createTypedClient() as any
 import type { Database } from '@/lib/supabase/types'
+
+const createClient = () => createTypedClient()
 
 type Post = Database['public']['Tables']['posts']['Row']
 type PostInsert = Database['public']['Tables']['posts']['Insert']
@@ -16,7 +17,7 @@ export async function getPosts(options?: {
   const supabase = createClient()
   let query = supabase
     .from('posts')
-    .select('*, profiles!posts_author_id_fkey(full_name, avatar_url)')
+    .select('*, profiles!posts_author_id_fkey(full_name, avatar_url), neighborhoods(name, district)')
     .order('is_pinned', { ascending: false })
     .order('created_at', { ascending: false })
 
@@ -51,7 +52,7 @@ export async function createPost(post: PostInsert) {
   const supabase = createClient()
   const { data, error } = await supabase
     .from('posts')
-    .insert(post as any)
+    .insert(post)
     .select()
     .single()
   return { data, error }
@@ -81,7 +82,7 @@ export async function toggleReaction(postId: string, userId: string, reactionTyp
     const { error } = await supabase.from('reactions').delete().eq('id', existing.id)
     return { added: false, error }
   } else {
-    const { error } = await supabase.from('reactions').insert({ post_id: postId, user_id: userId, type: reactionType } as any)
+    const { error } = await supabase.from('reactions').insert({ post_id: postId, user_id: userId, type: reactionType })
     return { added: true, error }
   }
 }
@@ -90,7 +91,7 @@ export async function createComment(postId: string, userId: string, content: str
   const supabase = createClient()
   const { data, error } = await supabase
     .from('comments')
-    .insert({ post_id: postId, author_id: userId, body: content } as any)
+    .insert({ post_id: postId, author_id: userId, body: content })
     .select()
     .single()
   return { data, error }

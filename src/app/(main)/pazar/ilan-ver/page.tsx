@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { createListing } from '@/lib/hooks/use-listings';
 import { createClient } from '@/lib/supabase/client';
+import { uploadMultipleImages } from '@/lib/upload';
 
 interface Photo {
   id: string;
@@ -261,27 +262,20 @@ export default function CreateListingPage() {
         return;
       }
 
-      // Upload images to storage and get URLs
-      const imageUrls: string[] = [];
-      for (let i = 0; i < formData.photos.length; i++) {
-        const file = formData.photos[i].file;
-        const fileName = `${Date.now()}-${i}-${file.name}`;
-        const { data: uploadData, error: uploadError } = await (supabase as any).storage
-          .from('listing-images')
-          .upload(`marketplace/${user.id}/${fileName}`, file);
-
-        if (uploadError) {
-          console.error('Upload error:', uploadError);
-          continue;
+      // Upload images to storage using the upload utility
+      let mediaUrls: string[] | null = null;
+      if (formData.photos.length > 0) {
+        const files = formData.photos.map(photo => photo.file);
+        const { urls, errors: uploadErrors } = await uploadMultipleImages(
+          files,
+          'listing-images',
+          `marketplace/${user.id}`
+        );
+        if (urls.length > 0) {
+          mediaUrls = urls;
         }
-
-        if (uploadData) {
-          const { data: publicUrlData } = (supabase as any).storage
-            .from('listing-images')
-            .getPublicUrl(`marketplace/${user.id}/${fileName}`);
-          if (publicUrlData?.publicUrl) {
-            imageUrls.push(publicUrlData.publicUrl);
-          }
+        if (uploadErrors.length > 0) {
+          console.warn('Some images failed to upload:', uploadErrors);
         }
       }
 
@@ -293,7 +287,7 @@ export default function CreateListingPage() {
         category_id: CATEGORY_ID_MAP[formData.category] || null,
         seller_id: user.id,
         neighborhood_id: '51ded332-1c5c-428f-9022-4f5956bef2a4',
-        media_urls: imageUrls.length > 0 ? imageUrls : null,
+        media_urls: mediaUrls,
         condition: formData.condition,
         status: 'active',
       } as any);

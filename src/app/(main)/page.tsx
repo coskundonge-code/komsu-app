@@ -1,16 +1,19 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { Camera, MapPin, AlertTriangle, ArrowRight, Newspaper, Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
-import { PostFormModal } from '@/components/feed/post-form-modal'
+
+const PostFormModal = dynamic(() => import('@/components/feed/post-form-modal').then(mod => ({ default: mod.PostFormModal })), { ssr: false })
 import StoriesBar from '@/components/feed/stories-bar'
 import { getFeedImageUrl } from '@/lib/demo-images'
 import { AddressVerificationBanner } from '@/components/feed/address-verification-banner'
 import { FeedPostCard, POST_CATEGORIES, type FeedPostData } from '@/components/feed/post-card'
 import { useCurrentUser } from '@/lib/hooks/use-auth'
 import { getPosts } from '@/lib/hooks/use-posts'
+import { createClient } from '@/lib/supabase/client'
 
 const feedTabs = [
   { id: 'foryou', label: 'Senin İçin' },
@@ -53,9 +56,31 @@ export default function FeedPage() {
   const [postsToShow, setPostsToShow] = useState(6)
   const [posts, setPosts] = useState(mockPosts)
   const [loading, setLoading] = useState(true)
+  const [userNeighborhood, setUserNeighborhood] = useState('Kadıköy, Moda')
 
   useEffect(() => {
     async function loadPosts() {
+      // Fetch user's neighborhood first
+      if (user?.id) {
+        const supabase = createClient()
+        try {
+          const { data: neighborhoodData } = await supabase
+            .from('neighborhood_members')
+            .select('neighborhood_id, neighborhoods(name, district)')
+            .eq('user_id', user.id)
+            .single()
+
+          if (neighborhoodData && neighborhoodData.neighborhoods) {
+            const neighborhood = (neighborhoodData as any).neighborhoods
+            if (neighborhood.district && neighborhood.name) {
+              setUserNeighborhood(`${neighborhood.district}, ${neighborhood.name}`)
+            }
+          }
+        } catch (err) {
+          console.error('Failed to fetch user neighborhood:', err)
+        }
+      }
+
       const { data, error } = await getPosts({ limit: 20 })
       if (data && data.length > 0) {
         const mapped = data.map((p: any) => ({
@@ -63,7 +88,7 @@ export default function FeedPage() {
           author: {
             name: p.profiles?.full_name || 'Anonim',
             initial: (p.profiles?.full_name || 'A')[0].toUpperCase(),
-            neighborhood: 'Kadıköy, Moda',
+            neighborhood: p.neighborhoods ? `${p.neighborhoods.district}, ${p.neighborhoods.name}` : 'Mahalle',
             profileId: p.author_id,
           },
           timeAgo: getTimeAgo(p.created_at),
@@ -82,7 +107,7 @@ export default function FeedPage() {
       setLoading(false)
     }
     loadPosts()
-  }, [])
+  }, [user?.id])
 
   const filteredPosts = posts.filter((post) => {
     const tabMatch = activeTab === 'foryou' || post.feed === activeTab
@@ -139,7 +164,7 @@ export default function FeedPage() {
           </div>
           <div className="flex items-center gap-2 text-xs text-text-muted mt-2 ml-[52px]">
             <MapPin className="w-3.5 h-3.5" />
-            <span>{profile?.full_name || 'Kadıköy, Moda'}</span>
+            <span>{userNeighborhood}</span>
           </div>
         </div>
 
@@ -148,6 +173,7 @@ export default function FeedPage() {
           <input
             type="text" placeholder="Gönderilerde ara..." value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setPostsToShow(6) }}
+            aria-label="Gönderilerde ara"
             className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-light transition-all"
           />
         </div>

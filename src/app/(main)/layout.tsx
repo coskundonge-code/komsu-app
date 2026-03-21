@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { Suspense } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { Sidebar } from "@/components/layout/sidebar";
 import { BottomBar } from "@/components/layout/bottom-bar";
@@ -36,9 +37,17 @@ export default function MainLayout({ children }: MainLayoutProps) {
         <Sidebar className="sticky top-14 h-[calc(100vh-56px)]" />
 
         <main id="main-content" className="flex-1 min-w-0 pb-24 lg:pb-6">
-          <div className="page-transition">
-            {children}
-          </div>
+          <Suspense fallback={
+            <div className="page-transition space-y-3 max-w-[680px] mx-auto px-2 sm:px-4 py-3">
+              <div className="bg-surface rounded-xl border border-border h-32 animate-pulse" />
+              <div className="bg-surface rounded-xl border border-border h-48 animate-pulse" />
+              <div className="bg-surface rounded-xl border border-border h-64 animate-pulse" />
+            </div>
+          }>
+            <div className="page-transition">
+              {children}
+            </div>
+          </Suspense>
         </main>
 
         <RightSidebar />
