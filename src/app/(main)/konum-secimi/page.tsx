@@ -11,7 +11,7 @@ import {
 } from 'lucide-react'
 
 // Leaflet must be loaded client-side only
-const MapComponent = dynamic(() => import('./map-component'), { ssr: false })
+const GoogleMapComponent = dynamic(() => import('./google-map-component'), { ssr: false })
 
 type Step = 'permission' | 'select' | 'confirm'
 
@@ -507,7 +507,7 @@ export default function KonumSecimi() {
               </div>
 
               <div className="h-[400px] sm:h-[500px]">
-                <MapComponent
+                <GoogleMapComponent
                   center={mapCenter}
                   zoom={mapZoom}
                   mapType={mapType}
