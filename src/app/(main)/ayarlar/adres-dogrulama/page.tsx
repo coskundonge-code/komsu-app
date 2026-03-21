@@ -23,7 +23,7 @@ export default function AdresDogrulamaPage() {
       try {
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) return
-        const { data } = await supabase.from('neighborhood_members').select('is_verified').eq('user_id', user.id).single()
+        const { data } = await supabase.from('neighborhood_members').select('is_verified').eq('user_id', user.id).single() as any
         if (data?.is_verified) setStatus('verified')
       } catch { /* not verified */ }
     }
