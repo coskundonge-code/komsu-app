@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 
-const LeafletMap = dynamic(() => import("@/components/map/leaflet-map"), { ssr: false });
+const GoogleMap = dynamic(() => import("@/components/map/google-map"), { ssr: false });
 import {
   MapPin,
   Map,
@@ -185,7 +185,7 @@ export default function MahallePage() {
 
           {/* Map */}
           <div className="w-full h-48 rounded-lg overflow-hidden border border-border mb-6">
-            <LeafletMap
+            <GoogleMap
               center={[41.0422, 29.0050]}
               zoom={15}
               className="w-full h-full"
