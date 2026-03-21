@@ -101,6 +101,13 @@ export default function AyarlarPage() {
 
   const settingsSections = [
     {
+      icon: <MapPin className="w-5 h-5" />,
+      title: "Adres Doğrulama",
+      description: "Adresinizi doğrulayarak komşularınızla güvenli iletişim kurun",
+      href: "/ayarlar/adres-dogrulama",
+      color: "bg-emerald-50",
+    },
+    {
       icon: <Bell className="w-5 h-5" />,
       title: "Bildirim Ayarları",
       description: "E-posta ve push bildirimleri yönetin",
