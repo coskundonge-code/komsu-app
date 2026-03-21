@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Mahallemiz Kart | Mahallemiz',
+  title: 'Mahallemiz Kart',
   description: 'Dijital mahalle kartınızla yerel esnaflardan indirim kazanın, puan biriktirin ve askıda bağış yapın.',
 }
 
