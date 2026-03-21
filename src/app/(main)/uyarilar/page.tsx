@@ -29,7 +29,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
 
-const LeafletMap = dynamic(() => import('@/components/map/leaflet-map'), { ssr: false });
+const LeafletMap = dynamic(() => import('@/components/map/google-map'), { ssr: false });
 
 interface Alert {
   id: string;
