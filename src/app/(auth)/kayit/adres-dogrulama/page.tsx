@@ -5,7 +5,7 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { ChevronRight, MapPin, Building2 } from 'lucide-react'
 
-const LeafletMap = dynamic(() => import('@/components/map/leaflet-map'), { ssr: false })
+const GoogleMap = dynamic(() => import('@/components/map/google-map'), { ssr: false })
 
 interface District {
   name: string
@@ -371,7 +371,7 @@ export default function AddressVerificationPage() {
 
             {/* Map */}
             <div className="w-full h-48 rounded-xl overflow-hidden border border-border">
-              <LeafletMap
+              <GoogleMap
                 center={[41.0370, 28.9850]}
                 zoom={13}
                 className="w-full h-full"
