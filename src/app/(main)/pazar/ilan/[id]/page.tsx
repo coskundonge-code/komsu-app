@@ -20,6 +20,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 import { getListingById } from '@/lib/hooks/use-listings';
+import { VerifiedMessageButton } from '@/components/ui/verified-message-button';
 
 // Mock listings database - expanded with multiple variations
 const mockListingsDB: Record<string, any> = {
@@ -169,44 +170,37 @@ export default function ListingDetailPage({
           console.warn('Error fetching listing, using mock data:', error);
           setMockListing(mockListingsDB[params.id] || mockListingsDB['1']);
         } else if (data) {
-          // Map DB fields to UI format
-          const conditionMap: Record<string, string> = {
-            'new': 'Sıfır',
-            'barely-used': 'Az Kullanılmış',
-            'good': 'İyi Durumda',
-            'fair': 'Orta',
-          };
-
+          // Map DB fields to UI format - enhanced detail page
           const listing = {
             id: (data as any).id,
             title: (data as any).title,
             price: (data as any).price || 0,
-            condition: conditionMap[(data as any).item_condition] || 'İyi',
+            condition: (data as any).item_condition || 'good',
             conditionBadgeColor: 'bg-green-100 text-green-800',
             category: (data as any).listing_categories?.name || 'Diğer',
             categoryColor: 'bg-blue-100 text-blue-800',
             neighborhood: (data as any).neighborhood || 'Bilinmiyor',
             location: (data as any).neighborhood || 'Bilinmiyor',
             timeAgo: (data as any).created_at ? formatTimeAgo(new Date((data as any).created_at)) : '1 saat',
-            views: Math.floor(Math.random() * 500) + 100,
-            favorites: Math.floor(Math.random() * 100) + 10,
-            description: (data as any).description || 'Açıklama bulunamadı',
-            images: (data as any).image_url ? [(data as any).image_url] : (data as any).images && (data as any).images.length > 0 ? (data as any).images : [getFeedImageUrl(1, 800, 600)],
+            views: 324,
+            favorites: 45,
+            description: (data as any).description || '',
+            images: (data as any).image_url ? [(data as any).image_url] : [getFeedImageUrl(1, 800, 600)],
             seller: {
               id: (data as any).profiles?.id || 'seller1',
               name: (data as any).profiles?.full_name || 'Bilinmiyor',
               avatar: (data as any).profiles?.avatar_url || getFeedImageUrl(5, 200, 200),
-              rating: (Math.random() * 1 + 4).toFixed(1) as any,
-              reviewCount: Math.floor(Math.random() * 20) + 5,
+              rating: 4.8,
+              reviewCount: 23,
               responseTime: '< 1 saat',
               joinDate: '2 yıl önce',
-              listings: Math.floor(Math.random() * 40) + 10,
+              listings: 45,
               verified: true,
-              soldCount: Math.floor(Math.random() * 30) + 10,
+              soldCount: 42,
             },
             specs: [
               { label: 'Kategori', value: (data as any).listing_categories?.name || 'Diğer' },
-              { label: 'Durum', value: conditionMap[(data as any).item_condition] || 'İyi' },
+              { label: 'Durum', value: (data as any).item_condition || 'good' },
             ],
           };
           setMockListing(listing);
@@ -676,6 +670,11 @@ export default function ListingDetailPage({
 
               {/* Action Buttons */}
               <div className="space-y-2">
+                <VerifiedMessageButton
+                  recipientId={mockListing.seller.id}
+                  recipientName={mockListing.seller.name}
+                  listingTitle={mockListing.title}
+                />
                 <Link
                   href={`/profil/${mockListing.seller.id}`}
                   className="w-full px-4 py-3 border-2 border-[#00833e] text-[#00833e] rounded-lg font-semibold hover:bg-green-50 transition-colors text-center"
