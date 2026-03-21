@@ -605,23 +605,25 @@ export default function OduncKiralaPage() {
                       key={listing.id}
                       className="bg-surface rounded-lg shadow-sm border border-border overflow-hidden hover:shadow-lg transition-shadow duration-200 group"
                     >
-                      {/* Image Container */}
-                      <div className="relative aspect-square overflow-hidden bg-background">
-                        <Image
-                          src={listing.image}
-                          alt={listing.title}
-                          fill
-                          unoptimized
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                        />
-                        {/* Type Badge */}
-                        <span className={cn(
-                          'absolute top-3 left-3 text-white text-xs font-bold px-3 py-1 rounded-md',
-                          listing.type === 'free' ? 'bg-primary' : 'bg-[#ff9500]'
-                        )}>
-                          {typeLabel(listing.type)}
-                        </span>
-                      </div>
+                      {/* Image Container - Clickable */}
+                      <Link href={`/odunc-kirala/${listing.id}`}>
+                        <div className="relative aspect-square overflow-hidden bg-background">
+                          <Image
+                            src={listing.image}
+                            alt={listing.title}
+                            fill
+                            unoptimized
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                          />
+                          {/* Type Badge */}
+                          <span className={cn(
+                            'absolute top-3 left-3 text-white text-xs font-bold px-3 py-1 rounded-md',
+                            listing.type === 'free' ? 'bg-primary' : 'bg-[#ff9500]'
+                          )}>
+                            {typeLabel(listing.type)}
+                          </span>
+                        </div>
+                      </Link>
 
                       {/* Content */}
                       <div className="p-4">
@@ -630,10 +632,12 @@ export default function OduncKiralaPage() {
                           <p className="text-lg font-bold text-primary">{priceLabel(listing)}</p>
                         </div>
 
-                        {/* Title */}
-                        <p className="text-sm text-text-secondary line-clamp-2 mb-3 leading-snug font-semibold">
-                          {listing.title}
-                        </p>
+                        {/* Title - Clickable */}
+                        <Link href={`/odunc-kirala/${listing.id}`} className="block">
+                          <p className="text-sm text-text-secondary line-clamp-2 mb-3 leading-snug font-semibold hover:text-primary transition-colors">
+                            {listing.title}
+                          </p>
+                        </Link>
 
                         {/* Owner Info */}
                         <div className="flex items-center gap-2 mb-3">
@@ -664,13 +668,21 @@ export default function OduncKiralaPage() {
                           <span className="text-xs text-text-muted">({listing.reviewCount})</span>
                         </div>
 
-                        {/* Action Button */}
-                        <button
-                          onClick={() => openRequestModal(listing.id)}
-                          className="w-full px-4 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary-hover transition-colors"
-                        >
-                          Talep Gönder
-                        </button>
+                        {/* Action Buttons */}
+                        <div className="space-y-2">
+                          <Link
+                            href={`/odunc-kirala/${listing.id}`}
+                            className="block w-full px-4 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary-hover transition-colors text-center"
+                          >
+                            Detayları Gör
+                          </Link>
+                          <button
+                            onClick={() => openRequestModal(listing.id)}
+                            className="w-full px-4 py-2.5 border border-primary text-primary rounded-lg text-sm font-semibold hover:bg-primary-light transition-colors"
+                          >
+                            Talep Gönder
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
