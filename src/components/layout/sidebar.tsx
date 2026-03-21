@@ -17,7 +17,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 const primaryNavItems = [
   { icon: Home, label: 'Ana Sayfa', href: '/' },
   { icon: Compass, label: 'Keşfet', href: '/kesfet' },
-  { icon: Newspaper, label: 'Yerel Haberler', href: '/kesfet' },
+  { icon: Newspaper, label: 'Yerel Haberler', href: '/yerel-haberler' },
   { icon: AlertTriangle, label: 'Uyarılar', href: '/uyarilar' },
   { icon: ShoppingBag, label: 'Satılık & Ücretsiz', href: '/pazar' },
   { icon: Repeat, label: 'Kirala & Ödünç Ver', href: '/odunc-kirala' },
