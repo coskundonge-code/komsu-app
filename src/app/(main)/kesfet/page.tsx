@@ -24,6 +24,9 @@ import {
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
+import dynamic from "next/dynamic";
+const GoogleMap = dynamic(() => import("@/components/map/google-map"), { ssr: false });
+
 interface ActivityItem {
   id: string;
   title: string;
@@ -502,48 +505,21 @@ export default function KesfetPage() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-6">
-        {/* Fullscreen Map Placeholder Section */}
+        {/* Interactive Map Section */}
         <div className="mb-6 rounded-lg overflow-hidden border border-border bg-surface">
-          <div className="relative h-80 md:h-96 bg-gradient-to-br from-primary to-[#004d23] overflow-hidden">
-            {/* Grid pattern background */}
-            <svg className="absolute inset-0 w-full h-full opacity-5" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <defs>
-                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                  <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" strokeWidth="0.5" />
-                </pattern>
-              </defs>
-              <rect width="100" height="100" fill="url(#grid)" />
-            </svg>
-
-            {/* Location Cards on Map */}
-            {locationCards.map((card) => (
-              <div
-                key={card.id}
-                className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer"
-                style={{ top: card.top, left: card.left }}
-              >
-                <div className="relative">
-                  {/* Pulsing ring */}
-                  <div className={`absolute inset-0 ${card.color} rounded-full opacity-30 animate-pulse`} style={{ width: "32px", height: "32px", margin: "-16px 0 0 -16px" }} />
-                  {/* Pin */}
-                  <div className={`relative w-8 h-8 ${card.color} rounded-full border-2 border-white shadow-lg flex items-center justify-center text-white`}>
-                    {card.icon}
-                  </div>
-                </div>
-                {/* Tooltip on hover */}
-                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 bg-black bg-opacity-80 text-white px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 hover:opacity-100 transition-opacity z-20 pointer-events-none">
-                  {card.title} • {card.distance}
-                </div>
-              </div>
-            ))}
-
-            {/* Center message */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-              <MapPin size={48} className="text-white mb-3 opacity-90" />
-              <p className="text-white font-bold text-lg text-center px-4">Mahalleni Harita Üzerinde Keşfet</p>
-              <p className="text-white text-sm opacity-80 mt-2">Yakındaki etkinlikleri ve işletmeleri görmek için tıklayın</p>
-            </div>
-          </div>
+          <GoogleMap
+            center={[41.0082, 28.9784]}
+            zoom={13}
+            className="w-full h-80 md:h-96"
+            showUserLocation={true}
+            interactive={true}
+            markers={[
+              { lat: 41.0082, lng: 28.9784, title: "Mahalle Merkezi", color: "green" },
+              { lat: 41.0122, lng: 28.9760, title: "Park Yenileme Projesi", color: "blue" },
+              { lat: 41.0050, lng: 28.9820, title: "Yeni Kafe", color: "orange" },
+              { lat: 41.0100, lng: 28.9840, title: "Güvenlik Uyarısı", color: "red" },
+            ]}
+          />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
