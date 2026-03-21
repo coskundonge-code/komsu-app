@@ -5,7 +5,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 
-const LeafletMap = dynamic(() => import('@/components/map/leaflet-map'), { ssr: false });
+const GoogleMap = dynamic(() => import('@/components/map/google-map'), { ssr: false });
 import {
   Star,
   MapPin,
@@ -531,7 +531,7 @@ export default function BusinessDetailPage({ params }: PageProps) {
                         Konum
                       </h3>
                       <div className="w-full h-64 rounded-lg overflow-hidden border border-[#d9d9d9]">
-                        <LeafletMap
+                        <GoogleMap
                           center={[41.0422, 29.0050]}
                           zoom={15}
                           className="w-full h-full"
