@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
@@ -17,9 +17,12 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
+import { getListingById } from '@/lib/hooks/use-listings';
+import { VerifiedMessageButton } from '@/components/ui/verified-message-button';
 
 interface ListingDetail {
   id: string;
+  ownerId: string;
   title: string;
   type: 'free' | 'hourly' | 'daily';
   price?: number;
@@ -52,6 +55,7 @@ interface ListingDetail {
 
 const mockListingDetail: ListingDetail = {
   id: '1',
+  ownerId: 'owner1',
   title: 'Bosch Matkap - Profesyonel Model',
   type: 'hourly',
   price: 15,
@@ -122,8 +126,53 @@ export default function ListingDetailPage({ params }: { params: { id: string } }
   const [selectedDate, setSelectedDate] = useState('');
   const [duration, setDuration] = useState('');
   const [message, setMessage] = useState('');
+  const [listing, setListing] = useState<ListingDetail>(mockListingDetail);
+  const [loading, setLoading] = useState(true);
 
-  const listing = mockListingDetail;
+  useEffect(() => {
+    const fetchListing = async () => {
+      try {
+        const { data, error } = await getListingById(params.id);
+        if (error) {
+          console.error('Error fetching listing:', error);
+          setListing(mockListingDetail);
+        } else if (data) {
+          const formattedListing: ListingDetail = {
+            id: (data as any).id,
+            ownerId: (data as any).user_id || (data as any).owner_id || 'owner1',
+            title: (data as any).title,
+            type: (data as any).rental_type === 'free' ? 'free' : ((data as any).rental_type === 'hourly' ? 'hourly' : 'daily'),
+            price: (data as any).price || undefined,
+            images: [(data as any).image_url || getFeedImageUrl(1, 600, 600), getFeedImageUrl(2, 600, 600), getFeedImageUrl(3, 600, 600)],
+            location: (data as any).location || 'Bilinmiyor',
+            neighborhood: (data as any).neighborhood || 'Bilinmiyor',
+            distance: '0 km',
+            description: (data as any).description || 'Açıklama bulunmamaktadır.',
+            ownerName: (data as any).profiles?.full_name || 'Üye',
+            ownerAvatar: (data as any).profiles?.avatar_url || getAvatarUrl('Owner', 0),
+            ownerRating: 4.5,
+            ownerReviewCount: 0,
+            ownerMemberSince: new Date((data as any).created_at).getFullYear().toString(),
+            rating: 4.5,
+            reviewCount: 0,
+            category: (data as any).listing_categories?.name || 'Diğer',
+            condition: (data as any).condition || 'İyi',
+            pickupLocation: (data as any).location || 'Belirtilmedi',
+            availability: 'Hemen',
+            rules: [],
+            similarItems: [],
+          };
+          setListing(formattedListing);
+        }
+      } catch (err) {
+        console.error('Failed to fetch listing:', err);
+        setListing(mockListingDetail);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchListing();
+  }, [params.id]);
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % listing.images.length);
@@ -324,9 +373,16 @@ export default function ListingDetailPage({ params }: { params: { id: string } }
                 </div>
               </div>
 
-              <button className="w-full px-4 py-2.5 border border-[#e0e0e0] bg-white text-[#333] rounded-lg text-sm font-semibold hover:bg-[#f0f2f5] transition-colors">
-                Profili Ziyaret Et
-              </button>
+              <div className="space-y-2">
+                <VerifiedMessageButton
+                  recipientId={listing.ownerId}
+                  recipientName={listing.ownerName}
+                  listingTitle={listing.title}
+                />
+                <button className="w-full px-4 py-2.5 border border-[#e0e0e0] bg-white text-[#333] rounded-lg text-sm font-semibold hover:bg-[#f0f2f5] transition-colors">
+                  Profili Ziyaret Et
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -20,6 +20,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 import { getListingById } from '@/lib/hooks/use-listings';
+import { VerifiedMessageButton } from '@/components/ui/verified-message-button';
 
 // Mock listings database - expanded with multiple variations
 const mockListingsDB: Record<string, any> = {
@@ -669,6 +670,11 @@ export default function ListingDetailPage({
 
               {/* Action Buttons */}
               <div className="space-y-2">
+                <VerifiedMessageButton
+                  recipientId={mockListing.seller.id}
+                  recipientName={mockListing.seller.name}
+                  listingTitle={mockListing.title}
+                />
                 <Link
                   href={`/profil/${mockListing.seller.id}`}
                   className="w-full px-4 py-3 border-2 border-[#00833e] text-[#00833e] rounded-lg font-semibold hover:bg-green-50 transition-colors text-center"
