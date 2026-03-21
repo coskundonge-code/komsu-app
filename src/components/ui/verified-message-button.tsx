@@ -162,9 +162,11 @@ export function VerifiedMessageButton({
 
           .insert({
 
+            type: 'direct',
+
             title: `Chat with ${recipientName}`,
 
-          })
+          } as any)
 
           .select('id')
 
