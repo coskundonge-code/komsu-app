@@ -2,17 +2,17 @@ import type { Metadata } from "next";
 import { generatePageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "Kariyer | Mahallemiz",
+  title: 'Kariyer',
   description:
     "Mahallemiz Kariyer. Ekibimize katılın ve mahalle topluluklarını güçlendirmeye yardımcı olun.",
   openGraph: {
     url: "https://mahallem.com/kariyer",
-    title: "Kariyer | Mahallemiz",
+    title: 'Kariyer',
     description:
       "Mahallemiz Kariyer. Ekibimize katılın ve mahalle topluluklarını güçlendirmeye yardımcı olun.",
   },
   twitter: {
-    title: "Kariyer | Mahallemiz",
+    title: 'Kariyer',
     description:
       "Mahallemiz Kariyer. Ekibimize katılın ve mahalle topluluklarını güçlendirmeye yardımcı olun.",
   },
