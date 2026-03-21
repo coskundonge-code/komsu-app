@@ -2,17 +2,17 @@ import type { Metadata } from "next";
 import { generatePageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "KVKK | Mahallemiz",
+  title: 'KVKK',
   description:
     "Mahallemiz KVKK Aydınlatma Metni. Kişisel verilerinizin korunması hakkında bilgi edinin.",
   openGraph: {
     url: "https://mahallem.com/kvkk",
-    title: "KVKK | Mahallemiz",
+    title: 'KVKK',
     description:
       "Mahallemiz KVKK Aydınlatma Metni. Kişisel verilerinizin korunması hakkında bilgi edinin.",
   },
   twitter: {
-    title: "KVKK | Mahallemiz",
+    title: 'KVKK',
     description:
       "Mahallemiz KVKK Aydınlatma Metni. Kişisel verilerinizin korunması hakkında bilgi edinin.",
   },
