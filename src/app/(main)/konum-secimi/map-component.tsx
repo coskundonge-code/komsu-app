@@ -1,118 +1,106 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyChvjDjaC6DH14E1swB3dAKP2AObo5rCT8'
-
-interface GoogleMapProps {
+interface MapComponentProps {
   center: { lat: number; lng: number }
   zoom: number
   markerPosition?: { lat: number; lng: number } | null
   circleRadius?: number
 }
 
-declare global {
-  interface Window {
-    google: any
-    initGoogleMap: () => void
-  }
+const greenIcon = L.divIcon({
+  html: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#00833e" width="36" height="36" stroke="white" stroke-width="1"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>',
+  className: '',
+  iconSize: [36, 36],
+  iconAnchor: [18, 36],
+})
+
+const TILE_LAYERS = {
+  satellite: {
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attribution: '&copy; Esri, Maxar, Earthstar Geographics',
+  },
+  labels: {
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+    attribution: '',
+  },
 }
 
-export default function MapComponent({ center, zoom, markerPosition, circleRadius }: GoogleMapProps) {
-  const mapRef = useRef<HTMLDivElement>(null)
-  const googleMapRef = useRef<any>(null)
-  const markerRef = useRef<any>(null)
-  const circleRef = useRef<any>(null)
-  const [loaded, setLoaded] = useState(false)
+export default function MapComponent({ center, zoom, markerPosition, circleRadius }: MapComponentProps) {
+  const mapRef = useRef<L.Map | null>(null)
+  const markerRef = useRef<L.Marker | null>(null)
+  const circleRef = useRef<L.Circle | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
+  // Initialize map
   useEffect(() => {
-    if (window.google?.maps) {
-      setLoaded(true)
-      return
-    }
+    if (!containerRef.current || mapRef.current) return
 
-    window.initGoogleMap = () => setLoaded(true)
+    const map = L.map(containerRef.current, {
+      center: [center.lat, center.lng],
+      zoom: zoom,
+      zoomControl: true,
+    })
 
-    const existing = document.querySelector('script[src*="maps.googleapis.com"]')
-    if (!existing) {
-      const script = document.createElement('script')
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&language=tr&callback=initGoogleMap`
-      script.async = true
-      script.defer = true
-      document.head.appendChild(script)
+    // Add satellite imagery
+    L.tileLayer(TILE_LAYERS.satellite.url, {
+      attribution: TILE_LAYERS.satellite.attribution,
+      maxZoom: 19,
+    }).addTo(map)
+
+    // Add labels overlay
+    L.tileLayer(TILE_LAYERS.labels.url, {
+      maxZoom: 19,
+      pane: 'overlayPane',
+    }).addTo(map)
+
+    mapRef.current = map
+
+    return () => {
+      map.remove()
+      mapRef.current = null
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Update center and zoom
   useEffect(() => {
-    if (!loaded || !mapRef.current) return
-
-    if (!googleMapRef.current) {
-      googleMapRef.current = new window.google.maps.Map(mapRef.current, {
-        center,
-        zoom,
-        mapTypeId: 'hybrid',
-        mapTypeControl: false,
-        streetViewControl: false,
-        fullscreenControl: true,
-        zoomControl: true,
-      })
+    if (mapRef.current) {
+      mapRef.current.flyTo([center.lat, center.lng], zoom, { duration: 0.8 })
     }
-  }, [loaded])
-
-  useEffect(() => {
-    if (!googleMapRef.current) return
-    googleMapRef.current.panTo(center)
-    googleMapRef.current.setZoom(zoom)
   }, [center, zoom])
 
+  // Update marker and circle
   useEffect(() => {
-    if (!googleMapRef.current) return
+    if (!mapRef.current) return
 
     if (markerRef.current) {
-      markerRef.current.setMap(null)
+      markerRef.current.remove()
       markerRef.current = null
     }
     if (circleRef.current) {
-      circleRef.current.setMap(null)
+      circleRef.current.remove()
       circleRef.current = null
     }
 
     if (markerPosition) {
-      markerRef.current = new window.google.maps.Marker({
-        position: markerPosition,
-        map: googleMapRef.current,
-        icon: {
-          path: window.google.maps.SymbolPath.CIRCLE,
-          scale: 10,
-          fillColor: '#00833e',
-          fillOpacity: 1,
-          strokeColor: 'white',
-          strokeWeight: 3,
-        },
-      })
+      markerRef.current = L.marker([markerPosition.lat, markerPosition.lng], { icon: greenIcon }).addTo(mapRef.current)
 
       if (circleRadius) {
-        circleRef.current = new window.google.maps.Circle({
-          center: markerPosition,
+        circleRef.current = L.circle([markerPosition.lat, markerPosition.lng], {
           radius: circleRadius,
-          map: googleMapRef.current,
           fillColor: '#00833e',
           fillOpacity: 0.08,
-          strokeColor: '#00833e',
-          strokeOpacity: 0.6,
-          strokeWeight: 2,
-        })
+          color: '#00833e',
+          opacity: 0.6,
+          weight: 2,
+        }).addTo(mapRef.current)
       }
     }
-  }, [markerPosition, circleRadius, loaded])
+  }, [markerPosition, circleRadius])
 
-  return (
-    <div ref={mapRef} className="w-full h-full rounded-xl" style={{ minHeight: '300px' }}>
-      {!loaded && (
-        <div className="w-full h-full flex items-center justify-center bg-[#1a1a2e] rounded-xl">
-          <div className="text-white/60 text-sm">Harita y\u00FCkleniyor...</div>
-        </div>
-      )}
-    </div>
-  )
+  return <div ref={containerRef} className="w-full h-full rounded-xl" style={{ minHeight: '300px' }} />
 }
