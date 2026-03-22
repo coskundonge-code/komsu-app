@@ -9,6 +9,7 @@ interface GoogleMapComponentProps {
   pinLat: number | null
   pinLng: number | null
   onMapClick: (lat: number, lng: number) => void
+  circleRadius?: number // meters - draws a circle around the pin
 }
 
 const MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''
@@ -45,10 +46,11 @@ const GREEN_MARKER_ICON = {
   anchor: null as any,
 }
 
-export default function GoogleMapComponent({ center, zoom, mapType, pinLat, pinLng, onMapClick }: GoogleMapComponentProps) {
+export default function GoogleMapComponent({ center, zoom, mapType, pinLat, pinLng, onMapClick, circleRadius }: GoogleMapComponentProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<google.maps.Map | null>(null)
   const markerRef = useRef<google.maps.Marker | null>(null)
+  const circleRef = useRef<google.maps.Circle | null>(null)
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
@@ -106,14 +108,32 @@ export default function GoogleMapComponent({ center, zoom, mapType, pinLat, pinL
       markerRef.current.setMap(null)
       markerRef.current = null
     }
+    if (circleRef.current) {
+      circleRef.current.setMap(null)
+      circleRef.current = null
+    }
     if (pinLat !== null && pinLng !== null) {
       markerRef.current = new google.maps.Marker({
         position: { lat: pinLat, lng: pinLng },
         map: mapRef.current,
         icon: GREEN_MARKER_ICON,
       })
+      // Draw radius circle if specified
+      if (circleRadius && circleRadius > 0) {
+        circleRef.current = new google.maps.Circle({
+          map: mapRef.current,
+          center: { lat: pinLat, lng: pinLng },
+          radius: circleRadius,
+          fillColor: '#00833e',
+          fillOpacity: 0.08,
+          strokeColor: '#00833e',
+          strokeOpacity: 0.6,
+          strokeWeight: 2,
+          clickable: false,
+        })
+      }
     }
-  }, [pinLat, pinLng])
+  }, [pinLat, pinLng, circleRadius])
 
   useEffect(() => {
     if (!mapRef.current) return
