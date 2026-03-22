@@ -88,12 +88,12 @@ export function AddressVerificationBanner({
           <div className="mt-3 mb-3">
             <div className="flex items-center justify-between text-xs text-blue-600 mb-1">
               <span>Süre</span>
-              <span>{daysRemaining}/30 gün</span>
+              <span>{daysRemaining}/7 gün</span>
             </div>
             <div className="w-full bg-blue-200 rounded-full h-1.5">
               <div
                 className={`h-1.5 rounded-full transition-all ${daysRemaining <= 10 ? 'bg-red-500' : 'bg-blue-500'}`}
-                style={{ width: `${((30 - daysRemaining) / 30) * 100}%` }}
+                style={{ width: `${((7 - daysRemaining) / 7) * 100}%` }}
               />
             </div>
           </div>
