@@ -54,7 +54,7 @@ export default function GirisPage() {
       const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
 
       if (authError) {
-        setError(authError.message === 'Invalid login credentials' ? "E-posta veya Åifre hatalÄ±." : authError.message)
+        setError(authError.message === 'Invalid login credentials' ? "E-posta veya Şifre hatalı." : authError.message)
         return
       }
 
@@ -64,7 +64,7 @@ export default function GirisPage() {
       // Full page reload to ensure middleware runs (not client-side cache)
       window.location.href = '/'
     } catch {
-      setError("Bir hata oluÅtu. LÃ¼tfen tekrar deneyin.")
+      setError("Bir hata oluştu. Lütfen tekrar deneyin.")
     } finally {
       setIsLoading(false)
     }
@@ -80,7 +80,7 @@ export default function GirisPage() {
       })
       if (error) setError(error.message)
     } catch {
-      setError("Google ile giriÅ baÅarÄ±sÄ±z oldu.")
+      setError("Google ile giriş başarısız oldu.")
     } finally {
       setIsLoading(false)
     }
@@ -88,7 +88,7 @@ export default function GirisPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Ãst Bar */}
+      {/* Üst Bar */}
       <div className="w-full bg-surface border-b border-border px-6 py-3">
         <div className="max-w-[480px] mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
@@ -101,24 +101,24 @@ export default function GirisPage() {
             href="/kayit"
             className="text-sm font-semibold text-primary hover:text-primary-hover transition"
           >
-            KayÄ±t Ol
+            Kayıt Ol
           </Link>
         </div>
       </div>
 
-      {/* Ana Ä°Ã§erik */}
+      {/* Ana İçerik */}
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-[480px]">
           {/* Kart */}
           <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden">
             {/* Header */}
             <div className="px-8 pt-8 pb-4 text-center">
-              <h1 className="text-2xl font-bold text-text-primary mb-1">Tekrar HoÅ Geldiniz</h1>
-              <p className="text-sm text-text-muted">Mahallenizle baÄlantÄ±da kalÄ±n</p>
+              <h1 className="text-2xl font-bold text-text-primary mb-1">Tekrar Hoş Geldiniz</h1>
+              <p className="text-sm text-text-muted">Mahallenizle bağlantıda kalın</p>
             </div>
 
             <div className="px-8 pb-8">
-              {/* Hata MesajÄ± */}
+              {/* Hata Mesajı */}
               {error && (
                 <div className="mb-5 p-3.5 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-start gap-2.5">
                   <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
@@ -126,7 +126,7 @@ export default function GirisPage() {
                 </div>
               )}
 
-              {/* Google ile GiriÅ */}
+              {/* Google ile Giriş */}
               <button
                 onClick={handleGoogleSignIn}
                 disabled={isLoading}
@@ -138,7 +138,7 @@ export default function GirisPage() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                     </svg>
-                    <span>BaÄlanÄ±yor...</span>
+                    <span>Bağlanıyor...</span>
                   </>
                 ) : (
                   <>
@@ -148,12 +148,12 @@ export default function GirisPage() {
                       <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                       <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                     </svg>
-                    <span>Google ile giriÅ yap</span>
+                    <span>Google ile giriş yap</span>
                   </>
                 )}
               </button>
 
-              {/* AyÄ±rÄ±cÄ± */}
+              {/* Ayırıcı */}
               <div className="relative mb-5">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-border" />
@@ -196,17 +196,17 @@ export default function GirisPage() {
                   )}
                 </div>
 
-                {/* Åifre */}
+                {/* Şifre */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <label htmlFor="password" className="block text-sm font-semibold text-text-primary">
-                      Åifre
+                      Şifre
                     </label>
                     <Link
                       href="/sifre-sifirla"
                       className="text-xs text-primary hover:text-primary-hover font-semibold transition"
                     >
-                      Åifremi unuttum
+                      Şifremi unuttum
                     </Link>
                   </div>
                   <div className="relative">
@@ -216,7 +216,7 @@ export default function GirisPage() {
                       type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={(e) => { setPassword(e.target.value); if (passwordError) setPasswordError('') }}
-                      placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"
+                      placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"
                       disabled={isLoading}
                       aria-invalid={!!passwordError}
                       aria-describedby={passwordError ? 'password-error' : undefined}
@@ -231,7 +231,7 @@ export default function GirisPage() {
                       onClick={() => setShowPassword(!showPassword)}
                       disabled={isLoading}
                       className="absolute right-3.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary transition disabled:cursor-not-allowed"
-                      aria-label={showPassword ? 'Åifreyi gizle' : 'Åifreyi gÃ¶ster'}
+                      aria-label={showPassword ? 'Şifreyi gizle' : 'Şifreyi göster'}
                     >
                       {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
                     </button>
@@ -244,7 +244,7 @@ export default function GirisPage() {
                   )}
                 </div>
 
-                {/* Beni HatÄ±rla */}
+                {/* Beni Hatırla */}
                 <div className="flex items-center gap-2.5">
                   <input
                     id="rememberMe"
@@ -255,11 +255,11 @@ export default function GirisPage() {
                     className="w-4 h-4 rounded border-border text-primary focus:ring-primary cursor-pointer accent-[#00833e]"
                   />
                   <label htmlFor="rememberMe" className="text-sm text-text-muted cursor-pointer">
-                    Beni hatÄ±rla
+                    Beni hatırla
                   </label>
                 </div>
 
-                {/* GiriÅ Butonu */}
+                {/* Giriş Butonu */}
                 <button
                   type="submit"
                   disabled={isLoading}
@@ -271,35 +271,35 @@ export default function GirisPage() {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
-                      GiriÅ yapÄ±lÄ±yor...
+                      Giriş yapılıyor...
                     </span>
                   ) : (
-                    "GiriÅ Yap"
+                    "Giriş Yap"
                   )}
                 </button>
               </form>
 
-              {/* KayÄ±t linki */}
+              {/* Kayıt linki */}
               <div className="mt-6 pt-6 border-t border-border text-center">
                 <p className="text-sm text-text-muted">
-                  HesabÄ±nÄ±z yok mu?{' '}
+                  Hesabınız yok mu?{' '}
                   <Link href="/kayit" className="text-primary hover:text-primary-hover font-semibold transition">
-                    KayÄ±t olun
+                    Kayıt olun
                   </Link>
                 </p>
               </div>
             </div>
           </div>
 
-          {/* GÃ¼venlik rozetleri */}
+          {/* Güvenlik rozetleri */}
           <div className="flex items-center justify-center gap-6 mt-6 text-xs text-text-muted">
             <span className="flex items-center gap-1.5">
               <Shield className="w-3.5 h-3.5" />
-              GÃ¼venli baÄlantÄ±
+              Güvenli bağlantı
             </span>
             <span className="flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5" />
-              50.000+ komÅu
+              50.000+ komşu
             </span>
             <span className="flex items-center gap-1.5">
               <MapPin className="w-3.5 h-3.5" />
