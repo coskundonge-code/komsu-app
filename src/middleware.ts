@@ -1,6 +1,6 @@
 import { type NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { updateSession, checkIsAdmin } from '@/lib/supabase/middleware'
+import { updateSession } from '@/lib/supabase/middleware'
 
 const publicRoutes = [
   '/',
@@ -20,10 +20,6 @@ const publicRoutes = [
   '/iletisim',
   '/kariyer',
   '/yardim',
-]
-
-const adminRoutes = [
-  '/admin',
 ]
 
 const locationExemptRoutes = [
@@ -55,29 +51,14 @@ function matchesRoute(path: string, routes: string[]): boolean {
 }
 
 export async function middleware(request: NextRequest) {
-  const { response, user, supabase } = await updateSession(request)
+  const { response, user } = await updateSession(request)
   const path = request.nextUrl.pathname
 
   if (path.startsWith('/api/')) {
     return response
   }
 
-  if (matchesRoute(path, adminRoutes)) {
-    if (!user) {
-      const loginUrl = request.nextUrl.clone()
-      loginUrl.pathname = '/giris'
-      loginUrl.searchParams.set('next', path)
-      return NextResponse.redirect(loginUrl)
-    }
-    const isAdmin = await checkIsAdmin(supabase, user.id)
-    if (!isAdmin) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/'
-      return NextResponse.redirect(url)
-    }
-    return response
-  }
-
+  // Public routes - allow access but check location for logged-in users
   if (matchesRoute(path, publicRoutes)) {
     if (user && !matchesRoute(path, locationExemptRoutes)) {
       const metadata = user.user_metadata || {}
@@ -103,6 +84,7 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
+  // Protected routes - require login
   if (!user) {
     const loginUrl = request.nextUrl.clone()
     loginUrl.pathname = '/giris'
