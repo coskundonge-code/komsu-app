@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
 const publicRoutes = [
-  '/',
   '/giris',
   '/kayit',
   '/sifre-sifirla',
