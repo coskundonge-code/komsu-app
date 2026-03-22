@@ -11,6 +11,7 @@ interface MapComponentProps {
   pinLat: number | null
   pinLng: number | null
   onMapClick: (lat: number, lng: number) => void
+  circleRadius?: number
 }
 
 // Fix Leaflet default icon issue in Next.js
@@ -45,9 +46,10 @@ const TILE_LAYERS = {
   },
 }
 
-export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, onMapClick }: MapComponentProps) {
+export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, onMapClick, circleRadius }: MapComponentProps) {
   const mapRef = useRef<L.Map | null>(null)
   const markerRef = useRef<L.Marker | null>(null)
+  const circleRef = useRef<L.Circle | null>(null)
   const tileLayerRef = useRef<L.TileLayer | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -76,6 +78,18 @@ export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, on
     // Place initial pin if exists
     if (pinLat !== null && pinLng !== null) {
       markerRef.current = L.marker([pinLat, pinLng], { icon: greenIcon }).addTo(map)
+    }
+
+    // Add circle if radius provided
+    if (circleRadius && pinLat !== null && pinLng !== null) {
+      circleRef.current = L.circle([pinLat, pinLng], {
+        radius: circleRadius,
+        fillColor: '#00833e',
+        fillOpacity: 0.08,
+        color: '#00833e',
+        opacity: 0.6,
+        weight: 2,
+      }).addTo(map)
     }
 
     return () => {
@@ -107,19 +121,39 @@ export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, on
     }).addTo(mapRef.current)
   }, [mapType])
 
-  // Update marker
+  // Update marker and circle
   useEffect(() => {
     if (!mapRef.current) return
 
+    // Remove old marker
     if (markerRef.current) {
       markerRef.current.remove()
       markerRef.current = null
     }
 
+    // Remove old circle
+    if (circleRef.current) {
+      circleRef.current.remove()
+      circleRef.current = null
+    }
+
+    // Add new marker
     if (pinLat !== null && pinLng !== null) {
       markerRef.current = L.marker([pinLat, pinLng], { icon: greenIcon }).addTo(mapRef.current)
+
+      // Add new circle if radius provided
+      if (circleRadius) {
+        circleRef.current = L.circle([pinLat, pinLng], {
+          radius: circleRadius,
+          fillColor: '#00833e',
+          fillOpacity: 0.08,
+          color: '#00833e',
+          opacity: 0.6,
+          weight: 2,
+        }).addTo(mapRef.current)
+      }
     }
-  }, [pinLat, pinLng])
+  }, [pinLat, pinLng, circleRadius])
 
   // Update click handler
   useEffect(() => {
