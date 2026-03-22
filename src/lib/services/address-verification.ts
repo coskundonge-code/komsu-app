@@ -30,14 +30,14 @@ export interface VerificationRecord {
 }
 
 /**
- * Doğrulama işlemini başlatır ve 30 günlük süre belirlenir
+ * Doğrulama işlemini başlatır ve 7 günlük süre belirlenir
  * @param userId - Kullanıcı ID'si
  * @returns Yeni doğrulama kaydı
  */
 export async function initiateVerification(userId: string): Promise<VerificationRecord> {
   // Veritabanında doğrulama kaydı oluştur
   const now = new Date();
-  const expiryDate = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 gün sonra
+  const expiryDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 gün sonra
 
   const verificationRecord: VerificationRecord = {
     id: `verification_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
