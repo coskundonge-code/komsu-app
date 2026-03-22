@@ -89,6 +89,7 @@ export default function KonumSecimi() {
       setError('Lütfen tüm zorunlu alanları doldurun.')
       return
     }
+
     if (formData.postaKodu.length !== 5 || !/^\d{5}$/.test(formData.postaKodu)) {
       setError('Lütfen geçerli bir 5 haneli posta kodu girin.')
       return
@@ -99,15 +100,23 @@ export default function KonumSecimi() {
 
     try {
       const fullAddress = `${formData.mahalle} Mah. ${formData.cadde} ${formData.binaNo}, ${formData.ilce.name}, ${formData.il.name}, Türkiye`
+
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fullAddress)}&key=AIzaSyChvjDjaC6DH14E1swB3dAKP2AObo5rCT8&components=country:TR&language=tr`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}&countrycodes=tr&limit=1&accept-language=tr`,
+        { headers: { 'User-Agent': 'Mahallemiz/1.0' } }
       )
+
       if (!response.ok) throw new Error('Geocoding request failed')
+
       const data = await response.json()
 
-      if (data.results && data.results.length > 0) {
-        const result = data.results[0]
-        const loc = { lat: result.geometry.location.lat, lng: result.geometry.location.lng, address: result.formatted_address }
+      if (data && data.length > 0) {
+        const result = data[0]
+        const loc = {
+          lat: parseFloat(result.lat),
+          lng: parseFloat(result.lon),
+          address: result.display_name
+        }
         setLocation(loc)
         setMapCenter({ lat: loc.lat, lng: loc.lng })
         setMapZoom(17)
