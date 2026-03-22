@@ -1,6 +1,7 @@
 'use client'
 
 import { Sun, Cloud, CloudRain, CloudDrizzle } from 'lucide-react'
+import { useCurrentUser } from '@/lib/hooks/use-auth'
 
 interface WeatherDay {
   date: string
@@ -68,6 +69,11 @@ const WeatherIcon = ({ icon }: { icon: string }) => {
 }
 
 export function WeatherWidget() {
+  const { user } = useCurrentUser()
+  const metadata = user?.user_metadata
+  const dynamicLocation = metadata?.il && metadata?.ilce
+    ? `${metadata.il}, ${metadata.ilce}`
+    : weatherData.current.location
   return (
     <div className="bg-surface rounded-lg shadow-sm border border-border overflow-hidden">
       <div className="p-4">
@@ -79,7 +85,7 @@ export function WeatherWidget() {
           {/* Location & Temp */}
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[13px] font-medium text-text-primary">{weatherData.current.location}</p>
+              <p className="text-[13px] font-medium text-text-primary">{dynamicLocation}</p>
               <p className="text-[12px] text-text-muted">{weatherData.current.condition}</p>
             </div>
             <div className="flex items-center">
