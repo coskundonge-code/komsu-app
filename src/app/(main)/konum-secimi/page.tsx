@@ -69,17 +69,19 @@ export default function KonumSecimi() {
   // Debounce timer ref for cadde search
   const caddeTimerRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Filter provinces
+  // Filter provinces (sorted alphabetically with Turkish locale)
+  const sortedProvinces = [...provinces].sort((a, b) => a.name.localeCompare(b.name, 'tr'))
   const filteredProvinces = ilSearch
-    ? provinces.filter(p => p.name.toLocaleLowerCase('tr').includes(ilSearch.toLocaleLowerCase('tr')))
-    : provinces
+    ? sortedProvinces.filter(p => p.name.toLocaleLowerCase('tr').includes(ilSearch.toLocaleLowerCase('tr')))
+    : sortedProvinces
 
-  // Filter districts
-  const filteredDistricts = formData.il
-    ? (ilceSearch
-      ? formData.il.districts.filter(d => d.name.toLocaleLowerCase('tr').includes(ilceSearch.toLocaleLowerCase('tr')))
-      : formData.il.districts)
+  // Filter districts (sorted alphabetically with Turkish locale)
+  const sortedDistricts = formData.il
+    ? [...formData.il.districts].sort((a, b) => a.name.localeCompare(b.name, 'tr'))
     : []
+  const filteredDistricts = ilceSearch
+    ? sortedDistricts.filter(d => d.name.toLocaleLowerCase('tr').includes(ilceSearch.toLocaleLowerCase('tr')))
+    : sortedDistricts
 
   // Filter neighborhoods
   const filteredMahalleler = mahalleSearch
@@ -106,7 +108,7 @@ export default function KonumSecimi() {
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
-  // Fetch mahalle when ilÃ§e changes
+  // Fetch mahalle when ilçe changes
   useEffect(() => {
     if (!formData.il || !formData.ilce) {
       setMahalleler([])
@@ -116,20 +118,88 @@ export default function KonumSecimi() {
     const fetchMahalleler = async () => {
       setMahalleLoading(true)
       try {
-        const res = await fetch(
-          `https://api.turkiyeapi.dev/v1/neighborhoods?province=${encodeURIComponent(formData.il!.name)}&district=${encodeURIComponent(formData.ilce!.name)}&limit=500`
-        )
-        if (res.ok) {
-          const json = await res.json()
-          if (json.data && Array.isArray(json.data)) {
-            const sorted = json.data
-              .map((n: any) => ({ id: n.id, name: n.name, population: n.population }))
-              .sort((a: Neighborhood, b: Neighborhood) => a.name.localeCompare(b.name, 'tr'))
-            setMahalleler(sorted)
+        // Strategy 1: Try turkiyeapi.dev provinces endpoint to find IDs, then neighborhoods
+        let neighborhoods: Neighborhood[] = []
+
+        try {
+          // First get all provinces to find our province ID
+          const provRes = await fetch('https://turkiyeapi.dev/api/v1/provinces')
+          if (provRes.ok) {
+            const provJson = await provRes.json()
+            const provData = provJson.data || provJson
+            if (Array.isArray(provData)) {
+              const prov = provData.find((p: any) =>
+                p.name?.toLocaleLowerCase('tr') === formData.il!.name.toLocaleLowerCase('tr')
+              )
+              if (prov && prov.districts) {
+                const dist = prov.districts.find((d: any) =>
+                  d.name?.toLocaleLowerCase('tr') === formData.ilce!.name.toLocaleLowerCase('tr')
+                )
+                if (dist && dist.neighborhoods && Array.isArray(dist.neighborhoods)) {
+                  neighborhoods = dist.neighborhoods.map((n: any, idx: number) => ({
+                    id: n.id || idx,
+                    name: n.name,
+                    population: n.population
+                  }))
+                }
+              }
+            }
           }
+        } catch {}
+
+        // Strategy 2: Try with direct neighborhoods endpoint if Strategy 1 failed
+        if (neighborhoods.length === 0) {
+          try {
+            const res = await fetch(
+              `https://turkiyeapi.dev/api/v1/neighborhoods?province=${encodeURIComponent(formData.il!.name)}&district=${encodeURIComponent(formData.ilce!.name)}&limit=500`
+            )
+            if (res.ok) {
+              const json = await res.json()
+              const data = json.data || json
+              if (Array.isArray(data)) {
+                neighborhoods = data.map((n: any, idx: number) => ({
+                  id: n.id || idx,
+                  name: n.name,
+                  population: n.population
+                }))
+              }
+            }
+          } catch {}
         }
+
+        // Strategy 3: Try Nominatim suburb search as last resort
+        if (neighborhoods.length === 0) {
+          try {
+            const query = `${formData.ilce!.name}, ${formData.il!.name}, Türkiye`
+            const res = await fetch(
+              `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=tr&limit=50&accept-language=tr&featuretype=suburb`,
+              { headers: { 'User-Agent': 'Mahallemiz/1.0' } }
+            )
+            if (res.ok) {
+              const data = await res.json()
+              if (Array.isArray(data)) {
+                const seen = new Set<string>()
+                neighborhoods = data
+                  .filter((r: any) => {
+                    const name = r.display_name?.split(',')[0]?.trim()
+                    if (!name || seen.has(name)) return false
+                    seen.add(name)
+                    return true
+                  })
+                  .map((r: any, idx: number) => ({
+                    id: idx,
+                    name: r.display_name?.split(',')[0]?.trim() || r.name || ''
+                  }))
+              }
+            }
+          } catch {}
+        }
+
+        // Sort alphabetically with Turkish locale
+        const sorted = neighborhoods.sort((a, b) => a.name.localeCompare(b.name, 'tr'))
+        setMahalleler(sorted)
       } catch (err) {
-        console.error('Mahalle verisi alÄ±namadÄ±:', err)
+        console.error('Mahalle verisi alınamadı:', err)
       } finally {
         setMahalleLoading(false)
       }
@@ -162,7 +232,7 @@ export default function KonumSecimi() {
         setCaddeler(unique)
       }
     } catch (err) {
-      console.error('Cadde aramasÄ± baÅarÄ±sÄ±z:', err)
+      console.error('Cadde araması başarısız:', err)
     } finally {
       setCaddeLoading(false)
     }
@@ -217,9 +287,12 @@ export default function KonumSecimi() {
     if (confirmed) { setConfirmed(false) }
   }
 
-  // Build Google Maps embed URL
+  // Build Google Maps embed URL (protobuf format with satellite view !5e1)
   const buildMapUrl = useCallback((lat: number, lng: number, zoom: number) => {
-    return `https://maps.google.com/maps?q=${lat},${lng}&z=${zoom}&output=embed&t=k`
+    // Calculate scale from zoom level (approximate meters per pixel * viewport)
+    const scale = 591657550.5 / Math.pow(2, zoom)
+    // !5e1 = satellite/earth view, !3m2!1str!2str = Turkish locale
+    return `https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d${scale.toFixed(1)}!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2s!5e1!3m2!1str!2str`
   }, [])
 
   // Update map when il/ilce changes
@@ -247,12 +320,12 @@ export default function KonumSecimi() {
 
   const geocodeAddress = useCallback(async () => {
     if (!formData.il || !formData.ilce || !formData.mahalle || !formData.cadde || !formData.binaNo) {
-      setError('LÃ¼tfen tÃ¼m zorunlu alanlarÄ± doldurun.')
+      setError('Lütfen tüm zorunlu alanları doldurun.')
       return
     }
 
     if (formData.postaKodu && (formData.postaKodu.length !== 5 || !/^\d{5}$/.test(formData.postaKodu))) {
-      setError('LÃ¼tfen geÃ§erli bir 5 haneli posta kodu girin.')
+      setError('Lütfen geçerli bir 5 haneli posta kodu girin.')
       return
     }
 
@@ -276,8 +349,8 @@ export default function KonumSecimi() {
           lng = parseFloat(data[0].lon)
           displayAddress = data[0].display_name
         } else {
-          // Fallback: try with just mahalle + ilÃ§e + il
-          const fallbackAddress = `${formData.mahalle}, ${formData.ilce.name}, ${formData.il.name}, TÃ¼rkiye`
+          // Fallback: try with just mahalle + ilçe + il
+          const fallbackAddress = `${formData.mahalle}, ${formData.ilce.name}, ${formData.il.name}, Türkiye`
           const fallbackRes = await fetch(
             `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fallbackAddress)}&countrycodes=tr&limit=1&accept-language=tr`,
             { headers: { 'User-Agent': 'Mahallemiz/1.0' } }
@@ -290,7 +363,7 @@ export default function KonumSecimi() {
               lng = parseFloat(fallbackData[0].lon)
               displayAddress = fallbackData[0].display_name
             } else {
-              // Last fallback: use ilÃ§e coordinates
+              // Last fallback: use ilçe coordinates
               lat = formData.ilce.lat
               lng = formData.ilce.lng
               displayAddress = `${formData.mahalle} Mah. ${formData.cadde} ${formData.binaNo}, ${formData.ilce.name}, ${formData.il.name}`
@@ -302,7 +375,7 @@ export default function KonumSecimi() {
           }
         }
       } else {
-        // Network error fallback: use ilÃ§e coordinates
+        // Network error fallback: use ilçe coordinates
         lat = formData.ilce.lat
         lng = formData.ilce.lng
         displayAddress = `${formData.mahalle} Mah. ${formData.cadde} ${formData.binaNo}, ${formData.ilce.name}, ${formData.il.name}`
@@ -313,7 +386,7 @@ export default function KonumSecimi() {
       setMapEmbedUrl(buildMapUrl(lat, lng, 18))
       setConfirmed(true)
     } catch (err) {
-      // Even on network error, use ilÃ§e coordinates as fallback
+      // Even on network error, use ilçe coordinates as fallback
       const lat = formData.ilce.lat
       const lng = formData.ilce.lng
       setMapCenter({ lat, lng })
@@ -332,7 +405,7 @@ export default function KonumSecimi() {
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
-        setError('Oturumunuz sona ermiÅ. LÃ¼tfen tekrar giriÅ yapÄ±n.')
+        setError('Oturumunuz sona ermiş. Lütfen tekrar giriş yapın.')
         router.push('/giris')
         return
       }
@@ -376,7 +449,7 @@ export default function KonumSecimi() {
 
       window.location.href = '/'
     } catch {
-      setError('Bir hata oluÅtu. LÃ¼tfen tekrar deneyin.')
+      setError('Bir hata oluştu. Lütfen tekrar deneyin.')
     } finally {
       setIsSaving(false)
     }
@@ -419,10 +492,10 @@ export default function KonumSecimi() {
           <div className="overflow-y-auto max-h-48">
             {loading ? (
               <div className="flex items-center justify-center py-4 text-sm text-text-muted">
-                <Loader2 className="w-4 h-4 animate-spin mr-2" /> YÃ¼kleniyor...
+                <Loader2 className="w-4 h-4 animate-spin mr-2" /> Yükleniyor...
               </div>
             ) : items.length === 0 ? (
-              <div className="px-3.5 py-3 text-sm text-text-muted text-center">SonuÃ§ bulunamadÄ±</div>
+              <div className="px-3.5 py-3 text-sm text-text-muted text-center">Sonuç bulunamadı</div>
             ) : (
               items.map(item => (
                 <button key={item.key} onClick={() => onSelect(item.key)}
@@ -459,7 +532,7 @@ export default function KonumSecimi() {
           </div>
           <div className="flex items-center gap-2 text-xs text-text-muted">
             <MapPin className="w-3.5 h-3.5" />
-            <span>Konum DoÄrulama</span>
+            <span>Konum Doğrulama</span>
           </div>
         </div>
       </div>
@@ -478,26 +551,26 @@ export default function KonumSecimi() {
           <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden">
             <div className="px-6 py-6">
               <h1 className="text-2xl font-bold text-text-primary mb-2">Adresinizi Girin</h1>
-              <p className="text-text-muted text-sm mb-6">Mahalle topluluÄunuza katÄ±lmak iÃ§in adresinizi girin</p>
+              <p className="text-text-muted text-sm mb-6">Mahalle topluluğunuza katılmak için adresinizi girin</p>
 
               <div className="space-y-4">
-                {/* Ä°l */}
+                {/* İl */}
                 <DropdownField
-                  label="Ä°l" required dropdownRef={ilDropdownRef}
+                  label="İl" required dropdownRef={ilDropdownRef}
                   showDropdown={showIlDropdown} setShowDropdown={setShowIlDropdown}
-                  selectedValue={formData.il?.name || ''} placeholder="Ä°l seÃ§in"
-                  searchValue={ilSearch} setSearchValue={setIlSearch} searchPlaceholder="Ä°l ara..."
+                  selectedValue={formData.il?.name || ''} placeholder="İl seçin"
+                  searchValue={ilSearch} setSearchValue={setIlSearch} searchPlaceholder="İl ara..."
                   items={filteredProvinces.map(p => ({ key: p.name, label: p.name }))}
                   onSelect={key => { const p = provinces.find(x => x.name === key); if (p) handleIlSelect(p) }}
                   closeOthers={() => { setShowIlceDropdown(false); setShowMahalleDropdown(false); setShowCaddeDropdown(false) }}
                 />
 
-                {/* Ä°lÃ§e */}
+                {/* İlçe */}
                 <DropdownField
-                  label="Ä°lÃ§e" required dropdownRef={ilceDropdownRef}
+                  label="İlçe" required dropdownRef={ilceDropdownRef}
                   showDropdown={showIlceDropdown} setShowDropdown={setShowIlceDropdown}
-                  selectedValue={formData.ilce?.name || ''} placeholder="Ä°lÃ§e seÃ§in"
-                  searchValue={ilceSearch} setSearchValue={setIlceSearch} searchPlaceholder="Ä°lÃ§e ara..."
+                  selectedValue={formData.ilce?.name || ''} placeholder="İlçe seçin"
+                  searchValue={ilceSearch} setSearchValue={setIlceSearch} searchPlaceholder="İlçe ara..."
                   items={filteredDistricts.map(d => ({ key: d.name, label: d.name }))}
                   onSelect={key => { const d = formData.il?.districts.find(x => x.name === key); if (d) handleIlceSelect(d) }}
                   disabled={!formData.il}
@@ -508,7 +581,7 @@ export default function KonumSecimi() {
                 <DropdownField
                   label="Mahalle" required dropdownRef={mahalleDropdownRef}
                   showDropdown={showMahalleDropdown} setShowDropdown={setShowMahalleDropdown}
-                  selectedValue={formData.mahalle} placeholder="Mahalle seÃ§in"
+                  selectedValue={formData.mahalle} placeholder="Mahalle seçin"
                   searchValue={mahalleSearch} setSearchValue={setMahalleSearch} searchPlaceholder="Mahalle ara..."
                   items={filteredMahalleler.map(m => ({ key: String(m.id), label: m.name }))}
                   onSelect={key => { const m = mahalleler.find(x => String(x.id) === key); if (m) handleMahalleSelect(m) }}
@@ -525,7 +598,7 @@ export default function KonumSecimi() {
                     value={formData.cadde}
                     onChange={e => handleCaddeInput(e.target.value)}
                     onFocus={() => { if (caddeler.length > 0) setShowCaddeDropdown(true) }}
-                    placeholder={formData.mahalle ? 'Cadde veya sokak adÄ±nÄ± yazÄ±n...' : 'Ãnce mahalle seÃ§in'}
+                    placeholder={formData.mahalle ? 'Cadde veya sokak adını yazın...' : 'Önce mahalle seçin'}
                     disabled={!formData.mahalle}
                     className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
                   />
@@ -533,7 +606,7 @@ export default function KonumSecimi() {
                     <div className="absolute top-full left-0 right-0 mt-1 bg-surface border border-border rounded-xl shadow-lg z-30 max-h-48 overflow-y-auto">
                       {caddeLoading ? (
                         <div className="flex items-center justify-center py-3 text-sm text-text-muted">
-                          <Loader2 className="w-4 h-4 animate-spin mr-2" /> AranÄ±yor...
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" /> Aranıyor...
                         </div>
                       ) : (
                         caddeler.map((c, i) => (
@@ -547,16 +620,16 @@ export default function KonumSecimi() {
                   )}
                 </div>
 
-                {/* Bina NumarasÄ± */}
+                {/* Bina Numarası */}
                 <div>
-                  <label className="block text-xs font-semibold text-text-muted mb-1.5">Bina NumarasÄ± *</label>
+                  <label className="block text-xs font-semibold text-text-muted mb-1.5">Bina Numarası *</label>
                   <input type="text" value={formData.binaNo} onChange={e => handleInputChange('binaNo', e.target.value)}
-                    placeholder="Bina numarasÄ±nÄ± girin" className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary" />
+                    placeholder="Bina numarasını girin" className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary" />
                 </div>
 
-                {/* Bina AdÄ± */}
+                {/* Bina Adı */}
                 <div>
-                  <label className="block text-xs font-semibold text-text-muted mb-1.5">Bina AdÄ±</label>
+                  <label className="block text-xs font-semibold text-text-muted mb-1.5">Bina Adı</label>
                   <input type="text" value={formData.binaAdi} onChange={e => handleInputChange('binaAdi', e.target.value)}
                     placeholder="Opsiyonel" className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary" />
                 </div>
@@ -574,21 +647,21 @@ export default function KonumSecimi() {
               {/* Info box */}
               <div className="mt-6 p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-800 flex items-start gap-2.5">
                 <Shield className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                <span>Adres bilgileriniz mahalle topluluÄuna katÄ±lmak iÃ§in kullanÄ±lacaktÄ±r. e-Devlet doÄrulamasÄ± daha sonra yapÄ±lacaktÄ±r.</span>
+                <span>Adres bilgileriniz mahalle topluluğuna katılmak için kullanılacaktır. e-Devlet doğrulaması daha sonra yapılacaktır.</span>
               </div>
 
               {/* Submit / Confirm buttons */}
               {!confirmed ? (
                 <button onClick={geocodeAddress} disabled={isLoading}
                   className="w-full mt-6 bg-primary hover:bg-primary-hover text-white font-semibold py-3.5 rounded-xl text-sm transition disabled:opacity-50 flex items-center justify-center gap-2">
-                  {isLoading ? (<><Loader2 className="w-5 h-5 animate-spin" />Adres doÄrulanÄ±yor...</>) : (<><Navigation className="w-5 h-5" />Adresi Haritada GÃ¶ster</>)}
+                  {isLoading ? (<><Loader2 className="w-5 h-5 animate-spin" />Adres doğrulanıyor...</>) : (<><Navigation className="w-5 h-5" />Adresi Haritada Göster</>)}
                 </button>
               ) : (
                 <div className="mt-6 space-y-3">
                   <div className="p-3.5 bg-green-50 border border-green-200 rounded-xl text-sm text-green-800 flex items-start gap-2.5">
                     <Check className="w-5 h-5 flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-semibold">Adres haritada gÃ¶rÃ¼ntÃ¼lendi</p>
+                      <p className="font-semibold">Adres haritada görüntülendi</p>
                       <p className="text-xs mt-1">{formData.mahalle} Mah. {formData.cadde} No:{formData.binaNo}, {formData.ilce?.name}, {formData.il?.name}</p>
                     </div>
                   </div>
@@ -596,8 +669,8 @@ export default function KonumSecimi() {
                   <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800 flex items-start gap-2.5">
                     <Clock className="w-5 h-5 flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-semibold">7 GÃ¼n Ä°Ã§inde DoÄrulama Gerekli</p>
-                      <p className="text-xs">e-Devlet ile adres doÄrulamasÄ± yapmanÄ±z gerekmektedir.</p>
+                      <p className="font-semibold">7 Gün İçinde Doğrulama Gerekli</p>
+                      <p className="text-xs">e-Devlet ile adres doğrulaması yapmanız gerekmektedir.</p>
                     </div>
                   </div>
 
@@ -608,7 +681,7 @@ export default function KonumSecimi() {
 
                   <button onClick={() => { setConfirmed(false); setError('') }}
                     disabled={isSaving} className="w-full border border-primary text-primary hover:bg-primary/5 font-semibold py-3 rounded-xl text-sm transition">
-                    Adresi DÃ¼zenle
+                    Adresi Düzenle
                   </button>
                 </div>
               )}
@@ -620,9 +693,9 @@ export default function KonumSecimi() {
             <div className="px-6 py-4 border-b border-border">
               <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-primary" />
-                Harita GÃ¶rÃ¼nÃ¼mÃ¼
+                Harita Görünümü
               </h2>
-              <p className="text-xs text-text-muted mt-1">Uydu gÃ¶rÃ¼ntÃ¼sÃ¼ ile adresinizi doÄrulayÄ±n</p>
+              <p className="text-xs text-text-muted mt-1">Uydu görüntüsü ile adresinizi doğrulayın</p>
             </div>
             <div className="h-[500px] lg:h-[calc(100%-72px)]">
               {mapEmbedUrl ? (
@@ -638,7 +711,7 @@ export default function KonumSecimi() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gray-100 text-text-muted text-sm">
-                  <MapPin className="w-6 h-6 mr-2" /> Harita yÃ¼kleniyor...
+                  <MapPin className="w-6 h-6 mr-2" /> Harita yükleniyor...
                 </div>
               )}
             </div>
