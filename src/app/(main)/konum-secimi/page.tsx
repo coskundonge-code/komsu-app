@@ -39,7 +39,7 @@ export default function KonumSecimi() {
   // Map state
   const [mapCenter, setMapCenter] = useState<[number, number]>([39.0, 35.0]) // Turkey center
   const [mapZoom, setMapZoom] = useState(6)
-  const [mapType, setMapType] = useState<'street' | 'satellite'>('street')
+  const [mapType, setMapType] = useState<'street' | 'satellite'>('satellite')
   const [pinLat, setPinLat] = useState<number | null>(null)
   const [pinLng, setPinLng] = useState<number | null>(null)
 
@@ -106,7 +106,8 @@ export default function KonumSecimi() {
         setPinLat(latitude)
         setPinLng(longitude)
         setMapCenter([latitude, longitude])
-        setMapZoom(15)
+        setMapZoom(15) // Zoom level 15 shows ~2km area nicely with satellite
+        setMapType('satellite') // Always start with satellite view
         reverseGeocode(latitude, longitude)
         setIsLoading(false)
         setStep('select')
@@ -140,6 +141,7 @@ export default function KonumSecimi() {
     if (gpsLat && gpsLng) {
       setMapCenter([gpsLat, gpsLng])
       setMapZoom(15)
+      setMapType('satellite')
       setPinLat(gpsLat)
       setPinLng(gpsLng)
       reverseGeocode(gpsLat, gpsLng)
@@ -204,7 +206,7 @@ export default function KonumSecimi() {
         location_province: confirmedLocation.province,
         location_district: confirmedLocation.district,
         location_confirmed_at: new Date().toISOString(),
-        edevlet_verification_deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        edevlet_verification_deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
       }
 
       // Save to user metadata (used by middleware for enforcement)
@@ -265,7 +267,7 @@ export default function KonumSecimi() {
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-sm font-bold text-white">K</span>
+              <span className="text-sm font-bold text-white">K/span>
             </div>
             <span className="text-lg font-bold text-text-primary">Mahallemiz</span>
           </div>
@@ -325,7 +327,7 @@ export default function KonumSecimi() {
                 </div>
                 <div className="flex items-start gap-3 text-sm">
                   <Clock className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                  <span className="text-[#555]">30 gün içinde e-Devlet ile adres doğrulaması yapmanız gerekir</span>
+                  <span className="text-[#555]">7 gün içinde e-Devlet ile adres doğrulaması yapmanız gerekir</span>
                 </div>
               </div>
 
@@ -514,6 +516,7 @@ export default function KonumSecimi() {
                   pinLat={pinLat}
                   pinLng={pinLng}
                   onMapClick={handleMapClick}
+                  circleRadius={2000}
                 />
               </div>
 
@@ -525,6 +528,7 @@ export default function KonumSecimi() {
                       <MapPin className="w-3.5 h-3.5 text-primary" />
                       {selectedProvince?.name || ''}{selectedDistrict ? ` / ${selectedDistrict.name}` : ''}
                       <span className="text-[#b0b0b0] ml-1">({pinLat.toFixed(5)}, {pinLng.toFixed(5)})</span>
+                      <span className="text-primary font-medium ml-1">| 2 km mahalle alanı</span>
                     </span>
                   ) : (
                     <span>Haritada bir nokta seçin</span>
@@ -575,9 +579,9 @@ export default function KonumSecimi() {
                 <div className="flex items-start gap-2.5 text-sm text-amber-800">
                   <Clock className="w-5 h-5 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-semibold mb-1">30 Gün İçinde Doğrulama Gerekli</p>
+                    <p className="font-semibold mb-1">7 Gün İçinde Doğrulama Gerekli</p>
                     <p className="text-xs text-amber-700">
-                      Bu konum bilgisi ile 30 gün boyunca üyeliğiniz aktif kalır. Bu süre içinde
+                      Bu konum bilgisi ile 7 gün boyunca üyeliğiniz aktif kalır. Bu süre içinde
                       e-Devlet üzerinden adres doğrulaması yapmanız gerekmektedir. Doğrulama yapılmazsa
                       hesabınız doğrulama yapılana kadar kilitlenecektir.
                     </p>
