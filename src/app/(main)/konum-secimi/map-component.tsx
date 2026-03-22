@@ -1,169 +1,118 @@
 'use client'
 
-import { useEffect, useRef, useCallback } from 'react'
-import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
+import { useEffect, useRef, useState } from 'react'
 
-interface MapComponentProps {
-  center: [number, number]
+const GOOGLE_MAPS_API_KEY = 'AIzaSyChvjDjaC6DH14E1swB3dAKP2AObo5rCT8'
+
+interface GoogleMapProps {
+  center: { lat: number; lng: number }
   zoom: number
-  mapType: 'street' | 'satellite'
-  pinLat: number | null
-  pinLng: number | null
-  onMapClick: (lat: number, lng: number) => void
+  markerPosition?: { lat: number; lng: number } | null
   circleRadius?: number
 }
 
-// Fix Leaflet default icon issue in Next.js
-const defaultIcon = L.icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-})
-
-// Custom green marker for selected location
-const greenIcon = L.divIcon({
-  html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#00833e" width="36" height="36" stroke="white" stroke-width="1">
-    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-  </svg>`,
-  className: '',
-  iconSize: [36, 36],
-  iconAnchor: [18, 36],
-})
-
-const TILE_LAYERS = {
-  street: {
-    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  },
-  satellite: {
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    attribution: '&copy; Esri, Maxar, Earthstar Geographics',
-  },
+declare global {
+  interface Window {
+    google: any
+    initGoogleMap: () => void
+  }
 }
 
-export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, onMapClick, circleRadius }: MapComponentProps) {
-  const mapRef = useRef<L.Map | null>(null)
-  const markerRef = useRef<L.Marker | null>(null)
-  const circleRef = useRef<L.Circle | null>(null)
-  const tileLayerRef = useRef<L.TileLayer | null>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
+export default function MapComponent({ center, zoom, markerPosition, circleRadius }: GoogleMapProps) {
+  const mapRef = useRef<HTMLDivElement>(null)
+  const googleMapRef = useRef<any>(null)
+  const markerRef = useRef<any>(null)
+  const circleRef = useRef<any>(null)
+  const [loaded, setLoaded] = useState(false)
 
-  // Initialize map
   useEffect(() => {
-    if (!containerRef.current || mapRef.current) return
-
-    const map = L.map(containerRef.current, {
-      center: center,
-      zoom: zoom,
-      zoomControl: true,
-    })
-
-    const layer = TILE_LAYERS[mapType]
-    tileLayerRef.current = L.tileLayer(layer.url, {
-      attribution: layer.attribution,
-      maxZoom: 19,
-    }).addTo(map)
-
-    map.on('click', (e: L.LeafletMouseEvent) => {
-      onMapClick(e.latlng.lat, e.latlng.lng)
-    })
-
-    mapRef.current = map
-
-    // Place initial pin if exists
-    if (pinLat !== null && pinLng !== null) {
-      markerRef.current = L.marker([pinLat, pinLng], { icon: greenIcon }).addTo(map)
+    if (window.google?.maps) {
+      setLoaded(true)
+      return
     }
 
-    // Add circle if radius provided
-    if (circleRadius && pinLat !== null && pinLng !== null) {
-      circleRef.current = L.circle([pinLat, pinLng], {
-        radius: circleRadius,
-        fillColor: '#00833e',
-        fillOpacity: 0.08,
-        color: '#00833e',
-        opacity: 0.6,
-        weight: 2,
-      }).addTo(map)
-    }
+    window.initGoogleMap = () => setLoaded(true)
 
-    return () => {
-      map.remove()
-      mapRef.current = null
+    const existing = document.querySelector('script[src*="maps.googleapis.com"]')
+    if (!existing) {
+      const script = document.createElement('script')
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&language=tr&callback=initGoogleMap`
+      script.async = true
+      script.defer = true
+      document.head.appendChild(script)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Update center and zoom
   useEffect(() => {
-    if (mapRef.current) {
-      mapRef.current.flyTo(center, zoom, { duration: 0.8 })
+    if (!loaded || !mapRef.current) return
+
+    if (!googleMapRef.current) {
+      googleMapRef.current = new window.google.maps.Map(mapRef.current, {
+        center,
+        zoom,
+        mapTypeId: 'hybrid',
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: true,
+        zoomControl: true,
+      })
     }
+  }, [loaded])
+
+  useEffect(() => {
+    if (!googleMapRef.current) return
+    googleMapRef.current.panTo(center)
+    googleMapRef.current.setZoom(zoom)
   }, [center, zoom])
 
-  // Update tile layer when mapType changes
   useEffect(() => {
-    if (!mapRef.current) return
+    if (!googleMapRef.current) return
 
-    if (tileLayerRef.current) {
-      tileLayerRef.current.remove()
-    }
-
-    const layer = TILE_LAYERS[mapType]
-    tileLayerRef.current = L.tileLayer(layer.url, {
-      attribution: layer.attribution,
-      maxZoom: 19,
-    }).addTo(mapRef.current)
-  }, [mapType])
-
-  // Update marker and circle
-  useEffect(() => {
-    if (!mapRef.current) return
-
-    // Remove old marker
     if (markerRef.current) {
-      markerRef.current.remove()
+      markerRef.current.setMap(null)
       markerRef.current = null
     }
-
-    // Remove old circle
     if (circleRef.current) {
-      circleRef.current.remove()
+      circleRef.current.setMap(null)
       circleRef.current = null
     }
 
-    // Add new marker
-    if (pinLat !== null && pinLng !== null) {
-      markerRef.current = L.marker([pinLat, pinLng], { icon: greenIcon }).addTo(mapRef.current)
+    if (markerPosition) {
+      markerRef.current = new window.google.maps.Marker({
+        position: markerPosition,
+        map: googleMapRef.current,
+        icon: {
+          path: window.google.maps.SymbolPath.CIRCLE,
+          scale: 10,
+          fillColor: '#00833e',
+          fillOpacity: 1,
+          strokeColor: 'white',
+          strokeWeight: 3,
+        },
+      })
 
-      // Add new circle if radius provided
       if (circleRadius) {
-        circleRef.current = L.circle([pinLat, pinLng], {
+        circleRef.current = new window.google.maps.Circle({
+          center: markerPosition,
           radius: circleRadius,
+          map: googleMapRef.current,
           fillColor: '#00833e',
           fillOpacity: 0.08,
-          color: '#00833e',
-          opacity: 0.6,
-          weight: 2,
-        }).addTo(mapRef.current)
+          strokeColor: '#00833e',
+          strokeOpacity: 0.6,
+          strokeWeight: 2,
+        })
       }
     }
-  }, [pinLat, pinLng, circleRadius])
+  }, [markerPosition, circleRadius, loaded])
 
-  // Update click handler
-  useEffect(() => {
-    if (!mapRef.current) return
-
-    mapRef.current.off('click')
-    mapRef.current.on('click', (e: L.LeafletMouseEvent) => {
-      onMapClick(e.latlng.lat, e.latlng.lng)
-    })
-  }, [onMapClick])
-
-  return <div ref={containerRef} className="w-full h-full" />
+  return (
+    <div ref={mapRef} className="w-full h-full rounded-xl" style={{ minHeight: '300px' }}>
+      {!loaded && (
+        <div className="w-full h-full flex items-center justify-center bg-[#1a1a2e] rounded-xl">
+          <div className="text-white/60 text-sm">Harita y\u00FCkleniyor...</div>
+        </div>
+      )}
+    </div>
+  )
 }
