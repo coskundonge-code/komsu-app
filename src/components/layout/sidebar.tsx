@@ -37,7 +37,13 @@ const secondaryNavItems = [
 export function Sidebar({ className, ...props }: SidebarProps) {
   const pathname = usePathname()
   const [isCollapsed, setIsCollapsed] = useState(false)
-  const { profile, neighborhood } = useCurrentUser()
+  const { user } = useCurrentUser()
+  const metadata = user?.user_metadata
+  const fullName = metadata?.full_name || 'Kullanıcı'
+  const nameInitial = fullName.charAt(0).toUpperCase()
+  const locationText = metadata?.ilce && metadata?.il
+    ? `${metadata.ilce}, ${metadata.il}`
+    : 'Konum belirtilmemiş'
 
   const isActive = (href: string) => {
     return pathname === href || (href !== '/' && pathname?.startsWith(href))
@@ -61,16 +67,16 @@ export function Sidebar({ className, ...props }: SidebarProps) {
         )}>
           <div className="relative flex-shrink-0">
             <div className="w-9 h-9 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">
-              {profile?.full_name?.[0]?.toUpperCase() || 'K'}
+              {nameInitial}
             </div>
             <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full ring-2 ring-white" />
           </div>
           {!isCollapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-text-primary truncate">{profile?.full_name || 'Kullanıcı'}</p>
+              <p className="text-sm font-semibold text-text-primary truncate">{fullName}</p>
               <p className="text-xs text-text-muted truncate flex items-center gap-1">
                 <MapPin className="w-3 h-3" />
-                {neighborhood ? `${neighborhood.district}, ${neighborhood.name}` : 'Mahalle seçilmedi'}
+                {locationText}
               </p>
             </div>
           )}
