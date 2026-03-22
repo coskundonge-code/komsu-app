@@ -1,215 +1,188 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import dynamic from 'next/dynamic'
 import { provinces, type Province, type District } from '@/data/turkey-locations'
 import {
-  MapPin, Navigation, ChevronDown, Check, AlertCircle, Loader2,
-  Map as MapIcon, Satellite, Search, LocateFixed, Shield, Clock, Info
+  MapPin, Check, AlertCircle, Loader2, Search, ChevronDown, Shield, Clock, Navigation, Building2, Home
 } from 'lucide-react'
 
 // Leaflet must be loaded client-side only
-const GoogleMapComponent = dynamic(() => import('./google-map-component'), { ssr: false })
+const MapComponent = dynamic(() => import('./map-component'), { ssr: false })
 
-type Step = 'permission' | 'select' | 'confirm'
+type Step = 'form' | 'confirm'
 
-interface SelectedLocation {
+interface FormData {
+  il: Province | null
+  ilce: District | null
+  mahalle: string
+  cadde: string
+  binaNo: string
+  binaAdi: string
+  postaKodu: string
+}
+
+interface GeocodedLocation {
   lat: number
   lng: number
-  province: string
-  district: string
-  address?: string
+  address: string
 }
 
 export default function KonumSecimi() {
   const router = useRouter()
   const supabase = createClient()
 
-  const [step, setStep] = useState<Step>('permission')
+  const [step, setStep] = useState<Step>('form')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
-  const [permissionDenied, setPermissionDenied] = useState(false)
-
-  // GPS location
-  const [gpsLat, setGpsLat] = useState<number | null>(null)
-  const [gpsLng, setGpsLng] = useState<number | null>(null)
-
-  // Map state
-  const [mapCenter, setMapCenter] = useState<[number, number]>([39.0, 35.0]) // Turkey center
-  const [mapZoom, setMapZoom] = useState(6)
-  const [mapType, setMapType] = useState<'street' | 'satellite'>('satellite')
-  const [pinLat, setPinLat] = useState<number | null>(null)
-  const [pinLng, setPinLng] = useState<number | null>(null)
-
-  // Dropdown state
-  const [selectedProvince, setSelectedProvince] = useState<Province | null>(null)
-  const [selectedDistrict, setSelectedDistrict] = useState<District | null>(null)
-  const [provinceSearch, setProvinceSearch] = useState('')
-  const [districtSearch, setDistrictSearch] = useState('')
-  const [showProvinceDropdown, setShowProvinceDropdown] = useState(false)
-  const [showDistrictDropdown, setShowDistrictDropdown] = useState(false)
-
-  // Confirmed location
-  const [confirmedLocation, setConfirmedLocation] = useState<SelectedLocation | null>(null)
   const [isSaving, setIsSaving] = useState(false)
 
-  // Reverse geocode to find province/district from coordinates
-  const reverseGeocode = useCallback((lat: number, lng: number) => {
-    let closestProvince: Province | null = null
-    let closestDistrict: District | null = null
-    let minDist = Infinity
+  // Form state
+  const [formData, setFormData] = useState<FormData>({
+    il: null,
+    ilce: null,
+    mahalle: '',
+    cadde: '',
+    binaNo: '',
+    binaAdi: '',
+    postaKodu: '',
+  })
 
-    for (const prov of provinces) {
-      for (const dist of prov.districts) {
-        const d = Math.sqrt(Math.pow(dist.lat - lat, 2) + Math.pow(dist.lng - lng, 2))
-        if (d < minDist) {
-          minDist = d
-          closestProvince = prov
-          closestDistrict = dist
-        }
-      }
-      // Also check province center
-      const d = Math.sqrt(Math.pow(prov.lat - lat, 2) + Math.pow(prov.lng - lng, 2))
-      if (d < minDist) {
-        minDist = d
-        closestProvince = prov
-        closestDistrict = prov.districts[0] || null
-      }
-    }
+  // Dropdown states
+  const [showIlDropdown, setShowIlDropdown] = useState(false)
+  const [showIlceDropdown, setShowIlceDropdown] = useState(false)
+  const [ilSearch, setIlSearch] = useState('')
+  const [ilceSearch, setIlceSearch] = useState('')
 
-    if (closestProvince) {
-      setSelectedProvince(closestProvince)
-      setSelectedDistrict(closestDistrict)
+  // Map state for confirmation
+  const [location, setLocation] = useState<GeocodedLocation | null>(null)
+
+  // Filter provinces
+  const filteredProvinces = ilSearch
+    ? provinces.filter(p => p.name.toLowerCase().includes(ilSearch.toLowerCase()))
+    : provinces
+
+  // Filter districts
+  const filteredDistricts = formData.il
+    ? (ilceSearch
+      ? formData.il.districts.filter(d => d.name.toLowerCase().includes(ilceSearch.toLowerCase()))
+      : formData.il.districts)
+    : []
+
+  // Close dropdowns on outside click
+  useEffect(() => {
+    const handler = () => {
+      setShowIlDropdown(false)
+      setShowIlceDropdown(false)
     }
+    document.addEventListener('click', handler)
+    return () => document.removeEventListener('click', handler)
   }, [])
 
-  // Request GPS permission
-  const requestLocation = useCallback(() => {
+  // Handle form input changes
+  const handleInputChange = (field: keyof FormData, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  // Handle province selection
+  const handleIlSelect = (province: Province) => {
+    setFormData(prev => ({
+      ...prev,
+      il: province,
+      ilce: null,
+    }))
+    setIlSearch('')
+    setShowIlDropdown(false)
+  }
+
+  // Handle district selection
+  const handleIlceSelect = (district: District) => {
+    setFormData(prev => ({
+      ...prev,
+      ilce: district,
+    }))
+    setIlceSearch('')
+    setShowIlceDropdown(false)
+  }
+
+  // Geocode address via Google Geocoding API
+  const geocodeAddress = useCallback(async () => {
+    if (!formData.il || !formData.ilce || !formData.mahalle || !formData.cadde || !formData.binaNo) {
+      setError('LÃ¼tfen tÃ¼m zorunlu alanlarÄ± doldurun.')
+      return
+    }
+
+    if (formData.postaKodu.length !== 5 || !/^\d{5}$/.test(formData.postaKodu)) {
+      setError('LÃ¼tfen geÃ§erli bir 5 haneli posta kodu girin.')
+      return
+    }
+
     setIsLoading(true)
     setError('')
-    setPermissionDenied(false)
 
-    if (!navigator.geolocation) {
-      setError('Tarayıcınız konum özelliğini desteklemiyor. Lütfen il/ilçe seçerek devam edin.')
+    try {
+      const fullAddress = `${formData.mahalle} Mah. ${formData.cadde} ${formData.binaNo}, ${formData.ilce.name}, ${formData.il.name}, TÃ¼rkiye`
+
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fullAddress)}&key=AIzaSyChvjDjaC6DH14E1swB3dAKP2AObo5rCT8&components=country:TR&language=tr`
+      )
+
+      if (!response.ok) {
+        throw new Error('Geocoding request failed')
+      }
+
+      const data = await response.json()
+
+      if (data.results && data.results.length > 0) {
+        const result = data.results[0]
+        setLocation({
+          lat: result.geometry.location.lat,
+          lng: result.geometry.location.lng,
+          address: result.formatted_address,
+        })
+        setStep('confirm')
+      } else {
+        setError('Adres bulunamadÄ±. LÃ¼tfen adres bilgilerinizi kontrol edin ve tekrar deneyin.')
+      }
+    } catch (err) {
+      setError('Adres doÄrulamasÄ± sÄ±rasÄ±nda bir hata oluÅtu. LÃ¼tfen tekrar deneyin.')
+      console.error(err)
+    } finally {
       setIsLoading(false)
-      setStep('select')
-      return
     }
+  }, [formData])
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords
-        setGpsLat(latitude)
-        setGpsLng(longitude)
-        setPinLat(latitude)
-        setPinLng(longitude)
-        setMapCenter([latitude, longitude])
-        setMapZoom(15) // Zoom level 15 shows ~2km area nicely with satellite
-        setMapType('satellite') // Always start with satellite view
-        reverseGeocode(latitude, longitude)
-        setIsLoading(false)
-        setStep('select')
-      },
-      (err) => {
-        setIsLoading(false)
-        if (err.code === err.PERMISSION_DENIED) {
-          setPermissionDenied(true)
-          setError('Konum izni reddedildi. Mahallemiz\'i kullanabilmek için konum izni vermeniz gerekmektedir.')
-        } else if (err.code === err.POSITION_UNAVAILABLE) {
-          setError('Konumunuz belirlenemedi. Lütfen il/ilçe seçerek devam edin.')
-          setStep('select')
-        } else {
-          setError('Konum alınamadı. Lütfen tekrar deneyin veya il/ilçe seçerek devam edin.')
-          setStep('select')
-        }
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-    )
-  }, [reverseGeocode])
-
-  // Handle map click - place pin
-  const handleMapClick = useCallback((lat: number, lng: number) => {
-    setPinLat(lat)
-    setPinLng(lng)
-    reverseGeocode(lat, lng)
-  }, [reverseGeocode])
-
-  // Navigate to my GPS location
-  const goToMyLocation = useCallback(() => {
-    if (gpsLat && gpsLng) {
-      setMapCenter([gpsLat, gpsLng])
-      setMapZoom(15)
-      setMapType('satellite')
-      setPinLat(gpsLat)
-      setPinLng(gpsLng)
-      reverseGeocode(gpsLat, gpsLng)
-    }
-  }, [gpsLat, gpsLng, reverseGeocode])
-
-  // Province selection
-  const handleProvinceSelect = useCallback((province: Province) => {
-    setSelectedProvince(province)
-    setSelectedDistrict(null)
-    setProvinceSearch('')
-    setShowProvinceDropdown(false)
-    setMapCenter([province.lat, province.lng])
-    setMapZoom(11)
-    setPinLat(province.lat)
-    setPinLng(province.lng)
-  }, [])
-
-  // District selection
-  const handleDistrictSelect = useCallback((district: District) => {
-    setSelectedDistrict(district)
-    setDistrictSearch('')
-    setShowDistrictDropdown(false)
-    setMapCenter([district.lat, district.lng])
-    setMapZoom(14)
-    setPinLat(district.lat)
-    setPinLng(district.lng)
-  }, [])
-
-  // Confirm location
-  const handleConfirm = useCallback(() => {
-    if (!pinLat || !pinLng || !selectedProvince) {
-      setError('Lütfen haritada konumunuzu seçin veya il/ilçe belirleyin.')
-      return
-    }
-    setConfirmedLocation({
-      lat: pinLat,
-      lng: pinLng,
-      province: selectedProvince.name,
-      district: selectedDistrict?.name || '',
-    })
-    setStep('confirm')
-  }, [pinLat, pinLng, selectedProvince, selectedDistrict])
-
-  // Save to Supabase
+  // Save location to Supabase
   const saveLocation = async () => {
-    if (!confirmedLocation) return
+    if (!location) return
     setIsSaving(true)
     setError('')
 
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
-        setError('Oturumunuz sona ermiş. Lütfen tekrar giriş yapın.')
+        setError('Oturumunuz sona ermiÅ. LÃ¼tfen tekrar giriÅ yapÄ±n.')
         router.push('/giris')
         return
       }
 
+      const edevletDeadline = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+
       const locationData = {
-        location_lat: confirmedLocation.lat,
-        location_lng: confirmedLocation.lng,
-        location_province: confirmedLocation.province,
-        location_district: confirmedLocation.district,
+        location_lat: location.lat,
+        location_lng: location.lng,
+        location_province: formData.il!.name,
+        location_district: formData.ilce!.name,
         location_confirmed_at: new Date().toISOString(),
-        edevlet_verification_deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        edevlet_verification_deadline: edevletDeadline,
       }
 
-      // Save to user metadata (used by middleware for enforcement)
+      // Save to user metadata
       const { error: metaError } = await supabase.auth.updateUser({
         data: locationData
       })
@@ -219,46 +192,43 @@ export default function KonumSecimi() {
         return
       }
 
-      // Also save to user_profiles table if it exists
+      // Save full address to user_profiles
       try {
+        const fullAddress = `${formData.mahalle} Mah. ${formData.cadde} ${formData.binaNo}${formData.binaAdi ? ', ' + formData.binaAdi : ''}, ${formData.ilce!.name}, ${formData.il!.name}`
+
         await (supabase as any).from('user_profiles').upsert({
           id: user.id,
+          location_address: fullAddress,
           ...locationData,
         }, { onConflict: 'id' })
       } catch {
-        // Table might not exist yet, that's ok - metadata is the source of truth
+        // Table might not exist yet, that's ok
+      }
+
+      // Try to save to user_addresses table
+      try {
+        await (supabase as any).from('user_addresses').insert({
+          user_id: user.id,
+          address: `${formData.mahalle} Mah. ${formData.cadde} ${formData.binaNo}${formData.binaAdi ? ', ' + formData.binaAdi : ''}`,
+          neighborhood: formData.mahalle,
+          city: formData.il!.name,
+          district: formData.ilce!.name,
+          postal_code: formData.postaKodu,
+          latitude: location.lat,
+          longitude: location.lng,
+        })
+      } catch {
+        // Table might not exist yet, that's ok
       }
 
       // Navigate to home
       router.push('/')
     } catch {
-      setError('Bir hata oluştu. Lütfen tekrar deneyin.')
+      setError('Bir hata oluÅtu. LÃ¼tfen tekrar deneyin.')
     } finally {
       setIsSaving(false)
     }
   }
-
-  // Filter provinces
-  const filteredProvinces = provinceSearch
-    ? provinces.filter(p => p.name.toLowerCase().includes(provinceSearch.toLowerCase()))
-    : provinces
-
-  // Filter districts
-  const filteredDistricts = selectedProvince
-    ? (districtSearch
-      ? selectedProvince.districts.filter(d => d.name.toLowerCase().includes(districtSearch.toLowerCase()))
-      : selectedProvince.districts)
-    : []
-
-  // Close dropdowns on outside click
-  useEffect(() => {
-    const handler = () => {
-      setShowProvinceDropdown(false)
-      setShowDistrictDropdown(false)
-    }
-    document.addEventListener('click', handler)
-    return () => document.removeEventListener('click', handler)
-  }, [])
 
   return (
     <div className="min-h-screen bg-background">
@@ -273,24 +243,24 @@ export default function KonumSecimi() {
           </div>
           <div className="flex items-center gap-2 text-xs text-text-muted">
             <MapPin className="w-3.5 h-3.5" />
-            <span>Konum Doğrulama</span>
+            <span>Konum DoÄrulama</span>
           </div>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 py-6">
+      <div className="max-w-2xl mx-auto px-4 py-6">
         {/* Step indicator */}
         <div className="flex items-center justify-center gap-2 mb-6">
-          {(['permission', 'select', 'confirm'] as Step[]).map((s, i) => (
+          {(['form', 'confirm'] as Step[]).map((s, i) => (
             <div key={s} className="flex items-center gap-2">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
                 step === s ? 'bg-primary text-white' :
-                (['permission', 'select', 'confirm'].indexOf(step) > i) ? 'bg-primary/20 text-primary' :
+                (['form', 'confirm'].indexOf(step) > i) ? 'bg-primary/20 text-primary' :
                 'bg-[#e0e0e0] text-text-muted'
               }`}>
-                {(['permission', 'select', 'confirm'].indexOf(step) > i) ? <Check className="w-4 h-4" /> : i + 1}
+                {(['form', 'confirm'].indexOf(step) > i) ? <Check className="w-4 h-4" /> : i + 1}
               </div>
-              {i < 2 && <div className={`w-12 h-0.5 ${(['permission', 'select', 'confirm'].indexOf(step) > i) ? 'bg-primary/40' : 'bg-[#e0e0e0]'}`} />}
+              {i < 1 && <div className={`w-12 h-0.5 ${(['form', 'confirm'].indexOf(step) > i) ? 'bg-primary/40' : 'bg-[#e0e0e0]'}`} />}
             </div>
           ))}
         </div>
@@ -303,293 +273,256 @@ export default function KonumSecimi() {
           </div>
         )}
 
-        {/* STEP 1: Permission */}
-        {step === 'permission' && (
-          <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden">
-            <div className="px-6 py-8 text-center">
-              <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-5">
-                <Navigation className="w-10 h-10 text-primary" />
-              </div>
-              <h1 className="text-2xl font-bold text-text-primary mb-2">Konum İzni Gerekli</h1>
-              <p className="text-text-muted text-sm mb-6 max-w-md mx-auto">
-                Mahallemiz, size en yakın mahalle topluluğunu gösterebilmek için konum bilginize ihtiyaç duyar.
-                Konum izni vermeden üyelik işleminizi tamamlayamazsınız.
-              </p>
+        {/* STEP 1: Address Form */}
+        {step === 'form' && (
+          <div className="space-y-4">
+            {/* Form card */}
+            <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden">
+              <div className="px-6 py-8">
+                <h1 className="text-2xl font-bold text-text-primary mb-2">Adresinizi Girin</h1>
+                <p className="text-text-muted text-sm mb-6">
+                  Mahalle topluluÄunuza katÄ±lmak iÃ§in adresinizi girin
+                </p>
 
-              <div className="space-y-3 text-left max-w-sm mx-auto mb-8">
-                <div className="flex items-start gap-3 text-sm">
-                  <Shield className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                  <span className="text-[#555]">Konum bilginiz sadece mahalle eşleştirmesi için kullanılır</span>
-                </div>
-                <div className="flex items-start gap-3 text-sm">
-                  <MapPin className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                  <span className="text-[#555]">Haritada konumunuzu doğrulayabilirsiniz</span>
-                </div>
-                <div className="flex items-start gap-3 text-sm">
-                  <Clock className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                  <span className="text-[#555]">7 gün içinde e-Devlet ile adres doğrulaması yapmanız gerekir</span>
-                </div>
-              </div>
+                <div className="space-y-4">
+                  {/* Ä°l (Province) */}
+                  <div className="relative" onClick={e => e.stopPropagation()}>
+                    <label className="block text-xs font-semibold text-text-muted mb-1.5">Ä°l *</label>
+                    <button
+                      onClick={() => { setShowIlDropdown(!showIlDropdown); setShowIlceDropdown(false) }}
+                      className="w-full flex items-center justify-between border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] hover:bg-surface transition"
+                    >
+                      <span className={formData.il ? 'text-text-primary' : 'text-text-muted'}>
+                        {formData.il?.name || 'Ä°l seÃ§in'}
+                      </span>
+                      <ChevronDown className="w-4 h-4 text-text-muted" />
+                    </button>
+                    {showIlDropdown && (
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-surface border border-border rounded-xl shadow-lg z-30 max-h-64 overflow-hidden">
+                        <div className="p-2 border-b border-border">
+                          <div className="relative">
+                            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                            <input
+                              type="text"
+                              value={ilSearch}
+                              onChange={e => setIlSearch(e.target.value)}
+                              placeholder="Ä°l ara..."
+                              className="w-full pl-8 pr-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-primary"
+                              autoFocus
+                            />
+                          </div>
+                        </div>
+                        <div className="overflow-y-auto max-h-48">
+                          {filteredProvinces.map(p => (
+                            <button
+                              key={p.name}
+                              onClick={() => handleIlSelect(p)}
+                              className={`w-full text-left px-3.5 py-2.5 text-sm hover:bg-background transition ${
+                                formData.il?.name === p.name ? 'bg-primary/5 text-primary font-semibold' : 'text-text-primary'
+                              }`}
+                            >
+                              {p.name}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
 
-              <button
-                onClick={requestLocation}
-                disabled={isLoading}
-                className="w-full max-w-sm mx-auto bg-primary hover:bg-primary-hover text-white font-semibold py-3.5 rounded-xl text-sm transition disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    Konum alınıyor...
-                  </>
-                ) : (
-                  <>
-                    <LocateFixed className="w-5 h-5" />
-                    Konum İzni Ver
-                  </>
-                )}
-              </button>
+                  {/* Ä°lÃ§e (District) */}
+                  <div className="relative" onClick={e => e.stopPropagation()}>
+                    <label className="block text-xs font-semibold text-text-muted mb-1.5">Ä°lÃ§e *</label>
+                    <button
+                      onClick={() => { if (formData.il) { setShowIlceDropdown(!showIlceDropdown); setShowIlDropdown(false) } }}
+                      disabled={!formData.il}
+                      className="w-full flex items-center justify-between border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] hover:bg-surface transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <span className={formData.ilce ? 'text-text-primary' : 'text-text-muted'}>
+                        {formData.ilce?.name || 'Ä°lÃ§e seÃ§in'}
+                      </span>
+                      <ChevronDown className="w-4 h-4 text-text-muted" />
+                    </button>
+                    {showIlceDropdown && formData.il && (
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-surface border border-border rounded-xl shadow-lg z-30 max-h-64 overflow-hidden">
+                        <div className="p-2 border-b border-border">
+                          <div className="relative">
+                            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                            <input
+                              type="text"
+                              value={ilceSearch}
+                              onChange={e => setIlceSearch(e.target.value)}
+                              placeholder="Ä°lÃ§e ara..."
+                              className="w-full pl-8 pr-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-primary"
+                              autoFocus
+                            />
+                          </div>
+                        </div>
+                        <div className="overflow-y-auto max-h-48">
+                          {filteredDistricts.map(d => (
+                            <button
+                              key={d.name}
+                              onClick={() => handleIlceSelect(d)}
+                              className={`w-full text-left px-3.5 py-2.5 text-sm hover:bg-background transition ${
+                                formData.ilce?.name === d.name ? 'bg-primary/5 text-primary font-semibold' : 'text-text-primary'
+                              }`}
+                            >
+                              {d.name}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
 
-              {permissionDenied && (
-                <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-xl text-left">
-                  <div className="flex items-start gap-2.5 text-sm text-amber-800">
-                    <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-semibold mb-1">Konum izni reddedildi</p>
-                      <p className="text-amber-700">
-                        Tarayıcınızın adres çubuğundaki kilit/konum simgesine tıklayarak konum iznini etkinleştirin ve sayfayı yenileyin.
-                        Mahallemiz, konum izni olmadan kullanılamaz.
-                      </p>
-                      <button
-                        onClick={requestLocation}
-                        className="mt-3 text-sm font-semibold text-primary hover:text-primary-hover transition"
-                      >
-                        Tekrar Dene
-                      </button>
-                    </div>
+                  {/* Mahalle (Neighborhood) */}
+                  <div>
+                    <label className="block text-xs font-semibold text-text-muted mb-1.5">Mahalle *</label>
+                    <input
+                      type="text"
+                      value={formData.mahalle}
+                      onChange={e => handleInputChange('mahalle', e.target.value)}
+                      placeholder="Mahalle adÄ±nÄ± girin"
+                      className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary"
+                    />
+                  </div>
+
+                  {/* Cadde / Sokak (Street) */}
+                  <div>
+                    <label className="block text-xs font-semibold text-text-muted mb-1.5">Cadde / Sokak *</label>
+                    <input
+                      type="text"
+                      value={formData.cadde}
+                      onChange={e => handleInputChange('cadde', e.target.value)}
+                      placeholder="Cadde veya sokak adÄ±nÄ± girin"
+                      className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary"
+                    />
+                  </div>
+
+                  {/* Bina NumarasÄ± (Building Number) */}
+                  <div>
+                    <label className="block text-xs font-semibold text-text-muted mb-1.5">Bina NumarasÄ± *</label>
+                    <input
+                      type="text"
+                      value={formData.binaNo}
+                      onChange={e => handleInputChange('binaNo', e.target.value)}
+                      placeholder="Bina numarasÄ±nÄ± girin"
+                      className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary"
+                    />
+                  </div>
+
+                  {/* Bina AdÄ± (Building Name) */}
+                  <div>
+                    <label className="block text-xs font-semibold text-text-muted mb-1.5">Bina AdÄ±</label>
+                    <input
+                      type="text"
+                      value={formData.binaAdi}
+                      onChange={e => handleInputChange('binaAdi', e.target.value)}
+                      placeholder="Opsiyonel"
+                      className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary"
+                    />
+                  </div>
+
+                  {/* Posta Kodu (Postal Code) */}
+                  <div>
+                    <label className="block text-xs font-semibold text-text-muted mb-1.5">Posta Kodu *</label>
+                    <input
+                      type="text"
+                      value={formData.postaKodu}
+                      onChange={e => {
+                        const val = e.target.value.replace(/\D/g, '').slice(0, 5)
+                        handleInputChange('postaKodu', val)
+                      }}
+                      maxLength={5}
+                      placeholder="5 haneli posta kodu"
+                      className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary"
+                    />
                   </div>
                 </div>
-              )}
+
+                {/* Info box */}
+                <div className="mt-6 p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-800 flex items-start gap-2.5">
+                  <Shield className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                  <span>Adres bilgileriniz mahalle topluluÄuna katÄ±lmak iÃ§in kullanÄ±lacaktÄ±r.</span>
+                </div>
+
+                {/* Submit button */}
+                <button
+                  onClick={geocodeAddress}
+                  disabled={isLoading}
+                  className="w-full mt-6 bg-primary hover:bg-primary-hover text-white font-semibold py-3.5 rounded-xl text-sm transition disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Adres doÄrulanÄ±yor...
+                    </>
+                  ) : (
+                    <>
+                      <Navigation className="w-5 h-5" />
+                      Devam Et
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         )}
 
-        {/* STEP 2: Location selection */}
-        {step === 'select' && (
+        {/* STEP 2: Map Confirmation */}
+        {step === 'confirm' && location && (
           <div className="space-y-4">
-            {/* Dropdown row */}
-            <div className="bg-surface rounded-2xl shadow-sm border border-border p-4">
-              <div className="flex flex-col sm:flex-row gap-3">
-                {/* Province dropdown */}
-                <div className="flex-1 relative" onClick={e => e.stopPropagation()}>
-                  <label className="block text-xs font-semibold text-text-muted mb-1.5">İl</label>
-                  <button
-                    onClick={() => { setShowProvinceDropdown(!showProvinceDropdown); setShowDistrictDropdown(false) }}
-                    className="w-full flex items-center justify-between border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] hover:bg-surface transition"
-                  >
-                    <span className={selectedProvince ? 'text-text-primary' : 'text-text-muted'}>
-                      {selectedProvince?.name || 'İl seçin'}
-                    </span>
-                    <ChevronDown className="w-4 h-4 text-text-muted" />
-                  </button>
-                  {showProvinceDropdown && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-surface border border-border rounded-xl shadow-lg z-30 max-h-64 overflow-hidden">
-                      <div className="p-2 border-b border-border">
-                        <div className="relative">
-                          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                          <input
-                            type="text"
-                            value={provinceSearch}
-                            onChange={e => setProvinceSearch(e.target.value)}
-                            placeholder="İl ara..."
-                            className="w-full pl-8 pr-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-primary"
-                            autoFocus
-                          />
-                        </div>
-                      </div>
-                      <div className="overflow-y-auto max-h-48">
-                        {filteredProvinces.map(p => (
-                          <button
-                            key={p.name}
-                            onClick={() => handleProvinceSelect(p)}
-                            className={`w-full text-left px-3.5 py-2.5 text-sm hover:bg-background transition ${
-                              selectedProvince?.name === p.name ? 'bg-primary/5 text-primary font-semibold' : 'text-text-primary'
-                            }`}
-                          >
-                            {p.name}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
+            {/* Map card */}
+            <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden">
+              <div className="px-6 py-6">
+                <h1 className="text-2xl font-bold text-text-primary mb-2">Konumunuz OnaylayÄ±n</h1>
+                <p className="text-text-muted text-sm mb-6">
+                  Haritada konumunuzu gÃ¶rebilir ve 2km etrafÄ±ndaki mahalle topluluÄunu gÃ¶rÃ¼ntÃ¼leyebilirsiniz.
+                </p>
 
-                {/* District dropdown */}
-                <div className="flex-1 relative" onClick={e => e.stopPropagation()}>
-                  <label className="block text-xs font-semibold text-text-muted mb-1.5">İlçe</label>
-                  <button
-                    onClick={() => { if (selectedProvince) { setShowDistrictDropdown(!showDistrictDropdown); setShowProvinceDropdown(false) } }}
-                    disabled={!selectedProvince}
-                    className="w-full flex items-center justify-between border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] hover:bg-surface transition disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <span className={selectedDistrict ? 'text-text-primary' : 'text-text-muted'}>
-                      {selectedDistrict?.name || 'İlçe seçin'}
-                    </span>
-                    <ChevronDown className="w-4 h-4 text-text-muted" />
-                  </button>
-                  {showDistrictDropdown && selectedProvince && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-surface border border-border rounded-xl shadow-lg z-30 max-h-64 overflow-hidden">
-                      <div className="p-2 border-b border-border">
-                        <div className="relative">
-                          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                          <input
-                            type="text"
-                            value={districtSearch}
-                            onChange={e => setDistrictSearch(e.target.value)}
-                            placeholder="İlçe ara..."
-                            className="w-full pl-8 pr-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-primary"
-                            autoFocus
-                          />
-                        </div>
-                      </div>
-                      <div className="overflow-y-auto max-h-48">
-                        {filteredDistricts.map(d => (
-                          <button
-                            key={d.name}
-                            onClick={() => handleDistrictSelect(d)}
-                            className={`w-full text-left px-3.5 py-2.5 text-sm hover:bg-background transition ${
-                              selectedDistrict?.name === d.name ? 'bg-primary/5 text-primary font-semibold' : 'text-text-primary'
-                            }`}
-                          >
-                            {d.name}
-                          </button>
-                        ))}
-                      </div>
+                {/* Address summary */}
+                <div className="bg-background rounded-xl p-4 mb-4 space-y-2">
+                  <div className="flex items-start gap-3">
+                    <MapPin className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <div className="text-sm">
+                      <p className="font-semibold text-text-primary">{formData.mahalle} Mah.</p>
+                      <p className="text-text-muted">{formData.cadde} {formData.binaNo}</p>
+                      <p className="text-text-muted">{formData.ilce?.name}, {formData.il?.name}</p>
                     </div>
-                  )}
-                </div>
-
-                {/* My location button */}
-                {gpsLat && gpsLng && (
-                  <div className="flex items-end">
-                    <button
-                      onClick={goToMyLocation}
-                      className="flex items-center gap-1.5 border border-primary text-primary hover:bg-primary/5 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition whitespace-nowrap"
-                      title="Konumuma git"
-                    >
-                      <LocateFixed className="w-4 h-4" />
-                      <span className="hidden sm:inline">Konumum</span>
-                    </button>
                   </div>
-                )}
-              </div>
-            </div>
-
-            {/* Map */}
-            <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden relative">
-              {/* Map type toggle */}
-              <div className="absolute top-3 right-3 z-20 flex bg-surface rounded-lg shadow border border-border overflow-hidden">
-                <button
-                  onClick={() => setMapType('street')}
-                  className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold transition ${
-                    mapType === 'street' ? 'bg-primary text-white' : 'text-[#555] hover:bg-background'
-                  }`}
-                >
-                  <MapIcon className="w-3.5 h-3.5" />
-                  Harita
-                </button>
-                <button
-                  onClick={() => setMapType('satellite')}
-                  className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold transition ${
-                    mapType === 'satellite' ? 'bg-primary text-white' : 'text-[#555] hover:bg-background'
-                  }`}
-                >
-                  <Satellite className="w-3.5 h-3.5" />
-                  Uydu
-                </button>
+                  <div className="flex items-center gap-3 text-xs text-text-muted pl-8">
+                    <span>{location.lat.toFixed(5)}, {location.lng.toFixed(5)}</span>
+                  </div>
+                </div>
               </div>
 
-              <div className="h-[400px] sm:h-[500px]">
-                <GoogleMapComponent
-                  center={mapCenter}
-                  zoom={mapZoom}
-                  mapType={mapType}
-                  pinLat={pinLat}
-                  pinLng={pinLng}
-                  onMapClick={handleMapClick}
+              {/* Map */}
+              <div className="h-[400px] sm:h-[500px] border-t border-border">
+                <MapComponent
+                  center={[location.lat, location.lng]}
+                  zoom={15}
+                  mapType="street"
+                  pinLat={location.lat}
+                  pinLng={location.lng}
+                  onMapClick={() => {}}
                   circleRadius={2000}
                 />
               </div>
 
-              {/* Info bar */}
-              <div className="px-4 py-3 bg-[#fafafa] border-t border-border flex items-center justify-between">
-                <div className="text-xs text-text-muted">
-                  {pinLat && pinLng ? (
-                    <span className="flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-primary" />
-                      {selectedProvince?.name || ''}{selectedDistrict ? ` / ${selectedDistrict.name}` : ''}
-                      <span className="text-[#b0b0b0] ml-1">({pinLat.toFixed(5)}, {pinLng.toFixed(5)})</span>
-                      <span className="text-primary font-medium ml-1">| 2 km mahalle alanı</span>
-                    </span>
-                  ) : (
-                    <span>Haritada bir nokta seçin</span>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Confirm button */}
-            <button
-              onClick={handleConfirm}
-              disabled={!pinLat || !pinLng || !selectedProvince}
-              className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3.5 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
-            >
-              <Check className="w-5 h-5" />
-              Konumu Onayla
-            </button>
-          </div>
-        )}
-
-        {/* STEP 3: Confirmation */}
-        {step === 'confirm' && confirmedLocation && (
-          <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden">
-            <div className="px-6 py-8 text-center">
-              <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-5">
-                <Check className="w-10 h-10 text-primary" />
-              </div>
-              <h1 className="text-2xl font-bold text-text-primary mb-2">Konum Onayı</h1>
-              <p className="text-text-muted text-sm mb-6">
-                Seçtiğiniz konum bilgileri aşağıdadır. Doğru olduğunu onaylayın.
-              </p>
-
-              <div className="bg-background rounded-xl p-4 max-w-sm mx-auto mb-6 text-left space-y-2">
-                <div className="flex items-center gap-2 text-sm">
-                  <MapPin className="w-4 h-4 text-primary" />
-                  <span className="font-semibold text-text-primary">{confirmedLocation.province}</span>
-                  {confirmedLocation.district && (
-                    <span className="text-[#555]">/ {confirmedLocation.district}</span>
-                  )}
-                </div>
-                <div className="text-xs text-text-muted pl-6">
-                  Koordinatlar: {confirmedLocation.lat.toFixed(5)}, {confirmedLocation.lng.toFixed(5)}
-                </div>
-              </div>
-
-              {/* 30-day notice */}
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 max-w-sm mx-auto mb-6 text-left">
-                <div className="flex items-start gap-2.5 text-sm text-amber-800">
+              {/* Info box */}
+              <div className="px-6 py-4 bg-[#fafafa] border-t border-border">
+                <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800 flex items-start gap-2.5">
                   <Clock className="w-5 h-5 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-semibold mb-1">7 Gün İçinde Doğrulama Gerekli</p>
+                    <p className="font-semibold mb-1">7 GÃ¼n Ä°Ã§inde DoÄrulama Gerekli</p>
                     <p className="text-xs text-amber-700">
-                      Bu konum bilgisi ile 7 gün boyunca üyeliğiniz aktif kalır. Bu süre içinde
-                      e-Devlet üzerinden adres doğrulaması yapmanız gerekmektedir. Doğrulama yapılmazsa
-                      hesabınız doğrulama yapılana kadar kilitlenecektir.
+                      7 gÃ¼n iÃ§inde e-Devlet ile adres doÄrulamasÄ± yapmanÄ±z gerekmektedir.
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3 max-w-sm mx-auto">
+              {/* Action buttons */}
+              <div className="px-6 py-6 border-t border-border space-y-3">
                 <button
                   onClick={saveLocation}
                   disabled={isSaving}
@@ -603,16 +536,16 @@ export default function KonumSecimi() {
                   ) : (
                     <>
                       <Check className="w-5 h-5" />
-                      Onayla ve Devam Et
+                      Konumu Onayla
                     </>
                   )}
                 </button>
                 <button
-                  onClick={() => setStep('select')}
+                  onClick={() => setStep('form')}
                   disabled={isSaving}
-                  className="w-full border border-border hover:bg-surface-hover text-[#555] font-semibold py-3 rounded-xl text-sm transition"
+                  className="w-full border border-primary text-primary hover:bg-primary/5 font-semibold py-3 rounded-xl text-sm transition"
                 >
-                  Konumu Değiştir
+                  Geri DÃ¶n
                 </button>
               </div>
             </div>
