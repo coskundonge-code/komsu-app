@@ -18,17 +18,6 @@ const greenIcon = L.divIcon({
   iconAnchor: [18, 36],
 })
 
-const TILE_LAYERS = {
-  satellite: {
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    attribution: '&copy; Esri, Maxar, Earthstar Geographics',
-  },
-  labels: {
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
-    attribution: '',
-  },
-}
-
 export default function MapComponent({ center, zoom, markerPosition, circleRadius }: MapComponentProps) {
   const mapRef = useRef<L.Map | null>(null)
   const markerRef = useRef<L.Marker | null>(null)
@@ -45,16 +34,10 @@ export default function MapComponent({ center, zoom, markerPosition, circleRadiu
       zoomControl: true,
     })
 
-    // Add satellite imagery
-    L.tileLayer(TILE_LAYERS.satellite.url, {
-      attribution: TILE_LAYERS.satellite.attribution,
-      maxZoom: 19,
-    }).addTo(map)
-
-    // Add labels overlay
-    L.tileLayer(TILE_LAYERS.labels.url, {
-      maxZoom: 19,
-      pane: 'overlayPane',
+    // Google hybrid satellite tiles (satellite + labels)
+    L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+      maxZoom: 20,
+      attribution: 'Map data &copy; Google',
     }).addTo(map)
 
     mapRef.current = map
