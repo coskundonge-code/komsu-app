@@ -53,12 +53,12 @@ export default function KonumSecimi() {
   const ilceDropdownRef = useRef<HTMLDivElement>(null)
 
   const filteredProvinces = ilSearch
-    ? provinces.filter(p => p.name.toLowerCase().includes(ilSearch.toLowerCase()))
+    ? provinces.filter(p => p.name.toLocaleLowerCase('tr').includes(ilSearch.toLocaleLowerCase('tr')))
     : provinces
 
   const filteredDistricts = formData.il
     ? (ilceSearch
-      ? formData.il.districts.filter(d => d.name.toLowerCase().includes(ilceSearch.toLowerCase()))
+      ? formData.il.districts.filter(d => d.name.toLocaleLowerCase('tr').includes(ilceSearch.toLocaleLowerCase('tr')))
       : formData.il.districts)
     : []
 
