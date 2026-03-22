@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import dynamic from 'next/dynamic'
@@ -49,6 +49,9 @@ export default function KonumSecimi() {
   const [mapCenter, setMapCenter] = useState({ lat: 39.9334, lng: 32.8597 })
   const [mapZoom, setMapZoom] = useState(6)
 
+  const ilDropdownRef = useRef<HTMLDivElement>(null)
+  const ilceDropdownRef = useRef<HTMLDivElement>(null)
+
   const filteredProvinces = ilSearch
     ? provinces.filter(p => p.name.toLowerCase().includes(ilSearch.toLowerCase()))
     : provinces
@@ -60,9 +63,16 @@ export default function KonumSecimi() {
     : []
 
   useEffect(() => {
-    const handler = () => { setShowIlDropdown(false); setShowIlceDropdown(false) }
-    document.addEventListener('click', handler)
-    return () => document.removeEventListener('click', handler)
+    const handler = (e: MouseEvent) => {
+      if (ilDropdownRef.current && !ilDropdownRef.current.contains(e.target as Node)) {
+        setShowIlDropdown(false)
+      }
+      if (ilceDropdownRef.current && !ilceDropdownRef.current.contains(e.target as Node)) {
+        setShowIlceDropdown(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
   }, [])
 
   const handleInputChange = (field: keyof FormData, value: string) => {
@@ -220,7 +230,7 @@ export default function KonumSecimi() {
 
               <div className="space-y-4">
                 {/* İl */}
-                <div className="relative" onClick={e => e.stopPropagation()}>
+                <div ref={ilDropdownRef} className="relative">
                   <label className="block text-xs font-semibold text-text-muted mb-1.5">İl *</label>
                   <button onClick={() => { setShowIlDropdown(!showIlDropdown); setShowIlceDropdown(false) }}
                     className="w-full flex items-center justify-between border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] hover:bg-surface transition">
@@ -249,7 +259,7 @@ export default function KonumSecimi() {
                 </div>
 
                 {/* İlçe */}
-                <div className="relative" onClick={e => e.stopPropagation()}>
+                <div ref={ilceDropdownRef} className="relative">
                   <label className="block text-xs font-semibold text-text-muted mb-1.5">İlçe *</label>
                   <button onClick={() => { if (formData.il) { setShowIlceDropdown(!showIlceDropdown); setShowIlDropdown(false) } }}
                     disabled={!formData.il}
