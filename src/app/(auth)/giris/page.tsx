@@ -216,7 +216,7 @@ export default function GirisPage() {
                       type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={(e) => { setPassword(e.target.value); if (passwordError) setPasswordError('') }}
-                      placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"
+                      placeholder="••••••••"
                       disabled={isLoading}
                       aria-invalid={!!passwordError}
                       aria-describedby={passwordError ? 'password-error' : undefined}
