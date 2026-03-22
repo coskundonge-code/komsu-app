@@ -200,7 +200,31 @@ export default function KonumSecimi() {
           id: user.id,
           location_address: fullAddress,
           ...locationData,
-        }, { onConflict: 'id' ('Bir hata oluştu. Lütfen tekrar deneyin.')
+        }, { onConflict: 'id' })
+      } catch {
+        // Table might not exist yet, that's ok
+      }
+
+      // Try to save to user_addresses table
+      try {
+        await (supabase as any).from('user_addresses').insert({
+          user_id: user.id,
+          address: `${formData.mahalle} Mah. ${formData.cadde} ${formData.binaNo}${formData.binaAdi ? ', ' + formData.binaAdi : ''}`,
+          neighborhood: formData.mahalle,
+          city: formData.il!.name,
+          district: formData.ilce!.name,
+          postal_code: formData.postaKodu,
+          latitude: location.lat,
+          longitude: location.lng,
+        })
+      } catch {
+        // Table might not exist yet, that's ok
+      }
+
+      // Navigate to home
+      router.push('/')
+    } catch {
+      setError('Bir hata oluştu. Lütfen tekrar deneyin.')
     } finally {
       setIsSaving(false)
     }
