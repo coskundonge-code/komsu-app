@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -19,6 +19,15 @@ export default function GirisPage() {
   const [passwordError, setPasswordError] = useState('')
 
   const supabase = createClient()
+
+  // Redirect already logged-in users
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        window.location.href = '/'
+      }
+    })
+  }, [])
 
   const validateForm = () => {
     setEmailError('')
@@ -45,16 +54,17 @@ export default function GirisPage() {
       const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
 
       if (authError) {
-        setError(authError.message === 'Invalid login credentials' ? "E-posta veya şifre hatalı." : authError.message)
+        setError(authError.message === 'Invalid login credentials' ? "E-posta veya Åifre hatalÄ±." : authError.message)
         return
       }
 
       if (rememberMe) {
         localStorage.setItem('mahallem_remember_email', email)
       }
-      router.push('/')
+      // Full page reload to ensure middleware runs (not client-side cache)
+      window.location.href = '/'
     } catch {
-      setError("Bir hata oluştu. Lütfen tekrar deneyin.")
+      setError("Bir hata oluÅtu. LÃ¼tfen tekrar deneyin.")
     } finally {
       setIsLoading(false)
     }
@@ -70,7 +80,7 @@ export default function GirisPage() {
       })
       if (error) setError(error.message)
     } catch {
-      setError("Google ile giriş başarısız oldu.")
+      setError("Google ile giriÅ baÅarÄ±sÄ±z oldu.")
     } finally {
       setIsLoading(false)
     }
@@ -78,7 +88,7 @@ export default function GirisPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Üst Bar */}
+      {/* Ãst Bar */}
       <div className="w-full bg-surface border-b border-border px-6 py-3">
         <div className="max-w-[480px] mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
@@ -91,24 +101,24 @@ export default function GirisPage() {
             href="/kayit"
             className="text-sm font-semibold text-primary hover:text-primary-hover transition"
           >
-            Kayıt Ol
+            KayÄ±t Ol
           </Link>
         </div>
       </div>
 
-      {/* Ana İçerik */}
+      {/* Ana Ä°Ã§erik */}
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-[480px]">
           {/* Kart */}
           <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden">
             {/* Header */}
             <div className="px-8 pt-8 pb-4 text-center">
-              <h1 className="text-2xl font-bold text-text-primary mb-1">Tekrar Hoş Geldiniz</h1>
-              <p className="text-sm text-text-muted">Mahallenizle bağlantıda kalın</p>
+              <h1 className="text-2xl font-bold text-text-primary mb-1">Tekrar HoÅ Geldiniz</h1>
+              <p className="text-sm text-text-muted">Mahallenizle baÄlantÄ±da kalÄ±n</p>
             </div>
 
             <div className="px-8 pb-8">
-              {/* Hata Mesajı */}
+              {/* Hata MesajÄ± */}
               {error && (
                 <div className="mb-5 p-3.5 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-start gap-2.5">
                   <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
@@ -116,7 +126,7 @@ export default function GirisPage() {
                 </div>
               )}
 
-              {/* Google ile Giriş */}
+              {/* Google ile GiriÅ */}
               <button
                 onClick={handleGoogleSignIn}
                 disabled={isLoading}
@@ -128,7 +138,7 @@ export default function GirisPage() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                     </svg>
-                    <span>Bağlanıyor...</span>
+                    <span>BaÄlanÄ±yor...</span>
                   </>
                 ) : (
                   <>
@@ -138,12 +148,12 @@ export default function GirisPage() {
                       <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                       <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                     </svg>
-                    <span>Google ile giriş yap</span>
+                    <span>Google ile giriÅ yap</span>
                   </>
                 )}
               </button>
 
-              {/* Ayırıcı */}
+              {/* AyÄ±rÄ±cÄ± */}
               <div className="relative mb-5">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-border" />
@@ -186,17 +196,17 @@ export default function GirisPage() {
                   )}
                 </div>
 
-                {/* Şifre */}
+                {/* Åifre */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <label htmlFor="password" className="block text-sm font-semibold text-text-primary">
-                      Şifre
+                      Åifre
                     </label>
                     <Link
                       href="/sifre-sifirla"
                       className="text-xs text-primary hover:text-primary-hover font-semibold transition"
                     >
-                      Şifremi unuttum
+                      Åifremi unuttum
                     </Link>
                   </div>
                   <div className="relative">
@@ -206,7 +216,7 @@ export default function GirisPage() {
                       type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={(e) => { setPassword(e.target.value); if (passwordError) setPasswordError('') }}
-                      placeholder="••••••••"
+                      placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"
                       disabled={isLoading}
                       aria-invalid={!!passwordError}
                       aria-describedby={passwordError ? 'password-error' : undefined}
@@ -221,7 +231,7 @@ export default function GirisPage() {
                       onClick={() => setShowPassword(!showPassword)}
                       disabled={isLoading}
                       className="absolute right-3.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary transition disabled:cursor-not-allowed"
-                      aria-label={showPassword ? 'Şifreyi gizle' : 'Şifreyi göster'}
+                      aria-label={showPassword ? 'Åifreyi gizle' : 'Åifreyi gÃ¶ster'}
                     >
                       {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
                     </button>
@@ -234,7 +244,7 @@ export default function GirisPage() {
                   )}
                 </div>
 
-                {/* Beni Hatırla */}
+                {/* Beni HatÄ±rla */}
                 <div className="flex items-center gap-2.5">
                   <input
                     id="rememberMe"
@@ -245,11 +255,11 @@ export default function GirisPage() {
                     className="w-4 h-4 rounded border-border text-primary focus:ring-primary cursor-pointer accent-[#00833e]"
                   />
                   <label htmlFor="rememberMe" className="text-sm text-text-muted cursor-pointer">
-                    Beni hatırla
+                    Beni hatÄ±rla
                   </label>
                 </div>
 
-                {/* Giriş Butonu */}
+                {/* GiriÅ Butonu */}
                 <button
                   type="submit"
                   disabled={isLoading}
@@ -261,35 +271,35 @@ export default function GirisPage() {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
-                      Giriş yapılıyor...
+                      GiriÅ yapÄ±lÄ±yor...
                     </span>
                   ) : (
-                    "Giriş Yap"
+                    "GiriÅ Yap"
                   )}
                 </button>
               </form>
 
-              {/* Kayıt linki */}
+              {/* KayÄ±t linki */}
               <div className="mt-6 pt-6 border-t border-border text-center">
                 <p className="text-sm text-text-muted">
-                  Hesabınız yok mu?{' '}
+                  HesabÄ±nÄ±z yok mu?{' '}
                   <Link href="/kayit" className="text-primary hover:text-primary-hover font-semibold transition">
-                    Kayıt olun
+                    KayÄ±t olun
                   </Link>
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Güvenlik rozetleri */}
+          {/* GÃ¼venlik rozetleri */}
           <div className="flex items-center justify-center gap-6 mt-6 text-xs text-text-muted">
             <span className="flex items-center gap-1.5">
               <Shield className="w-3.5 h-3.5" />
-              Güvenli bağlantı
+              GÃ¼venli baÄlantÄ±
             </span>
             <span className="flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5" />
-              50.000+ komşu
+              50.000+ komÅu
             </span>
             <span className="flex items-center gap-1.5">
               <MapPin className="w-3.5 h-3.5" />
