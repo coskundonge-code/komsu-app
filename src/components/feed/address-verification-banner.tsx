@@ -11,7 +11,7 @@ interface AddressVerificationBannerProps {
 
 export function AddressVerificationBanner({
   status = 'unverified',
-  daysRemaining = 27
+  daysRemaining = 7
 }: AddressVerificationBannerProps) {
   const [dismissed, setDismissed] = useState(false)
 
