@@ -8,8 +8,16 @@ import { TrendingWidget } from '@/components/widgets/trending-widget'
 import { UpcomingEventsWidget } from '@/components/widgets/upcoming-events-widget'
 import { NeighborhoodStatsWidget } from '@/components/widgets/neighborhood-stats-widget'
 import { getFeedImageUrl } from '@/lib/demo-images'
+import { useCurrentUser } from '@/lib/hooks/use-auth'
 
 export function RightSidebar() {
+  const { user } = useCurrentUser()
+  const metadata = user?.user_metadata
+  const locationText = metadata?.ilce && metadata?.mahalle
+    ? `${metadata.ilce}, ${metadata.mahalle}`
+    : metadata?.ilce && metadata?.il
+    ? `${metadata.ilce}, ${metadata.il}`
+    : 'Konum belirtilmemiş'
   return (
     <div className="w-[300px] flex-shrink-0 hidden xl:block py-4 px-2 space-y-3">
       <div className="bg-surface rounded-xl shadow-card border border-border overflow-hidden">
@@ -19,7 +27,7 @@ export function RightSidebar() {
               <MapPin className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-sm font-bold text-text-primary">Kadıköy, Moda</p>
+              <p className="text-sm font-bold text-text-primary">{locationText}</p>
               <p className="text-xs text-text-muted flex items-center gap-1">
                 <Users className="w-3 h-3" />
                 1.247 üye
