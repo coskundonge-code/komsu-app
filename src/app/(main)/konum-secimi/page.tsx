@@ -86,11 +86,11 @@ export default function KonumSecimi() {
 
   const geocodeAddress = useCallback(async () => {
     if (!formData.il || !formData.ilce || !formData.mahalle || !formData.cadde || !formData.binaNo) {
-      setError('L\u00FCtfen t\u00FCm zorunlu alanlar\u0131 doldurun.')
+      setError('Lütfen tüm zorunlu alanları doldurun.')
       return
     }
     if (formData.postaKodu.length !== 5 || !/^\d{5}$/.test(formData.postaKodu)) {
-      setError('L\u00FCtfen ge\u00E7erli bir 5 haneli posta kodu girin.')
+      setError('Lütfen geçerli bir 5 haneli posta kodu girin.')
       return
     }
 
@@ -98,7 +98,7 @@ export default function KonumSecimi() {
     setError('')
 
     try {
-      const fullAddress = `${formData.mahalle} Mah. ${formData.cadde} ${formData.binaNo}, ${formData.ilce.name}, ${formData.il.name}, T\u00FCrkiye`
+      const fullAddress = `${formData.mahalle} Mah. ${formData.cadde} ${formData.binaNo}, ${formData.ilce.name}, ${formData.il.name}, Türkiye`
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fullAddress)}&key=AIzaSyChvjDjaC6DH14E1swB3dAKP2AObo5rCT8&components=country:TR&language=tr`
       )
@@ -113,10 +113,10 @@ export default function KonumSecimi() {
         setMapZoom(17)
         setConfirmed(true)
       } else {
-        setError('Adres bulunamad\u0131. L\u00FCtfen adres bilgilerinizi kontrol edin.')
+        setError('Adres bulunamadı. Lütfen adres bilgilerinizi kontrol edin.')
       }
     } catch (err) {
-      setError('Adres do\u011Frulamas\u0131 s\u0131ras\u0131nda bir hata olu\u015Ftu.')
+      setError('Adres doğrulaması sırasında bir hata oluştu.')
       console.error(err)
     } finally {
       setIsLoading(false)
@@ -131,7 +131,7 @@ export default function KonumSecimi() {
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
-        setError('Oturumunuz sona ermi\u015F. L\u00FCtfen tekrar giri\u015F yap\u0131n.')
+        setError('Oturumunuz sona ermiş. Lütfen tekrar giriş yapın.')
         router.push('/giris')
         return
       }
@@ -169,7 +169,7 @@ export default function KonumSecimi() {
 
       window.location.href = '/'
     } catch {
-      setError('Bir hata olu\u015Ftu. L\u00FCtfen tekrar deneyin.')
+      setError('Bir hata oluştu. Lütfen tekrar deneyin.')
     } finally {
       setIsSaving(false)
     }
@@ -188,7 +188,7 @@ export default function KonumSecimi() {
           </div>
           <div className="flex items-center gap-2 text-xs text-text-muted">
             <MapPin className="w-3.5 h-3.5" />
-            <span>Konum Do\u011Frulama</span>
+            <span>Konum Doğrulama</span>
           </div>
         </div>
       </div>
@@ -207,15 +207,15 @@ export default function KonumSecimi() {
           <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden">
             <div className="px-6 py-6">
               <h1 className="text-2xl font-bold text-text-primary mb-2">Adresinizi Girin</h1>
-              <p className="text-text-muted text-sm mb-6">Mahalle toplulu\u011Funuza kat\u0131lmak i\u00E7in adresinizi girin</p>
+              <p className="text-text-muted text-sm mb-6">Mahalle topluluğunuza katılmak için adresinizi girin</p>
 
               <div className="space-y-4">
-                {/* \u0130l */}
+                {/* İl */}
                 <div className="relative" onClick={e => e.stopPropagation()}>
-                  <label className="block text-xs font-semibold text-text-muted mb-1.5">\u0130l *</label>
+                  <label className="block text-xs font-semibold text-text-muted mb-1.5">İl *</label>
                   <button onClick={() => { setShowIlDropdown(!showIlDropdown); setShowIlceDropdown(false) }}
                     className="w-full flex items-center justify-between border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] hover:bg-surface transition">
-                    <span className={formData.il ? 'text-text-primary' : 'text-text-muted'}>{formData.il?.name || '\u0130l se\u00E7in'}</span>
+                    <span className={formData.il ? 'text-text-primary' : 'text-text-muted'}>{formData.il?.name || 'İl seçin'}</span>
                     <ChevronDown className="w-4 h-4 text-text-muted" />
                   </button>
                   {showIlDropdown && (
@@ -223,7 +223,7 @@ export default function KonumSecimi() {
                       <div className="p-2 border-b border-border">
                         <div className="relative">
                           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                          <input type="text" value={ilSearch} onChange={e => setIlSearch(e.target.value)} placeholder="\u0130l ara..."
+                          <input type="text" value={ilSearch} onChange={e => setIlSearch(e.target.value)} placeholder="İl ara..."
                             className="w-full pl-8 pr-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-primary" autoFocus />
                         </div>
                       </div>
@@ -239,13 +239,13 @@ export default function KonumSecimi() {
                   )}
                 </div>
 
-                {/* \u0130l\u00E7e */}
+                {/* İlçe */}
                 <div className="relative" onClick={e => e.stopPropagation()}>
-                  <label className="block text-xs font-semibold text-text-muted mb-1.5">\u0130l\u00E7e *</label>
+                  <label className="block text-xs font-semibold text-text-muted mb-1.5">İlçe *</label>
                   <button onClick={() => { if (formData.il) { setShowIlceDropdown(!showIlceDropdown); setShowIlDropdown(false) } }}
                     disabled={!formData.il}
                     className="w-full flex items-center justify-between border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] hover:bg-surface transition disabled:opacity-50 disabled:cursor-not-allowed">
-                    <span className={formData.ilce ? 'text-text-primary' : 'text-text-muted'}>{formData.ilce?.name || '\u0130l\u00E7e se\u00E7in'}</span>
+                    <span className={formData.ilce ? 'text-text-primary' : 'text-text-muted'}>{formData.ilce?.name || 'İlçe seçin'}</span>
                     <ChevronDown className="w-4 h-4 text-text-muted" />
                   </button>
                   {showIlceDropdown && formData.il && (
@@ -253,7 +253,7 @@ export default function KonumSecimi() {
                       <div className="p-2 border-b border-border">
                         <div className="relative">
                           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                          <input type="text" value={ilceSearch} onChange={e => setIlceSearch(e.target.value)} placeholder="\u0130l\u00E7e ara..."
+                          <input type="text" value={ilceSearch} onChange={e => setIlceSearch(e.target.value)} placeholder="İlçe ara..."
                             className="w-full pl-8 pr-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-primary" autoFocus />
                         </div>
                       </div>
@@ -273,26 +273,26 @@ export default function KonumSecimi() {
                 <div>
                   <label className="block text-xs font-semibold text-text-muted mb-1.5">Mahalle *</label>
                   <input type="text" value={formData.mahalle} onChange={e => handleInputChange('mahalle', e.target.value)}
-                    placeholder="Mahalle ad\u0131n\u0131 girin" className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary" />
+                    placeholder="Mahalle adını girin" className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary" />
                 </div>
 
                 {/* Cadde / Sokak */}
                 <div>
                   <label className="block text-xs font-semibold text-text-muted mb-1.5">Cadde / Sokak *</label>
                   <input type="text" value={formData.cadde} onChange={e => handleInputChange('cadde', e.target.value)}
-                    placeholder="Cadde veya sokak ad\u0131n\u0131 girin" className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary" />
+                    placeholder="Cadde veya sokak adını girin" className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary" />
                 </div>
 
-                {/* Bina Numaras\u0131 */}
+                {/* Bina Numarası */}
                 <div>
-                  <label className="block text-xs font-semibold text-text-muted mb-1.5">Bina Numaras\u0131 *</label>
+                  <label className="block text-xs font-semibold text-text-muted mb-1.5">Bina Numarası *</label>
                   <input type="text" value={formData.binaNo} onChange={e => handleInputChange('binaNo', e.target.value)}
-                    placeholder="Bina numaras\u0131n\u0131 girin" className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary" />
+                    placeholder="Bina numarasını girin" className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary" />
                 </div>
 
-                {/* Bina Ad\u0131 */}
+                {/* Bina Adı */}
                 <div>
-                  <label className="block text-xs font-semibold text-text-muted mb-1.5">Bina Ad\u0131</label>
+                  <label className="block text-xs font-semibold text-text-muted mb-1.5">Bina Adı</label>
                   <input type="text" value={formData.binaAdi} onChange={e => handleInputChange('binaAdi', e.target.value)}
                     placeholder="Opsiyonel" className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary" />
                 </div>
@@ -310,14 +310,14 @@ export default function KonumSecimi() {
               {/* Info box */}
               <div className="mt-6 p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-800 flex items-start gap-2.5">
                 <Shield className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                <span>Adres bilgileriniz mahalle toplulu\u011Funa kat\u0131lmak i\u00E7in kullan\u0131lacakt\u0131r.</span>
+                <span>Adres bilgileriniz mahalle topluluğuna katılmak için kullanılacaktır.</span>
               </div>
 
               {/* Submit / Confirm buttons */}
               {!confirmed ? (
                 <button onClick={geocodeAddress} disabled={isLoading}
                   className="w-full mt-6 bg-primary hover:bg-primary-hover text-white font-semibold py-3.5 rounded-xl text-sm transition disabled:opacity-50 flex items-center justify-center gap-2">
-                  {isLoading ? (<><Loader2 className="w-5 h-5 animate-spin" />Adres do\u011Frulan\u0131yor...</>) : (<><Navigation className="w-5 h-5" />Adresi Haritada G\u00F6ster</>)}
+                  {isLoading ? (<><Loader2 className="w-5 h-5 animate-spin" />Adres doğrulanıyor...</>) : (<><Navigation className="w-5 h-5" />Adresi Haritada Göster</>)}
                 </button>
               ) : (
                 <div className="mt-6 space-y-3">
@@ -325,7 +325,7 @@ export default function KonumSecimi() {
                   <div className="p-3.5 bg-green-50 border border-green-200 rounded-xl text-sm text-green-800 flex items-start gap-2.5">
                     <Check className="w-5 h-5 flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-semibold">Adres haritada g\u00F6r\u00FCnt\u00FClendi</p>
+                      <p className="font-semibold">Adres haritada görüntülendi</p>
                       <p className="text-xs mt-1">{location?.address}</p>
                     </div>
                   </div>
@@ -333,8 +333,8 @@ export default function KonumSecimi() {
                   <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800 flex items-start gap-2.5">
                     <Clock className="w-5 h-5 flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-semibold">7 G\u00FCn \u0130\u00E7inde Do\u011Frulama Gerekli</p>
-                      <p className="text-xs">e-Devlet ile adres do\u011Frulamas\u0131 yapman\u0131z gerekmektedir.</p>
+                      <p className="font-semibold">7 Gün İçinde Doğrulama Gerekli</p>
+                      <p className="text-xs">e-Devlet ile adres doğrulaması yapmanız gerekmektedir.</p>
                     </div>
                   </div>
 
@@ -345,7 +345,7 @@ export default function KonumSecimi() {
 
                   <button onClick={() => { setConfirmed(false); setLocation(null); setMapCenter({ lat: 39.9334, lng: 32.8597 }); setMapZoom(6) }}
                     disabled={isSaving} className="w-full border border-primary text-primary hover:bg-primary/5 font-semibold py-3 rounded-xl text-sm transition">
-                    Adresi D\u00FCzenle
+                    Adresi Düzenle
                   </button>
                 </div>
               )}
@@ -357,9 +357,9 @@ export default function KonumSecimi() {
             <div className="px-6 py-4 border-b border-border">
               <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-primary" />
-                Harita G\u00F6r\u00FCn\u00FCm\u00FC
+                Harita Görünümü
               </h2>
-              <p className="text-xs text-text-muted mt-1">Uydu g\u00F6r\u00FCnt\u00FCs\u00FC ile adresinizi do\u011Frulay\u0131n</p>
+              <p className="text-xs text-text-muted mt-1">Uydu görüntüsü ile adresinizi doğrulayın</p>
             </div>
             <div className="h-[500px] lg:h-[calc(100%-72px)]">
               <MapComponent
