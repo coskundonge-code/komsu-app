@@ -267,7 +267,7 @@ export default function KonumSecimi() {
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-sm font-bold text-white">K/span>
+              <span className="text-sm font-bold text-white">K</span>
             </div>
             <span className="text-lg font-bold text-text-primary">Mahallemiz</span>
           </div>
