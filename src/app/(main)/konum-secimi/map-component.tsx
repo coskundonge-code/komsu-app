@@ -34,10 +34,10 @@ export default function MapComponent({ center, zoom, markerPosition, circleRadiu
       zoomControl: true,
     })
 
-    // Google hybrid satellite tiles (satellite + labels)
-    L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
-      maxZoom: 20,
-      attribution: 'Map data &copy; Google',
+    // OpenStreetMap tiles as primary, with satellite toggle option
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map)
 
     mapRef.current = map
