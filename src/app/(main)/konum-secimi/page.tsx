@@ -272,7 +272,7 @@ export default function KonumSecimi() {
 
       // Update user_profiles
       const { error: profileError } = await supabase
-        .from('user_profiles')
+        .from('profiles' as any)
         .update({
           il: locationData.il,
           ilce: locationData.ilce,
@@ -288,7 +288,7 @@ export default function KonumSecimi() {
 
       // Also upsert user_metadata
       const { error: metaError } = await supabase
-        .from('user_metadata')
+        .from('user_addresses' as any)
         .upsert({
           user_id: user.id,
           il: locationData.il,
