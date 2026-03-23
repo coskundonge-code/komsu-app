@@ -292,17 +292,27 @@ export default function KonumSecimi() {
         .from('user_addresses')
         .upsert({
           user_id: user.id,
-          il: locationData.il,
-          ilce: locationData.ilce,
-          mahalle: locationData.mahalle,
-          cadde_sokak: locationData.cadde_sokak,
-          bina_no: locationData.bina_no,
-          latitude: locationData.latitude,
-          longitude: locationData.longitude,
-          updated_at: new Date().toISOString()
+          address_line: locationData.il + ', ' + locationData.ilce + ', ' + locationData.mahalle + ' Mah. ' + (locationData.cadde_sokak || '') + ' No:' + (locationData.bina_no || ''),
+          city: locationData.il,
+          district: locationData.ilce,
+          lat: locationData.latitude,
+          lng: locationData.longitude
         }, { onConflict: 'user_id' })
 
       if (metaError) { setError('Konum kaydedilemedi: ' + metaError.message); setIsSaving(false); return }
+
+      // Also update user_profiles
+      try {
+        await (supabase as any).from('user_profiles').upsert({
+          id: user.id,
+          location_lat: locationData.latitude,
+          location_lng: locationData.longitude,
+          location_province: locationData.il,
+          location_district: locationData.ilce,
+          location_address: locationData.il + ', ' + locationData.ilce + ', ' + locationData.mahalle + ' Mah.',
+          location_confirmed_at: new Date().toISOString(),
+        }, { onConflict: 'id' })
+      } catch {}
 
       setConfirmed(true)
       setTimeout(() => router.push('/'), 1500)
@@ -390,7 +400,7 @@ export default function KonumSecimi() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
           {/* Left panel - Form */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 pb-20 lg:pb-0">
             <div className="bg-white rounded-2xl shadow-sm border border-border-primary p-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-brand-primary/10 rounded-xl flex items-center justify-center">
@@ -591,15 +601,15 @@ export default function KonumSecimi() {
                   </div>
                 </div>
 
-                {/* Save Button */}
+                {/* Save Button - sticky on mobile */}
+              <div className="lg:static fixed bottom-0 left-0 right-0 lg:p-0 p-4 bg-white lg:bg-transparent lg:shadow-none shadow-[0_-4px_12px_rgba(0,0,0,0.1)] z-50">
                 <button
                   onClick={saveLocation}
                   disabled={!formData.il || !formData.ilce || !formData.mahalle || isSaving}
                   className={`w-full py-3 rounded-xl font-medium text-white transition-all flex items-center justify-center gap-2
                     ${!formData.il || !formData.ilce || !formData.mahalle || isSaving
                       ? 'bg-gray-300 cursor-not-allowed'
-                      : 'bg-brand-primary hover:bg-brand-primary/90 shadow-lg shadow-brand-primary/25'}
-                  `}
+                      : 'bg-brand-primary hover:bg-brand-primary/90 shadow-lg shadow-brand-primary/25'}`}
                 >
                   {isSaving ? (
                     <><Loader2 className="w-5 h-5 animate-spin" /> Kaydediliyor...</>
@@ -607,6 +617,7 @@ export default function KonumSecimi() {
                     <><Navigation className="w-5 h-5" /> Adresi Kaydet</>
                   )}
                 </button>
+              </div>
               </div>
             </div>
           </div>
