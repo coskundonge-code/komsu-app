@@ -143,7 +143,7 @@ export default function KonumSecimi() {
   // Update map when location changes
   useEffect(() => {
     if (formData.il) {
-      const coords = formData.il.coordinates
+      const coords = { lat: formData.il.lat, lng: formData.il.lng }
       setMapCoords({ lat: coords.lat, lng: coords.lng })
       setMapZoom(formData.ilce ? 14 : 10)
 
@@ -266,8 +266,8 @@ export default function KonumSecimi() {
         bina_no: formData.binaNo,
         bina_adi: formData.binaAdi,
         posta_kodu: formData.postaKodu,
-        latitude: mapCoords?.lat || formData.il.coordinates.lat,
-        longitude: mapCoords?.lng || formData.il.coordinates.lng
+        latitude: mapCoords?.lat || formData.il.lat,
+        longitude: mapCoords?.lng || formData.il.lng
       }
 
       // Update user_profiles
