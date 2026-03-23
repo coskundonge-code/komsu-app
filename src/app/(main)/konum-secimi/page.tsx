@@ -1,16 +1,16 @@
 'use client'
-// @ts-nocheck
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
 import { createClient } from '@/lib/supabase/client'
 import { provinces, type Province, type District } from '@/data/turkey-locations'
 import {
-  MapPin, Check, AlertCircle, Loader2, Search, ChevronDown, Navigation
+  MapPin, Check, AlertCircle, Loader2, Search, ChevronDown, Shield, Clock, Navigation, MousePointerClick
 } from 'lucide-react'
 
-// GitHub raw JSON for mahalle data - 81 il, 973 ilce, 32K mahalle (~375KB)
-const MAHALLE_JSON_URL = 'https://raw.githubusercontent.com/adilmustafayilmaz/turkiye-il-ilce-mahalle-verileri/main/turkiye_ilce_mahalle.json'
+// Dynamic import for Leaflet map (no SSR)
+const MapComponent = dynamic(() => import('./map-component'), { ssr: false })
 
 interface FormData {
   il: Province | null
@@ -22,8 +22,11 @@ interface FormData {
   postaKodu: string
 }
 
-// Cache for mahalle data so we only fetch once
-let mahalleDataCache: Record<string, { plaka: number; koordinatlar: { latitude: number; longitude: number }; ilceler: Record<string, string[]> }> | null = null
+interface Neighborhood {
+  id: number
+  name: string
+  population?: number
+}
 
 export default function KonumSecimi() {
   const router = useRouter()
@@ -35,632 +38,689 @@ export default function KonumSecimi() {
   const [confirmed, setConfirmed] = useState(false)
 
   const [formData, setFormData] = useState<FormData>({
-    il: null, ilce: null, mahalle: '', cadde: '', binaNo: '', binaAdi: '', postaKodu: ''
+    il: null, ilce: null, mahalle: '', cadde: '', binaNo: '', binaAdi: '', postaKodu: '',
   })
 
-  const [mahalleler, setMahalleler] = useState<string[]>([])
-  const [mahalleLoading, setMahalleLoading] = useState(false)
-  const [caddeSuggestions, setCaddeSuggestions] = useState<string[]>([])
-  const [caddeLoading, setCaddeLoading] = useState(false)
-  const [mapCoords, setMapCoords] = useState<{ lat: number; lng: number } | null>(null)
-  const [mapZoom, setMapZoom] = useState(6)
+  // Dropdown states
+  const [showIlDropdown, setShowIlDropdown] = useState(false)
+  const [showIlceDropdown, setShowIlceDropdown] = useState(false)
+  const [showMahalleDropdown, setShowMahalleDropdown] = useState(false)
+  const [showCaddeDropdown, setShowCaddeDropdown] = useState(false)
 
-  // Dropdown open states
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  // Search states
   const [ilSearch, setIlSearch] = useState('')
   const [ilceSearch, setIlceSearch] = useState('')
   const [mahalleSearch, setMahalleSearch] = useState('')
+  const [caddeSearch, setCaddeSearch] = useState('')
 
-  const dropdownRef = useRef<HTMLDivElement>(null)
-  const caddeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  // Data states
+  const [mahalleler, setMahalleler] = useState<Neighborhood[]>([])
+  const [mahalleLoading, setMahalleLoading] = useState(false)
+  const [caddeler, setCaddeler] = useState<string[]>([])
+  const [caddeLoading, setCaddeLoading] = useState(false)
 
-  // Close dropdowns when clicking outside
+  // Map state
+  const [mapCenter, setMapCenter] = useState<[number, number]>([39.9334, 32.8597])
+  const [mapZoom, setMapZoom] = useState(6)
+  const [pinLat, setPinLat] = useState<number | null>(null)
+  const [pinLng, setPinLng] = useState<number | null>(null)
+  const [mapType, setMapType] = useState<'street' | 'satellite'>('satellite')
+
+  // Refs for click-outside
+  const ilDropdownRef = useRef<HTMLDivElement>(null)
+  const ilceDropdownRef = useRef<HTMLDivElement>(null)
+  const mahalleDropdownRef = useRef<HTMLDivElement>(null)
+  const caddeDropdownRef = useRef<HTMLDivElement>(null)
+
+  // Debounce timer ref for cadde search
+  const caddeTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Filter provinces
+  const filteredProvinces = ilSearch
+    ? provinces.filter(p => p.name.toLocaleLowerCase('tr').includes(ilSearch.toLocaleLowerCase('tr')))
+    : provinces
+
+  // Filter districts
+  const filteredDistricts = formData.il
+    ? (ilceSearch
+      ? formData.il.districts.filter(d => d.name.toLocaleLowerCase('tr').includes(ilceSearch.toLocaleLowerCase('tr')))
+      : formData.il.districts)
+    : []
+
+  // Filter neighborhoods
+  const filteredMahalleler = mahalleSearch
+    ? mahalleler.filter(m => m.name.toLocaleLowerCase('tr').includes(mahalleSearch.toLocaleLowerCase('tr')))
+    : mahalleler
+
+  // Click outside handler
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setOpenDropdown(null)
+      if (ilDropdownRef.current && !ilDropdownRef.current.contains(e.target as Node)) {
+        setShowIlDropdown(false)
+      }
+      if (ilceDropdownRef.current && !ilceDropdownRef.current.contains(e.target as Node)) {
+        setShowIlceDropdown(false)
+      }
+      if (mahalleDropdownRef.current && !mahalleDropdownRef.current.contains(e.target as Node)) {
+        setShowMahalleDropdown(false)
+      }
+      if (caddeDropdownRef.current && !caddeDropdownRef.current.contains(e.target as Node)) {
+        setShowCaddeDropdown(false)
       }
     }
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
-  // Load mahalle data from GitHub JSON
-  const loadMahalleData = useCallback(async () => {
-    if (mahalleDataCache) return mahalleDataCache
-    try {
-      const res = await fetch(MAHALLE_JSON_URL)
-      if (!res.ok) throw new Error('Mahalle verisi yuklenemedi')
-      const data = await res.json()
-      mahalleDataCache = data
-      return data
-    } catch (err) {
-      console.error('Mahalle data load error:', err)
-      return null
-    }
-  }, [])
-
-  // Fetch mahalleler when ilce changes
+  // Fetch mahalle when ilÃ§e changes
   useEffect(() => {
     if (!formData.il || !formData.ilce) {
       setMahalleler([])
       return
     }
+
     const fetchMahalleler = async () => {
       setMahalleLoading(true)
-      setMahalleler([])
       try {
-        const data = await loadMahalleData()
-        if (!data) throw new Error('Veri yuklenemedi')
-
-        // Find the province in the JSON - match by name (uppercase in JSON)
-        const provinceName = formData.il!.name.toLocaleUpperCase('tr')
-        const provinceData = data[provinceName]
-
-        if (!provinceData || !provinceData.ilceler) {
-          // Try fuzzy match
-          const allProvinces = Object.keys(data)
-          const match = allProvinces.find(p =>
-            p.toLocaleUpperCase('tr') === provinceName ||
-            p.toLocaleLowerCase('tr') === formData.il!.name.toLocaleLowerCase('tr')
-          )
-          if (match && data[match].ilceler) {
-            const districtName = formData.ilce!.name
-            const districts = data[match].ilceler
-            const districtKey = Object.keys(districts).find(d =>
-              d.toLocaleLowerCase('tr') === districtName.toLocaleLowerCase('tr')
-            )
-            if (districtKey) {
-              const mahList = districts[districtKey] as string[]
-              setMahalleler(mahList.sort((a: string, b: string) => a.localeCompare(b, 'tr')))
-            }
-          }
-        } else {
-          const districtName = formData.ilce!.name
-          const districts = provinceData.ilceler
-          // Find district - try exact match first, then case-insensitive
-          let districtKey = Object.keys(districts).find(d => d === districtName)
-          if (!districtKey) {
-            districtKey = Object.keys(districts).find(d =>
-              d.toLocaleLowerCase('tr') === districtName.toLocaleLowerCase('tr')
-            )
-          }
-          if (districtKey) {
-            const mahList = districts[districtKey] as string[]
-            setMahalleler(mahList.sort((a: string, b: string) => a.localeCompare(b, 'tr')))
-          } else {
-            console.warn('District not found:', districtName, 'in', Object.keys(districts).slice(0, 5))
+        const res = await fetch(
+          `https://api.turkiyeapi.dev/v1/neighborhoods?province=${encodeURIComponent(formData.il!.name)}&district=${encodeURIComponent(formData.ilce!.name)}&limit=500`
+        )
+        if (res.ok) {
+          const json = await res.json()
+          if (json.data && Array.isArray(json.data)) {
+            const sorted = json.data
+              .map((n: any) => ({ id: n.id, name: n.name, population: n.population }))
+              .sort((a: Neighborhood, b: Neighborhood) => a.name.localeCompare(b.name, 'tr'))
+            setMahalleler(sorted)
           }
         }
       } catch (err) {
-        console.error('Mahalle fetch error:', err)
+        console.error('Mahalle verisi alÄ±namadÄ±:', err)
       } finally {
         setMahalleLoading(false)
       }
     }
+
     fetchMahalleler()
-  }, [formData.il, formData.ilce, loadMahalleData])
+  }, [formData.il, formData.ilce])
 
-  // Update map when location changes
-  useEffect(() => {
-    if (formData.il) {
-      const coords = { lat: formData.il.lat, lng: formData.il.lng }
-      setMapCoords({ lat: coords.lat, lng: coords.lng })
-      setMapZoom(formData.ilce ? 14 : 10)
-
-      if (formData.ilce) {
-        // Geocode the district for better coordinates
-        const query = `${formData.ilce.name}, ${formData.il.name}, Turkey`
-        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&accept-language=tr`)
-          .then(r => r.json())
-          .then(results => {
-            if (results && results.length > 0) {
-              setMapCoords({ lat: parseFloat(results[0].lat), lng: parseFloat(results[0].lon) })
-              setMapZoom(formData.mahalle ? 16 : 14)
-            }
-          })
-          .catch(() => {})
-      }
-    }
-  }, [formData.il, formData.ilce, formData.mahalle])
-
-  // Geocode when mahalle is selected
-  useEffect(() => {
-    if (formData.il && formData.ilce && formData.mahalle) {
-      const query = `${formData.mahalle}, ${formData.ilce.name}, ${formData.il.name}, Turkey`
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&accept-language=tr`)
-        .then(r => r.json())
-        .then(results => {
-          if (results && results.length > 0) {
-            setMapCoords({ lat: parseFloat(results[0].lat), lng: parseFloat(results[0].lon) })
-            setMapZoom(16)
-          }
-        })
-        .catch(() => {})
-    }
-  }, [formData.mahalle, formData.il, formData.ilce])
-
-  // Cadde/Sokak autocomplete with Nominatim
-  const handleCaddeInput = useCallback((value: string) => {
-    setFormData(prev => ({ ...prev, cadde: value }))
-    if (caddeTimeoutRef.current) clearTimeout(caddeTimeoutRef.current)
-
-    if (value.length < 2 || !formData.il || !formData.ilce) {
-      setCaddeSuggestions([])
+  // Fetch cadde/sokak suggestions via Nominatim when user types
+  const searchCaddeler = useCallback(async (query: string) => {
+    if (!formData.il || !formData.ilce || !formData.mahalle || query.length < 2) {
+      setCaddeler([])
       return
     }
 
-    caddeTimeoutRef.current = setTimeout(async () => {
-      setCaddeLoading(true)
-      try {
-        const query = `${value}, ${formData.mahalle || ''} ${formData.ilce!.name}, ${formData.il!.name}`
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=8&accept-language=tr&addressdetails=1`
-        )
-        const results = await res.json()
-        if (results && results.length > 0) {
-          const streets = results
-            .map((r: { address?: { road?: string; pedestrian?: string; residential?: string } }) =>
-              r.address?.road || r.address?.pedestrian || r.address?.residential
-            )
-            .filter((s: string | undefined): s is string => !!s)
-            .filter((s: string, i: number, arr: string[]) => arr.indexOf(s) === i) // unique
-          setCaddeSuggestions(streets)
-        } else {
-          setCaddeSuggestions([])
-        }
-      } catch {
-        setCaddeSuggestions([])
-      } finally {
-        setCaddeLoading(false)
+    setCaddeLoading(true)
+    try {
+      const searchQuery = `${query}, ${formData.mahalle}, ${formData.ilce.name}, ${formData.il.name}`
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&countrycodes=tr&limit=8&accept-language=tr&addressdetails=1`,
+        { headers: { 'User-Agent': 'Mahallemiz/1.0' } }
+      )
+      if (res.ok) {
+        const data = await res.json()
+        const streets = data
+          .map((r: any) => r.address?.road || r.address?.pedestrian || r.address?.residential || '')
+          .filter((s: string) => s.length > 0)
+        // Deduplicate
+        const unique = [...new Set(streets)] as string[]
+        setCaddeler(unique)
       }
-    }, 400)
+    } catch (err) {
+      console.error('Cadde aramasÄ± baÅarÄ±sÄ±z:', err)
+    } finally {
+      setCaddeLoading(false)
+    }
   }, [formData.il, formData.ilce, formData.mahalle])
 
-  // Selection handlers
+  // Handle cadde input with debounce
+  const handleCaddeInput = (value: string) => {
+    setFormData(prev => ({ ...prev, cadde: value }))
+    setCaddeSearch(value)
+    if (confirmed) { setConfirmed(false) }
+
+    if (caddeTimerRef.current) clearTimeout(caddeTimerRef.current)
+    caddeTimerRef.current = setTimeout(() => {
+      searchCaddeler(value)
+    }, 400)
+  }
+
+  const handleInputChange = (field: keyof FormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+    if (confirmed) { setConfirmed(false) }
+  }
+
   const handleIlSelect = (province: Province) => {
-    setFormData({ il: province, ilce: null, mahalle: '', cadde: '', binaNo: '', binaAdi: '', postaKodu: '' })
-    setMahalleler([])
-    setCaddeSuggestions([])
-    setOpenDropdown(null)
+    setFormData(prev => ({ ...prev, il: province, ilce: null, mahalle: '', cadde: '' }))
     setIlSearch('')
+    setShowIlDropdown(false)
+    setMahalleler([])
+    setCaddeler([])
+    if (confirmed) { setConfirmed(false) }
   }
 
   const handleIlceSelect = (district: District) => {
     setFormData(prev => ({ ...prev, ilce: district, mahalle: '', cadde: '' }))
-    setMahalleler([])
-    setCaddeSuggestions([])
-    setOpenDropdown(null)
     setIlceSearch('')
+    setShowIlceDropdown(false)
+    setCaddeler([])
+    if (confirmed) { setConfirmed(false) }
   }
 
-  const handleMahalleSelect = (mahalle: string) => {
-    setFormData(prev => ({ ...prev, mahalle, cadde: '' }))
-    setCaddeSuggestions([])
-    setOpenDropdown(null)
+  const handleMahalleSelect = (mahalle: Neighborhood) => {
+    setFormData(prev => ({ ...prev, mahalle: mahalle.name, cadde: '' }))
     setMahalleSearch('')
+    setShowMahalleDropdown(false)
+    setCaddeler([])
+    if (confirmed) { setConfirmed(false) }
   }
 
-  const handleCaddeSelect = (cadde: string) => {
+  const handleCaddeSelect = async (cadde: string) => {
     setFormData(prev => ({ ...prev, cadde }))
-    setCaddeSuggestions([])
+    setCaddeSearch('')
+    setShowCaddeDropdown(false)
+    if (confirmed) { setConfirmed(false) }
+
+    // Geocode the street to zoom map to it
+    if (formData.il && formData.ilce && formData.mahalle) {
+      try {
+        const streetQuery = `${cadde}, ${formData.mahalle} Mahallesi, ${formData.ilce.name}, ${formData.il.name}`
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(streetQuery)}&countrycodes=tr&limit=1&accept-language=tr&addressdetails=1`,
+          { headers: { 'User-Agent': 'Mahallemiz/1.0' } }
+        )
+        if (res.ok) {
+          const data = await res.json()
+          if (data && data.length > 0) {
+            const lat = parseFloat(data[0].lat)
+            const lng = parseFloat(data[0].lon)
+            setMapCenter([lat, lng])
+            setMapZoom(18) // Building-level zoom
+            // Auto-fill postal code if available
+            if (data[0].address?.postcode && !formData.postaKodu) {
+              const cleanPostcode = data[0].address.postcode.replace(/\D/g, '').slice(0, 5)
+              if (cleanPostcode.length === 5) {
+                setFormData(prev => ({ ...prev, cadde, postaKodu: cleanPostcode }))
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Cadde geocoding baÅarÄ±sÄ±z:', err)
+      }
+    }
   }
 
-  // Save location
-  const saveLocation = async () => {
-    if (!formData.il || !formData.ilce || !formData.mahalle) {
-      setError('Lutfen il, ilce ve mahalle seciniz')
+  // Handle map click - user selects their building
+  const handleMapClick = useCallback((lat: number, lng: number) => {
+    setPinLat(lat)
+    setPinLng(lng)
+    setMapCenter([lat, lng])
+    if (confirmed) { setConfirmed(false) }
+  }, [confirmed])
+
+  // Update map when il/ilce changes
+  useEffect(() => {
+    if (confirmed) return // Don't change map when address is confirmed
+    if (formData.ilce) {
+      setMapCenter([formData.ilce.lat, formData.ilce.lng])
+      setMapZoom(13)
+      setPinLat(null)
+      setPinLng(null)
+    } else if (formData.il) {
+      setMapCenter([formData.il.lat, formData.il.lng])
+      setMapZoom(10)
+      setPinLat(null)
+      setPinLng(null)
+    } else {
+      setMapCenter([39.9334, 32.8597])
+      setMapZoom(6)
+      setPinLat(null)
+      setPinLng(null)
+    }
+  }, [formData.il, formData.ilce, confirmed])
+
+  const geocodeAddress = useCallback(async () => {
+    if (!formData.il || !formData.ilce || !formData.mahalle || !formData.cadde || !formData.binaNo) {
+      setError('LÃ¼tfen tÃ¼m zorunlu alanlarÄ± doldurun.')
       return
     }
+
+    if (formData.postaKodu && (formData.postaKodu.length !== 5 || !/^\d{5}$/.test(formData.postaKodu))) {
+      setError('LÃ¼tfen geÃ§erli bir 5 haneli posta kodu girin.')
+      return
+    }
+
+    setIsLoading(true)
+    setError('')
+
+    try {
+      const fullAddress = `${formData.mahalle} Mahallesi, ${formData.cadde}, ${formData.binaNo}, ${formData.ilce.name}, ${formData.il.name}`
+
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}&countrycodes=tr&limit=1&accept-language=tr&addressdetails=1`,
+        { headers: { 'User-Agent': 'Mahallemiz/1.0' } }
+      )
+
+      let lat: number, lng: number, displayAddress: string
+      let postcode: string | null = null
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data && data.length > 0) {
+          lat = parseFloat(data[0].lat)
+          lng = parseFloat(data[0].lon)
+          displayAddress = data[0].display_name
+          // Extract postal code from address details
+          if (data[0].address?.postcode) {
+            postcode = data[0].address.postcode
+          }
+        } else {
+          // Fallback: try with just mahalle + ilÃ§e + il
+          const fallbackAddress = `${formData.mahalle}, ${formData.ilce.name}, ${formData.il.name}, TÃ¼rkiye`
+          const fallbackRes = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fallbackAddress)}&countrycodes=tr&limit=1&accept-language=tr&addressdetails=1`,
+            { headers: { 'User-Agent': 'Mahallemiz/1.0' } }
+          )
+
+          if (fallbackRes.ok) {
+            const fallbackData = await fallbackRes.json()
+            if (fallbackData && fallbackData.length > 0) {
+              lat = parseFloat(fallbackData[0].lat)
+              lng = parseFloat(fallbackData[0].lon)
+              displayAddress = fallbackData[0].display_name
+              if (fallbackData[0].address?.postcode) {
+                postcode = fallbackData[0].address.postcode
+              }
+            } else {
+              // Last fallback: use ilÃ§e coordinates
+              lat = formData.ilce.lat
+              lng = formData.ilce.lng
+              displayAddress = `${formData.mahalle} Mah. ${formData.cadde} ${formData.binaNo}, ${formData.ilce.name}, ${formData.il.name}`
+            }
+          } else {
+            lat = formData.ilce.lat
+            lng = formData.ilce.lng
+            displayAddress = `${formData.mahalle} Mah. ${formData.cadde} ${formData.binaNo}, ${formData.ilce.name}, ${formData.il.name}`
+          }
+        }
+      } else {
+        // Network error fallback: use ilÃ§e coordinates
+        lat = formData.ilce.lat
+        lng = formData.ilce.lng
+        displayAddress = `${formData.mahalle} Mah. ${formData.cadde} ${formData.binaNo}, ${formData.ilce.name}, ${formData.il.name}`
+      }
+
+      // Auto-fill postal code if found and not already filled
+      if (postcode && !formData.postaKodu) {
+        const cleanPostcode = postcode.replace(/\D/g, '').slice(0, 5)
+        if (cleanPostcode.length === 5) {
+          setFormData(prev => ({ ...prev, postaKodu: cleanPostcode }))
+        }
+      }
+
+      // If user already placed a pin on map, use that location instead
+      if (pinLat !== null && pinLng !== null) {
+        lat = pinLat
+        lng = pinLng
+      }
+
+      setMapCenter([lat, lng])
+      setPinLat(lat)
+      setPinLng(lng)
+      setMapZoom(19)
+      setConfirmed(true)
+    } catch (err) {
+      // Even on network error, use pin or ilÃ§e coordinates as fallback
+      const lat = pinLat ?? formData.ilce.lat
+      const lng = pinLng ?? formData.ilce.lng
+      setMapCenter([lat, lng])
+      setPinLat(lat)
+      setPinLng(lng)
+      setMapZoom(19)
+      setConfirmed(true)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [formData, pinLat, pinLng])
+
+  const saveLocation = async () => {
     setIsSaving(true)
     setError('')
 
     try {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { setError('Oturum bulunamadi'); setIsSaving(false); return }
-
-      const locationData = {
-        il: formData.il.name,
-        ilce: formData.ilce.name,
-        mahalle: formData.mahalle,
-        cadde_sokak: formData.cadde,
-        bina_no: formData.binaNo,
-        bina_adi: formData.binaAdi,
-        posta_kodu: formData.postaKodu,
-        latitude: mapCoords?.lat || formData.il.lat,
-        longitude: mapCoords?.lng || formData.il.lng
+      if (!user) {
+        setError('Oturumunuz sona ermiÅ. LÃ¼tfen tekrar giriÅ yapÄ±n.')
+        router.push('/giris')
+        return
       }
 
-      // Update user_profiles
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({
-          il: locationData.il,
-          ilce: locationData.ilce,
-          mahalle: locationData.mahalle,
-          address: `${locationData.cadde_sokak} ${locationData.bina_no} ${locationData.bina_adi}`.trim(),
-          latitude: locationData.latitude,
-          longitude: locationData.longitude,
-          location_verified: false
-        })
-        .eq('user_id', user.id)
+      const edevletDeadline = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+      const locationData = {
+        location_lat: pinLat ?? mapCenter[0],
+        location_lng: pinLng ?? mapCenter[1],
+        location_province: formData.il!.name,
+        location_district: formData.ilce!.name,
+        location_neighborhood: formData.mahalle,
+        location_confirmed_at: new Date().toISOString(),
+        edevlet_verification_deadline: edevletDeadline,
+      }
 
-      if (profileError) throw profileError
-
-      // Also upsert user_metadata
-      const { error: metaError } = await supabase
-        .from('user_addresses')
-        .upsert({
-          user_id: user.id,
-          address_line: locationData.il + ', ' + locationData.ilce + ', ' + locationData.mahalle + ' Mah. ' + (locationData.cadde_sokak || '') + ' No:' + (locationData.bina_no || ''),
-          city: locationData.il,
-          district: locationData.ilce,
-          lat: locationData.latitude,
-          lng: locationData.longitude
-        }, { onConflict: 'user_id' })
-
+      const { error: metaError } = await supabase.auth.updateUser({ data: locationData })
       if (metaError) { setError('Konum kaydedilemedi: ' + metaError.message); setIsSaving(false); return }
 
-      // Also update user_profiles
+      const fullAddress = `${formData.mahalle} Mah. ${formData.cadde} No:${formData.binaNo}${formData.binaAdi ? ' ' + formData.binaAdi : ''}, ${formData.ilce!.name}, ${formData.il!.name}${formData.postaKodu ? ' ' + formData.postaKodu : ''}`
+
       try {
         await (supabase as any).from('user_profiles').upsert({
           id: user.id,
-          location_lat: locationData.latitude,
-          location_lng: locationData.longitude,
-          location_province: locationData.il,
-          location_district: locationData.ilce,
-          location_address: locationData.il + ', ' + locationData.ilce + ', ' + locationData.mahalle + ' Mah.',
-          location_confirmed_at: new Date().toISOString(),
+          location_address: fullAddress,
+          ...locationData
         }, { onConflict: 'id' })
       } catch {}
 
-      setConfirmed(true)
-      setTimeout(() => router.push('/'), 1500)
-    } catch (err) {
-      setError('Konum kaydedilemedi: ' + (err instanceof Error ? err.message : 'Bilinmeyen hata'))
+      try {
+        await (supabase as any).from('user_addresses').insert({
+          user_id: user.id,
+          address: fullAddress,
+          neighborhood: formData.mahalle,
+          city: formData.il!.name,
+          district: formData.ilce!.name,
+          postal_code: formData.postaKodu || null,
+          latitude: pinLat ?? mapCenter[0],
+          longitude: pinLng ?? mapCenter[1],
+        })
+      } catch {}
+
+      window.location.href = '/'
+    } catch {
+      setError('Bir hata oluÅtu. LÃ¼tfen tekrar deneyin.')
     } finally {
       setIsSaving(false)
     }
   }
 
-  // Google Maps embed URL using protobuf format
-  const getMapUrl = () => {
-    if (!mapCoords) return ''
-    const { lat, lng } = mapCoords
-    const scale = 591657550.5 / Math.pow(2, mapZoom)
-    return `https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d${scale.toFixed(1)}!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1str!2str`
-  }
-
-  // Sorted lists
-  const sortedProvinces = [...provinces].sort((a, b) => a.name.localeCompare(b.name, 'tr'))
-  const sortedDistricts = formData.il
-    ? [...formData.il.districts].sort((a, b) => a.name.localeCompare(b.name, 'tr'))
-    : []
-
-  // Filter helpers
-  const filteredProvinces = ilSearch
-    ? sortedProvinces.filter(p => p.name.toLocaleLowerCase('tr').includes(ilSearch.toLocaleLowerCase('tr')))
-    : sortedProvinces
-  const filteredDistricts = ilceSearch
-    ? sortedDistricts.filter(d => d.name.toLocaleLowerCase('tr').includes(ilceSearch.toLocaleLowerCase('tr')))
-    : sortedDistricts
-  const filteredMahalleler = mahalleSearch
-    ? mahalleler.filter(m => m.toLocaleLowerCase('tr').includes(mahalleSearch.toLocaleLowerCase('tr')))
-    : mahalleler
-
-  // Dropdown component
+  // Dropdown component helper
   const DropdownField = ({
-    label, value, placeholder, isOpen, onToggle, children, disabled = false, loading = false
+    label, required, dropdownRef, showDropdown, setShowDropdown, selectedValue, placeholder,
+    searchValue, setSearchValue, searchPlaceholder, items, onSelect, loading, disabled, closeOthers
   }: {
-    label: string; value: string; placeholder: string; isOpen: boolean; onToggle: () => void;
-    children: React.ReactNode; disabled?: boolean; loading?: boolean
+    label: string; required?: boolean; dropdownRef: React.RefObject<HTMLDivElement | null>;
+    showDropdown: boolean; setShowDropdown: (v: boolean) => void;
+    selectedValue: string; placeholder: string; searchValue: string;
+    setSearchValue: (v: string) => void; searchPlaceholder: string;
+    items: { key: string; label: string }[]; onSelect: (key: string) => void;
+    loading?: boolean; disabled?: boolean; closeOthers: () => void;
   }) => (
-    <div className="relative">
-      <label className="block text-sm font-medium text-text-secondary mb-1.5">{label}</label>
+    <div ref={dropdownRef} className="relative">
+      <label className="block text-xs font-semibold text-text-muted mb-1.5">{label}{required && ' *'}</label>
       <button
-        type="button"
-        onClick={onToggle}
+        onClick={() => { if (!disabled) { closeOthers(); setShowDropdown(!showDropdown) } }}
         disabled={disabled}
-        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl border text-left transition-all
-          ${disabled ? 'bg-bg-tertiary text-text-muted cursor-not-allowed border-border-primary' :
-            isOpen ? 'border-brand-primary bg-white ring-2 ring-brand-primary/20' :
-            'border-border-primary bg-white hover:border-brand-primary/50'}
-        `}
+        className="w-full flex items-center justify-between border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] hover:bg-surface transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <span className={value ? 'text-text-primary' : 'text-text-muted'}>
-          {loading ? 'Yukleniyor...' : (value || placeholder)}
+        <span className={selectedValue ? 'text-text-primary' : 'text-text-muted'}>
+          {selectedValue || placeholder}
         </span>
-        {loading ? <Loader2 className="w-4 h-4 animate-spin text-text-muted" /> : <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${isOpen ? 'rotate-180' : ''}`} />}
+        {loading ? <Loader2 className="w-4 h-4 text-text-muted animate-spin" /> : <ChevronDown className="w-4 h-4 text-text-muted" />}
       </button>
-      {isOpen && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-border-primary rounded-xl shadow-lg max-h-60 overflow-auto">
-          {children}
+      {showDropdown && !disabled && (
+        <div className="absolute top-full left-0 right-0 mt-1 bg-surface border border-border rounded-xl shadow-lg z-30 max-h-64 overflow-hidden">
+          <div className="p-2 border-b border-border">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+              <input type="text" value={searchValue} onChange={e => setSearchValue(e.target.value)}
+                placeholder={searchPlaceholder}
+                className="w-full pl-8 pr-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-primary" autoFocus />
+            </div>
+          </div>
+          <div className="overflow-y-auto max-h-48">
+            {loading ? (
+              <div className="flex items-center justify-center py-4 text-sm text-text-muted">
+                <Loader2 className="w-4 h-4 animate-spin mr-2" /> YÃ¼kleniyor...
+              </div>
+            ) : items.length === 0 ? (
+              <div className="px-3.5 py-3 text-sm text-text-muted text-center">SonuÃ§ bulunamadÄ±</div>
+            ) : (
+              items.map(item => (
+                <button key={item.key} onClick={() => onSelect(item.key)}
+                  className={`w-full text-left px-3.5 py-2.5 text-sm hover:bg-background transition ${
+                    selectedValue === item.label ? 'bg-primary/5 text-primary font-semibold' : 'text-text-primary'
+                  }`}>
+                  {item.label}
+                </button>
+              ))
+            )}
+          </div>
         </div>
       )}
     </div>
   )
 
-  if (confirmed) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-bg-primary p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
-          <div className="w-16 h-16 bg-status-success/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Check className="w-8 h-8 text-status-success" />
-          </div>
-          <h2 className="text-xl font-bold text-text-primary mb-2">Adres Kaydedildi</h2>
-          <p className="text-text-muted">Anasayfaya yonlendiriliyorsunuz...</p>
-        </div>
-      </div>
-    )
+  const closeAllDropdowns = () => {
+    setShowIlDropdown(false)
+    setShowIlceDropdown(false)
+    setShowMahalleDropdown(false)
+    setShowCaddeDropdown(false)
   }
 
   return (
-    <div className="min-h-screen bg-bg-primary">
-      <div className="max-w-6xl mx-auto p-4 md:p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="bg-surface border-b border-border px-4 py-3 sticky top-0 z-50">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-sm font-bold text-white">K</span>
+            </div>
+            <span className="text-lg font-bold text-text-primary">Mahallemiz</span>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-text-muted">
+            <MapPin className="w-3.5 h-3.5" />
+            <span>Konum DoÄrulama</span>
+          </div>
+        </div>
+      </div>
 
-          {/* Left panel - Form */}
-          <div className="lg:col-span-3 pb-20 lg:pb-0">
-            <div className="bg-white rounded-2xl shadow-sm border border-border-primary p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-brand-primary/10 rounded-xl flex items-center justify-center">
-                  <MapPin className="w-5 h-5 text-brand-primary" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-text-primary">Adresinizi Girin</h1>
-                  <p className="text-text-muted text-sm">Mahalle topluluguna katilmak icin adresinizi girin</p>
-                </div>
-              </div>
+      <div className="max-w-5xl mx-auto px-4 py-6">
+        {/* Error */}
+        {error && (
+          <div className="mb-4 p-3.5 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-start gap-2.5">
+            <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+            <span>{error}</span>
+          </div>
+        )}
 
-              {error && (
-                <div className="mb-4 p-3 rounded-xl bg-status-error/10 border border-status-error/20 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 text-status-error flex-shrink-0" />
-                  <span className="text-sm text-status-error">{error}</span>
-                </div>
-              )}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* LEFT: Address Form */}
+          <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden">
+            <div className="px-6 py-6">
+              <h1 className="text-2xl font-bold text-text-primary mb-2">Adresinizi Girin</h1>
+              <p className="text-text-muted text-sm mb-6">Mahalle topluluÄunuza katÄ±lmak iÃ§in adresinizi girin</p>
 
-              <div ref={dropdownRef} className="space-y-4">
-                {/* Il (Province) */}
+              <div className="space-y-4">
+                {/* Ä°l */}
                 <DropdownField
-                  label="Il"
-                  value={formData.il?.name || ''}
-                  placeholder="Il seciniz"
-                  isOpen={openDropdown === 'il'}
-                  onToggle={() => setOpenDropdown(openDropdown === 'il' ? null : 'il')}
-                >
-                  <div className="p-2 sticky top-0 bg-white border-b border-border-primary">
-                    <div className="relative">
-                      <Search className="absolute left-2.5 top-2.5 w-4 h-4 text-text-muted" />
-                      <input
-                        type="text"
-                        value={ilSearch}
-                        onChange={e => setIlSearch(e.target.value)}
-                        placeholder="Il ara..."
-                        className="w-full pl-8 pr-3 py-2 text-sm border border-border-primary rounded-lg focus:outline-none focus:border-brand-primary"
-                        autoFocus
-                      />
-                    </div>
-                  </div>
-                  {filteredProvinces.map(p => (
-                    <button
-                      key={p.id}
-                      onClick={() => handleIlSelect(p)}
-                      className="w-full text-left px-3 py-2 text-sm hover:bg-brand-primary/5 transition-colors flex items-center justify-between"
-                    >
-                      <span>{p.name}</span>
-                      {formData.il?.id === p.id && <Check className="w-4 h-4 text-brand-primary" />}
-                    </button>
-                  ))}
-                </DropdownField>
+                  label="Ä°l" required dropdownRef={ilDropdownRef}
+                  showDropdown={showIlDropdown} setShowDropdown={setShowIlDropdown}
+                  selectedValue={formData.il?.name || ''} placeholder="Ä°l seÃ§in"
+                  searchValue={ilSearch} setSearchValue={setIlSearch} searchPlaceholder="Ä°l ara..."
+                  items={filteredProvinces.map(p => ({ key: p.name, label: p.name }))}
+                  onSelect={key => { const p = provinces.find(x => x.name === key); if (p) handleIlSelect(p) }}
+                  closeOthers={() => { setShowIlceDropdown(false); setShowMahalleDropdown(false); setShowCaddeDropdown(false) }}
+                />
 
-                {/* Ilce (District) */}
+                {/* Ä°lÃ§e */}
                 <DropdownField
-                  label="Ilce"
-                  value={formData.ilce?.name || ''}
-                  placeholder="Ilce seciniz"
-                  isOpen={openDropdown === 'ilce'}
-                  onToggle={() => setOpenDropdown(openDropdown === 'ilce' ? null : 'ilce')}
+                  label="Ä°lÃ§e" required dropdownRef={ilceDropdownRef}
+                  showDropdown={showIlceDropdown} setShowDropdown={setShowIlceDropdown}
+                  selectedValue={formData.ilce?.name || ''} placeholder="Ä°lÃ§e seÃ§in"
+                  searchValue={ilceSearch} setSearchValue={setIlceSearch} searchPlaceholder="Ä°lÃ§e ara..."
+                  items={filteredDistricts.map(d => ({ key: d.name, label: d.name }))}
+                  onSelect={key => { const d = formData.il?.districts.find(x => x.name === key); if (d) handleIlceSelect(d) }}
                   disabled={!formData.il}
-                >
-                  <div className="p-2 sticky top-0 bg-white border-b border-border-primary">
-                    <div className="relative">
-                      <Search className="absolute left-2.5 top-2.5 w-4 h-4 text-text-muted" />
-                      <input
-                        type="text"
-                        value={ilceSearch}
-                        onChange={e => setIlceSearch(e.target.value)}
-                        placeholder="Ilce ara..."
-                        className="w-full pl-8 pr-3 py-2 text-sm border border-border-primary rounded-lg focus:outline-none focus:border-brand-primary"
-                        autoFocus
-                      />
-                    </div>
-                  </div>
-                  {filteredDistricts.map(d => (
-                    <button
-                      key={d.id}
-                      onClick={() => handleIlceSelect(d)}
-                      className="w-full text-left px-3 py-2 text-sm hover:bg-brand-primary/5 transition-colors flex items-center justify-between"
-                    >
-                      <span>{d.name}</span>
-                      {formData.ilce?.id === d.id && <Check className="w-4 h-4 text-brand-primary" />}
-                    </button>
-                  ))}
-                  {filteredDistricts.length === 0 && (
-                    <div className="px-3 py-4 text-sm text-text-muted text-center">Sonuc bulunamadi</div>
-                  )}
-                </DropdownField>
+                  closeOthers={() => { setShowIlDropdown(false); setShowMahalleDropdown(false); setShowCaddeDropdown(false) }}
+                />
 
                 {/* Mahalle */}
                 <DropdownField
-                  label="Mahalle"
-                  value={formData.mahalle}
-                  placeholder="Mahalle seciniz"
-                  isOpen={openDropdown === 'mahalle'}
-                  onToggle={() => setOpenDropdown(openDropdown === 'mahalle' ? null : 'mahalle')}
-                  disabled={!formData.ilce}
+                  label="Mahalle" required dropdownRef={mahalleDropdownRef}
+                  showDropdown={showMahalleDropdown} setShowDropdown={setShowMahalleDropdown}
+                  selectedValue={formData.mahalle} placeholder="Mahalle seÃ§in"
+                  searchValue={mahalleSearch} setSearchValue={setMahalleSearch} searchPlaceholder="Mahalle ara..."
+                  items={filteredMahalleler.map(m => ({ key: String(m.id), label: m.name }))}
+                  onSelect={key => { const m = mahalleler.find(x => String(x.id) === key); if (m) handleMahalleSelect(m) }}
                   loading={mahalleLoading}
-                >
-                  <div className="p-2 sticky top-0 bg-white border-b border-border-primary">
-                    <div className="relative">
-                      <Search className="absolute left-2.5 top-2.5 w-4 h-4 text-text-muted" />
-                      <input
-                        type="text"
-                        value={mahalleSearch}
-                        onChange={e => setMahalleSearch(e.target.value)}
-                        placeholder="Mahalle ara..."
-                        className="w-full pl-8 pr-3 py-2 text-sm border border-border-primary rounded-lg focus:outline-none focus:border-brand-primary"
-                        autoFocus
-                      />
-                    </div>
-                  </div>
-                  {mahalleLoading ? (
-                    <div className="px-3 py-4 text-sm text-text-muted text-center flex items-center justify-center gap-2">
-                      <Loader2 className="w-4 h-4 animate-spin" /> Mahalleler yukleniyor...
-                    </div>
-                  ) : filteredMahalleler.length > 0 ? (
-                    filteredMahalleler.map((m, i) => (
-                      <button
-                        key={i}
-                        onClick={() => handleMahalleSelect(m)}
-                        className="w-full text-left px-3 py-2 text-sm hover:bg-brand-primary/5 transition-colors flex items-center justify-between"
-                      >
-                        <span>{m}</span>
-                        {formData.mahalle === m && <Check className="w-4 h-4 text-brand-primary" />}
-                      </button>
-                    ))
-                  ) : (
-                    <div className="px-3 py-4 text-sm text-text-muted text-center">
-                      {formData.ilce ? 'Mahalle bulunamadi' : 'Once ilce seciniz'}
-                    </div>
-                  )}
-                </DropdownField>
+                  disabled={!formData.ilce}
+                  closeOthers={() => { setShowIlDropdown(false); setShowIlceDropdown(false); setShowCaddeDropdown(false) }}
+                />
 
-                {/* Cadde/Sokak */}
-                <div className="relative">
-                  <label className="block text-sm font-medium text-text-secondary mb-1.5">Cadde / Sokak</label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={formData.cadde}
-                      onChange={e => handleCaddeInput(e.target.value)}
-                      placeholder={formData.mahalle ? 'Cadde veya sokak yazin...' : 'Once mahalle seciniz'}
-                      disabled={!formData.mahalle}
-                      className={`w-full px-3 py-2.5 rounded-xl border text-sm transition-all
-                        ${!formData.mahalle ? 'bg-bg-tertiary text-text-muted cursor-not-allowed border-border-primary' :
-                          'border-border-primary bg-white hover:border-brand-primary/50 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20'}
-                      `}
-                    />
-                    {caddeLoading && <Loader2 className="absolute right-3 top-2.5 w-4 h-4 animate-spin text-text-muted" />}
-                  </div>
-                  {caddeSuggestions.length > 0 && (
-                    <div className="absolute z-50 w-full mt-1 bg-white border border-border-primary rounded-xl shadow-lg max-h-48 overflow-auto">
-                      {caddeSuggestions.map((s, i) => (
-                        <button
-                          key={i}
-                          onClick={() => handleCaddeSelect(s)}
-                          className="w-full text-left px-3 py-2 text-sm hover:bg-brand-primary/5 transition-colors"
-                        >
-                          {s}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Bina No / Bina Adi / Posta Kodu */}
-                <div className="grid grid-cols-3 gap-3">
-                  <div>
-                    <label className="block text-sm font-medium text-text-secondary mb-1.5">Bina No</label>
-                    <input
-                      type="text"
-                      value={formData.binaNo}
-                      onChange={e => setFormData(prev => ({ ...prev, binaNo: e.target.value }))}
-                      placeholder="No"
-                      className="w-full px-3 py-2.5 rounded-xl border border-border-primary bg-white text-sm hover:border-brand-primary/50 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-text-secondary mb-1.5">Bina Adi</label>
-                    <input
-                      type="text"
-                      value={formData.binaAdi}
-                      onChange={e => setFormData(prev => ({ ...prev, binaAdi: e.target.value }))}
-                      placeholder="Adi"
-                      className="w-full px-3 py-2.5 rounded-xl border border-border-primary bg-white text-sm hover:border-brand-primary/50 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-text-secondary mb-1.5">Posta Kodu</label>
-                    <input
-                      type="text"
-                      value={formData.postaKodu}
-                      onChange={e => setFormData(prev => ({ ...prev, postaKodu: e.target.value }))}
-                      placeholder="34000"
-                      className="w-full px-3 py-2.5 rounded-xl border border-border-primary bg-white text-sm hover:border-brand-primary/50 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 transition-all"
-                    />
-                  </div>
-                </div>
-
-                {/* Save Button - sticky on mobile */}
-              <div className="lg:static fixed bottom-0 left-0 right-0 lg:p-0 p-4 bg-white lg:bg-transparent lg:shadow-none shadow-[0_-4px_12px_rgba(0,0,0,0.1)] z-50">
-                <button
-                  onClick={saveLocation}
-                  disabled={!formData.il || !formData.ilce || !formData.mahalle || isSaving}
-                  className={`w-full py-3 rounded-xl font-medium text-white transition-all flex items-center justify-center gap-2
-                    ${!formData.il || !formData.ilce || !formData.mahalle || isSaving
-                      ? 'bg-gray-300 cursor-not-allowed'
-                      : 'bg-brand-primary hover:bg-brand-primary/90 shadow-lg shadow-brand-primary/25'}`}
-                >
-                  {isSaving ? (
-                    <><Loader2 className="w-5 h-5 animate-spin" /> Kaydediliyor...</>
-                  ) : (
-                    <><Navigation className="w-5 h-5" /> Adresi Kaydet</>
-                  )}
-                </button>
-              </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right panel - Map */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-sm border border-border-primary overflow-hidden sticky top-6">
-              <div className="p-4 border-b border-border-primary">
-                <h3 className="font-semibold text-text-primary flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-brand-primary" />
-                  Harita Gorunumu
-                </h3>
-                {formData.il && (
-                  <p className="text-xs text-text-muted mt-1">
-                    {[formData.mahalle, formData.ilce?.name, formData.il.name].filter(Boolean).join(', ')}
-                  </p>
-                )}
-              </div>
-              <div className="aspect-square w-full bg-bg-secondary">
-                {mapCoords ? (
-                  <iframe
-                    key={`${mapCoords.lat}-${mapCoords.lng}-${mapZoom}`}
-                    src={getMapUrl()}
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="Konum Haritasi"
+                {/* Cadde / Sokak - text input with autocomplete */}
+                <div ref={caddeDropdownRef} className="relative">
+                  <label className="block text-xs font-semibold text-text-muted mb-1.5">Cadde / Sokak *</label>
+                  <input
+                    type="text"
+                    value={formData.cadde}
+                    onChange={e => handleCaddeInput(e.target.value)}
+                    onFocus={() => { if (caddeler.length > 0) setShowCaddeDropdown(true) }}
+                    placeholder={formData.mahalle ? 'Cadde veya sokak adÄ±nÄ± yazÄ±n...' : 'Ãnce mahalle seÃ§in'}
+                    disabled={!formData.mahalle}
+                    className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
                   />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-text-muted">
-                    <div className="text-center">
-                      <MapPin className="w-12 h-12 mx-auto mb-2 opacity-30" />
-                      <p className="text-sm">Il secerek haritayi goruntuleyebilirsiniz</p>
+                  {showCaddeDropdown && caddeler.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-surface border border-border rounded-xl shadow-lg z-30 max-h-48 overflow-y-auto">
+                      {caddeLoading ? (
+                        <div className="flex items-center justify-center py-3 text-sm text-text-muted">
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" /> AranÄ±yor...
+                        </div>
+                      ) : (
+                        caddeler.map((c, i) => (
+                          <button key={i} onClick={() => handleCaddeSelect(c)}
+                            className="w-full text-left px-3.5 py-2.5 text-sm hover:bg-background transition text-text-primary">
+                            {c}
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Bina NumarasÄ± */}
+                <div>
+                  <label className="block text-xs font-semibold text-text-muted mb-1.5">Bina NumarasÄ± *</label>
+                  <input type="text" value={formData.binaNo} onChange={e => handleInputChange('binaNo', e.target.value)}
+                    placeholder="Bina numarasÄ±nÄ± girin" className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary" />
+                </div>
+
+                {/* Bina AdÄ± */}
+                <div>
+                  <label className="block text-xs font-semibold text-text-muted mb-1.5">Bina AdÄ±</label>
+                  <input type="text" value={formData.binaAdi} onChange={e => handleInputChange('binaAdi', e.target.value)}
+                    placeholder="Opsiyonel" className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary" />
+                </div>
+
+                {/* Posta Kodu */}
+                <div>
+                  <label className="block text-xs font-semibold text-text-muted mb-1.5">Posta Kodu</label>
+                  <input type="text" value={formData.postaKodu}
+                    onChange={e => { const val = e.target.value.replace(/\D/g, '').slice(0, 5); handleInputChange('postaKodu', val) }}
+                    maxLength={5} placeholder="5 haneli posta kodu (opsiyonel)"
+                    className="w-full border border-border rounded-xl px-3.5 py-2.5 text-sm bg-[#fafafa] focus:outline-none focus:border-primary" />
+                </div>
+              </div>
+
+              {/* Info box */}
+              <div className="mt-6 p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-800 flex items-start gap-2.5">
+                <Shield className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                <span>Adres bilgileriniz mahalle topluluÄuna katÄ±lmak iÃ§in kullanÄ±lacaktÄ±r. e-Devlet doÄrulamasÄ± daha sonra yapÄ±lacaktÄ±r.</span>
+              </div>
+
+              {/* Submit / Confirm buttons */}
+              {!confirmed ? (
+                <button onClick={geocodeAddress} disabled={isLoading}
+                  className="w-full mt-6 bg-primary hover:bg-primary-hover text-white font-semibold py-3.5 rounded-xl text-sm transition disabled:opacity-50 flex items-center justify-center gap-2">
+                  {isLoading ? (<><Loader2 className="w-5 h-5 animate-spin" />Adres doÄrulanÄ±yor...</>) : (<><Navigation className="w-5 h-5" />Adresi Haritada GÃ¶ster</>)}
+                </button>
+              ) : (
+                <div className="mt-6 space-y-3">
+                  <div className="p-3.5 bg-green-50 border border-green-200 rounded-xl text-sm text-green-800 flex items-start gap-2.5">
+                    <Check className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold">Adres haritada gÃ¶rÃ¼ntÃ¼lendi</p>
+                      <p className="text-xs mt-1">{formData.mahalle} Mah. {formData.cadde} No:{formData.binaNo}, {formData.ilce?.name}, {formData.il?.name}</p>
                     </div>
                   </div>
-                )}
-              </div>
+
+                  <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800 flex items-start gap-2.5">
+                    <Clock className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold">7 GÃ¼n Ä°Ã§inde DoÄrulama Gerekli</p>
+                      <p className="text-xs">e-Devlet ile adres doÄrulamasÄ± yapmanÄ±z gerekmektedir.</p>
+                    </div>
+                  </div>
+
+                  <button onClick={saveLocation} disabled={isSaving}
+                    className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3.5 rounded-xl text-sm transition disabled:opacity-50 flex items-center justify-center gap-2">
+                    {isSaving ? (<><Loader2 className="w-5 h-5 animate-spin" />Kaydediliyor...</>) : (<><Check className="w-5 h-5" />Adresi Kaydet</>)}
+                  </button>
+
+                  <button onClick={() => { setConfirmed(false); setError('') }}
+                    disabled={isSaving} className="w-full border border-primary text-primary hover:bg-primary/5 font-semibold py-3 rounded-xl text-sm transition">
+                    Adresi DÃ¼zenle
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
+          {/* RIGHT: Interactive Satellite Map */}
+          <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden">
+            <div className="px-6 py-4 border-b border-border">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-primary" />
+                    Harita GÃ¶rÃ¼nÃ¼mÃ¼
+                  </h2>
+                  <p className="text-xs text-text-muted mt-1">
+                    {confirmed && formData.mahalle && formData.cadde
+                      ? `${formData.cadde} No:${formData.binaNo}, ${formData.mahalle}, ${formData.ilce?.name}, ${formData.il?.name}`
+                      : pinLat !== null
+                        ? 'BinanÄ±z seÃ§ildi. Formu doldurup onaylayÄ±n.'
+                        : 'Haritaya tÄ±klayarak binanÄ±zÄ± seÃ§in'}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setMapType('satellite')}
+                    className={`px-2.5 py-1 text-xs rounded-lg transition ${mapType === 'satellite' ? 'bg-primary text-white' : 'bg-gray-100 text-text-muted hover:bg-gray-200'}`}
+                  >Uydu</button>
+                  <button
+                    onClick={() => setMapType('street')}
+                    className={`px-2.5 py-1 text-xs rounded-lg transition ${mapType === 'street' ? 'bg-primary text-white' : 'bg-gray-100 text-text-muted hover:bg-gray-200'}`}
+                  >Harita</button>
+                </div>
+              </div>
+              {!pinLat && !confirmed && (
+                <div className="mt-2 flex items-center gap-1.5 text-xs text-amber-700 bg-amber-50 px-2.5 py-1.5 rounded-lg">
+                  <MousePointerClick className="w-3.5 h-3.5 flex-shrink-0" />
+                  <span>Haritada binanÄ±zÄ±nÄ±n bulunduÄu yere tÄ±klayÄ±n</span>
+                </div>
+              )}
+            </div>
+            <div className="h-[500px] lg:h-[calc(100%-100px)]">
+              <MapComponent
+                center={mapCenter}
+                zoom={mapZoom}
+                mapType={mapType}
+                pinLat={pinLat}
+                pinLng={pinLng}
+                onMapClick={handleMapClick}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
