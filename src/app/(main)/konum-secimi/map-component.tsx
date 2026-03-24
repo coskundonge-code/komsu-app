@@ -5,9 +5,12 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
 interface MapComponentProps {
-  center: { lat: number; lng: number }
+  center: [number, number]
   zoom: number
-  markerPosition?: { lat: number; lng: number } | null
+  mapType?: 'street' | 'satellite'
+  pinLat: number | null
+  pinLng: number | null
+  onMapClick?: (lat: number, lng: number) => void
   circleRadius?: number
 }
 
@@ -18,45 +21,67 @@ const greenIcon = L.divIcon({
   iconAnchor: [18, 36],
 })
 
-export default function MapComponent({ center, zoom, markerPosition, circleRadius }: MapComponentProps) {
+export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, onMapClick, circleRadius }: MapComponentProps) {
   const mapRef = useRef<L.Map | null>(null)
   const markerRef = useRef<L.Marker | null>(null)
   const circleRef = useRef<L.Circle | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const tileLayerRef = useRef<L.TileLayer | null>(null)
 
-  // Initialize map
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
 
     const map = L.map(containerRef.current, {
-      center: [center.lat, center.lng],
+      center: center,
       zoom: zoom,
       zoomControl: true,
     })
 
-    // OpenStreetMap tiles as primary, with satellite toggle option
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    const tileUrl = mapType === 'satellite'
+      ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+      : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+
+    const attribution = mapType === 'satellite'
+      ? '\u00a9 Esri'
+      : '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+
+    tileLayerRef.current = L.tileLayer(tileUrl, {
       maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      attribution,
     }).addTo(map)
+
+    map.on('click', (e: L.LeafletMouseEvent) => {
+      if (onMapClick) {
+        onMapClick(e.latlng.lat, e.latlng.lng)
+      }
+    })
 
     mapRef.current = map
 
     return () => {
       map.remove()
       mapRef.current = null
+      tileLayerRef.current = null
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Update center and zoom
   useEffect(() => {
     if (mapRef.current) {
-      mapRef.current.flyTo([center.lat, center.lng], zoom, { duration: 0.8 })
+      mapRef.current.flyTo(center, zoom, { duration: 0.8 })
     }
   }, [center, zoom])
 
-  // Update marker and circle
+  useEffect(() => {
+    if (!mapRef.current || !tileLayerRef.current) return
+
+    const tileUrl = mapType === 'satellite'
+      ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+      : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+
+    tileLayerRef.current.setUrl(tileUrl)
+  }, [mapType])
+
   useEffect(() => {
     if (!mapRef.current) return
 
@@ -69,11 +94,11 @@ export default function MapComponent({ center, zoom, markerPosition, circleRadiu
       circleRef.current = null
     }
 
-    if (markerPosition) {
-      markerRef.current = L.marker([markerPosition.lat, markerPosition.lng], { icon: greenIcon }).addTo(mapRef.current)
+    if (pinLat !== null && pinLng !== null) {
+      markerRef.current = L.marker([pinLat, pinLng], { icon: greenIcon }).addTo(mapRef.current)
 
       if (circleRadius) {
-        circleRef.current = L.circle([markerPosition.lat, markerPosition.lng], {
+        circleRef.current = L.circle([pinLat, pinLng], {
           radius: circleRadius,
           fillColor: '#00833e',
           fillOpacity: 0.08,
@@ -83,7 +108,7 @@ export default function MapComponent({ center, zoom, markerPosition, circleRadiu
         }).addTo(mapRef.current)
       }
     }
-  }, [markerPosition, circleRadius])
+  }, [pinLat, pinLng, circleRadius])
 
   return <div ref={containerRef} className="w-full h-full rounded-xl" style={{ minHeight: '300px' }} />
 }
