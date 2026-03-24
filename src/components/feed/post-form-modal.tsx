@@ -5,11 +5,8 @@ import { X, Send, ImagePlus, MapPin, Globe, BarChart3, Shield, HelpCircle, Tag, 
 import { cn } from '@/lib/utils';
 import { createPost } from '@/lib/hooks/use-posts';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
-<<<<<<< HEAD
-=======
 import { uploadMultipleImages } from '@/lib/upload';
 import { createClient } from '@/lib/supabase/client';
->>>>>>> ab5629528fac6fe6996b018892fcc0642a0acd24
 
 const POST_TYPES = [
   { id: 'general', label: 'Genel', icon: Tag },
@@ -179,16 +176,6 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
 
     setIsSubmitting(true);
     try {
-<<<<<<< HEAD
-      const postData = {
-        user_id: user.id,
-        neighborhood_id: 'default',
-        title: title.trim() || null,
-        content: body.trim(),
-        post_type: postType === 'general' ? 'genel' : postType === 'security' ? 'guvenlik' : postType === 'recommendation' ? 'oneriler' : postType === 'lost-found' ? 'kayipbuluntu' : 'genel',
-        visibility,
-        image_urls: images,
-=======
       // Upload images to Supabase Storage if present
       let mediaUrls: string[] | null = null;
       if (imageFiles.length > 0) {
@@ -209,7 +196,6 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
         type: postType,
         visibility: visibility || 'neighborhood',
         media_urls: mediaUrls,
->>>>>>> ab5629528fac6fe6996b018892fcc0642a0acd24
       };
 
       const { data, error } = await createPost(postData as any);
@@ -220,19 +206,11 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
           id: postResult.id,
           type: postType,
           title: postResult.title || undefined,
-<<<<<<< HEAD
-          body: postResult.content,
-          visibility,
-          images,
-          location,
-          author: { name: profile?.full_name || 'Siz', initial: profile?.full_name?.[0]?.toUpperCase() || 'S', neighborhood: 'Kadıköy, Moda', profileId: user.id },
-=======
           body: postResult.body,
           visibility,
           images: mediaUrls || images,
           location,
           author: { name: profile?.full_name || 'Siz', initial: profile?.full_name?.[0]?.toUpperCase() || 'S', neighborhood: neighborhoodName, profileId: user.id },
->>>>>>> ab5629528fac6fe6996b018892fcc0642a0acd24
           timeAgo: 'Az önce',
           reactions: 0,
           comments: 0,
@@ -249,15 +227,9 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
           title: title.trim() || undefined,
           body: body.trim(),
           visibility,
-<<<<<<< HEAD
-          images,
-          location,
-          author: { name: profile?.full_name || 'Siz', initial: profile?.full_name?.[0]?.toUpperCase() || 'S', neighborhood: 'Kadıköy, Moda', profileId: user.id },
-=======
           images: mediaUrls || images,
           location,
           author: { name: profile?.full_name || 'Siz', initial: profile?.full_name?.[0]?.toUpperCase() || 'S', neighborhood: neighborhoodName, profileId: user.id },
->>>>>>> ab5629528fac6fe6996b018892fcc0642a0acd24
           timeAgo: 'Az önce',
           reactions: 0,
           comments: 0,
@@ -347,11 +319,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
             </div>
             <div>
               <p className="text-sm font-bold text-text-primary">{profile?.full_name || 'Siz'}</p>
-<<<<<<< HEAD
-              <p className="text-xs text-text-muted">Kadıköy, Moda</p>
-=======
               <p className="text-xs text-text-muted">{neighborhoodName}</p>
->>>>>>> ab5629528fac6fe6996b018892fcc0642a0acd24
             </div>
           </div>
 

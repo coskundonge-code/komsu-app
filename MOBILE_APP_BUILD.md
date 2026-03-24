@@ -74,7 +74,6 @@ The app uses these Capacitor plugins:
 | Haptics | @capacitor/haptics | Dokunma Geri Bildirimi |
 | Status Bar | @capacitor/status-bar | Durum Çubuğu Stili |
 | Splash Screen | @capacitor/splash-screen | Açılış Ekranı |
-<<<<<<< HEAD
 | Keyboard | @capacitor/keyboard | Klavye Yönetimi |
 | App | @capacitor/app | Uygulama Yaşam Döngüsü |
 
@@ -82,15 +81,6 @@ The app uses these Capacitor plugins:
 
 Place your app icon as a 1024x1024 PNG at:
 - `resources/icon.png` (App icon)
-=======
-| Keyboard | @capacitor/keyboard | Klavye Yonetimi |
-| App | @capacitor/app | Uygulama Yaşam Dövüsü |
-
-## Icon Generation
-
-Place your app icon as a 1024x1024 PNG f
-crources/icon.png` (App icon)
->>>>>>> ab5629528fac6fe6996b018892fcc0642a0acd24
 - `resources/splash.png` (Splash screen - 2732x2732)
 
 Then generate all sizes:
@@ -109,8 +99,4 @@ npx capacitor-assets generate
 ### Google Play Store
 1. Open Android Studio: `npx cap open android`
 2. Build > Generate Signed Bundle/APK
-<<<<<<< HEAD
 3. Upload AAB to Google Play Console
-=======
-3. Upload AAB to Google Play Console
->>>>>>> ab5629528fac6fe6996b018892fcc0642a0acd24

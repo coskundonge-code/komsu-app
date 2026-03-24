@@ -26,17 +26,10 @@ import {
   Bell,
 } from 'lucide-react';
 import Link from 'next/link';
-<<<<<<< HEAD
-import { getAlerts } from '@/lib/hooks/use-notifications';
-import { useCurrentUser } from '@/lib/hooks/use-auth';
-
-const LeafletMap = dynamic(() => import('@/components/map/leaflet-map'), { ssr: false });
-=======
 import { createClient } from '@/lib/supabase/client';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
 
 const LeafletMap = dynamic(() => import('@/components/map/google-map'), { ssr: false });
->>>>>>> ab5629528fac6fe6996b018892fcc0642a0acd24
 
 interface Alert {
   id: string;
@@ -268,32 +261,6 @@ export default function AlertsPage() {
   // Fetch alerts from Supabase
   useEffect(() => {
     async function fetchAlerts() {
-<<<<<<< HEAD
-      if (!(profile as any)?.neighborhood_id) return;
-      try {
-        const { data, error } = await getAlerts((profile as any).neighborhood_id, { limit: 100 });
-        if (data && !error) {
-          const mapped = data.map((alert: any) => ({
-            id: alert.id,
-            title: alert.title,
-            description: alert.description,
-            location: alert.location,
-            time: new Date(alert.created_at).toLocaleString('tr-TR'),
-            severity: alert.alert_severity,
-            category: alert.category,
-            source: alert.profiles?.full_name || 'Mahalle Sakinleri',
-            active: alert.is_active,
-            icon: null,
-          }));
-          setAlerts(mapped);
-        }
-      } catch (err) {
-        console.error('Failed to fetch alerts:', err);
-      }
-    }
-    fetchAlerts();
-  }, [profile]);
-=======
       const supabase = createClient();
       try {
         // For now, we'll use mock data with fallback to Supabase
@@ -315,7 +282,6 @@ export default function AlertsPage() {
     }
     fetchAlerts();
   }, []);
->>>>>>> ab5629528fac6fe6996b018892fcc0642a0acd24
 
   const filteredAlerts = alerts.filter((alert) => {
     const matchesSearch = alert.title.toLowerCase().includes(searchQuery.toLowerCase()) ||

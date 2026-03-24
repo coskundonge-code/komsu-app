@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 'use client'
 
 import Link from 'next/link'
@@ -16,11 +15,9 @@ export function Navbar() {
   const [isSearchFocused, setIsSearchFocused] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] = useState(false)
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false)
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false)
   const searchRef = useRef<HTMLDivElement>(null)
-  const unreadNotificationCount = 2
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchQuery.trim()) {
@@ -101,28 +98,7 @@ export function Navbar() {
               <span className="hidden md:inline">Paylaş</span>
             </Link>
 
-            <div className="relative">
-              <button
-                onClick={() => setIsNotificationDropdownOpen(!isNotificationDropdownOpen)}
-                className={cn(
-                  "relative p-2.5 rounded-full hover:bg-surface-hover transition-colors",
-                  isNotificationDropdownOpen && "bg-surface-active"
-                )}
-                aria-label="Bildirimler"
-              >
-                <Bell className="w-5 h-5 text-text-secondary" />
-                {unreadNotificationCount > 0 && (
-                  <span className="absolute top-1 right-1 w-5 h-5 bg-error rounded-full flex items-center justify-center text-white text-[10px] font-bold ring-2 ring-surface">
-                    {unreadNotificationCount}
-                  </span>
-                )}
-              </button>
-              <NotificationDropdown
-                isOpen={isNotificationDropdownOpen}
-                onClose={() => setIsNotificationDropdownOpen(false)}
-                unreadCount={unreadNotificationCount}
-              />
-            </div>
+            <NotificationBell />
 
             <div className="relative ml-0.5">
               <button
@@ -153,7 +129,6 @@ export function Navbar() {
     </>
   )
 }
-=======
 'use client'
 
 import Link from 'next/link'
@@ -285,4 +260,3 @@ export function Navbar() {
     </>
   )
 }
->>>>>>> ab5629528fac6fe6996b018892fcc0642a0acd24

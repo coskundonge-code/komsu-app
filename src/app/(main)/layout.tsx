@@ -1,9 +1,6 @@
 "use client";
 
-<<<<<<< HEAD
-=======
 import { usePathname } from "next/navigation";
->>>>>>> ab5629528fac6fe6996b018892fcc0642a0acd24
 import dynamic from "next/dynamic";
 import { Navbar } from "@/components/layout/navbar";
 import { Sidebar } from "@/components/layout/sidebar";
@@ -30,9 +27,6 @@ interface MainLayoutProps {
   children: React.ReactNode;
 }
 
-<<<<<<< HEAD
-export default function MainLayout({ children }: MainLayoutProps) {
-=======
 const minimalLayoutRoutes = ['/konum-secimi'];
 
 export default function MainLayout({ children }: MainLayoutProps) {
@@ -43,7 +37,6 @@ export default function MainLayout({ children }: MainLayoutProps) {
     return <>{children}</>;
   }
 
->>>>>>> ab5629528fac6fe6996b018892fcc0642a0acd24
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SkipLink />
