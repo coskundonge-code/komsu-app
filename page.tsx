@@ -29,18 +29,18 @@ interface MahalleData {
 // Helper function to normalize Turkish province names for GitHub JSON
 function normalizeTurkishName(name: string): string {
   const turkishMap: Record<string, string> = {
-    'Ä°': 'i',
-    'Ä±': 'i',
-    'Å': 's',
-    'Å': 's',
-    'Ã': 'c',
-    'Ã§': 'c',
-    'Ä': 'g',
-    'Ä': 'g',
-    'Ã': 'o',
-    'Ã¶': 'o',
-    'Ã': 'u',
-    'Ã¼': 'u',
+    'İ': 'i',
+    'ı': 'i',
+    'Ş': 's',
+    'ş': 's',
+    'Ç': 'c',
+    'ç': 'c',
+    'Ğ': 'g',
+    'ğ': 'g',
+    'Ö': 'o',
+    'ö': 'o',
+    'Ü': 'u',
+    'ü': 'u',
   }
 
   let normalized = name
@@ -58,7 +58,7 @@ async function fetchMahalleler(ilName: string, ilceName: string): Promise<Mahall
     const response = await fetch(
       `https://raw.githubusercontent.com/adilmustafayilmaz/turkiye-il-ilce-mahalle-verileri/main/data/${normalized}.json`
     )
-    if (!response.ok) throw new Error('Mahalle verileri bulunamadÄ±')
+    if (!response.ok) throw new Error('Mahalle verileri bulunamadı')
 
     const data = await response.json() as Record<string, Record<string, string[]>>
     const mahalleler = data[ilceName] || []
@@ -228,7 +228,7 @@ export default function KonumSecimi() {
 
     setCaddeLoading(true)
     caddeTimerRef.current = setTimeout(async () => {
-      const address = `${formData.mahalle}, ${formData.ilce?.name}, ${formData.il?.name}, TÃ¼rkiye`
+      const address = `${formData.mahalle}, ${formData.ilce?.name}, ${formData.il?.name}, Türkiye`
       const searchAddress = `${value}, ${address}`
 
       try {
@@ -324,7 +324,7 @@ export default function KonumSecimi() {
   // Handle address confirmation (geocode full address)
   const handleConfirmAddress = async () => {
     if (!formData.cadde || !formData.mahalle || !formData.ilce || !formData.il) {
-      setError('LÃ¼tfen Ä°l, Ä°lÃ§e, Mahalle ve Cadde/Sokak seÃ§iniz')
+      setError('Lütfen İl, İlçe, Mahalle ve Cadde/Sokak seçiniz')
       return
     }
 
@@ -332,7 +332,7 @@ export default function KonumSecimi() {
     setError('')
 
     try {
-      const fullAddress = `${formData.binaNo ? `${formData.binaNo}, ` : ''}${formData.cadde}, ${formData.mahalle}, ${formData.ilce.name}, ${formData.il.name}, TÃ¼rkiye`
+      const fullAddress = `${formData.binaNo ? `${formData.binaNo}, ` : ''}${formData.cadde}, ${formData.mahalle}, ${formData.ilce.name}, ${formData.il.name}, Türkiye`
       const result = await geocodeAddress(fullAddress)
 
       if (result) {
@@ -343,10 +343,10 @@ export default function KonumSecimi() {
         setFormData(prev => ({ ...prev, postaKodu: result.postalCode }))
         setConfirmed(true)
       } else {
-        setError('Adres bulunamadÄ±. LÃ¼tfen kontrolÃ¼ yapÄ±nÄ±z.')
+        setError('Adres bulunamadı. Lütfen kontrolü yapınız.')
       }
     } catch (error) {
-      setError('Adres doÄrulama hatasÄ±')
+      setError('Adres doğrulama hatası')
       console.error(error)
     } finally {
       setIsLoading(false)
@@ -356,7 +356,7 @@ export default function KonumSecimi() {
   // Handle save to database
   const handleSave = async () => {
     if (!formData.il || !formData.ilce || !formData.mahalle || !formData.cadde || !pinLat || !pinLng) {
-      setError('LÃ¼tfen tÃ¼m gerekli alanlarÄ± doldurunuz')
+      setError('Lütfen tüm gerekli alanları doldurunuz')
       return
     }
 
@@ -366,7 +366,7 @@ export default function KonumSecimi() {
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
-        setError('KullanÄ±cÄ± oturumu bulunamadÄ±')
+        setError('Kullanıcı oturumu bulunamadı')
         return
       }
 
@@ -402,12 +402,12 @@ export default function KonumSecimi() {
 
       if (addressError) throw addressError
 
-      setSuccessMessage('Adres baÅarÄ±yla kaydedildi!')
+      setSuccessMessage('Adres başarıyla kaydedildi!')
       setTimeout(() => {
         router.push('/anasayfa')
       }, 1500)
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Kaydetme hatasÄ±')
+      setError(error instanceof Error ? error.message : 'Kaydetme hatası')
       console.error(error)
     } finally {
       setIsSaving(false)
@@ -421,9 +421,9 @@ export default function KonumSecimi() {
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-2">
             <MapPin className="w-6 h-6 text-primary" />
-            <h1 className="text-3xl font-bold text-text-primary">Konum SeÃ§imi</h1>
+            <h1 className="text-3xl font-bold text-text-primary">Konum Seçimi</h1>
           </div>
-          <p className="text-text-muted">Mahallemiz iÃ§in adresinizi belirtiniz</p>
+          <p className="text-text-muted">Mahallemiz için adresinizi belirtiniz</p>
         </div>
 
         {/* Main content grid */}
@@ -446,14 +446,14 @@ export default function KonumSecimi() {
               </div>
             )}
 
-            {/* Ä°l Selection */}
+            {/* İl Selection */}
             <div ref={ilDropdownRef} className="relative">
-              <label className="block text-sm font-medium text-text-primary mb-2">Ä°l *</label>
+              <label className="block text-sm font-medium text-text-primary mb-2">İl *</label>
               <button
                 onClick={() => setShowIlDropdown(!showIlDropdown)}
                 className="w-full flex items-center justify-between px-4 py-2 bg-surface border border-border rounded-lg text-text-primary hover:border-primary/50 transition"
               >
-                <span>{formData.il?.name || 'Ä°l seÃ§iniz'}</span>
+                <span>{formData.il?.name || 'İl seçiniz'}</span>
                 <ChevronDown className={`w-4 h-4 transition ${showIlDropdown ? 'rotate-180' : ''}`} />
               </button>
 
@@ -481,15 +481,15 @@ export default function KonumSecimi() {
               )}
             </div>
 
-            {/* Ä°lÃ§e Selection */}
+            {/* İlçe Selection */}
             <div ref={ilceDropdownRef} className="relative">
-              <label className="block text-sm font-medium text-text-primary mb-2">Ä°lÃ§e *</label>
+              <label className="block text-sm font-medium text-text-primary mb-2">İlçe *</label>
               <button
                 onClick={() => setShowIlceDropdown(!showIlceDropdown)}
                 disabled={!formData.il}
                 className="w-full flex items-center justify-between px-4 py-2 bg-surface border border-border rounded-lg text-text-primary hover:border-primary/50 disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <span>{formData.ilce?.name || 'Ä°lÃ§e seÃ§iniz'}</span>
+                <span>{formData.ilce?.name || 'İlçe seçiniz'}</span>
                 <ChevronDown className={`w-4 h-4 transition ${showIlceDropdown ? 'rotate-180' : ''}`} />
               </button>
 
@@ -527,7 +527,7 @@ export default function KonumSecimi() {
               >
                 <span className="flex items-center gap-2">
                   {mahalleLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-                  {formData.mahalle || 'Mahalle seÃ§iniz'}
+                  {formData.mahalle || 'Mahalle seçiniz'}
                 </span>
                 <ChevronDown className={`w-4 h-4 transition ${showMahalleDropdown ? 'rotate-180' : ''}`} />
               </button>
@@ -553,7 +553,7 @@ export default function KonumSecimi() {
                         </button>
                       ))
                     ) : (
-                      <div className="px-4 py-2 text-text-muted">Mahalle bulunamadÄ±</div>
+                      <div className="px-4 py-2 text-text-muted">Mahalle bulunamadı</div>
                     )}
                   </div>
                 </div>
@@ -566,7 +566,7 @@ export default function KonumSecimi() {
               <div className="relative flex items-center">
                 <input
                   type="text"
-                  placeholder="Cadde/Sokak adÄ±nÄ± yazÄ±nÄ±z"
+                  placeholder="Cadde/Sokak adını yazınız"
                   value={caddeSearch}
                   onChange={(e) => handleCaddeSearch(e.target.value)}
                   disabled={!formData.mahalle}
@@ -598,19 +598,19 @@ export default function KonumSecimi() {
               <label className="block text-sm font-medium text-text-primary mb-2">Bina No</label>
               <input
                 type="text"
-                placeholder="Bina numarasÄ±"
+                placeholder="Bina numarası"
                 value={formData.binaNo}
                 onChange={(e) => setFormData(prev => ({ ...prev, binaNo: e.target.value }))}
                 className="w-full px-4 py-2 bg-surface border border-border rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
 
-            {/* Bina AdÄ± */}
+            {/* Bina Adı */}
             <div>
-              <label className="block text-sm font-medium text-text-primary mb-2">Bina AdÄ±</label>
+              <label className="block text-sm font-medium text-text-primary mb-2">Bina Adı</label>
               <input
                 type="text"
-                placeholder="Bina adÄ± (Ã¶r: GÃ¼l Sitesi)"
+                placeholder="Bina adı (ör: Gül Sitesi)"
                 value={formData.binaAdi}
                 onChange={(e) => setFormData(prev => ({ ...prev, binaAdi: e.target.value }))}
                 className="w-full px-4 py-2 bg-surface border border-border rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:ring-1 focus:ring-primary"
@@ -639,7 +639,7 @@ export default function KonumSecimi() {
                 {isLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    DoÄrulanÄ±yor...
+                    Doğrulanıyor...
                   </>
                 ) : (
                   <>
@@ -674,7 +674,7 @@ export default function KonumSecimi() {
             <div className="lg:hidden p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
               <div className="flex items-start gap-2">
                 <MousePointerClick className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
-                <p className="text-xs text-blue-600">Harita Ã¼zerinde binanÄ±zÄ± iÅaretlemek iÃ§in tÄ±klayÄ±nÄ±z</p>
+                <p className="text-xs text-blue-600">Harita üzerinde binanızı işaretlemek için tıklayınız</p>
               </div>
             </div>
           </div>
@@ -698,16 +698,16 @@ export default function KonumSecimi() {
                     <button
                       onClick={() => setMapType(mapType === 'satellite' ? 'street' : 'satellite')}
                       className="p-2 bg-surface border border-border rounded-lg hover:bg-primary hover:text-white transition shadow-md"
-                      title={mapType === 'satellite' ? 'Harita gÃ¶rÃ¼nÃ¼mÃ¼ne geÃ§' : 'Uydu gÃ¶rÃ¼nÃ¼mÃ¼ne geÃ§'}
+                      title={mapType === 'satellite' ? 'Harita görünümüne geç' : 'Uydu görünümüne geç'}
                     >
-                      <span className="text-xs font-bold">{mapType === 'satellite' ? 'ðºï¸' : 'ð°ï¸'}</span>
+                      <span className="text-xs font-bold">{mapType === 'satellite' ? '🗺️' : '🛰️'}</span>
                     </button>
                   </div>
 
                   {/* Pin indicator */}
                   {pinLat && pinLng && (
                     <div className="absolute bottom-4 left-4 px-3 py-2 bg-primary text-white rounded-lg text-xs font-medium shadow-md">
-                      â Konum iÅaretlendi
+                      ✓ Konum işaretlendi
                     </div>
                   )}
                 </div>
@@ -716,9 +716,9 @@ export default function KonumSecimi() {
                 <div className="p-4 bg-surface border-t border-border">
                   <p className="text-xs text-text-muted">
                     {confirmed ? (
-                      <span className="text-green-600 font-medium">â Adres doÄrulandÄ± ve harita'da konumlandÄ±rÄ±ldÄ±</span>
+                      <span className="text-green-600 font-medium">✓ Adres doğrulandı ve harita'da konumlandırıldı</span>
                     ) : (
-                      <span>Adresinizi doÄruladÄ±ktan sonra harita'da otomatik konumlandÄ±rÄ±lacaktÄ±r</span>
+                      <span>Adresinizi doğruladıktan sonra harita'da otomatik konumlandırılacaktır</span>
                     )}
                   </p>
                 </div>
@@ -745,16 +745,16 @@ export default function KonumSecimi() {
                 <button
                   onClick={() => setMapType(mapType === 'satellite' ? 'street' : 'satellite')}
                   className="p-2 bg-surface border border-border rounded-lg hover:bg-primary hover:text-white transition shadow-md"
-                  title={mapType === 'satellite' ? 'Harita gÃ¶rÃ¼nÃ¼mÃ¼ne geÃ§' : 'Uydu gÃ¶rÃ¼nÃ¼mÃ¼ne geÃ§'}
+                  title={mapType === 'satellite' ? 'Harita görünümüne geç' : 'Uydu görünümüne geç'}
                 >
-                  <span className="text-xs font-bold">{mapType === 'satellite' ? 'ðºï¸' : 'ð°ï¸'}</span>
+                  <span className="text-xs font-bold">{mapType === 'satellite' ? '🗺️' : '🛰️'}</span>
                 </button>
               </div>
 
               {/* Pin indicator */}
               {pinLat && pinLng && (
                 <div className="absolute bottom-4 left-4 px-3 py-2 bg-primary text-white rounded-lg text-xs font-medium shadow-md">
-                  â Konum iÅaretlendi
+                  ✓ Konum işaretlendi
                 </div>
               )}
             </div>
@@ -763,9 +763,9 @@ export default function KonumSecimi() {
             <div className="p-4 bg-surface border-t border-border">
               <p className="text-xs text-text-muted">
                 {confirmed ? (
-                  <span className="text-green-600 font-medium">â Adres doÄrulandÄ± ve harita'da konumlandÄ±rÄ±ldÄ±</span>
+                  <span className="text-green-600 font-medium">✓ Adres doğrulandı ve harita'da konumlandırıldı</span>
                 ) : (
-                  <span>Adresinizi doÄruladÄ±ktan sonra harita'da otomatik konumlandÄ±rÄ±lacaktÄ±r</span>
+                  <span>Adresinizi doğruladıktan sonra harita'da otomatik konumlandırılacaktır</span>
                 )}
               </p>
             </div>
