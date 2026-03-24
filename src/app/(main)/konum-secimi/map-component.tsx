@@ -28,28 +28,34 @@ export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, on
   const containerRef = useRef<HTMLDivElement>(null)
   const tileLayerRef = useRef<L.TileLayer | null>(null)
 
+  // Initialize map
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
 
+    const safeCenter: [number, number] = (center && !isNaN(center[0]) && !isNaN(center[1])) ? center : [39.9334, 32.8597]
+    const safeZoom = (!isNaN(zoom) && isFinite(zoom)) ? zoom : 6
+
     const map = L.map(containerRef.current, {
-      center: center,
-      zoom: zoom,
+      center: safeCenter,
+      zoom: safeZoom,
       zoomControl: true,
     })
 
+    // Add tile layer based on mapType
     const tileUrl = mapType === 'satellite'
       ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
       : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 
     const attribution = mapType === 'satellite'
-      ? '\u00a9 Esri'
-      : '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      ? '&copy; Esri'
+      : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 
     tileLayerRef.current = L.tileLayer(tileUrl, {
       maxZoom: 19,
       attribution,
     }).addTo(map)
 
+    // Handle map clicks
     map.on('click', (e: L.LeafletMouseEvent) => {
       if (onMapClick) {
         onMapClick(e.latlng.lat, e.latlng.lng)
@@ -66,12 +72,14 @@ export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, on
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Update center and zoom
   useEffect(() => {
-    if (mapRef.current) {
+    if (mapRef.current && center && center.length === 2 && !isNaN(center[0]) && !isNaN(center[1]) && isFinite(center[0]) && isFinite(center[1])) {
       mapRef.current.flyTo(center, zoom, { duration: 0.8 })
     }
   }, [center, zoom])
 
+  // Update tile layer when mapType changes
   useEffect(() => {
     if (!mapRef.current || !tileLayerRef.current) return
 
@@ -82,13 +90,16 @@ export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, on
     tileLayerRef.current.setUrl(tileUrl)
   }, [mapType])
 
+  // Update marker and circle when pin changes
   useEffect(() => {
     if (!mapRef.current) return
 
+    // Remove old marker
     if (markerRef.current) {
       markerRef.current.remove()
       markerRef.current = null
     }
+    // Remove old circle
     if (circleRef.current) {
       circleRef.current.remove()
       circleRef.current = null
