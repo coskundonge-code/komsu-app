@@ -11,7 +11,6 @@ interface MapComponentProps {
   pinLat: number | null
   pinLng: number | null
   onMapClick?: (lat: number, lng: number) => void
-  onMarkerDragEnd?: (lat: number, lng: number) => void
   circleRadius?: number
 }
 
@@ -22,7 +21,7 @@ const greenIcon = L.divIcon({
   iconAnchor: [18, 36],
 })
 
-export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, onMapClick, onMarkerDragEnd, circleRadius }: MapComponentProps) {
+export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, onMapClick, circleRadius }: MapComponentProps) {
   const mapRef = useRef<L.Map | null>(null)
   const markerRef = useRef<L.Marker | null>(null)
   const circleRef = useRef<L.Circle | null>(null)
@@ -33,23 +32,20 @@ export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, on
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
 
-    const safeCenter: [number, number] = (center && !isNaN(center[0]) && !isNaN(center[1])) ? center : [39.9334, 32.8597]
-    const safeZoom = (!isNaN(zoom) && isFinite(zoom)) ? zoom : 6
-
     const map = L.map(containerRef.current, {
-      center: safeCenter,
-      zoom: safeZoom,
+      center: center,
+      zoom: zoom,
       zoomControl: true,
     })
 
     // Add tile layer based on mapType
     const tileUrl = mapType === 'satellite'
       ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-      : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
+      : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 
     const attribution = mapType === 'satellite'
       ? '&copy; Esri'
-      : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
+      : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 
     tileLayerRef.current = L.tileLayer(tileUrl, {
       maxZoom: 19,
@@ -75,26 +71,8 @@ export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, on
 
   // Update center and zoom
   useEffect(() => {
-    if (mapRef.current && center && center.length === 2 && !isNaN(center[0]) && !isNaN(center[1]) && isFinite(center[0]) && isFinite(center[1])) {
-      const safeZoom = (!isNaN(zoom) && isFinite(zoom) && zoom > 0) ? zoom : 6
-      try {
-        // Check if container is visible (has dimensions) before flyTo
-        const container = mapRef.current.getContainer()
-        if (container && container.offsetWidth > 0 && container.offsetHeight > 0) {
-          mapRef.current.invalidateSize()
-          mapRef.current.flyTo(center, safeZoom, { duration: 0.8 })
-        } else {
-          // Container hidden - just setView without animation
-          mapRef.current.setView(center, safeZoom, { animate: false })
-        }
-      } catch (e) {
-        // Fallback: silently set view without animation
-        try {
-          mapRef.current.setView(center, safeZoom, { animate: false })
-        } catch (_) {
-          // ignore
-        }
-      }
+    if (mapRef.current) {
+      mapRef.current.flyTo(center, zoom, { duration: 0.8 })
     }
   }, [center, zoom])
 
@@ -104,7 +82,7 @@ export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, on
 
     const tileUrl = mapType === 'satellite'
       ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-      : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
+      : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 
     tileLayerRef.current.setUrl(tileUrl)
   }, [mapType])
@@ -124,30 +102,18 @@ export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, on
       circleRef.current = null
     }
 
-    if (pinLat !== null && pinLng !== null && !isNaN(pinLat) && !isNaN(pinLng) && isFinite(pinLat) && isFinite(pinLng)) {
-      try {
-        markerRef.current = L.marker([pinLat, pinLng], { icon: greenIcon, draggable: true }).addTo(mapRef.current)
+    if (pinLat !== null && pinLng !== null) {
+      markerRef.current = L.marker([pinLat, pinLng], { icon: greenIcon }).addTo(mapRef.current)
 
-        // Fire callback when marker drag ends
-        markerRef.current.on('dragend', () => {
-          const pos = markerRef.current?.getLatLng()
-          if (pos && onMarkerDragEnd) {
-            onMarkerDragEnd(pos.lat, pos.lng)
-          }
-        })
-
-        if (circleRadius) {
-          circleRef.current = L.circle([pinLat, pinLng], {
-            radius: circleRadius,
-            fillColor: '#00833e',
-            fillOpacity: 0.08,
-            color: '#00833e',
-            opacity: 0.6,
-            weight: 2,
-          }).addTo(mapRef.current)
-        }
-      } catch (e) {
-        console.warn('Marker error:', e)
+      if (circleRadius) {
+        circleRef.current = L.circle([pinLat, pinLng], {
+          radius: circleRadius,
+          fillColor: '#00833e',
+          fillOpacity: 0.08,
+          color: '#00833e',
+          opacity: 0.6,
+          weight: 2,
+        }).addTo(mapRef.current)
       }
     }
   }, [pinLat, pinLng, circleRadius])
