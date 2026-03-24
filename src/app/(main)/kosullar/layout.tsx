@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import { generatePageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "Kullanım Koşulları | Mahallem",
+  title: 'Kullanım Koşulları',
   description:
-    "Mahallem Kullanım Koşulları. Hizmetlerimizi kullanırken uymanız gereken kuralları öğrenin.",
+    "Mahallemiz Kullanım Koşulları. Hizmetlerimizi kullanırken uymanız gereken kuralları öğrenin.",
   openGraph: {
     url: "https://mahallem.com/kosullar",
-    title: "Kullanım Koşulları | Mahallem",
+    title: 'Kullanım Koşulları',
     description:
-      "Mahallem Kullanım Koşulları. Hizmetlerimizi kullanırken uymanız gereken kuralları öğrenin.",
+      "Mahallemiz Kullanım Koşulları. Hizmetlerimizi kullanırken uymanız gereken kuralları öğrenin.",
   },
   twitter: {
-    title: "Kullanım Koşulları | Mahallem",
+    title: 'Kullanım Koşulları',
     description:
-      "Mahallem Kullanım Koşulları. Hizmetlerimizi kullanırken uymanız gereken kuralları öğrenin.",
+      "Mahallemiz Kullanım Koşulları. Hizmetlerimizi kullanırken uymanız gereken kuralları öğrenin.",
   },
 });
 

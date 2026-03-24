@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -19,6 +19,15 @@ export default function GirisPage() {
   const [passwordError, setPasswordError] = useState('')
 
   const supabase = createClient()
+
+  // Redirect already logged-in users
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        window.location.href = '/'
+      }
+    })
+  }, [])
 
   const validateForm = () => {
     setEmailError('')
@@ -45,14 +54,15 @@ export default function GirisPage() {
       const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
 
       if (authError) {
-        setError(authError.message === 'Invalid login credentials' ? "E-posta veya şifre hatalı." : authError.message)
+        setError(authError.message === 'Invalid login credentials' ? "E-posta veya Şifre hatalı." : authError.message)
         return
       }
 
       if (rememberMe) {
         localStorage.setItem('mahallem_remember_email', email)
       }
-      router.push('/')
+      // Full page reload to ensure middleware runs (not client-side cache)
+      window.location.href = '/'
     } catch {
       setError("Bir hata oluştu. Lütfen tekrar deneyin.")
     } finally {
@@ -85,7 +95,7 @@ export default function GirisPage() {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-sm font-bold text-white">K</span>
             </div>
-            <span className="text-lg font-bold text-text-primary">Mahallem</span>
+            <span className="text-lg font-bold text-text-primary">Mahallemiz</span>
           </Link>
           <Link
             href="/kayit"

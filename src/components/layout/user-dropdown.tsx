@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { User, Store, Heart, Settings, HelpCircle, LogOut, Shield, UserPlus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { useCurrentUser } from '@/lib/hooks/use-auth'
 
 interface UserDropdownProps {
   isOpen: boolean
@@ -14,6 +15,7 @@ interface UserDropdownProps {
 export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
   const router = useRouter()
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const { profile, neighborhood } = useCurrentUser()
 
   const handleLogout = async () => {
     try {
@@ -57,13 +59,13 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
           <div className="flex items-center gap-3">
             {/* Avatar */}
             <div className="w-12 h-12 bg-[#404040] rounded-full flex items-center justify-center text-white text-lg font-semibold flex-shrink-0">
-              C
+              {profile?.full_name?.[0]?.toUpperCase() || 'K'}
             </div>
 
             {/* User Details */}
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-text-primary truncate">Coşkun Dönge</p>
-              <p className="text-xs text-text-muted truncate">Akaretler Mahallesi</p>
+              <p className="font-semibold text-text-primary truncate">{profile?.full_name || 'Kullanıcı'}</p>
+              <p className="text-xs text-text-muted truncate">{neighborhood?.name || 'Mahalle'}</p>
             </div>
           </div>
         </div>
@@ -132,14 +134,16 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
         </Link>
 
         {/* Admin Paneli */}
-        <Link
-          href="/admin"
-          onClick={onClose}
-          className="flex items-center gap-3 px-4 py-2.5 text-primary hover:bg-background transition-colors"
-        >
-          <Shield className="w-4 h-4 flex-shrink-0" />
-          <span className="text-sm font-medium">Yönetici Paneli</span>
-        </Link>
+        {profile?.is_admin === true && (
+          <Link
+            href="/admin"
+            onClick={onClose}
+            className="flex items-center gap-3 px-4 py-2.5 text-primary hover:bg-background transition-colors"
+          >
+            <Shield className="w-4 h-4 flex-shrink-0" />
+            <span className="text-sm font-medium">Yönetici Paneli</span>
+          </Link>
+        )}
 
         {/* Divider */}
         <div className="my-2 border-t border-border" />

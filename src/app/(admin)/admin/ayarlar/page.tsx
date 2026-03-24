@@ -48,7 +48,7 @@ export default function AyarlarPage() {
   const [activeTab, setActiveTab] = useState('general');
   const [settings, setSettings] = useState<Settings>({
     general: {
-      siteName: 'Mahallem',
+      siteName: 'Mahallemiz',
       siteDescription: 'Mahalle komşularını birleştiren platform',
       maintenanceMode: false,
     },
@@ -413,7 +413,7 @@ export default function AyarlarPage() {
                   Hoş Geldiniz Email Şablonu
                 </label>
                 <textarea
-                  defaultValue="Merhaba {name},\n\nMahallem'e hoş geldiniz! Hesabınız başarıyla oluşturuldu.\n\nProfilinizi tamamlamak için lütfen {link} ziyaret edin.\n\nSaygılar,\nMahallem Ekibi"
+                  defaultValue="Merhaba {name},\n\nMahallemiz'e hoş geldiniz! Hesabınız başarıyla oluşturuldu.\n\nProfilinizi tamamlamak için lütfen {link} ziyaret edin.\n\nSaygılar,\nMahallemiz Ekibi"
                   rows={6}
                   className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 />

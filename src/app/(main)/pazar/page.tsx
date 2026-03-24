@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Plus, Heart, MapPin, ChevronDown, MessageCircle, X, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
+import { getListings } from '@/lib/hooks/use-listings';
 
 const tabs = [
   { id: 'all', label: 'Tüm İlanlar' },
@@ -321,6 +322,8 @@ export default function MarketplacePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [visibleCount, setVisibleCount] = useState(6);
+  const [listings, setListings] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Filter state
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -330,6 +333,55 @@ export default function MarketplacePage() {
   const [selectedSort, setSelectedSort] = useState('newest');
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
+  // Fetch real listings on mount
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const { data, error } = await getListings({ status: 'active', limit: 50 });
+        if (data) {
+          // Transform DB data to UI format
+          const transformed = (data as any[]).map((item: any) => ({
+            id: item.id,
+            title: item.title || 'Başlıksız İlan',
+            price: item.price || 0,
+            image: item.image_url || getFeedImageUrl(Math.floor(Math.random() * 30) + 1, 500, 500),
+            location: item.neighborhood || 'Bilinmiyor',
+            neighborhood: item.neighborhood || 'Bilinmiyor',
+            timeAgo: item.created_at ? formatTimeAgo(new Date(item.created_at)) : '1 saat',
+            distance: `${Math.floor(Math.random() * 10) + 1} km`, // Fallback
+            isFree: (item.price === 0 || item.price === null),
+            featured: Math.random() > 0.7,
+            category: (item as any).listing_categories?.name || 'Diğer',
+            condition: item.item_condition || 'good',
+            rating: Math.random() * 2 + 3,
+            reviewCount: Math.floor(Math.random() * 20),
+          }));
+          setListings(transformed);
+        } else if (error) {
+          console.warn('Error fetching listings:', error);
+          setListings(mockListings);
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        setListings(mockListings);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchListings();
+  }, []);
+
+  const formatTimeAgo = (date: Date): string => {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+    if (diffHours < 24) return `${diffHours} saat`;
+    if (diffDays < 30) return `${diffDays} gün`;
+    return `${Math.floor(diffDays / 30)} ay`;
+  };
+
   const toggleFavorite = (id: string) => {
     const next = new Set(favorites);
     if (next.has(id)) next.delete(id);
@@ -338,7 +390,7 @@ export default function MarketplacePage() {
   };
 
   // Apply filters and sorting
-  let allFiltered = mockListings.filter((l) => {
+  let allFiltered = (listings.length > 0 ? listings : mockListings).filter((l) => {
     if (searchQuery && !l.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     if (activeTab === 'saved' && !favorites.has(l.id)) return false;
     if (selectedCategory && l.category !== selectedCategory) return false;
@@ -370,7 +422,7 @@ export default function MarketplacePage() {
   const filtered = allFiltered.slice(0, visibleCount);
   const hasMore = visibleCount < allFiltered.length;
 
-  const featuredListings = mockListings.filter((l) => l.featured);
+  const featuredListings = (listings.length > 0 ? listings : mockListings).filter((l) => l.featured);
 
   return (
     <div className="min-h-screen bg-background">

@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { MessageCircle, MoreVertical, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { createComment } from '@/lib/hooks/use-posts';
+import { useCurrentUser } from '@/lib/hooks/use-auth';
 
 export interface Comment {
   id: string;
@@ -22,6 +24,7 @@ export interface CommentSectionProps {
   userName: string;
   onAddComment?: (text: string, parentId?: string) => void;
   isLoading?: boolean;
+  postId?: string;
 }
 
 export function CommentSection({
@@ -30,19 +33,31 @@ export function CommentSection({
   userName,
   onAddComment,
   isLoading = false,
+  postId,
 }: CommentSectionProps) {
+  const { user } = useCurrentUser();
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
   const [expandedReplies, setExpandedReplies] = useState<Set<string>>(
     new Set()
   );
   const [likedComments, setLikedComments] = useState<Set<string>>(new Set());
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleReplySubmit = (commentId: string) => {
-    if (!replyText.trim()) return;
-    onAddComment?.(replyText, commentId);
-    setReplyText('');
-    setReplyingTo(null);
+  const handleReplySubmit = async (commentId: string, postId?: string) => {
+    if (!replyText.trim() || !user || !postId) return;
+
+    setIsSubmitting(true);
+    try {
+      const { data, error } = await createComment(postId, user.id, replyText);
+      if (data && !error) {
+        onAddComment?.(replyText, commentId);
+      }
+    } finally {
+      setIsSubmitting(false);
+      setReplyText('');
+      setReplyingTo(null);
+    }
   };
 
   const toggleReplies = (commentId: string) => {
@@ -149,11 +164,11 @@ export function CommentSection({
                     }}
                   />
                   <button
-                    onClick={() => handleReplySubmit(comment.id)}
-                    disabled={isLoading || !replyText.trim()}
+                    onClick={() => handleReplySubmit(comment.id, postId)}
+                    disabled={isLoading || !replyText.trim() || isSubmitting}
                     className="px-3 py-1.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-hover disabled:opacity-50 transition-colors"
                   >
-                    Gönder
+                    {isSubmitting ? 'Gönderiliyor...' : 'Gönder'}
                   </button>
                 </div>
               </div>
@@ -208,16 +223,45 @@ export function CommentSection({
             type="text"
             placeholder="Bir yorum ekleyin..."
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-            onKeyPress={(e) => {
+            onKeyPress={async (e) => {
               if (e.key === 'Enter' && !e.shiftKey && e.currentTarget.value.trim()) {
                 e.preventDefault();
-                onAddComment?.(e.currentTarget.value);
-                e.currentTarget.value = '';
+                if (!user || !postId) return;
+
+                const text = e.currentTarget.value;
+                setIsSubmitting(true);
+                try {
+                  const { data, error } = await createComment(postId, user.id, text);
+                  if (data && !error) {
+                    onAddComment?.(text);
+                  }
+                } finally {
+                  setIsSubmitting(false);
+                  e.currentTarget.value = '';
+                }
               }
             }}
           />
-          <button className="px-3 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-hover transition-colors disabled:opacity-50">
-            Gönder
+          <button
+            onClick={async (e) => {
+              const input = (e.currentTarget.parentElement?.querySelector('input') as HTMLInputElement);
+              if (!input || !input.value.trim() || !user || !postId) return;
+
+              const text = input.value;
+              setIsSubmitting(true);
+              try {
+                const { data, error } = await createComment(postId, user.id, text);
+                if (data && !error) {
+                  onAddComment?.(text);
+                }
+              } finally {
+                setIsSubmitting(false);
+                input.value = '';
+              }
+            }}
+            disabled={isSubmitting}
+            className="px-3 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-hover transition-colors disabled:opacity-50">
+            {isSubmitting ? 'Gönderiliyor...' : 'Gönder'}
           </button>
         </div>
       </div>

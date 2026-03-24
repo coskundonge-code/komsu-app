@@ -5,10 +5,17 @@ import { useEffect, useState } from 'react'
 import type { Database } from '@/lib/supabase/types'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
+type Neighborhood = {
+  id: string
+  name: string
+  district: string
+  city: string
+}
 
 export function useCurrentUser() {
   const [user, setUser] = useState<any>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
+  const [neighborhood, setNeighborhood] = useState<Neighborhood | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -25,6 +32,31 @@ export function useCurrentUser() {
           .eq('id', user.id)
           .single()
         setProfile(data)
+
+        // Fetch neighborhood info
+        const { data: neighborhoodData } = await supabase
+          .from('neighborhood_members')
+          .select(`
+            neighborhood_id,
+            neighborhoods (
+              id,
+              name,
+              district,
+              city
+            )
+          `)
+          .eq('user_id', user.id)
+          .single()
+
+        if (neighborhoodData?.neighborhoods) {
+          const nb = neighborhoodData.neighborhoods as any
+          setNeighborhood({
+            id: nb.id,
+            name: nb.name,
+            district: nb.district,
+            city: nb.city
+          })
+        }
       }
       setLoading(false)
     }
@@ -35,13 +67,14 @@ export function useCurrentUser() {
       setUser(session?.user ?? null)
       if (!session?.user) {
         setProfile(null)
+        setNeighborhood(null)
       }
     })
 
     return () => subscription.unsubscribe()
   }, [])
 
-  return { user, profile, loading }
+  return { user, profile, neighborhood, loading }
 }
 
 export function useSignOut() {

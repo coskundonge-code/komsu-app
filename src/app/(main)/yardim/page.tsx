@@ -26,7 +26,7 @@ const popularArticles = [
 const faqs = {
   'Hesap ve Profil': [
     { q: 'Profilimi nasıl düzenlerim?', a: 'Ayarlar sayfasından "Profil Düzenle" seçeneğini kullanarak ad, fotoğraf, biyografi ve diğer bilgilerinizi güncelleyebilirsiniz.' },
-    { q: 'Mahallemi nasıl değiştiririm?', a: 'Ayarlar > Mahallem bölümünden yeni adres bilgisi girerek mahallenizi güncelleyebilirsiniz. Adres doğrulaması gerekecektir.' },
+    { q: 'Mahallemi nasıl değiştiririm?', a: 'Ayarlar > Mahallemiz bölümünden yeni adres bilgisi girerek mahallenizi güncelleyebilirsiniz. Adres doğrulaması gerekecektir.' },
     { q: 'Şifremi nasıl değiştirim?', a: 'Ayarlar > Güvenlik > Şifre Değiştir seçeneğini kullanarak eski şifrenizi girerek yeni şifreni ayarlayabilirsiniz.' },
     { q: 'Profilm gizli olabilir mi?', a: 'Evet, Ayarlar > Gizlilik ayarlarından profilinizi sadece komşularınıza görünür kılabilirsiniz.' },
   ],
@@ -48,14 +48,14 @@ const faqs = {
     { q: 'Yalnızca önemli bildirimleri almak istiyorum?', a: 'Ayarlar > Bildirimler > Önemli Yalnızca seçeneğini açabilirsiniz.' },
     { q: 'E-posta bildirimleri almıyor musunuz?', a: 'Spam klasörünü kontrol edin veya Ayarlar > E-posta Bildirimleri seçeneğini yeniden etkinleştirin.' },
     { q: 'Sessiz saatleri ayarlayabilir miyim?', a: 'Evet, Ayarlar > Sessiz Saatler seçeneğinden bildirim almak istemediğiniz saatler belirleyebilirsiniz.' },
-    { q: 'Push bildirimlerini kapatabilir miyim?', a: 'Telefonunuzun ayarlarından veya Mahallem ayarlarından Push bildirimlerini devre dışı bırakabilirsiniz.' },
+    { q: 'Push bildirimlerini kapatabilir miyim?', a: 'Telefonunuzun ayarlarından veya Mahallemiz ayarlarından Push bildirimlerini devre dışı bırakabilirsiniz.' },
   ],
   'Genel Sorular': [
-    { q: 'Mahallem ne için kullanılır?', a: 'Mahallem, mahallenizdeki insanlarla bağlantı kurmanız, haberleri paylaşmanız, etkinlikler organize etmeniz ve yardımlaşmanız için tasarlanmıştır.' },
-    { q: 'Mahallem ücretsiz mi?', a: 'Evet, temel özellikler tamamen ücretsizdir. İlerde bazı premium özellikler sunulabilir.' },
-    { q: 'Başka mahallede arkadaşım var, bağlantı kurabilir miyiz?', a: 'Mahallem, yerel topluluklar oluşturmak için tasarlandığından, sadece kendi mahallenizle etkileşime girebilirsiniz.' },
+    { q: 'Mahallemiz ne için kullanılır?', a: 'Mahallemiz, mahallenizdeki insanlarla bağlantı kurmanız, haberleri paylaşmanız, etkinlikler organize etmeniz ve yardımlaşmanız için tasarlanmıştır.' },
+    { q: 'Mahallemiz ücretsiz mi?', a: 'Evet, temel özellikler tamamen ücretsizdir. İlerde bazı premium özellikler sunulabilir.' },
+    { q: 'Başka mahallede arkadaşım var, bağlantı kurabilir miyiz?', a: 'Mahallemiz, yerel topluluklar oluşturmak için tasarlandığından, sadece kendi mahallenizle etkileşime girebilirsiniz.' },
     { q: 'Hesabımı nasıl silerim?', a: 'Ayarlar > Hesap > Hesabı Sil seçeneğini seçerek hesabınızı kalıcı olarak silebilirsiniz.' },
-    { q: 'Mahallem hangi dillerde mevcut?', a: 'Şu anda Türkçe ve İngilizce dillerinde mevcuttur. Daha fazla dil desteği yakında eklenecektir.' },
+    { q: 'Mahallemiz hangi dillerde mevcut?', a: 'Şu anda Türkçe ve İngilizce dillerinde mevcuttur. Daha fazla dil desteği yakında eklenecektir.' },
     { q: 'Hata buldum, nasıl bildiririm?', a: 'Ayarlar > Hata Bildir seçeneğini kullanarak veya destek ekibine mesaj göndererek hatayı bildirebilirsiniz.' },
   ],
 };

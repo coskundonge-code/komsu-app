@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import { generatePageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "Nasıl Çalışır? | Mahallem",
+  title: 'Nasıl Çalışır?',
   description:
-    "Mahallem nasıl çalışıyor öğrenin. Adım adım rehberimizi izleyin ve başlayın.",
+    "Mahallemiz nasıl çalışıyor öğrenin. Adım adım rehberimizi izleyin ve başlayın.",
   openGraph: {
     url: "https://mahallem.com/nasil-calisir",
-    title: "Nasıl Çalışır? | Mahallem",
+    title: 'Nasıl Çalışır?',
     description:
-      "Mahallem nasıl çalışıyor öğrenin. Adım adım rehberimizi izleyin ve başlayın.",
+      "Mahallemiz nasıl çalışıyor öğrenin. Adım adım rehberimizi izleyin ve başlayın.",
   },
   twitter: {
-    title: "Nasıl Çalışır? | Mahallem",
+    title: 'Nasıl Çalışır?',
     description:
-      "Mahallem nasıl çalışıyor öğrenin. Adım adım rehberimizi izleyin ve başlayın.",
+      "Mahallemiz nasıl çalışıyor öğrenin. Adım adım rehberimizi izleyin ve başlayın.",
   },
 });
 

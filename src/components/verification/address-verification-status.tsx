@@ -52,7 +52,7 @@ export function AddressVerificationStatus({
           <p className="font-semibold text-text-primary">Hesabınız Kilitlendi</p>
           <p className="text-sm text-[#666] mt-1">Adres doğrulaması yapılmadığı için hesabınız kilitlenmiştir. Lütfen e-Devlet aracılığıyla adresinizi doğrulayın.</p>
           <Link
-            href="/adres-dogrulama"
+            href="/ayarlar/adres-dogrulama"
             className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-[#ef4444] text-white font-medium rounded-lg hover:bg-[#dc2626] transition-colors"
           >
             Adresimi Doğrula
@@ -97,7 +97,7 @@ export function AddressVerificationStatus({
       )}
 
       <Link
-        href="/adres-dogrulama"
+        href="/ayarlar/adres-dogrulama"
         className="inline-flex items-center gap-2 px-4 py-2 bg-[#f59e0b] text-white font-medium rounded-lg hover:bg-[#d97706] transition-colors"
       >
         Adresini Doğrula

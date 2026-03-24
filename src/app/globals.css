@@ -417,6 +417,16 @@ body {
   outline-offset: 2px;
 }
 
+<<<<<<< HEAD
+=======
+/* Accessibility focus styles */
+*:focus-visible {
+  outline: 2px solid var(--color-primary, #00833e);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+>>>>>>> ab5629528fac6fe6996b018892fcc0642a0acd24
 /* === LINE CLAMP === */
 .line-clamp-1 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; }
 .line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }

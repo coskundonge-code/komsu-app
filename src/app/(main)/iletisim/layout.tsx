@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import { generatePageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = generatePageMetadata({
-  title: "İletişim | Mahallem",
+  title: 'İletişim',
   description:
-    "Mahallem ile iletişime geçin. Sorular, öneriler ve destek için bize yazın.",
+    "Mahallemiz ile iletişime geçin. Sorular, öneriler ve destek için bize yazın.",
   openGraph: {
     url: "https://mahallem.com/iletisim",
-    title: "İletişim | Mahallem",
+    title: 'İletişim',
     description:
-      "Mahallem ile iletişime geçin. Sorular, öneriler ve destek için bize yazın.",
+      "Mahallemiz ile iletişime geçin. Sorular, öneriler ve destek için bize yazın.",
   },
   twitter: {
-    title: "İletişim | Mahallem",
+    title: 'İletişim',
     description:
-      "Mahallem ile iletişime geçin. Sorular, öneriler ve destek için bize yazın.",
+      "Mahallemiz ile iletişime geçin. Sorular, öneriler ve destek için bize yazın.",
   },
 });
 

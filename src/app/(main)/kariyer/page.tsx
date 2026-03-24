@@ -42,7 +42,7 @@ const positions = [
     location: "İstanbul",
     type: "Tam Zamanlı",
     description:
-      "Mahallem topluluğunu yönetin, kullanıcı etkileşimini teşvik edin ve mahalle sakinlerinin bağlantıda kalmasını sağlayın. İletişim ve liderlik becerileriniz ön planda olmalı.",
+      "Mahallemiz topluluğunu yönetin, kullanıcı etkileşimini teşvik edin ve mahalle sakinlerinin bağlantıda kalmasını sağlayın. İletişim ve liderlik becerileriniz ön planda olmalı.",
     icon: MessageSquare,
   },
   {
@@ -52,7 +52,7 @@ const positions = [
     location: "İstanbul",
     type: "Tam Zamanlı",
     description:
-      "Mahallem'in markasını güçlendirin ve hedef kitleye ulaşın. Dijital pazarlama, sosyal medya ve reklam kampanyaları konusunda deneyimli bir profesyonel arıyoruz.",
+      "Mahallemiz'in markasını güçlendirin ve hedef kitleye ulaşın. Dijital pazarlama, sosyal medya ve reklam kampanyaları konusunda deneyimli bir profesyonel arıyoruz.",
     icon: TrendingUp,
   },
   {
@@ -105,7 +105,7 @@ export default function CareersPage() {
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full -ml-24 -mb-24"></div>
 
             <div className="relative z-10">
-              <h1 className="text-4xl font-bold mb-3">Mahallem Ailesi'ne Katıl</h1>
+              <h1 className="text-4xl font-bold mb-3">Mahallemiz Ailesi'ne Katıl</h1>
               <p className="text-lg text-green-100 max-w-2xl mx-auto">
                 Mahalleler ve topluluklar yönetmek için bizimle bir ekibin parçası olun. Anlamlı işler yapan, tutkulu bir takımda kendi potansiyelini keşfet.
               </p>
@@ -281,7 +281,7 @@ export default function CareersPage() {
             <section className="mb-12 p-8 bg-gradient-to-br from-primary/10 to-primary-hover/10 rounded-lg border border-primary/20">
               <h2 className="text-2xl font-bold text-text-primary mb-6 flex items-center gap-2">
                 <Users size={24} />
-                Neden Mahallem'e Katılmalısınız?
+                Neden Mahallemiz'e Katılmalısınız?
               </h2>
               <ul className="space-y-4 text-text-secondary">
                 <li className="flex items-start gap-3">
@@ -345,7 +345,7 @@ export default function CareersPage() {
           {/* Footer */}
           <div className="border-t border-border bg-background py-6 px-8 text-center">
             <p className="text-sm text-text-muted mb-4">
-              © 2026 Mahallem — Trendex Lojistik tarafından geliştirilmiştir.
+              © 2026 Mahallemiz — Trendex Lojistik tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link

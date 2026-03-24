@@ -33,8 +33,7 @@ export async function getUserPosts(userId: string, limit = 10) {
   const { data, error } = await supabase
     .from('posts')
     .select('*')
-    .eq('user_id', userId)
-    .eq('is_archived', false)
+    .eq('author_id', userId)
     .order('created_at', { ascending: false })
     .limit(limit)
   return { data, error }
@@ -45,8 +44,8 @@ export async function getUserListings(userId: string, limit = 10) {
   const { data, error } = await supabase
     .from('listings')
     .select('*, listing_categories(name)')
-    .eq('user_id', userId)
-    .neq('listing_status', 'removed')
+    .eq('seller_id', userId)
+    .neq('status', 'removed')
     .order('created_at', { ascending: false })
     .limit(limit)
   return { data, error }

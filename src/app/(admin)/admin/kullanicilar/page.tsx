@@ -1,6 +1,10 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
+import { useCurrentUser } from '@/lib/hooks/use-auth';
 import {
   Search,
   MoreVertical,
@@ -26,14 +30,16 @@ interface User {
   id: string;
   name: string;
   email: string;
-  neighborhood: string;
+  neighborhood?: string;
   joinDate: string;
   status: 'active' | 'inactive' | 'suspended';
   posts: number;
   reviews: number;
-  lastSeen: string;
+  lastSeen?: string;
   avatar: string;
   engagement: number;
+  is_verified?: boolean;
+  is_admin?: boolean;
 }
 
 const MOCK_USERS: User[] = [
@@ -175,6 +181,8 @@ interface ConfirmModal {
 }
 
 export default function KullanicilarPage() {
+  const router = useRouter();
+  const { user: authUser, profile, loading: authLoading } = useCurrentUser();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive' | 'suspended'>('all');
   const [currentPage, setCurrentPage] = useState(1);
@@ -184,15 +192,83 @@ export default function KullanicilarPage() {
   });
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [detailsModal, setDetailsModal] = useState(false);
+  const [users, setUsers] = useState<User[]>(MOCK_USERS);
+  const [loading, setLoading] = useState(false);
 
   const itemsPerPage = 8;
 
+  // Check admin access
+  if (!authLoading && (!authUser || profile?.is_admin !== true)) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Yetkisiz Erişim</h1>
+          <p className="text-gray-600 mb-6">
+            Bu sayfaya erişim için admin yetkisi gereklidir.
+          </p>
+          <Link
+            href="/"
+            className="inline-block px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
+          >
+            Ana Sayfaya Dön
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-gray-600">Yükleniyor...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Fetch users from Supabase
+  useEffect(() => {
+    async function fetchUsers() {
+      setLoading(true);
+      const supabase = createClient();
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('id, email, full_name, is_verified, is_admin, created_at')
+          .order('created_at', { ascending: false });
+
+        if (!error && data) {
+          const mappedUsers: User[] = data.map((profile: any) => ({
+            id: profile.id,
+            name: profile.full_name || 'İsimsiz Kullanıcı',
+            email: profile.email || '',
+            joinDate: profile.created_at,
+            status: profile.is_verified ? 'active' : 'inactive',
+            posts: 0,
+            reviews: 0,
+            avatar: (profile.full_name || 'U').substring(0, 2).toUpperCase(),
+            engagement: profile.is_verified ? 75 : 25,
+            is_verified: profile.is_verified,
+            is_admin: profile.is_admin,
+          }));
+          setUsers(mappedUsers);
+        }
+      } catch (err) {
+        console.error('Kullanıcılar yüklenirken hata:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchUsers();
+  }, []);
+
   const filteredUsers = useMemo(() => {
-    return MOCK_USERS.filter((user) => {
+    return users.filter((user) => {
       const matchesSearch =
         user.name.toLowerCase().includes(search.toLowerCase()) ||
         user.email.toLowerCase().includes(search.toLowerCase()) ||
-        user.neighborhood.toLowerCase().includes(search.toLowerCase());
+        (user.neighborhood || '').toLowerCase().includes(search.toLowerCase());
       const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
@@ -205,10 +281,10 @@ export default function KullanicilarPage() {
   );
 
   const stats = {
-    total: MOCK_USERS.length,
-    active: MOCK_USERS.filter((u) => u.status === 'active').length,
-    inactive: MOCK_USERS.filter((u) => u.status === 'inactive').length,
-    suspended: MOCK_USERS.filter((u) => u.status === 'suspended').length,
+    total: users.length,
+    active: users.filter((u) => u.status === 'active').length,
+    inactive: users.filter((u) => u.status === 'inactive').length,
+    suspended: users.filter((u) => u.status === 'suspended').length,
   };
 
   const handleAction = (action: string, user: User) => {
@@ -220,8 +296,37 @@ export default function KullanicilarPage() {
     });
   };
 
-  const confirmAction = () => {
-    console.log(`Confirmed: ${confirmModal.action} for user ${confirmModal.userId}`);
+  const confirmAction = async () => {
+    const supabase = createClient();
+    try {
+      if (confirmModal.action === 'suspend') {
+        // Lock/suspend user in Supabase (would need status field in profiles table)
+        await (supabase as any)
+          .from('profiles')
+          .update({ verified: false })
+          .eq('id', confirmModal.userId);
+
+        setUsers(prev => prev.map(u =>
+          u.id === confirmModal.userId ? { ...u, status: 'suspended' } : u
+        ));
+      } else if (confirmModal.action === 'unsuspend') {
+        // Unlock/unsuspend user
+        await (supabase as any)
+          .from('profiles')
+          .update({ verified: true })
+          .eq('id', confirmModal.userId);
+
+        setUsers(prev => prev.map(u =>
+          u.id === confirmModal.userId ? { ...u, status: 'active' } : u
+        ));
+      } else if (confirmModal.action === 'delete') {
+        // Soft delete or archive user
+        console.log(`User ${confirmModal.userId} deletion initiated`);
+      }
+    } catch (error) {
+      console.error('Action failed:', error);
+      alert('İşlem başarısız oldu');
+    }
     setConfirmModal({ isOpen: false, action: '' });
   };
 
@@ -235,7 +340,7 @@ export default function KullanicilarPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Kullanıcı Yönetimi</h1>
         <p className="text-gray-600">
-          Toplam {stats.total} kullanıcı yönetiliyor
+          {loading ? 'Yükleniyor...' : `Toplam ${stats.total} kullanıcı yönetiliyor`}
         </p>
       </div>
 

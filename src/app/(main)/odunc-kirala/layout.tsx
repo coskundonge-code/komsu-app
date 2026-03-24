@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Ödünç Ver & Kirala | Mahallem',
+  title: 'Ödünç Ver & Kirala',
   description: 'Mahallenizdeki komşularınızla eşya paylaşın. Ücretsiz ödünç verin veya saatlik/günlük kiralayın.',
 }
 

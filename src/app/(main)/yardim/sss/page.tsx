@@ -21,7 +21,7 @@ const faqData: FAQ[] = [
   {
     category: 'Hesap ve Profil',
     q: 'Mahallemi nasıl değiştiririm?',
-    a: 'Ayarlar > Mahallem bölümünden yeni adres bilgisi girerek mahallenizi güncelleyebilirsiniz. Adres doğrulaması gerekecektir ve başarıyla onaylandıktan sonra değişiklik uygulanacaktır.'
+    a: 'Ayarlar > Mahallemiz bölümünden yeni adres bilgisi girerek mahallenizi güncelleyebilirsiniz. Adres doğrulaması gerekecektir ve başarıyla onaylandıktan sonra değişiklik uygulanacaktır.'
   },
   {
     category: 'Hesap ve Profil',
@@ -94,7 +94,7 @@ const faqData: FAQ[] = [
   {
     category: 'Teknik Sorunlar',
     q: 'Bildirimler neden gelmiyorum?',
-    a: 'Ayarlar > Bildirimler bölümünde bildirimlerin etkinleştirildiğini kontrol edin. Ayrıca cihazınızın ayarlarından Mahallem için bildirimleri etkinleştirmeniz gerekebilir.'
+    a: 'Ayarlar > Bildirimler bölümünde bildirimlerin etkinleştirildiğini kontrol edin. Ayrıca cihazınızın ayarlarından Mahallemiz için bildirimleri etkinleştirmeniz gerekebilir.'
   },
   {
     category: 'Teknik Sorunlar',

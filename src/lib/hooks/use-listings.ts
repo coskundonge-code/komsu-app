@@ -1,8 +1,9 @@
 'use client'
 
 import { createClient as createTypedClient } from '@/lib/supabase/client'
-const createClient = () => createTypedClient() as any
 import type { Database } from '@/lib/supabase/types'
+
+const createClient = () => createTypedClient()
 
 type Listing = Database['public']['Tables']['listings']['Row']
 type ListingInsert = Database['public']['Tables']['listings']['Insert']
@@ -18,8 +19,8 @@ export async function getListings(options?: {
   const supabase = createClient()
   let query = supabase
     .from('listings')
-    .select('*, profiles!listings_user_id_fkey(full_name, avatar_url), listing_categories(name)')
-    .eq('listing_status', options?.status || 'active')
+    .select('*, profiles!listings_seller_id_fkey(full_name, avatar_url), listing_categories(name)')
+    .eq('status', options?.status || 'active')
 
   if (options?.neighborhoodId) query = query.eq('neighborhood_id', options.neighborhoodId)
   if (options?.categoryId) query = query.eq('category_id', options.categoryId)
@@ -41,7 +42,7 @@ export async function getListingById(id: string) {
   const supabase = createClient()
   const { data, error } = await supabase
     .from('listings')
-    .select('*, profiles!listings_user_id_fkey(full_name, avatar_url, phone), listing_categories(name)')
+    .select('*, profiles!listings_seller_id_fkey(full_name, avatar_url, phone), listing_categories(name)')
     .eq('id', id)
     .single()
   return { data, error }
@@ -49,18 +50,18 @@ export async function getListingById(id: string) {
 
 export async function createListing(listing: ListingInsert) {
   const supabase = createClient()
-  const { data, error } = await supabase.from('listings').insert(listing as any).select().single()
+  const { data, error } = await supabase.from('listings').insert(listing).select().single()
   return { data, error }
 }
 
 export async function updateListing(id: string, updates: Database['public']['Tables']['listings']['Update']) {
   const supabase = createClient()
-  const { data, error } = await supabase.from('listings').update(updates as any).eq('id', id).select().single()
+  const { data, error } = await supabase.from('listings').update(updates).eq('id', id).select().single()
   return { data, error }
 }
 
 export async function deleteListing(id: string) {
   const supabase = createClient()
-  const { error } = await supabase.from('listings').update({ listing_status: 'removed' } as any).eq('id', id)
+  const { error } = await supabase.from('listings').update({ status: 'expired' }).eq('id', id)
   return { error }
 }

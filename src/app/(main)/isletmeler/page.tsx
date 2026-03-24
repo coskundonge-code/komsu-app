@@ -7,7 +7,7 @@ import { Search, MapPin, ChevronRight, Map, List, Clock, Star, Zap, Phone } from
 import { BusinessCard } from '@/components/business/business-card';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 
-const LeafletMap = dynamic(() => import('@/components/map/leaflet-map'), { ssr: false });
+const LeafletMap = dynamic(() => import('@/components/map/google-map'), { ssr: false });
 
 interface Business {
   id: string;

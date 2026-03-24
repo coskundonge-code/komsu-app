@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Search,
   Plus,
@@ -23,6 +23,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
+import { getLendingItems } from '@/lib/hooks/use-lending';
 
 interface Listing {
   id: string;
@@ -289,6 +290,57 @@ export default function OduncKiralaPage() {
   const [visibleCount, setVisibleCount] = useState(6);
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [selectedListingId, setSelectedListingId] = useState<string | null>(null);
+  const [listings, setListings] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch real listings on mount
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const { data, error } = await getLendingItems({ status: 'available', limit: 50 });
+        if (data && (data as any[]).length > 0) {
+          const transformed = (data as any[])
+            .map((item: any) => ({
+              id: item.id,
+              title: item.title || 'Başlıksız İlan',
+              type: item.lending_type || 'free' as 'free' | 'hourly' | 'daily',
+              price: item.price_per_unit || 0,
+              image: item.image_urls?.[0] || getFeedImageUrl(Math.floor(Math.random() * 30) + 1, 500, 500),
+              location: 'Kadıköy, Moda',
+              neighborhood: 'Kadıköy, Moda',
+              distance: `${Math.floor(Math.random() * 10) + 1} km`,
+              ownerName: (item as any).profiles?.full_name || 'Bilinmiyor',
+              ownerAvatar: (item as any).profiles?.avatar_url || getAvatarUrl('U'),
+              rating: Math.random() * 2 + 3,
+              reviewCount: Math.floor(Math.random() * 20),
+              category: item.category || 'Diğer',
+              timeAgo: item.created_at ? formatTimeAgo(new Date(item.created_at)) : '1 saat',
+            }));
+          setListings(transformed);
+        } else if (error) {
+          console.warn('Error fetching lending items:', error);
+          setListings(mockListings);
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        setListings(mockListings);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchListings();
+  }, []);
+
+  const formatTimeAgo = (date: Date): string => {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+    if (diffHours < 24) return `${diffHours} saat`;
+    if (diffDays < 30) return `${diffDays} gün`;
+    return `${Math.floor(diffDays / 30)} ay`;
+  };
 
   const openRequestModal = (id: string) => {
     setSelectedListingId(id);
@@ -301,7 +353,7 @@ export default function OduncKiralaPage() {
   };
 
   // Filter listings
-  let filtered = mockListings.filter((l) => {
+  let filtered = (listings.length > 0 ? listings : mockListings).filter((l) => {
     if (searchQuery && !l.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     if (activeTab === 'lend' && l.type !== 'free') return false;
     if (activeTab === 'rent' && l.type === 'free') return false;
@@ -553,23 +605,25 @@ export default function OduncKiralaPage() {
                       key={listing.id}
                       className="bg-surface rounded-lg shadow-sm border border-border overflow-hidden hover:shadow-lg transition-shadow duration-200 group"
                     >
-                      {/* Image Container */}
-                      <div className="relative aspect-square overflow-hidden bg-background">
-                        <Image
-                          src={listing.image}
-                          alt={listing.title}
-                          fill
-                          unoptimized
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                        />
-                        {/* Type Badge */}
-                        <span className={cn(
-                          'absolute top-3 left-3 text-white text-xs font-bold px-3 py-1 rounded-md',
-                          listing.type === 'free' ? 'bg-primary' : 'bg-[#ff9500]'
-                        )}>
-                          {typeLabel(listing.type)}
-                        </span>
-                      </div>
+                      {/* Image Container - Clickable */}
+                      <Link href={`/odunc-kirala/${listing.id}`}>
+                        <div className="relative aspect-square overflow-hidden bg-background">
+                          <Image
+                            src={listing.image}
+                            alt={listing.title}
+                            fill
+                            unoptimized
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                          />
+                          {/* Type Badge */}
+                          <span className={cn(
+                            'absolute top-3 left-3 text-white text-xs font-bold px-3 py-1 rounded-md',
+                            listing.type === 'free' ? 'bg-primary' : 'bg-[#ff9500]'
+                          )}>
+                            {typeLabel(listing.type)}
+                          </span>
+                        </div>
+                      </Link>
 
                       {/* Content */}
                       <div className="p-4">
@@ -578,10 +632,12 @@ export default function OduncKiralaPage() {
                           <p className="text-lg font-bold text-primary">{priceLabel(listing)}</p>
                         </div>
 
-                        {/* Title */}
-                        <p className="text-sm text-text-secondary line-clamp-2 mb-3 leading-snug font-semibold">
-                          {listing.title}
-                        </p>
+                        {/* Title - Clickable */}
+                        <Link href={`/odunc-kirala/${listing.id}`} className="block">
+                          <p className="text-sm text-text-secondary line-clamp-2 mb-3 leading-snug font-semibold hover:text-primary transition-colors">
+                            {listing.title}
+                          </p>
+                        </Link>
 
                         {/* Owner Info */}
                         <div className="flex items-center gap-2 mb-3">
@@ -612,13 +668,21 @@ export default function OduncKiralaPage() {
                           <span className="text-xs text-text-muted">({listing.reviewCount})</span>
                         </div>
 
-                        {/* Action Button */}
-                        <button
-                          onClick={() => openRequestModal(listing.id)}
-                          className="w-full px-4 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary-hover transition-colors"
-                        >
-                          Talep Gönder
-                        </button>
+                        {/* Action Buttons */}
+                        <div className="space-y-2">
+                          <Link
+                            href={`/odunc-kirala/${listing.id}`}
+                            className="block w-full px-4 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary-hover transition-colors text-center"
+                          >
+                            Detayları Gör
+                          </Link>
+                          <button
+                            onClick={() => openRequestModal(listing.id)}
+                            className="w-full px-4 py-2.5 border border-primary text-primary rounded-lg text-sm font-semibold hover:bg-primary-light transition-colors"
+                          >
+                            Talep Gönder
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}

@@ -34,7 +34,7 @@ const articlesData: { [key: string]: ArticleContent } = {
     excerpt: 'Adınızı, fotoğrafınızı, biyografinizi ve diğer profil bilgilerinizi güncellemek için adım adım kılavuz.',
     readTime: 5,
     updatedAt: '2024-01-15',
-    introduction: 'Mahallem\'ta profiliniz, topluluğunuzda kimliğinizdir. Profilinizi düzenlemek, başkalarının sizi tanıması ve bağlantı kurması için önemlidir. Bu rehber, profil bilgilerinizi adım adım güncellemeyi anlatır.',
+    introduction: 'Mahallemiz\'ta profiliniz, topluluğunuzda kimliğinizdir. Profilinizi düzenlemek, başkalarının sizi tanıması ve bağlantı kurması için önemlidir. Bu rehber, profil bilgilerinizi adım adım güncellemeyi anlatır.',
     steps: [
       {
         title: 'Ayarlar Sayfasına Gidin',
@@ -79,7 +79,7 @@ const articlesData: { [key: string]: ArticleContent } = {
     excerpt: 'Yeni bir gönderi oluşturma, metin ve fotoğraf ekleme, yayınlama adımları.',
     readTime: 4,
     updatedAt: '2024-01-10',
-    introduction: 'Gönderiler, Mahallem\'ta topluluğunuzla iletişim kurmanın ana yoludur. Etkinlik duyurusu yapın, deneyim paylaşın veya yardım isteyin. Bu kılavuz, mükemmel bir gönderi oluşturmayı öğretir.',
+    introduction: 'Gönderiler, Mahallemiz\'ta topluluğunuzla iletişim kurmanın ana yoludur. Etkinlik duyurusu yapın, deneyim paylaşın veya yardım isteyin. Bu kılavuz, mükemmel bir gönderi oluşturmayı öğretir.',
     steps: [
       {
         title: 'Yeni Gönderi Oluşturmaya Başlayın',
@@ -214,7 +214,7 @@ const articlesData: { [key: string]: ArticleContent } = {
     excerpt: 'Uygulama hatalarını gidermek için temel sorun giderme adımları.',
     readTime: 4,
     updatedAt: '2024-01-18',
-    introduction: 'Mahallem\'ta sorunla mı karşılaştınız? Uygulama çöküyor veya yanıt vermiyor mu? Bu rehber, sorunu hızlı bir şekilde çözmek için adımları gösterir.',
+    introduction: 'Mahallemiz\'ta sorunla mı karşılaştınız? Uygulama çöküyor veya yanıt vermiyor mu? Bu rehber, sorunu hızlı bir şekilde çözmek için adımları gösterir.',
     steps: [
       {
         title: 'Uygulamayı Kapatın',
@@ -233,12 +233,12 @@ const articlesData: { [key: string]: ArticleContent } = {
       },
       {
         title: 'Uygulamayı Güncelleyin',
-        description: 'Google Play Store veya Apple App Store\'da Mahallem\'ın en son sürümü yüklü olup olmadığını kontrol edin.',
+        description: 'Google Play Store veya Apple App Store\'da Mahallemiz\'ın en son sürümü yüklü olup olmadığını kontrol edin.',
         image: getFeedImageUrl(28, 600, 300)
       },
       {
         title: 'Uygulama Önbelleğini Temizleyin',
-        description: 'Cihaz Ayarları > Uygulamalar > Mahallem > Depolama > Önbelleği Temizle seçeneğine gidin.',
+        description: 'Cihaz Ayarları > Uygulamalar > Mahallemiz > Depolama > Önbelleği Temizle seçeneğine gidin.',
         image: getFeedImageUrl(29, 600, 300)
       },
       {

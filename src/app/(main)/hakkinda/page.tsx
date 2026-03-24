@@ -39,7 +39,7 @@ export default function AboutPage() {
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full -ml-16 -mb-16"></div>
 
           <div className="relative z-10">
-            <h1 className="text-4xl md:text-5xl font-bold mb-3">Mahallem Hakkında</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-3">Mahallemiz Hakkında</h1>
             <p className="text-green-100 text-lg md:text-xl max-w-2xl mx-auto">
               Mahalle sakinlerini birbirleriyle bağlayan, güvenli ve dayanışmacı topluluklara katkı sağlayan sosyal platform
             </p>
@@ -69,13 +69,13 @@ export default function AboutPage() {
             Hikayemiz
           </h2>
           <p className="text-text-secondary leading-relaxed text-lg mb-6">
-            Mahallem, Türkiye'deki mahalleler arasında gittikçe zayıflayan bağlantıları yeniden güçlendirmek amacıyla kuruldu. Modern teknolojinin hızlı dünyasında, komşularımızı tanımanın ve birbirimize yardım etmenin ne kadar zor hale geldiğini gördük.
+            Mahallemiz, Türkiye'deki mahalleler arasında gittikçe zayıflayan bağlantıları yeniden güçlendirmek amacıyla kuruldu. Modern teknolojinin hızlı dünyasında, komşularımızı tanımanın ve birbirimize yardım etmenin ne kadar zor hale geldiğini gördük.
           </p>
           <p className="text-text-secondary leading-relaxed text-lg mb-6">
-            Bu sorunun çözümü için Mahallem'i tasarladık: mahalle sakinlerinin birbirleriyle bağlantı kurması, bilgi paylaşması, etkinlikler düzenlemesi ve güçlü topluluklar oluşturmasını sağlayan bir platform.
+            Bu sorunun çözümü için Mahallemiz'i tasarladık: mahalle sakinlerinin birbirleriyle bağlantı kurması, bilgi paylaşması, etkinlikler düzenlemesi ve güçlü topluluklar oluşturmasını sağlayan bir platform.
           </p>
           <p className="text-text-secondary leading-relaxed text-lg">
-            Bugün, 500+ mahallede 50.000+ kullanıcı Mahallem aracılığıyla bağlantıda, birbirlerine güveniyor ve birlikte gelişiyor. Amacımız, her mahallede bu güven ve dayanışma kültürünü yaygınlaştırmak.
+            Bugün, 500+ mahallede 50.000+ kullanıcı Mahallemiz aracılığıyla bağlantıda, birbirlerine güveniyor ve birlikte gelişiyor. Amacımız, her mahallede bu güven ve dayanışma kültürünü yaygınlaştırmak.
           </p>
         </div>
 
@@ -112,7 +112,7 @@ export default function AboutPage() {
             Ekibimiz
           </h2>
           <p className="text-text-secondary leading-relaxed mb-8">
-            Mahallem, yazılım geliştirme, ürün tasarımı ve topluluk yönetiminde uzman bir ekip tarafından geliştirilir. Trendex Lojistik tarafından desteklenen projemiz, her gün mahalle sakinlerinin yaşamını daha iyi hale getirmek için çalışmaktadır.
+            Mahallemiz, yazılım geliştirme, ürün tasarımı ve topluluk yönetiminde uzman bir ekip tarafından geliştirilir. Trendex Lojistik tarafından desteklenen projemiz, her gün mahalle sakinlerinin yaşamını daha iyi hale getirmek için çalışmaktadır.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -139,7 +139,7 @@ export default function AboutPage() {
         <div className="bg-surface border border-border rounded-lg p-8 md:p-12 text-center mb-12">
           <h2 className="text-3xl font-bold text-text-primary mb-4">Mahallene Katıl</h2>
           <p className="text-text-secondary mb-8 max-w-2xl mx-auto leading-relaxed">
-            Mahallem'e katılarak mahallenizle bağlantı kurun, yeni arkadaşlar edinin ve güçlü bir topluluk oluşturun.
+            Mahallemiz'e katılarak mahallenizle bağlantı kurun, yeni arkadaşlar edinin ve güçlü bir topluluk oluşturun.
           </p>
           <Link
             href="/kaydol"
@@ -151,7 +151,7 @@ export default function AboutPage() {
 
         {/* Footer */}
         <div className="border-t border-border bg-background py-8 px-8 rounded-lg text-center">
-          <p className="text-sm text-text-muted mb-4">© 2026 Mahallem — Trendex Lojistik tarafından geliştirilmiştir.</p>
+          <p className="text-sm text-text-muted mb-4">© 2026 Mahallemiz — Trendex Lojistik tarafından geliştirilmiştir.</p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <Link href="/gizlilik" className="text-sm text-primary hover:text-primary-hover font-medium transition-colors">
               Gizlilik Politikası

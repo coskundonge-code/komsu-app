@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   ChevronLeft,
   ChevronRight,
@@ -13,6 +14,8 @@ import {
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
+import { createListing } from '@/lib/hooks/use-listings';
+import { createClient } from '@/lib/supabase/client';
 
 type Step = 1 | 2 | 3;
 
@@ -49,8 +52,10 @@ const conditions = [
 ];
 
 export default function NewListingPage() {
+  const router = useRouter();
   const [step, setStep] = useState<Step>(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     title: '',
     description: '',
@@ -113,7 +118,7 @@ export default function NewListingPage() {
   };
 
   const isStep1Valid = formData.title && formData.description && formData.category && formData.condition && formData.pickupLocation;
-  const isStep2Valid = formData.photos.length > 0;
+  const isStep2Valid = true; // Photos are optional
   const isStep3Valid = formData.terms && (formData.type === 'free' || formData.price) && (formData.type === 'free' || formData.maxDuration);
 
   const goToStep = (newStep: Step) => {
@@ -122,12 +127,59 @@ export default function NewListingPage() {
     }
   };
 
-  const handleSubmit = () => {
-    if (isStep3Valid) {
-      setIsSubmitted(true);
-      setTimeout(() => {
-        window.location.href = '/odunc-kirala';
-      }, 2000);
+  const handleSubmit = async () => {
+    if (!isStep3Valid) return;
+
+    setIsSubmitting(true);
+    try {
+      const supabase = createClient() as any;
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        console.error('User not authenticated');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Upload images
+      const imageUrls: string[] = [];
+      for (let i = 0; i < formData.photos.length; i++) {
+        const photoUrl = formData.photos[i];
+        // Photos are already URLs from preview, so we'll use them as-is
+        // In production, you'd upload actual files
+        imageUrls.push(photoUrl);
+      }
+
+      // Create lending item
+      const { data, error } = await supabase
+        .from('lending_items')
+        .insert({
+          title: formData.title,
+          description: formData.description,
+          price_per_unit: formData.type === 'free' ? 0 : parseInt(formData.price),
+          user_id: user.id,
+          neighborhood_id: '51ded332-1c5c-428f-9022-4f5956bef2a4',
+          image_urls: imageUrls.length > 0 ? imageUrls : null,
+          condition: formData.condition || 'good',
+          status: 'available',
+          lending_type: formData.type === 'free' ? 'free' : 'paid',
+          category: formData.category || 'other',
+        } as any)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error creating listing:', error);
+      } else {
+        setIsSubmitted(true);
+        setTimeout(() => {
+          router.push('/odunc-kirala');
+        }, 2000);
+      }
+    } catch (err) {
+      console.error('Submit error:', err);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -543,16 +595,27 @@ export default function NewListingPage() {
               </button>
               <button
                 onClick={handleSubmit}
-                disabled={!isStep3Valid}
+                disabled={!isStep3Valid || isSubmitting}
                 className={cn(
                   'flex-1 px-4 py-3 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2',
-                  isStep3Valid
+                  isStep3Valid && !isSubmitting
                     ? 'bg-primary text-white hover:bg-primary-hover'
                     : 'bg-[#e0e0e0] text-text-muted cursor-not-allowed'
                 )}
               >
-                <Check className="w-4 h-4" />
-                İlan Ver
+                {isSubmitting ? (
+                  <>
+                    <div className="animate-spin">
+                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"></div>
+                    </div>
+                    Yayınlanıyor...
+                  </>
+                ) : (
+                  <>
+                    <Check className="w-4 h-4" />
+                    İlan Ver
+                  </>
+                )}
               </button>
             </div>
           </div>

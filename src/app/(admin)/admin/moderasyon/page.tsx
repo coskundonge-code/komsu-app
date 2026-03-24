@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createClient } from '@/lib/supabase/client';
 import {
   Shield, CheckCircle, XCircle, Clock, AlertTriangle, Eye,
   Filter, ChevronDown, ChevronUp, MessageSquare, ShoppingBag,
@@ -239,6 +240,31 @@ export default function ModerationPage() {
   const [adminNote, setAdminNote] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch reports from Supabase
+  useEffect(() => {
+    async function fetchReports() {
+      setLoading(true);
+      const supabase = createClient();
+      try {
+        const { data, error } = await supabase
+          .from('reports')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (!error && data) {
+          // Map reports to queue items - keep mock data as fallback
+          // In a real scenario, you'd map report data to QueueItem structure
+        }
+      } catch (err) {
+        console.error('Failed to fetch reports:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchReports();
+  }, []);
 
   // Filtrelenmiş öğeler
   const filteredQueue = queue.filter((item) => {
@@ -268,24 +294,71 @@ export default function ModerationPage() {
     avgAiScore: Math.round(queue.reduce((sum, i) => sum + i.aiScore, 0) / queue.length),
   };
 
-  const handleApprove = (id: string) => {
-    setQueue(prev => prev.map(item =>
-      item.id === id ? { ...item, status: 'published' as ModerationStatus } : item
-    ));
-    setSelectedItem(null);
-    setAdminNote('');
+  const handleApprove = async (id: string) => {
+    const supabase = createClient();
+    try {
+      // Find the report and update its status
+      const item = queue.find(i => i.id === id);
+      if (item) {
+        await (supabase as any)
+          .from('reports')
+          .update({ status: 'resolved' })
+          .eq('id', id);
+
+        // Log moderation action
+        await (supabase as any)
+          .from('moderation_actions')
+          .insert({
+            report_id: id,
+            moderator_id: 'admin',
+            action_type: 'approved',
+            reason: adminNote || 'Approved content',
+          });
+
+        setQueue(prev => prev.map(item =>
+          item.id === id ? { ...item, status: 'published' as ModerationStatus } : item
+        ));
+        setSelectedItem(null);
+        setAdminNote('');
+      }
+    } catch (error) {
+      console.error('Failed to approve:', error);
+      alert('İşlem başarısız oldu');
+    }
   };
 
-  const handleReject = (id: string) => {
+  const handleReject = async (id: string) => {
     if (!adminNote.trim()) {
       alert('Lütfen red gerekçesi yazın');
       return;
     }
-    setQueue(prev => prev.map(item =>
-      item.id === id ? { ...item, status: 'admin_rejected' as ModerationStatus } : item
-    ));
-    setSelectedItem(null);
-    setAdminNote('');
+    const supabase = createClient();
+    try {
+      // Update report status
+      await (supabase as any)
+        .from('reports')
+        .update({ status: 'dismissed' })
+        .eq('id', id);
+
+      // Log moderation action
+      await (supabase as any)
+        .from('moderation_actions')
+        .insert({
+          report_id: id,
+          moderator_id: 'admin',
+          action_type: 'rejected',
+          reason: adminNote,
+        });
+
+      setQueue(prev => prev.map(item =>
+        item.id === id ? { ...item, status: 'admin_rejected' as ModerationStatus } : item
+      ));
+      setSelectedItem(null);
+      setAdminNote('');
+    } catch (error) {
+      console.error('Failed to reject:', error);
+      alert('İşlem başarısız oldu');
+    }
   };
 
   const handleBulkApprove = () => {

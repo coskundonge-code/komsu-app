@@ -42,7 +42,7 @@ export default function CookiePolicyPage() {
                   Gerekli Çerezler
                 </h3>
                 <p className="text-text-secondary leading-relaxed">
-                  Bu çerezler, Mahallem'in düzgün şekilde işlemesi için gereklidir. Web sitesinin temel işlevlerini sağlarlar, örneğin:
+                  Bu çerezler, Mahallemiz'in düzgün şekilde işlemesi için gereklidir. Web sitesinin temel işlevlerini sağlarlar, örneğin:
                 </p>
                 <ul className="list-disc list-inside text-text-secondary mt-2 space-y-1">
                   <li>Kullanıcı oturum açma ve kimlik doğrulama</li>
@@ -123,7 +123,7 @@ export default function CookiePolicyPage() {
 
               <div>
                 <h3 className="text-lg font-semibold text-text-primary mb-2">
-                  Mahallem Tercihlerinden
+                  Mahallemiz Tercihlerinden
                 </h3>
                 <p className="text-text-secondary leading-relaxed">
                   Hesap ayarlarınızdan çerez tercihlerinizi yönetebilirsiniz. Ancak, bazı çerezlerin devre dışı bırakılması web sitesinin düzgün şekilde çalışmasını etkileyebilir.
@@ -133,7 +133,7 @@ export default function CookiePolicyPage() {
 
             <div className="mt-6 p-4 bg-background border border-border rounded-lg">
               <p className="text-sm text-text-secondary">
-                <strong>Not:</strong> Çerezleri tamamen devre dışı bırakırsanız, Mahallem'ın bazı özellikleri düzgün çalışmayabilir. Oturum açma, tercihler ve güvenlik ayarları etkilenebilir.
+                <strong>Not:</strong> Çerezleri tamamen devre dışı bırakırsanız, Mahallemiz'ın bazı özellikleri düzgün çalışmayabilir. Oturum açma, tercihler ve güvenlik ayarları etkilenebilir.
               </p>
             </div>
           </section>
@@ -144,7 +144,7 @@ export default function CookiePolicyPage() {
               Veri Gizliliği
             </h2>
             <p className="text-text-secondary leading-relaxed mb-4">
-              Mahallem, Kişisel Verilerin Korunması Kanunu (KVKK) ve Avrupa Birliği'nin Genel Veri Koruma Yönetmeliği (GDPR) ile uyumlu olarak çalışır.
+              Mahallemiz, Kişisel Verilerin Korunması Kanunu (KVKK) ve Avrupa Birliği'nin Genel Veri Koruma Yönetmeliği (GDPR) ile uyumlu olarak çalışır.
             </p>
             <p className="text-text-secondary leading-relaxed mb-4">
               Çerezlerin ve web sitesi kullanımınızın analiz edilmesi sırasında toplanan kişisel veriler, işbu politika ve gizlilik politikamız uyarınca korunmaktadır.

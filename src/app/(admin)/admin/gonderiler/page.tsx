@@ -1,6 +1,10 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
+import { useCurrentUser } from '@/lib/hooks/use-auth';
 import {
   Search,
   ChevronLeft,
@@ -27,7 +31,8 @@ interface Post {
   comments: number;
   views: number;
   createdAt: string;
-  neighborhood: string;
+  neighborhood?: string;
+  authorId?: string;
 }
 
 const MOCK_POSTS: Post[] = [
@@ -257,6 +262,8 @@ const STATUS_CONFIG = {
 };
 
 export default function GonderilerPage() {
+  const router = useRouter();
+  const { user: authUser, profile, loading: authLoading } = useCurrentUser();
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('');
@@ -267,11 +274,87 @@ export default function GonderilerPage() {
     post: Post | null;
     action: string;
   }>({ open: false, post: null, action: '' });
+  const [posts, setPosts] = useState<Post[]>(MOCK_POSTS);
+  const [loading, setLoading] = useState(false);
 
   const itemsPerPage = 10;
 
+  // Check admin access
+  if (!authLoading && (!authUser || profile?.is_admin !== true)) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Yetkisiz Erişim</h1>
+          <p className="text-gray-600 mb-6">
+            Bu sayfaya erişim için admin yetkisi gereklidir.
+          </p>
+          <Link
+            href="/"
+            className="inline-block px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
+          >
+            Ana Sayfaya Dön
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-gray-600">Yükleniyor...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Fetch posts from Supabase
+  useEffect(() => {
+    async function fetchPosts() {
+      setLoading(true);
+      const supabase = createClient();
+      try {
+        const { data, error } = await supabase
+          .from('posts')
+          .select(`
+            id,
+            title,
+            body,
+            type,
+            created_at,
+            author_id,
+            profiles:author_id (full_name)
+          `)
+          .order('created_at', { ascending: false });
+
+        if (!error && data) {
+          const mappedPosts: Post[] = data.map((post: any) => ({
+            id: post.id,
+            content: post.body || post.title || 'İçeriksiz Gönderi',
+            author: post.profiles?.full_name || 'Bilinmeyen Yazar',
+            authorId: post.author_id,
+            type: (post.type || 'gönderi') as any,
+            status: 'yayınlandı',
+            moderationScore: 0.85,
+            likes: 0,
+            comments: 0,
+            views: 0,
+            createdAt: new Date(post.created_at).toLocaleString('tr-TR'),
+          }));
+          setPosts(mappedPosts);
+        }
+      } catch (err) {
+        console.error('Gönderiler yüklenirken hata:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPosts();
+  }, []);
+
   const filteredPosts = useMemo(() => {
-    return MOCK_POSTS.filter((post) => {
+    return posts.filter((post) => {
       const matchesSearch =
         post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
         post.author.toLowerCase().includes(searchTerm.toLowerCase());
@@ -291,25 +374,25 @@ export default function GonderilerPage() {
   const stats = [
     {
       title: 'Toplam Gönderi',
-      value: MOCK_POSTS.length,
+      value: posts.length,
       icon: '📊',
       color: '#00833e',
     },
     {
       title: 'Yayınlanmış',
-      value: MOCK_POSTS.filter((p) => p.status === 'yayınlandı').length,
+      value: posts.filter((p) => p.status === 'yayınlandı').length,
       icon: '✓',
       color: '#4CAF50',
     },
     {
       title: 'Onay Bekleniyor',
-      value: MOCK_POSTS.filter((p) => p.status === 'onay bekleniyor').length,
+      value: posts.filter((p) => p.status === 'onay bekleniyor').length,
       icon: '⏳',
       color: '#FF9800',
     },
     {
       title: 'Reddedilmiş',
-      value: MOCK_POSTS.filter(
+      value: posts.filter(
         (p) => p.status === 'reddedildi' || p.status === 'kaldırıldı'
       ).length,
       icon: '✕',
@@ -322,7 +405,7 @@ export default function GonderilerPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Gönderi Yönetimi</h1>
         <p className="text-gray-600">
-          Tüm gönderileri yönetin, filtreleyin ve moderasyon işlemleri yapın
+          {loading ? 'Yükleniyor...' : 'Tüm gönderileri yönetin, filtreleyin ve moderasyon işlemleri yapın'}
         </p>
       </div>
 

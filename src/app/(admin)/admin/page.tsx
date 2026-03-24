@@ -1,6 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   Users,
   MessageSquare,
@@ -22,9 +24,11 @@ import {
   ArrowUp,
   TrendingDown,
 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
+import { useCurrentUser } from '@/lib/hooks/use-auth';
 
-// Main stats cards
-const STATS = [
+// Main stats cards - default/fallback
+const DEFAULT_STATS = [
   {
     id: 1,
     label: 'Toplam Kullanıcı',
@@ -212,8 +216,121 @@ const SYSTEM_STATUS = [
 ];
 
 export default function AdminDashboard() {
+  const router = useRouter();
+  const { user, profile, loading: authLoading } = useCurrentUser();
+  const [stats, setStats] = useState(DEFAULT_STATS);
   const [sortedNeighborhoods, setSortedNeighborhoods] = React.useState(TOP_NEIGHBORHOODS);
   const [sortKey, setSortKey] = React.useState('score');
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [neighborhoodsData, setNeighborhoodsData] = useState(TOP_NEIGHBORHOODS);
+
+  // Check admin access
+  if (!authLoading && (!user || profile?.is_admin !== true)) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Yetkisiz Erişim</h1>
+          <p className="text-gray-600 mb-6">
+            Bu sayfaya erişim için admin yetkisi gereklidir.
+          </p>
+          <Link
+            href="/"
+            className="inline-block px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
+          >
+            Ana Sayfaya Dön
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-gray-600">Yükleniyor...</p>
+        </div>
+      </div>
+    );
+  }
+
+  useEffect(() => {
+    async function fetchStats() {
+      setStatsLoading(true);
+      const supabase = createClient();
+      try {
+        // Fetch user count
+        const { count: userCount } = await supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true });
+
+        // Fetch post count
+        const { count: postCount } = await supabase
+          .from('posts')
+          .select('*', { count: 'exact', head: true });
+
+        // Fetch business count
+        const { count: businessCount } = await supabase
+          .from('businesses')
+          .select('*', { count: 'exact', head: true });
+
+        // Update stats with real data
+        const newStats = [
+          {
+            ...DEFAULT_STATS[0],
+            value: (userCount ?? 0).toLocaleString('tr-TR'),
+          },
+          {
+            ...DEFAULT_STATS[1],
+            value: (postCount ?? 0).toLocaleString('tr-TR'),
+          },
+          {
+            ...DEFAULT_STATS[2],
+            value: (businessCount ?? 0).toLocaleString('tr-TR'),
+          },
+          {
+            ...DEFAULT_STATS[3],
+            value: '0',
+            change: '0 beklemede',
+          },
+        ];
+        setStats(newStats);
+      } catch (error) {
+        console.error('İstatistikler yüklenirken hata:', error);
+        // Keep default stats on error
+      } finally {
+        setStatsLoading(false);
+      }
+    }
+
+    async function fetchNeighborhoods() {
+      const supabase = createClient();
+      try {
+        const { data, error } = await supabase
+          .from('neighborhoods')
+          .select('id, name, member_count')
+          .order('member_count', { ascending: false })
+          .limit(10);
+
+        if (!error && data) {
+          const mapped = (data as any[]).map((n: any, idx: number) => ({
+            id: n.id,
+            name: n.name,
+            members: n.member_count || 0,
+            posts: 0, // Would need a separate count query
+            score: 100 - idx * 3,
+          }));
+          setNeighborhoodsData(mapped);
+          setSortedNeighborhoods(mapped);
+        }
+      } catch (error) {
+        console.error('Mahalleler yüklenirken hata:', error);
+      }
+    }
+
+    fetchStats();
+    fetchNeighborhoods();
+  }, []);
 
   const handleSort = (key: string) => {
     const isAsc = sortKey === key;
@@ -241,30 +358,36 @@ export default function AdminDashboard() {
 
       {/* Stats Cards Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {STATS.map((stat) => {
-          const Icon = stat.icon;
+        {statsLoading ? (
+          <div className="col-span-full text-center py-8 text-gray-600">
+            İstatistikler yükleniyor...
+          </div>
+        ) : (
+          stats.map((stat) => {
+            const Icon = stat.icon;
 
-          return (
-            <div
-              key={stat.id}
-              className="bg-surface rounded-lg border border-border p-6 hover:shadow-lg transition-shadow"
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div
-                  className="p-3 rounded-lg"
-                  style={{ backgroundColor: stat.bgColor }}
-                >
-                  <Icon size={24} style={{ color: stat.textColor }} />
+            return (
+              <div
+                key={stat.id}
+                className="bg-surface rounded-lg border border-border p-6 hover:shadow-lg transition-shadow"
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div
+                    className="p-3 rounded-lg"
+                    style={{ backgroundColor: stat.bgColor }}
+                  >
+                    <Icon size={24} style={{ color: stat.textColor }} />
+                  </div>
+                  <span className={`text-xs font-semibold ${stat.changeColor}`}>
+                    {stat.change}
+                  </span>
                 </div>
-                <span className={`text-xs font-semibold ${stat.changeColor}`}>
-                  {stat.change}
-                </span>
+                <p className="text-gray-600 text-sm mb-2">{stat.label}</p>
+                <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
               </div>
-              <p className="text-gray-600 text-sm mb-2">{stat.label}</p>
-              <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
 
       {/* Activity Chart and Quick Actions */}

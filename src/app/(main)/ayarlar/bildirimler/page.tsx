@@ -115,10 +115,18 @@ export default function BildirimlerPage() {
         if (prefsData && !error) {
           // Map multi-row database preferences to UI state
           const prefsMap: Record<string, Record<string, boolean>> = {};
+<<<<<<< HEAD
           prefsData.forEach((pref) => {
             if (!prefsMap[pref.type]) prefsMap[pref.type] = {};
             const enabled = pref[`${pref.type}_enabled` as keyof typeof pref];
             prefsMap[pref.type][pref.type] = Boolean(enabled);
+=======
+          (prefsData as Record<string, unknown>[]).forEach((pref) => {
+            const prefType = pref.type as string;
+            if (!prefsMap[prefType]) prefsMap[prefType] = {};
+            const enabled = pref[`${prefType}_enabled` as string];
+            prefsMap[prefType][prefType] = Boolean(enabled);
+>>>>>>> ab5629528fac6fe6996b018892fcc0642a0acd24
           });
 
           const updated = notifications.map((notif) => ({
@@ -219,7 +227,11 @@ export default function BildirimlerPage() {
 
       const { error } = await supabase
         .from('notification_preferences')
+<<<<<<< HEAD
         .upsert(prefsToUpsert, { onConflict: 'user_id,type' });
+=======
+        .upsert(prefsToUpsert as any, { onConflict: 'user_id,type' });
+>>>>>>> ab5629528fac6fe6996b018892fcc0642a0acd24
 
       if (!error) {
         setSaved(true);

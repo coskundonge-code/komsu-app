@@ -5,7 +5,7 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { ChevronRight, MapPin, Building2 } from 'lucide-react'
 
-const LeafletMap = dynamic(() => import('@/components/map/leaflet-map'), { ssr: false })
+const GoogleMap = dynamic(() => import('@/components/map/google-map'), { ssr: false })
 
 interface District {
   name: string
@@ -151,7 +151,7 @@ export default function AddressVerificationPage() {
             <div className="w-16 h-16 bg-surface rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg">
               <span className="text-3xl font-bold text-primary">K</span>
             </div>
-            <h2 className="text-4xl font-bold text-white mb-2">Mahallem</h2>
+            <h2 className="text-4xl font-bold text-white mb-2">Mahallemiz</h2>
             <p className="text-green-50 text-lg">Mahalle Bağlantısı</p>
           </div>
 
@@ -200,7 +200,7 @@ export default function AddressVerificationPage() {
             <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-md">
               <span className="text-2xl font-bold text-white">K</span>
             </div>
-            <h1 className="text-2xl font-bold text-text-primary">Mahallem</h1>
+            <h1 className="text-2xl font-bold text-text-primary">Mahallemiz</h1>
           </div>
 
           {/* Step Indicator */}
@@ -371,7 +371,7 @@ export default function AddressVerificationPage() {
 
             {/* Map */}
             <div className="w-full h-48 rounded-xl overflow-hidden border border-border">
-              <LeafletMap
+              <GoogleMap
                 center={[41.0370, 28.9850]}
                 zoom={13}
                 className="w-full h-full"

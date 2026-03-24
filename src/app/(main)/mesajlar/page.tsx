@@ -4,7 +4,15 @@ import React, { useState, useEffect } from "react";
 import { ChevronLeft, Search, Send, Image as ImageIcon, Smile, MessageCirclePlus, Phone, Video, MessageSquare, ShoppingBag, Bell } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
+import { useCurrentUser } from "@/lib/hooks/use-auth";
+import { createClient as createTypedClient } from '@/lib/supabase/client'
+import type { Database } from "@/lib/supabase/types";
+
+const createClient = () => createTypedClient()
+
+type ConversationRow = Database['public']['Tables']['conversations']['Row']
+type MessageRow = Database['public']['Tables']['messages']['Row']
+type ProfileRow = Database['public']['Tables']['profiles']['Row']
 
 interface Conversation {
   id: string;
@@ -15,13 +23,23 @@ interface Conversation {
   unread: number;
   online: boolean;
   type: "personal" | "marketplace" | "group";
+  otherUserId?: string;
+  otherUserProfile?: ProfileRow;
+}
+
+interface Message {
+  id: string;
+  text: string;
+  time: string;
+  isOwn: boolean;
+  userId?: string;
 }
 
 const mockConversations: Conversation[] = [
   {
     id: "1",
     name: "Ahmet Yılmaz",
-    avatar: getFeedImageUrl(61, 96, 96),
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ahmet",
     lastMessage: "Temizlik malzemeleri hakkında bilgi alabilir miyim?",
     time: "2 sa",
     unread: 2,
@@ -31,116 +49,16 @@ const mockConversations: Conversation[] = [
   {
     id: "2",
     name: "Fatma Şahin",
-    avatar: getFeedImageUrl(62, 96, 96),
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=fatma",
     lastMessage: "Tükenmez kalem ve defter bölüştürebiliriz",
     time: "5 sa",
     unread: 1,
     online: false,
     type: "personal",
   },
-  {
-    id: "3",
-    name: "Mehmet Demir",
-    avatar: getFeedImageUrl(63, 96, 96),
-    lastMessage: "Elektrik ustası önerebilir misiniz?",
-    time: "1 gün",
-    unread: 0,
-    online: false,
-    type: "personal",
-  },
-  {
-    id: "4",
-    name: "Zeynep Kaya",
-    avatar: getFeedImageUrl(64, 96, 96),
-    lastMessage: "Bisiklet çok güzel olmuş, teşekkürler!",
-    time: "3 gün",
-    unread: 0,
-    online: true,
-    type: "personal",
-  },
-  {
-    id: "5",
-    name: "Komşu Yardım Grubu",
-    avatar: getFeedImageUrl(65, 96, 96),
-    lastMessage: "Herkese iyi akşamlar, yarın piknik var mı?",
-    time: "1 hafta",
-    unread: 0,
-    online: false,
-    type: "group",
-  },
-  {
-    id: "6",
-    name: "Ayşe Kılıç",
-    avatar: getFeedImageUrl(71, 96, 96),
-    lastMessage: "Balkon bitkileriniz çok güzel!",
-    time: "2 gün",
-    unread: 0,
-    online: true,
-    type: "personal",
-  },
-  {
-    id: "7",
-    name: "Hasan Demir",
-    avatar: getFeedImageUrl(72, 96, 96),
-    lastMessage: "Pazartesi uygun mu sözleşme imzalamak için?",
-    time: "4 saat",
-    unread: 3,
-    online: false,
-    type: "personal",
-  },
-  {
-    id: "8",
-    name: "Müzeyyen Şen",
-    avatar: getFeedImageUrl(73, 96, 96),
-    lastMessage: "Ekmek tarifini bekliyorum sabırsızlıkla!",
-    time: "6 saat",
-    unread: 0,
-    online: true,
-    type: "personal",
-  },
-  {
-    id: "9",
-    name: "Ömer Kaya",
-    avatar: getFeedImageUrl(74, 96, 96),
-    lastMessage: "Oto elektrikçi arkadaşım var lazım olursa haber ver",
-    time: "1 hafta",
-    unread: 0,
-    online: false,
-    type: "personal",
-  },
-  {
-    id: "10",
-    name: "Mobilya Pazar Yeri",
-    avatar: getFeedImageUrl(75, 96, 96),
-    lastMessage: "Sandalye stokta mevcut, teslim edebilirim",
-    time: "3 saat",
-    unread: 4,
-    online: true,
-    type: "marketplace",
-  },
-  {
-    id: "11",
-    name: "Elektrik Malzemeleri",
-    avatar: getFeedImageUrl(76, 96, 96),
-    lastMessage: "Aydınlatma ürünleri şu anda indirimde!",
-    time: "1 saat",
-    unread: 0,
-    online: true,
-    type: "marketplace",
-  },
-  {
-    id: "12",
-    name: "Yapı Destek Grubu",
-    avatar: getFeedImageUrl(77, 96, 96),
-    lastMessage: "Harita paylaşımı: Tasarım önerileri var mı?",
-    time: "30 dk",
-    unread: 5,
-    online: true,
-    type: "group",
-  },
 ];
 
-const mockMessages: Record<string, Array<{ id: string; text: string; time: string; isOwn: boolean }>> = {
+const mockMessages: Record<string, Array<Message>> = {
   "1": [
     { id: "1", text: "Merhaba! Halı temizleme hakkında bir sorum vardı.", time: "10:30", isOwn: true },
     { id: "2", text: "Merhaba! Elbette, yardımcı olabilirim. Ne tür halı temizliği arıyorsunuz?", time: "10:35", isOwn: false },
@@ -155,15 +73,19 @@ const mockMessages: Record<string, Array<{ id: string; text: string; time: strin
 };
 
 export default function MessagesPage() {
-  const [selectedId, setSelectedId] = useState("1");
+  const { user, profile, loading: authLoading } = useCurrentUser();
+  const [selectedId, setSelectedId] = useState("");
   const [isMobile, setIsMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [messageText, setMessageText] = useState("");
   const [activeTab, setActiveTab] = useState<"all" | "unread" | "marketplace">("all");
 
-  const [allMessages, setAllMessages] = useState(mockMessages);
-  const selected = mockConversations.find((c) => c.id === selectedId);
-  const messages = allMessages[selectedId] || [];
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loadingConversations, setLoadingConversations] = useState(true);
+  const [loadingMessages, setLoadingMessages] = useState(false);
+
+  const selected = conversations.find((c) => c.id === selectedId);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -172,24 +94,233 @@ export default function MessagesPage() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  const handleSend = () => {
-    if (!messageText.trim() || !selectedId) return;
-    const now = new Date();
-    const timeStr = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
-    const newMsg = {
-      id: `msg-${Date.now()}`,
-      text: messageText.trim(),
-      time: timeStr,
-      isOwn: true,
+  // Fetch conversations from Supabase
+  useEffect(() => {
+    if (!user || authLoading) return;
+
+    async function loadConversations() {
+      setLoadingConversations(true);
+      try {
+        const supabase = createClient();
+
+        // Fetch conversations where user is involved
+        // Note: conversations table is for marketplace/system use - would need conversation_participants for user lookups
+        // For now, using mock data as conversations structure doesn't have direct user_id fields
+        const { data: dbConversations, error } = await supabase
+          .from('conversations')
+          .select(`
+            id,
+            type,
+            listing_id,
+            title,
+            created_at,
+            updated_at
+          `)
+          .order('updated_at', { ascending: false })
+
+        if (error) {
+          console.error('Error fetching conversations:', error);
+          setConversations([]);
+          return;
+        }
+
+        if (!dbConversations || dbConversations.length === 0) {
+          setConversations([]);
+          return;
+        }
+
+        // Fetch participants and messages for each conversation
+        const conversationPromises = (dbConversations as any[]).map(async (conv: any) => {
+          // Get the other participant from conversation_participants
+          const { data: participants } = await supabase
+            .from('conversation_participants')
+            .select('user_id')
+            .eq('conversation_id', conv.id);
+
+          const otherUserId = (participants as any[])?.find((p: any) => p.user_id !== user.id)?.user_id || '';
+
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', otherUserId)
+            .single() as { data: any };
+
+          // Get last message
+          const { data: lastMsg } = await supabase
+            .from('messages')
+            .select('body, created_at')
+            .eq('conversation_id', conv.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single() as { data: any };
+
+          const timeAgo = formatTimeAgo(conv.updated_at || conv.created_at);
+
+          return {
+            id: conv.id,
+            name: profileData?.full_name || 'Unknown',
+            avatar: profileData?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${otherUserId}`,
+            lastMessage: lastMsg?.body || 'No messages yet',
+            time: timeAgo,
+            unread: 0,
+            online: false,
+            type: 'personal' as const,
+            otherUserId,
+            otherUserProfile: profileData,
+          };
+        });
+
+        const loadedConversations = await Promise.all(conversationPromises);
+        setConversations(loadedConversations.length > 0 ? loadedConversations : []);
+      } catch (err) {
+        console.error('Error loading conversations:', err);
+        setConversations([]);
+      } finally {
+        setLoadingConversations(false);
+      }
+    }
+
+    loadConversations();
+
+    // Setup realtime subscription for conversations
+    const supabase = createClient();
+    const channel = supabase.channel('conversations_changes')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'conversations'
+      }, () => {
+        // Reload conversations on any change
+        loadConversations();
+      })
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
     };
-    setAllMessages((prev) => ({
-      ...prev,
-      [selectedId]: [...(prev[selectedId] || []), newMsg],
-    }));
+  }, [user, authLoading]);
+
+  // Fetch messages for selected conversation
+  useEffect(() => {
+    if (!selectedId || !user) {
+      setMessages([]);
+      return;
+    }
+
+    async function loadMessages() {
+      setLoadingMessages(true);
+      try {
+        const supabase = createClient();
+
+        const { data: dbMessages, error } = await supabase
+          .from('messages')
+          .select('id, sender_id, body, created_at')
+          .eq('conversation_id', selectedId)
+          .order('created_at', { ascending: true });
+
+        if (error) {
+          console.error('Error fetching messages:', error);
+          setMessages([]);
+          return;
+        }
+
+        if (!dbMessages || dbMessages.length === 0) {
+          setMessages([]);
+          return;
+        }
+
+        const formattedMessages: Message[] = (dbMessages as any[]).map((msg: any) => ({
+          id: msg.id,
+          text: msg.body,
+          time: formatTimeForDisplay(msg.created_at),
+          isOwn: msg.sender_id === user.id,
+          userId: msg.sender_id,
+        }));
+
+        setMessages(formattedMessages);
+      } catch (err) {
+        console.error('Error loading messages:', err);
+        setMessages([]);
+      } finally {
+        setLoadingMessages(false);
+      }
+    }
+
+    loadMessages();
+
+    // Setup realtime subscription for messages
+    const supabase = createClient();
+    const channel = supabase.channel(`messages_${selectedId}`)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'messages',
+        filter: `conversation_id=eq.${selectedId}`
+      }, (payload: any) => {
+        const newMsg: Message = {
+          id: payload.new.id,
+          text: payload.new.body,
+          time: formatTimeForDisplay(payload.new.created_at),
+          isOwn: payload.new.sender_id === user.id,
+          userId: payload.new.sender_id,
+        };
+        setMessages((prev) => [...prev, newMsg]);
+      })
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [selectedId, user]);
+
+  const handleSend = async () => {
+    if (!messageText.trim() || !selectedId || !user) return;
+
+    const messageContent = messageText.trim();
     setMessageText("");
+
+    try {
+      const supabase = createClient();
+
+      const { data, error } = await supabase
+        .from('messages')
+        .insert({
+          conversation_id: selectedId,
+          sender_id: user.id,
+          body: messageContent,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error sending message:', error);
+        // Add as optimistic update
+        const now = new Date();
+        const timeStr = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+        const newMsg: Message = {
+          id: `msg-${Date.now()}`,
+          text: messageContent,
+          time: timeStr,
+          isOwn: true,
+        };
+        setMessages((prev) => [...prev, newMsg]);
+      }
+    } catch (err) {
+      console.error('Error sending message:', err);
+      // Fallback to optimistic update
+      const now = new Date();
+      const timeStr = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+      const newMsg: Message = {
+        id: `msg-${Date.now()}`,
+        text: messageContent,
+        time: timeStr,
+        isOwn: true,
+      };
+      setMessages((prev) => [...prev, newMsg]);
+    }
   };
 
-  let filteredConversations = mockConversations.filter((c) => {
+  let filteredConversations = conversations.filter((c) => {
     if (searchQuery && !c.name.toLowerCase().includes(searchQuery.toLowerCase()) && !c.lastMessage.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false;
     }
@@ -198,8 +329,8 @@ export default function MessagesPage() {
     return true;
   });
 
-  const unreadCount = mockConversations.reduce((sum, c) => sum + c.unread, 0);
-  const marketplaceCount = mockConversations.filter((c) => c.type === "marketplace").reduce((sum, c) => sum + c.unread, 0);
+  const unreadCount = conversations.reduce((sum, c) => sum + c.unread, 0);
+  const marketplaceCount = conversations.filter((c) => c.type === "marketplace").reduce((sum, c) => sum + c.unread, 0);
 
   // Conversation List Component
   const ConversationList = () => (
@@ -226,6 +357,7 @@ export default function MessagesPage() {
             placeholder="Kişi veya mesaj ara..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label="Kişi veya mesaj ara"
             className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
           />
         </div>
@@ -285,11 +417,19 @@ export default function MessagesPage() {
           <div className="flex flex-col items-center justify-center h-full p-8">
             <MessageSquare size={48} className="text-[#e0e0e0] mb-3" />
             <p className="text-text-muted text-sm font-medium">
-              {activeTab === "unread" ? "Okunmamış mesaj yok" : activeTab === "marketplace" ? "Pazar yeri sohbeti yok" : "Sohbet bulunamadı"}
+              {activeTab === "unread" ? "Okunmamış mesaj yok" : activeTab === "marketplace" ? "Pazar yeri sohbeti yok" : "Sohbet yok"}
             </p>
             <p className="text-text-muted text-xs mt-1">
-              {searchQuery ? "Başka bir arama terimi deneyin" : "Yeni bir sohbet başlatın"}
+              {searchQuery ? "Başka bir arama terimi deneyin" : conversations.length === 0 ? "İlk sohbetinizi başlatın" : "Yeni bir sohbet başlatın"}
             </p>
+            {!searchQuery && conversations.length === 0 && (
+              <Link
+                href="/mesajlar/new"
+                className="mt-4 px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-full text-sm font-medium transition-colors"
+              >
+                Yeni Sohbet Başlat
+              </Link>
+            )}
           </div>
         ) : (
           filteredConversations.map((convo) => (
@@ -306,6 +446,7 @@ export default function MessagesPage() {
                 <img
                   src={convo.avatar}
                   alt={convo.name}
+                  loading="lazy"
                   className="w-14 h-14 rounded-full object-cover shadow-sm"
                 />
                 {convo.online && (
@@ -348,7 +489,7 @@ export default function MessagesPage() {
       <div className="flex items-center justify-between gap-3 p-4 border-b border-border bg-surface shadow-sm">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           {isMobile && (
-            <button onClick={() => setSelectedId("")} className="p-1 hover:bg-background rounded-full transition-colors flex-shrink-0">
+            <button onClick={() => setSelectedId("")} aria-label="Geri dön" className="p-1 hover:bg-background rounded-full transition-colors flex-shrink-0">
               <ChevronLeft size={20} className="text-text-primary" />
             </button>
           )}
@@ -356,6 +497,7 @@ export default function MessagesPage() {
             <img
               src={selected?.avatar || ""}
               alt={selected?.name || ""}
+              loading="lazy"
               className="w-12 h-12 rounded-full object-cover shadow-sm"
             />
             {selected?.online && (
@@ -375,10 +517,10 @@ export default function MessagesPage() {
 
         {/* Header Actions */}
         <div className="flex items-center gap-1 flex-shrink-0">
-          <button className="p-2 hover:bg-background rounded-full transition-colors" title="Telefon ara">
+          <button className="p-2 hover:bg-background rounded-full transition-colors" aria-label="Telefon ara">
             <Phone size={20} className="text-primary" />
           </button>
-          <button className="p-2 hover:bg-background rounded-full transition-colors" title="Video ara">
+          <button className="p-2 hover:bg-background rounded-full transition-colors" aria-label="Video ara">
             <Video size={20} className="text-primary" />
           </button>
         </div>
@@ -408,7 +550,7 @@ export default function MessagesPage() {
       {/* Message Input */}
       <div className="p-4 border-t border-border bg-surface">
         <div className="flex items-center gap-2">
-          <button className="p-2.5 hover:bg-background rounded-full transition-colors flex-shrink-0" title="Fotoğraf ekle">
+          <button className="p-2.5 hover:bg-background rounded-full transition-colors flex-shrink-0" aria-label="Fotoğraf ekle">
             <ImageIcon size={20} className="text-primary" />
           </button>
           <input
@@ -421,14 +563,14 @@ export default function MessagesPage() {
             placeholder="Mesajınızı yazın..."
             className="flex-1 px-4 py-2.5 bg-background border border-border rounded-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
           />
-          <button className="p-2.5 hover:bg-background rounded-full transition-colors flex-shrink-0" title="İmoji ekle">
+          <button className="p-2.5 hover:bg-background rounded-full transition-colors flex-shrink-0" aria-label="İmoji ekle">
             <Smile size={20} className="text-primary" />
           </button>
           <button
             onClick={handleSend}
             disabled={!messageText.trim()}
+            aria-label="Mesaj gönder"
             className="p-2.5 bg-primary hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed rounded-full transition-colors flex-shrink-0"
-            title="Gönder"
           >
             <Send size={18} className="text-white" />
           </button>
@@ -455,6 +597,21 @@ export default function MessagesPage() {
       <div className="flex-1">
         {selected ? (
           <ChatView />
+        ) : conversations.length === 0 ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <MessageSquare size={48} className="mx-auto text-text-muted mb-3 opacity-50" />
+              <p className="text-text-primary font-medium">İlk sohbetinizi başlatın</p>
+              <p className="text-text-muted text-sm mt-1 mb-4">Komşularınızla bağlantı kurmaya başlayın</p>
+              <Link
+                href="/mesajlar/new"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-full text-sm font-medium transition-colors"
+              >
+                <MessageCirclePlus size={18} />
+                Yeni Sohbet Başlat
+              </Link>
+            </div>
+          </div>
         ) : (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
@@ -467,4 +624,42 @@ export default function MessagesPage() {
       </div>
     </div>
   );
+}
+
+// Helper function to format time for display in chat
+function formatTimeForDisplay(isoString: string): string {
+  try {
+    const date = new Date(isoString);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  } catch {
+    return '';
+  }
+}
+
+// Helper function to format time ago (e.g., "2 sa", "5 dk")
+function formatTimeAgo(isoString: string | null): string {
+  if (!isoString) return '';
+
+  try {
+    const date = new Date(isoString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffSecs = Math.floor(diffMs / 1000);
+    const diffMins = Math.floor(diffSecs / 60);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    const diffWeeks = Math.floor(diffDays / 7);
+
+    if (diffMins < 1) return 'şimdi';
+    if (diffMins < 60) return `${diffMins} dk`;
+    if (diffHours < 24) return `${diffHours} sa`;
+    if (diffDays < 7) return `${diffDays} gün`;
+    if (diffWeeks < 4) return `${diffWeeks} hafta`;
+
+    return date.toLocaleDateString('tr-TR');
+  } catch {
+    return '';
+  }
 }

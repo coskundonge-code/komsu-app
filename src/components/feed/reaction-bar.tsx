@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { Heart, ThumbsUp, CheckCircle, Laugh, Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { toggleReaction } from '@/lib/hooks/use-posts';
+import { useCurrentUser } from '@/lib/hooks/use-auth';
 
 export interface ReactionBarProps {
   initialLikes?: number;
@@ -11,6 +13,7 @@ export interface ReactionBarProps {
   initialLaugh?: number;
   initialWow?: number;
   onReaction?: (type: string) => void;
+  postId?: string;
 }
 
 export function ReactionBar({
@@ -20,34 +23,57 @@ export function ReactionBar({
   initialLaugh = 2,
   initialWow = 1,
   onReaction,
+  postId,
 }: ReactionBarProps) {
+  const { user } = useCurrentUser();
   const [likes, setLikes] = useState(initialLikes);
   const [thanks, setThanks] = useState(initialThanks);
   const [agree, setAgree] = useState(initialAgree);
   const [laugh, setLaugh] = useState(initialLaugh);
   const [wow, setWow] = useState(initialWow);
   const [active, setActive] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleReaction = (type: string) => {
-    setActive(active === type ? null : type);
-    onReaction?.(type);
+  const reactionTypeMap: { [key: string]: string } = {
+    like: 'like',
+    thanks: 'thanks',
+    agree: 'agree',
+    laugh: 'laugh',
+    wow: 'wow',
+  };
 
-    switch (type) {
-      case 'like':
-        setLikes(likes + (active === 'like' ? -1 : 1));
-        break;
-      case 'thanks':
-        setThanks(thanks + (active === 'thanks' ? -1 : 1));
-        break;
-      case 'agree':
-        setAgree(agree + (active === 'agree' ? -1 : 1));
-        break;
-      case 'laugh':
-        setLaugh(laugh + (active === 'laugh' ? -1 : 1));
-        break;
-      case 'wow':
-        setWow(wow + (active === 'wow' ? -1 : 1));
-        break;
+  const handleReaction = async (type: string) => {
+    if (!user || !postId) return;
+
+    setIsLoading(true);
+    try {
+      const reactionType = reactionTypeMap[type];
+      const { error } = await toggleReaction(postId, user.id, reactionType) as any;
+
+      if (!error) {
+        setActive(active === type ? null : type);
+        onReaction?.(type);
+
+        switch (type) {
+          case 'like':
+            setLikes(likes + (active === 'like' ? -1 : 1));
+            break;
+          case 'thanks':
+            setThanks(thanks + (active === 'thanks' ? -1 : 1));
+            break;
+          case 'agree':
+            setAgree(agree + (active === 'agree' ? -1 : 1));
+            break;
+          case 'laugh':
+            setLaugh(laugh + (active === 'laugh' ? -1 : 1));
+            break;
+          case 'wow':
+            setWow(wow + (active === 'wow' ? -1 : 1));
+            break;
+        }
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -55,8 +81,9 @@ export function ReactionBar({
     <div className="flex flex-wrap gap-2 py-2">
       <button
         onClick={() => handleReaction('like')}
+        disabled={isLoading}
         className={cn(
-          'flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors',
+          'flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors disabled:opacity-50',
           active === 'like'
             ? 'bg-primary-light text-primary-hover'
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -71,8 +98,9 @@ export function ReactionBar({
 
       <button
         onClick={() => handleReaction('thanks')}
+        disabled={isLoading}
         className={cn(
-          'flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors',
+          'flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors disabled:opacity-50',
           active === 'thanks'
             ? 'bg-primary-light text-primary-hover'
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -84,8 +112,9 @@ export function ReactionBar({
 
       <button
         onClick={() => handleReaction('agree')}
+        disabled={isLoading}
         className={cn(
-          'flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors',
+          'flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors disabled:opacity-50',
           active === 'agree'
             ? 'bg-primary-light text-primary-hover'
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -97,8 +126,9 @@ export function ReactionBar({
 
       <button
         onClick={() => handleReaction('laugh')}
+        disabled={isLoading}
         className={cn(
-          'flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors',
+          'flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors disabled:opacity-50',
           active === 'laugh'
             ? 'bg-primary-light text-primary-hover'
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -110,8 +140,9 @@ export function ReactionBar({
 
       <button
         onClick={() => handleReaction('wow')}
+        disabled={isLoading}
         className={cn(
-          'flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors',
+          'flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors disabled:opacity-50',
           active === 'wow'
             ? 'bg-primary-light text-primary-hover'
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
