@@ -75,7 +75,25 @@ export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, on
   // Update center and zoom
   useEffect(() => {
     if (mapRef.current && center && center.length === 2 && !isNaN(center[0]) && !isNaN(center[1]) && isFinite(center[0]) && isFinite(center[1])) {
-      mapRef.current.flyTo(center, zoom, { duration: 0.8 })
+      const safeZoom = (!isNaN(zoom) && isFinite(zoom) && zoom > 0) ? zoom : 6
+      try {
+        // Check if container is visible (has dimensions) before flyTo
+        const container = mapRef.current.getContainer()
+        if (container && container.offsetWidth > 0 && container.offsetHeight > 0) {
+          mapRef.current.invalidateSize()
+          mapRef.current.flyTo(center, safeZoom, { duration: 0.8 })
+        } else {
+          // Container hidden - just setView without animation
+          mapRef.current.setView(center, safeZoom, { animate: false })
+        }
+      } catch (e) {
+        // Fallback: silently set view without animation
+        try {
+          mapRef.current.setView(center, safeZoom, { animate: false })
+        } catch (_) {
+          // ignore
+        }
+      }
     }
   }, [center, zoom])
 
@@ -105,18 +123,22 @@ export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, on
       circleRef.current = null
     }
 
-    if (pinLat !== null && pinLng !== null) {
-      markerRef.current = L.marker([pinLat, pinLng], { icon: greenIcon }).addTo(mapRef.current)
+    if (pinLat !== null && pinLng !== null && !isNaN(pinLat) && !isNaN(pinLng) && isFinite(pinLat) && isFinite(pinLng)) {
+      try {
+        markerRef.current = L.marker([pinLat, pinLng], { icon: greenIcon }).addTo(mapRef.current)
 
-      if (circleRadius) {
-        circleRef.current = L.circle([pinLat, pinLng], {
-          radius: circleRadius,
-          fillColor: '#00833e',
-          fillOpacity: 0.08,
-          color: '#00833e',
-          opacity: 0.6,
-          weight: 2,
-        }).addTo(mapRef.current)
+        if (circleRadius) {
+          circleRef.current = L.circle([pinLat, pinLng], {
+            radius: circleRadius,
+            fillColor: '#00833e',
+            fillOpacity: 0.08,
+            color: '#00833e',
+            opacity: 0.6,
+            weight: 2,
+          }).addTo(mapRef.current)
+        }
+      } catch (e) {
+        console.warn('Marker error:', e)
       }
     }
   }, [pinLat, pinLng, circleRadius])
