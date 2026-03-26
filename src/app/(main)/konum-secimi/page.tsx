@@ -402,9 +402,21 @@ export default function KonumSecimi() {
 
       if (addressError) throw addressError
 
+      // Update user metadata so middleware no longer redirects to /konum-secimi
+      const { error: metaError } = await supabase.auth.updateUser({
+        data: {
+          location_confirmed_at: new Date().toISOString(),
+          il: formData.il.name,
+          ilce: formData.ilce.name,
+          mahalle: formData.mahalle,
+        }
+      })
+
+      if (metaError) throw metaError
+
       setSuccessMessage('Adres başarıyla kaydedildi!')
       setTimeout(() => {
-        router.push('/anasayfa')
+        router.push('/')
       }, 1500)
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Kaydetme hatası')
