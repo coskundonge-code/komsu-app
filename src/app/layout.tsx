@@ -110,6 +110,7 @@ export default function RootLayout({
   return (
     <html lang="tr">
       <head>
+        <meta charSet="utf-8" />
         <JsonLd />
       </head>
       <body className="antialiased">
