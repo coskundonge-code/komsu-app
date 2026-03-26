@@ -43,11 +43,11 @@ export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, on
 
     // Add tile layer based on mapType
     const tileUrl = mapType === 'satellite'
-      ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+      ? 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'
       : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 
     const attribution = mapType === 'satellite'
-      ? '&copy; Esri'
+      ? '&copy; Google Maps'
       : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 
     tileLayerRef.current = L.tileLayer(tileUrl, {
@@ -102,7 +102,7 @@ export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, on
     if (!mapRef.current || !tileLayerRef.current) return
 
     const tileUrl = mapType === 'satellite'
-      ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+      ? 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'
       : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 
     tileLayerRef.current.setUrl(tileUrl)
