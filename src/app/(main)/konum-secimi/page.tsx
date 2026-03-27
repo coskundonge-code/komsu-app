@@ -87,32 +87,77 @@ async function fetchMahalleler(ilName: string, ilceName: string): Promise<Mahall
   }
 }
 
-// Helper function to geocode address using Nominatim
-async function geocodeAddress(address: string): Promise<{ lat: number; lng: number; postalCode: string } | null> {
-  try {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`
-    )
-    const results = await response.json() as Array<any>
+// Helper function to geocode address using Nominatim with fallback strategies
+async function geocodeAddress(address: string, components?: { il?: string; ilce?: string; mahalle?: string; cadde?: string; binaNo?: string }): Promise<{ lat: number; lng: number; postalCode: string } | null> {
+  const headers = { 'Accept-Language': 'tr' }
 
-    if (results.length === 0) return null
+  // Try multiple search strategies from most specific to least
+  const queries: string[] = [address]
 
-    const result = results[0]
-    const lat = parseFloat(result.lat)
-    const lng = parseFloat(result.lon)
-
-    // Get detailed address info for postal code
-    const detailResponse = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
-    )
-    const detailResult = await detailResponse.json() as any
-    const postalCode = detailResult.address?.postcode || ''
-
-    return { lat, lng, postalCode }
-  } catch (error) {
-    console.error('Geocoding error:', error)
-    return null
+  if (components) {
+    const { il, ilce, mahalle, cadde, binaNo } = components
+    // Strategy 2: Without building number
+    if (cadde && mahalle && ilce && il) {
+      queries.push(`${cadde}, ${mahalle}, ${ilce}, ${il}, Türkiye`)
+    }
+    // Strategy 3: With "Mah." suffix for mahalle
+    if (cadde && mahalle && ilce && il) {
+      queries.push(`${cadde}, ${mahalle} Mah., ${ilce}, ${il}, Türkiye`)
+    }
+    // Strategy 4: Just street + district + province
+    if (cadde && ilce && il) {
+      queries.push(`${cadde}, ${ilce}, ${il}, Türkiye`)
+    }
+    // Strategy 5: Just neighborhood + district (will at least center on the area)
+    if (mahalle && ilce && il) {
+      queries.push(`${mahalle}, ${ilce}, ${il}, Türkiye`)
+    }
+    // Strategy 6: Just district + province
+    if (ilce && il) {
+      queries.push(`${ilce}, ${il}, Türkiye`)
+    }
   }
+
+  // Remove duplicate queries
+  const uniqueQueries = [...new Set(queries)]
+
+  for (const query of uniqueQueries) {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=tr`,
+        { headers }
+      )
+      const results = await response.json() as Array<any>
+
+      if (results.length > 0) {
+        const result = results[0]
+        const lat = parseFloat(result.lat)
+        const lng = parseFloat(result.lon)
+
+        if (isNaN(lat) || isNaN(lng)) continue
+
+        // Get detailed address info for postal code
+        let postalCode = ''
+        try {
+          const detailResponse = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
+            { headers }
+          )
+          const detailResult = await detailResponse.json() as any
+          postalCode = detailResult.address?.postcode || ''
+        } catch {
+          // postal code is optional, continue
+        }
+
+        return { lat, lng, postalCode }
+      }
+    } catch (error) {
+      console.error('Geocoding error for query:', query, error)
+      continue
+    }
+  }
+
+  return null
 }
 
 export default function KonumSecimi() {
@@ -158,7 +203,7 @@ export default function KonumSecimi() {
   const [mapZoom, setMapZoom] = useState(6)
   const [pinLat, setPinLat] = useState<number | null>(null)
   const [pinLng, setPinLng] = useState<number | null>(null)
-  const [mapType, setMapType] = useState<'street' | 'satellite'>('satellite')
+  const [mapType, setMapType] = useState<'street' | 'satellite'>('street')
 
   // Refs for click-outside
   const ilDropdownRef = useRef<HTMLDivElement>(null)
@@ -353,7 +398,13 @@ export default function KonumSecimi() {
 
     try {
       const fullAddress = `${formData.binaNo ? `${formData.binaNo}, ` : ''}${formData.cadde}, ${formData.mahalle}, ${formData.ilce.name}, ${formData.il.name}, Türkiye`
-      const result = await geocodeAddress(fullAddress)
+      const result = await geocodeAddress(fullAddress, {
+        il: formData.il.name,
+        ilce: formData.ilce.name,
+        mahalle: formData.mahalle,
+        cadde: formData.cadde,
+        binaNo: formData.binaNo,
+      })
 
       if (result) {
         setPinLat(result.lat)
@@ -363,7 +414,7 @@ export default function KonumSecimi() {
         setFormData(prev => ({ ...prev, postaKodu: result.postalCode }))
         setConfirmed(true)
       } else {
-        setError('Adres bulunamadı. Lütfen kontrolü yapınız.')
+        setError('Adres bulunamadı. Lütfen bilgileri kontrol ediniz veya harita üzerinden konumunuzu işaretleyiniz.')
       }
     } catch (error) {
       setError('Adres doğrulama hatası')
@@ -422,9 +473,21 @@ export default function KonumSecimi() {
 
       if (addressError) throw addressError
 
+      // Update user metadata so middleware no longer redirects to /konum-secimi
+      const { error: metaError } = await supabase.auth.updateUser({
+        data: {
+          location_confirmed_at: new Date().toISOString(),
+          il: formData.il.name,
+          ilce: formData.ilce.name,
+          mahalle: formData.mahalle,
+        }
+      })
+
+      if (metaError) throw metaError
+
       setSuccessMessage('Adres başarıyla kaydedildi!')
       setTimeout(() => {
-        router.push('/anasayfa')
+        router.push('/')
       }, 1500)
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Kaydetme hatası')
