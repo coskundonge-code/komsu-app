@@ -87,7 +87,8 @@ export async function middleware(request: NextRequest) {
   if (!user) {
     const loginUrl = request.nextUrl.clone()
     loginUrl.pathname = '/giris'
-    loginUrl.searchParams.set('next', path)
+    const safePath = path.startsWith('/') && !path.startsWith('//') && !path.includes('://') ? path : '/'
+    loginUrl.searchParams.set('next', safePath)
     return NextResponse.redirect(loginUrl)
   }
 
