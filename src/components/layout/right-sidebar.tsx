@@ -87,7 +87,7 @@ export function RightSidebar() {
           <p className="text-sm font-semibold text-text-primary mt-1">Moda Kafe & Bistro</p>
           <p className="text-xs text-text-muted mt-0.5">Kahvaltı ve brunch menüsü</p>
           <Link
-            href="/isletme/moda-kafe"
+            href="/isletmeler/moda-kafe"
             className="mt-2 text-xs font-medium text-primary hover:text-primary-hover flex items-center gap-1"
           >
             Sayfayı ziyaret et
