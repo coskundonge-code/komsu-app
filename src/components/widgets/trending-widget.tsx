@@ -20,11 +20,11 @@ export function TrendingWidget() {
           Mahallede Gündem
         </p>
       </div>
-      <div className="divide-y divide-[#e0e0e0]">
+      <div className="divide-y divide-border">
         {trendingTopics.map((topic, idx) => (
           <Link
             key={idx}
-            href={`/arama?q=${encodeURIComponent(topic.title)}`}
+            href={`/ara?q=${encodeURIComponent(topic.title)}`}
             className="px-4 py-3 hover:bg-surface-hover transition-colors flex justify-between items-center group"
           >
             <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -40,8 +40,8 @@ export function TrendingWidget() {
         ))}
       </div>
       <Link
-        href="/gundem"
-        className="px-4 py-3 bg-[#f9f9f9] hover:bg-background transition-colors text-center text-sm text-primary font-medium"
+        href="/kesfet"
+        className="px-4 py-3 bg-background hover:bg-background transition-colors text-center text-sm text-primary font-medium"
       >
         Tümünü gör
       </Link>
