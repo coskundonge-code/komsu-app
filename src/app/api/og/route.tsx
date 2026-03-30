@@ -6,11 +6,14 @@ export const runtime = "edge";
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
 
-  const title = searchParams.get("title") || "Mahallemiz";
-  const description =
+  const title = (searchParams.get("title") || "Mahallemiz").slice(0, 80);
+  const description = (
     searchParams.get("description") ||
-    "Mahalleni Keşfet, Komşularınla Bağlan";
-  const type = searchParams.get("type") || "default";
+    "Mahalleni Keşfet, Komşularınla Bağlan"
+  ).slice(0, 160);
+  const rawType = searchParams.get("type") || "default";
+  const ALLOWED_TYPES = ["default", "pazar", "etkinlik", "isletme", "blog", "grup", "uyari", "profil"];
+  const type = ALLOWED_TYPES.includes(rawType) ? rawType : "default";
 
   // Type-based icon mapping
   const typeIcons: Record<string, string> = {
