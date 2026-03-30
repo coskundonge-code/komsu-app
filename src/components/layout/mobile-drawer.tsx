@@ -11,30 +11,24 @@ import {
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { getAvatarUrl } from '@/lib/demo-images'
+import { useCurrentUser } from '@/lib/hooks/use-auth'
 
 interface MobileDrawerProps {
   isOpen: boolean
   onClose: () => void
 }
 
-// Mock user data - replace with actual user context in production
-const mockUser = {
-  name: 'Ahmet Yılmaz',
-  neighborhood: 'Kadıköy, İstanbul',
-  avatar: getAvatarUrl('Ahmet Yılmaz', 0),
-}
-
 // Primary navigation items - clean Nextdoor-like structure
 const primaryNavItems = [
   { icon: Home, label: 'Ana Sayfa', href: '/' },
-  { icon: Newspaper, label: 'Yerel Haberler', href: '/kesfet' },
-  { icon: AlertTriangle, label: 'Uyarılar', href: '/uyarilar' },
-  { icon: ShoppingBag, label: 'Satılık & Ücretsiz', href: '/pazar' },
-  { icon: Repeat, label: 'Kirala & Ödünç Ver', href: '/odunc-kirala' },
+  { icon: Newspaper, label: 'Yerel Haberler', href: '/yerel-haberler' },
+  { icon: AlertTriangle, label: 'UyarÄ±lar', href: '/uyarilar' },
+  { icon: ShoppingBag, label: 'SatÄ±lÄ±k & Ãcretsiz', href: '/pazar' },
+  { icon: Repeat, label: 'Kirala & ÃdÃ¼nÃ§ Ver', href: '/odunc-kirala' },
   { icon: Users, label: 'Gruplar', href: '/gruplar' },
   { icon: Calendar, label: 'Etkinlikler', href: '/etkinlikler' },
   { icon: CreditCard, label: 'Mahallemiz Kart', href: '/mahallem-kart' },
-  { icon: Heart, label: 'Askıda Bağış', href: '/askida-bagis' },
+  { icon: Heart, label: 'AskÄ±da BaÄÄ±Å', href: '/askida-bagis' },
 ]
 
 // Secondary navigation items
@@ -48,6 +42,13 @@ const secondaryNavItems = [
 export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
   const pathname = usePathname()
   const router = useRouter()
+  const { user, profile } = useCurrentUser()
+  const metadata = user?.user_metadata
+  const userName = profile?.full_name || metadata?.full_name || 'KullanÄ±cÄ±'
+  const userNeighborhood = metadata?.ilce && metadata?.il
+    ? `${metadata.ilce}, ${metadata.il}`
+    : 'Konum belirtilmemiÅ'
+  const userAvatar = getAvatarUrl(userName, 0)
 
   const handleLogout = async () => {
     try {
@@ -111,8 +112,8 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
             {/* Avatar */}
             <div className="relative flex-shrink-0">
               <img
-                src={mockUser.avatar}
-                alt={mockUser.name}
+                src={userAvatar}
+                alt={userName}
                 className="w-12 h-12 rounded-full object-cover"
               />
               <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
@@ -121,10 +122,10 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
             {/* User Info */}
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-text-primary truncate">
-                {mockUser.name}
+                {userName}
               </p>
               <p className="text-xs text-text-muted truncate">
-                {mockUser.neighborhood}
+                {userNeighborhood}
               </p>
             </div>
           </Link>
@@ -198,7 +199,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
             )}
           >
             <LogOut className="w-5 h-5 flex-shrink-0" />
-            <span>Çıkış Yap</span>
+            <span>ÃÄ±kÄ±Å Yap</span>
           </button>
         </div>
       </div>
