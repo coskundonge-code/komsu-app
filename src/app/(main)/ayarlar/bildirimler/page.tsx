@@ -1,5 +1,7 @@
 "use client";
 
+import { toast } from '@/lib/utils/show-toast';
+
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useCurrentUser } from '@/lib/hooks/use-auth';
@@ -185,7 +187,7 @@ export default function BildirimlerPage() {
 
   const handleSave = async () => {
     if (!user?.id) {
-      alert('Giriş yapmanız gerekir');
+      toast.error('Giriş yapmanız gerekir');
       return;
     }
 
@@ -227,11 +229,11 @@ export default function BildirimlerPage() {
         setTimeout(() => setSaved(false), 2000);
       } else {
         console.error('Failed to save preferences:', error);
-        alert('Bildirim ayarları kaydedilirken bir hata oluştu.');
+        toast.error('Bildirim ayarları kaydedilirken bir hata oluştu.');
       }
     } catch (err) {
       console.error('Error saving preferences:', err);
-      alert('Bildirim ayarları kaydedilirken bir hata oluştu.');
+      toast.error('Bildirim ayarları kaydedilirken bir hata oluştu.');
     } finally {
       setIsLoading(false);
     }
