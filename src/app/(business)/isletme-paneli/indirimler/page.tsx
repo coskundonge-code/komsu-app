@@ -1,5 +1,7 @@
 'use client'
 
+import { toast } from '@/lib/utils/show-toast'
+
 import { useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Percent, Plus, Pencil, Trash2, Tag, Calendar, CheckCircle, AlertTriangle } from 'lucide-react'
@@ -28,7 +30,7 @@ export default function IndirimlerPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (formData.percentage < 5) { alert('Minimum %5 indirim tanımlanmalıdır'); return }
+    if (formData.percentage < 5) { toast.warning('Minimum %5 indirim tanımlanmalıdır'); return }
     if (editingId) {
       setDiscounts(prev => prev.map(d => d.id === editingId ? { ...d, ...formData, isActive: true } : d))
     } else {
@@ -43,7 +45,7 @@ export default function IndirimlerPage() {
   }
 
   const handleDelete = (id: number) => {
-    if (discounts.length <= 1) { alert('En az bir aktif indirim tanımlı olmalıdır. İndirim silinemez.'); return }
+    if (discounts.length <= 1) { toast.warning('En az bir aktif indirim tanımlı olmalıdır. İndirim silinemez.'); return }
     setDiscounts(prev => prev.filter(d => d.id !== id))
   }
 
