@@ -384,6 +384,16 @@ export default function KonumSecimi() {
   const handleMapClick = (lat: number, lng: number) => {
     setPinLat(lat)
     setPinLng(lng)
+    setConfirmed(true)
+    setError('')
+  }
+
+  // Handle marker drag end
+  const handleMarkerDragEnd = (lat: number, lng: number) => {
+    setPinLat(lat)
+    setPinLng(lng)
+    setConfirmed(true)
+    setError('')
   }
 
   // Handle address confirmation (geocode full address)
@@ -426,8 +436,8 @@ export default function KonumSecimi() {
 
   // Handle save to database
   const handleSave = async () => {
-    if (!formData.il || !formData.ilce || !formData.mahalle || !formData.cadde || !pinLat || !pinLng) {
-      setError('Lütfen tüm gerekli alanları doldurunuz')
+    if (!formData.il || !formData.ilce || !pinLat || !pinLng) {
+      setError('Lütfen il, ilçe seçip haritada konumunuzu işaretleyiniz')
       return
     }
 
@@ -441,34 +451,48 @@ export default function KonumSecimi() {
         return
       }
 
-      // Update user_profiles
+      // Build address line from available fields
+      const addressParts = [
+        formData.cadde,
+        formData.binaNo ? `No: ${formData.binaNo}` : '',
+        formData.binaAdi,
+        formData.mahalle,
+      ].filter(Boolean)
+      const addressLine = addressParts.join(', ') || `${formData.mahalle || formData.ilce.name}`
+
+      // Update user_profiles (PK is 'id', maps to auth.users.id)
       const { error: profileError } = await supabase
         .from('user_profiles')
-        .update({
-          il: formData.il.name,
-          ilce: formData.ilce.name,
-          mahalle: formData.mahalle,
+        .upsert({
+          id: user.id,
+          location_province: formData.il.name,
+          location_district: formData.ilce.name,
+          location_address: addressLine,
+          location_lat: pinLat,
+          location_lng: pinLng,
+          location_confirmed_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-        })
-        .eq('user_id', user.id)
+        }, { onConflict: 'id' })
 
       if (profileError) throw profileError
 
-      // Insert into user_addresses
+      // Delete existing primary address, then insert new one
+      await supabase
+        .from('user_addresses')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('is_primary', true)
+
       const { error: addressError } = await supabase
         .from('user_addresses')
         .insert({
           user_id: user.id,
-          il: formData.il.name,
-          ilce: formData.ilce.name,
-          mahalle: formData.mahalle,
-          cadde: formData.cadde,
-          bina_no: formData.binaNo || null,
-          bina_adi: formData.binaAdi || null,
-          posta_kodu: formData.postaKodu || null,
-          latitude: pinLat,
-          longitude: pinLng,
-          created_at: new Date().toISOString(),
+          address_line: addressLine,
+          city: formData.il.name,
+          district: formData.ilce.name,
+          lat: pinLat,
+          lng: pinLng,
+          is_primary: true,
         })
 
       if (addressError) throw addressError
@@ -732,10 +756,10 @@ export default function KonumSecimi() {
                 )}
               </button>
 
-              {confirmed && (
+              {pinLat && pinLng && formData.il && formData.ilce && (
                 <button
                   onClick={handleSave}
-                  disabled={isSaving || !confirmed}
+                  disabled={isSaving}
                   className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition font-medium"
                 >
                   {isSaving ? (
@@ -774,6 +798,7 @@ export default function KonumSecimi() {
                     pinLat={pinLat}
                     pinLng={pinLng}
                     onMapClick={handleMapClick}
+                    onMarkerDragEnd={handleMarkerDragEnd}
                   />
 
                   {/* Map controls */}
@@ -790,7 +815,7 @@ export default function KonumSecimi() {
                   {/* Pin indicator */}
                   {pinLat && pinLng && (
                     <div className="absolute bottom-4 left-4 px-3 py-2 bg-primary text-white rounded-lg text-xs font-medium shadow-md">
-                      ✓ Konum işaretlendi
+                      ✓ Konum işaretlendi — sürükleyerek taşıyabilirsiniz
                     </div>
                   )}
                 </div>
@@ -798,10 +823,10 @@ export default function KonumSecimi() {
                 {/* Map info */}
                 <div className="p-4 bg-surface border-t border-border">
                   <p className="text-xs text-text-muted">
-                    {confirmed ? (
-                      <span className="text-green-600 font-medium">✓ Adres doğrulandı ve harita'da konumlandırıldı</span>
+                    {pinLat && pinLng ? (
+                      <span className="text-green-600 font-medium">✓ Adres haritada konumlandırıldı — ikonu sürükleyerek konumunuzu ayarlayabilirsiniz</span>
                     ) : (
-                      <span>Adresinizi doğruladıktan sonra harita'da otomatik konumlandırılacaktır</span>
+                      <span>Harita üzerinde tıklayarak veya adresi onaylayarak konumunuzu belirleyiniz</span>
                     )}
                   </p>
                 </div>
@@ -821,6 +846,7 @@ export default function KonumSecimi() {
                 pinLat={pinLat}
                 pinLng={pinLng}
                 onMapClick={handleMapClick}
+                onMarkerDragEnd={handleMarkerDragEnd}
               />
 
               {/* Map controls */}
@@ -837,7 +863,7 @@ export default function KonumSecimi() {
               {/* Pin indicator */}
               {pinLat && pinLng && (
                 <div className="absolute bottom-4 left-4 px-3 py-2 bg-primary text-white rounded-lg text-xs font-medium shadow-md">
-                  ✓ Konum işaretlendi
+                  ✓ Konum işaretlendi — sürükleyerek taşıyabilirsiniz
                 </div>
               )}
             </div>
@@ -845,10 +871,10 @@ export default function KonumSecimi() {
             {/* Map info */}
             <div className="p-4 bg-surface border-t border-border">
               <p className="text-xs text-text-muted">
-                {confirmed ? (
-                  <span className="text-green-600 font-medium">✓ Adres doğrulandı ve harita'da konumlandırıldı</span>
+                {pinLat && pinLng ? (
+                  <span className="text-green-600 font-medium">✓ Adres haritada konumlandırıldı — ikonu sürükleyerek konumunuzu ayarlayabilirsiniz</span>
                 ) : (
-                  <span>Adresinizi doğruladıktan sonra harita'da otomatik konumlandırılacaktır</span>
+                  <span>Harita üzerinde tıklayarak veya adresi onaylayarak konumunuzu belirleyiniz</span>
                 )}
               </p>
             </div>
