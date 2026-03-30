@@ -10,6 +10,7 @@ import {
   ArrowLeft,
   X,
 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 export function WelcomeModal() {
   const [isVisible, setIsVisible] = useState(false);
@@ -17,12 +18,27 @@ export function WelcomeModal() {
   const [currentStep, setCurrentStep] = useState(0);
 
   useEffect(() => {
-    // Check if user has already completed onboarding
-    const onboardingComplete = localStorage.getItem('komsu-onboarding-complete');
-    setIsLoaded(true);
-    if (!onboardingComplete) {
-      setIsVisible(true);
-    }
+    const checkVisibility = async () => {
+      // If user is logged in, never show the welcome modal
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+
+      setIsLoaded(true);
+
+      if (session?.user) {
+        // User is authenticated — don't show popup
+        setIsVisible(false);
+        return;
+      }
+
+      // For non-logged-in visitors, show only if not already dismissed
+      const onboardingComplete = localStorage.getItem('komsu-onboarding-complete');
+      if (!onboardingComplete) {
+        setIsVisible(true);
+      }
+    };
+
+    checkVisibility();
   }, []);
 
   const handleClose = () => {
