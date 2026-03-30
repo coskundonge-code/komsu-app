@@ -1,5 +1,7 @@
 "use client";
 
+import { toast } from '@/lib/utils/show-toast';
+
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -71,7 +73,7 @@ export default function AyarlarPage() {
 
   const handleSave = async () => {
     if (!user?.id) {
-      alert('Giriş yapmanız gerekir');
+      toast.error('Giriş yapmanız gerekir');
       return;
     }
 
@@ -89,11 +91,11 @@ export default function AyarlarPage() {
         setTimeout(() => setSaved(false), 2000);
       } else {
         console.error('Failed to save profile:', error);
-        alert('Profil kaydedilirken bir hata oluştu.');
+        toast.error('Profil kaydedilirken bir hata oluştu.');
       }
     } catch (err) {
       console.error('Error saving profile:', err);
-      alert('Profil kaydedilirken bir hata oluştu.');
+      toast.error('Profil kaydedilirken bir hata oluştu.');
     } finally {
       setIsLoading(false);
     }
