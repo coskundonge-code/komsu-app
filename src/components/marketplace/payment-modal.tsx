@@ -337,7 +337,7 @@ export function PaymentModal({
                 <input type="checkbox" defaultChecked className="mt-1" />
                 <span>
                   Ödeme şartlarını kabul ediyorum ve Mahallemiz'in{' '}
-                  <a href="#" className="text-primary hover:underline">
+                  <a href="/gizlilik" className="text-primary hover:underline">
                     gizlilik politikasını
                   </a>{' '}
                   okudum.
