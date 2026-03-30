@@ -1,5 +1,7 @@
 "use client";
 
+import { toast } from '@/lib/utils/show-toast'
+
 import { useState } from "react";
 import {
   ArrowLeft,
@@ -128,7 +130,7 @@ export default function NewAlertPage() {
 
   const handleConfirmSubmit = async () => {
     if (!user?.id) {
-      alert("Lütfen önce giriş yapınız");
+      toast.error('Lütfen önce giriş yapınız');
       return;
     }
 
@@ -165,7 +167,7 @@ export default function NewAlertPage() {
       router.push("/uyarilar");
     } catch (error) {
       console.error('Failed to create alert:', error);
-      alert("Uyarı oluşturulamadı");
+      toast.error('Uyarı oluşturulamadı');
     }
   };
 
