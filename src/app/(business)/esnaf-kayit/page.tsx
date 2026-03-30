@@ -1,5 +1,7 @@
 'use client'
 
+import { toast } from '@/lib/utils/show-toast'
+
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -41,15 +43,15 @@ export default function EsnafKayitPage() {
 
   const handleSubmit = async () => {
     if (!addressVerified) {
-      alert('Adres doğrulaması yapılmalıdır')
+      toast.warning('Adres doğrulaması yapılmalıdır')
       return
     }
     if (discountPercent < 5) {
-      alert('Minimum %5 indirim tanımlanmalıdır')
+      toast.warning('Minimum %5 indirim tanımlanmalıdır')
       return
     }
     if (!termsAccepted) {
-      alert('Üyelik koşullarını kabul etmelisiniz')
+      toast.warning('Üyelik koşullarını kabul etmelisiniz')
       return
     }
 
@@ -169,7 +171,7 @@ export default function EsnafKayitPage() {
             <button
               onClick={() => {
                 if (!businessName || !businessCategory || !businessPhone) {
-                  alert('Zorunlu alanları doldurun')
+                  toast.warning('Zorunlu alanları doldurun')
                   return
                 }
                 setStep(2)
@@ -258,7 +260,7 @@ export default function EsnafKayitPage() {
               <button
                 onClick={() => {
                   if (discountPercent < 5) {
-                    alert('Minimum %5 indirim gereklidir')
+                    toast.warning('Minimum %5 indirim gereklidir')
                     return
                   }
                   setStep(3)
