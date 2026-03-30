@@ -1,5 +1,7 @@
 'use client';
 
+import { toast } from '@/lib/utils/show-toast'
+
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import {
@@ -323,13 +325,13 @@ export default function ModerationPage() {
       }
     } catch (error) {
       console.error('Failed to approve:', error);
-      alert('İşlem başarısız oldu');
+      toast.error('İşlem başarısız oldu');
     }
   };
 
   const handleReject = async (id: string) => {
     if (!adminNote.trim()) {
-      alert('Lütfen red gerekçesi yazın');
+      toast.warning('Lütfen red gerekçesi yazın');
       return;
     }
     const supabase = createClient();
@@ -357,7 +359,7 @@ export default function ModerationPage() {
       setAdminNote('');
     } catch (error) {
       console.error('Failed to reject:', error);
-      alert('İşlem başarısız oldu');
+      toast.error('İşlem başarısız oldu');
     }
   };
 
