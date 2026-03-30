@@ -1,5 +1,7 @@
 'use client';
 
+import { toast } from '@/lib/utils/show-toast'
+
 import { useState, useRef, useEffect } from 'react';
 import { X, Send, ImagePlus, MapPin, Globe, BarChart3, Shield, HelpCircle, Tag, ChevronDown, Video } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -157,20 +159,20 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
 
   const handleSubmit = async () => {
     if (!body.trim()) {
-      alert('Lütfen gönderi içeriği yazınız');
+      toast.warning('Lütfen gönderi içeriği yazınız');
       return;
     }
 
     if (postType === 'poll') {
       const validOptions = pollOptions.filter((opt) => opt.trim());
       if (!pollQuestion.trim() || validOptions.length < 2) {
-        alert('Lütfen anket sorusu ve en az 2 seçenek yazınız');
+        toast.warning('Lütfen anket sorusu ve en az 2 seçenek yazınız');
         return;
       }
     }
 
     if (!user) {
-      alert('Gönderi oluşturmak için giriş yapmanız gerekir');
+      toast.error('Gönderi oluşturmak için giriş yapmanız gerekir');
       return;
     }
 
