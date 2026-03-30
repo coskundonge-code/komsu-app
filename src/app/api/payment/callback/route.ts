@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
           merchant_oid: merchantOid,
           user_id: userId || null,
           payment_type: paymentType,
-          amount: parseInt(totalAmount) / 100,
+          amount: parseInt(totalAmount, 10) / 100,
           status: 'completed',
           provider: 'paytr',
           completed_at: new Date().toISOString(),
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
           merchant_oid: merchantOid,
           user_id: userId || null,
           payment_type: paymentType,
-          amount: parseInt(totalAmount) / 100,
+          amount: parseInt(totalAmount, 10) / 100,
           status: 'failed',
           provider: 'paytr',
         })
