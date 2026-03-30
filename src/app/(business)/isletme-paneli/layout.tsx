@@ -26,8 +26,8 @@ const BUSINESS_MENU = [
   { label: 'İstatistikler', href: '/isletme-paneli/istatistikler', icon: BarChart3 },
   { label: 'Yorumlar', href: '/isletme-paneli/yorumlar', icon: MessageSquare },
   { label: 'Reklamlar', href: '/isletme-paneli/reklamlar', icon: Megaphone },
-  { label: 'İşletme Profili', href: '/isletme-paneli/profil', icon: Store },
-  { label: 'Ayarlar', href: '/isletme-paneli/ayarlar', icon: Settings },
+  { label: 'İşletme Profili', href: '/isletme-paneli/indirimler', icon: Store },
+  { label: 'Üyelik', href: '/isletme-paneli/uyelik', icon: Settings },
 ];
 
 export default function BusinessLayout({ children }: BusinessLayoutProps) {
