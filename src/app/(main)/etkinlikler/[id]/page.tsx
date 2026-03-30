@@ -1,5 +1,7 @@
 'use client';
 
+import { toast } from '@/lib/utils/show-toast'
+
 import { Button } from '@/components/ui/button';
 import {
   ArrowLeft,
@@ -142,7 +144,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
     } else {
       // Fallback: copy to clipboard
       navigator.clipboard.writeText(window.location.href);
-      alert('Etkinlik linki kopyalandı!');
+      toast.success('Etkinlik linki kopyalandı!');
     }
   };
 
