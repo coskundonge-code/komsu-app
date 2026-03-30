@@ -1,5 +1,7 @@
 'use client';
 
+import { toast } from '@/lib/utils/show-toast'
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -325,7 +327,7 @@ export default function KullanicilarPage() {
       }
     } catch (error) {
       console.error('Action failed:', error);
-      alert('İşlem başarısız oldu');
+      toast.error('İşlem başarısız oldu');
     }
     setConfirmModal({ isOpen: false, action: '' });
   };
