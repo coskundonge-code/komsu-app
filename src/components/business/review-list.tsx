@@ -1,5 +1,7 @@
 'use client';
 
+import { toast } from '@/lib/utils/show-toast'
+
 import React, { useState } from 'react';
 import {
   Star,
@@ -111,10 +113,10 @@ export default function ReviewList({
         setFlagReason('');
         setFlagDescription('');
         // Show success message
-        alert('Yorum raporlanmıştır. Teşekkür ederiz!');
+        toast.success('Yorum raporlanmıştır. Teşekkür ederiz!');
       }
     } catch (error) {
-      alert('Rapor gönderilirken bir hata oluştu');
+      toast.error('Rapor gönderilirken bir hata oluştu');
     } finally {
       setFlaggingReviewId(null);
     }
