@@ -41,6 +41,11 @@ export async function POST(request: NextRequest) {
     const body: PaymentRequest = await request.json()
     const { paymentType, amount, userEmail, userName, userId, metadata } = body
 
+  const ALLOWED_PAYMENT_TYPES: string[] = ['mahalle_card', 'listing_fee', 'business_membership']
+  if (!ALLOWED_PAYMENT_TYPES.includes(paymentType)) {
+    return NextResponse.json({ error: 'Geçersiz ödeme tipi' }, { status: 400 })
+  }
+
     if (!paymentType || !amount || !userEmail || !userName || !userId) {
       return NextResponse.json(
         { error: 'Eksik parametreler' },
@@ -61,7 +66,7 @@ export async function POST(request: NextRequest) {
 
     const merchantOid = `${paymentType}_${userId}_${Date.now()}`
     const paymentAmount = Math.round(amount * 100)
-    const userIp = request.headers.get('x-forwarded-for') || '127.0.0.1'
+    const userIp = (request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()) || '127.0.0.1'
     const noInstallment = '1'
     const maxInstallment = '0'
     const currencyType = 'TL'
