@@ -376,7 +376,7 @@ export default function SearchResultsPage() {
   const renderPostResult = (post: Post) => (
     <Link
       key={post.id}
-      href={`/posts/${post.id}`}
+      href={`/gonderi/${post.id}`}
       className="bg-surface border border-border rounded-lg p-4 hover:shadow-md transition-shadow"
     >
       <div className="flex gap-3 mb-3">
@@ -407,7 +407,7 @@ export default function SearchResultsPage() {
   const renderBusinessResult = (business: Business) => (
     <Link
       key={business.id}
-      href={`/businesses/${business.id}`}
+      href={`/isletmeler/${business.id}`}
       className="bg-surface border border-border rounded-lg p-4 hover:shadow-md transition-shadow"
     >
       <div className="flex items-start justify-between mb-2">
@@ -460,7 +460,7 @@ export default function SearchResultsPage() {
   const renderEventResult = (event: Event) => (
     <Link
       key={event.id}
-      href={`/events/${event.id}`}
+      href={`/etkinlikler/${event.id}`}
       className="bg-surface border border-border rounded-lg p-4 hover:shadow-md transition-shadow"
     >
       <h3 className="font-semibold text-text-primary mb-2">{event.title}</h3>
@@ -484,7 +484,7 @@ export default function SearchResultsPage() {
   const renderGroupResult = (group: Group) => (
     <Link
       key={group.id}
-      href={`/groups/${group.id}`}
+      href={`/gruplar/${group.id}`}
       className="bg-surface border border-border rounded-lg p-4 hover:shadow-md transition-shadow"
     >
       <div className="flex gap-3 mb-3">
