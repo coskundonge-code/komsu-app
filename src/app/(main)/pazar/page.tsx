@@ -344,7 +344,7 @@ export default function MarketplacePage() {
             id: item.id,
             title: item.title || 'Başlıksız İlan',
             price: item.price || 0,
-            image: item.image_url || getFeedImageUrl(Math.floor(Math.random() * 30) + 1, 500, 500),
+            image: (item.media_urls && item.media_urls.length > 0 ? item.media_urls[0] : null) || getFeedImageUrl(Math.floor(Math.random() * 30) + 1, 500, 500),
             location: item.neighborhood || 'Bilinmiyor',
             neighborhood: item.neighborhood || 'Bilinmiyor',
             timeAgo: item.created_at ? formatTimeAgo(new Date(item.created_at)) : '1 saat',
@@ -833,37 +833,31 @@ export default function MarketplacePage() {
           {/* Right Sidebar - Chat Widget */}
           <div className="lg:col-span-1">
             <div className="sticky top-6 bg-surface rounded-xl shadow-md border border-border overflow-hidden">
-              <div className="bg-gradient-to-br from-primary to-primary-hover p-6 text-white">
-                <div className="flex items-start gap-3 mb-4">
-                  <MessageCircle className="w-6 h-6 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <h3 className="text-base font-bold mb-1">
-                      Satılık ve Ücretsiz Sohbetleri
-                    </h3>
-                    <p className="text-sm text-green-100">
-                      Komşularınız soru soruyor
-                    </p>
-                  </div>
+              <div className="bg-gradient-to-br from-primary to-primary-hover p-4 text-white">
+                <div className="flex items-center gap-2 mb-3">
+                  <MessageCircle className="w-5 h-5 flex-shrink-0" />
+                  <h3 className="text-sm font-bold">Satılık ve Ücretsiz Sohbetleri</h3>
                 </div>
+                <p className="text-xs text-green-100 mb-3">Komşularınız soru soruyor</p>
 
-                <div className="space-y-3 bg-surface/10 rounded-lg p-4 mb-4">
-                  <div className="text-sm text-green-50">
+                <div className="space-y-2 bg-white/10 rounded-lg p-3 mb-3">
+                  <div className="text-xs text-green-50">
                     <span className="font-semibold">Ayşe K.:</span> Bu laptop halen var mı?
                   </div>
-                  <div className="text-sm text-green-50">
+                  <div className="text-xs text-green-50">
                     <span className="font-semibold">Mert D.:</span> Kanepenin boyutları kaç?
                   </div>
-                  <div className="text-sm text-green-50">
+                  <div className="text-xs text-green-50">
                     <span className="font-semibold">Zeynep S.:</span> Teslimat yapılıyor mu?
                   </div>
                 </div>
 
-                <Link href="/mesajlar" className="block w-full px-4 py-2.5 bg-surface text-primary rounded-full font-semibold text-sm hover:bg-green-50 transition-colors text-center">
+                <Link href="/mesajlar" className="block w-full px-3 py-2 bg-white text-primary rounded-full font-semibold text-xs hover:bg-green-50 transition-colors text-center">
                   Sohbeti Aç
                 </Link>
               </div>
 
-              <div className="p-4 bg-background">
+              <div className="px-3 py-2 bg-background">
                 <p className="text-xs text-text-muted text-center">
                   Bu hafta {filtered.length} yeni ilan
                 </p>
