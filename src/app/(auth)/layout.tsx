@@ -92,10 +92,10 @@ export default function AuthLayout({
           {/* Footer (mobile and desktop) */}
           <div className="border-t border-border bg-surface py-6">
             <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-text-muted px-4">
-              <a href="#" className="hover:text-text-secondary transition-colors">Gizlilik</a>
-              <a href="#" className="hover:text-text-secondary transition-colors">Koşullar</a>
-              <a href="#" className="hover:text-text-secondary transition-colors">Hakkında</a>
-              <a href="#" className="hover:text-text-secondary transition-colors">Yardım</a>
+              <a href="/gizlilik" className="hover:text-text-secondary transition-colors">Gizlilik</a>
+              <a href="/kosullar" className="hover:text-text-secondary transition-colors">Koşullar</a>
+              <a href="/hakkinda" className="hover:text-text-secondary transition-colors">Hakkında</a>
+              <a href="/yardim" className="hover:text-text-secondary transition-colors">Yardım</a>
             </div>
             <p className="text-xs text-text-muted mt-2 text-center">© 2026 Mahallemiz</p>
           </div>
