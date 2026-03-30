@@ -212,7 +212,7 @@ function PaymentPageContent() {
                   <label className="flex items-start gap-2 text-xs text-gray-600">
                     <input type="checkbox" defaultChecked className="mt-1" />
                     <span>
-                      <a href="#" className="text-primary hover:underline font-semibold">
+                      <a href="/kosullar" className="text-primary hover:underline font-semibold">
                         Şartları ve Koşulları
                       </a>{' '}
                       kabul ediyorum.
