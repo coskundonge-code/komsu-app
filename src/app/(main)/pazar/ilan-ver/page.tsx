@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   ImagePlus,
@@ -74,7 +74,7 @@ export default function CreateListingPage() {
     isFree: false,
     description: '',
     photos: [],
-    location: 'Kadıköy, Moda Mahallesi',
+    location: '',
     deliveryOptions: {
       pickup: false,
       shipping: false,
@@ -85,6 +85,57 @@ export default function CreateListingPage() {
   const [dragActive, setDragActive] = useState(false);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [userNeighborhoodId, setUserNeighborhoodId] = useState<string | null>(null);
+
+  // Fetch user's saved location from profile
+  useEffect(() => {
+    const fetchUserLocation = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Get location from user metadata first (set during konum-secimi)
+      const meta = user.user_metadata;
+      if (meta?.il && meta?.ilce) {
+        const locationParts = [meta.ilce, meta.mahalle].filter(Boolean);
+        setFormData(prev => ({ ...prev, location: locationParts.join(', ') }));
+      }
+
+      // Also fetch from user_profiles for more detail
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('location_province, location_district, location_address')
+        .eq('id', user.id)
+        .single();
+
+      if (profile?.location_district) {
+        const loc = profile.location_address
+          ? `${profile.location_district}, ${profile.location_address}`
+          : `${profile.location_district}${profile.location_province ? ', ' + profile.location_province : ''}`;
+        setFormData(prev => ({ ...prev, location: loc }));
+      }
+
+      // Fetch neighborhood_id from user_addresses
+      const { data: address } = await supabase
+        .from('user_addresses')
+        .select('neighborhood_id, district, city')
+        .eq('user_id', user.id)
+        .eq('is_primary', true)
+        .single();
+
+      if (address?.neighborhood_id) {
+        setUserNeighborhoodId(address.neighborhood_id);
+      }
+      // Fallback location from address table if profile didn't have it
+      if (address?.district && !profile?.location_district) {
+        setFormData(prev => ({
+          ...prev,
+          location: `${address.district}${address.city ? ', ' + address.city : ''}`,
+        }));
+      }
+    };
+    fetchUserLocation();
+  }, []);
 
   // Check if form can be submitted (no side effects - safe to call during render)
   const canSubmit = () => {
@@ -286,7 +337,7 @@ export default function CreateListingPage() {
         price: formData.isFree ? 0 : parseInt(formData.price),
         category_id: CATEGORY_ID_MAP[formData.category] || null,
         seller_id: user.id,
-        neighborhood_id: '51ded332-1c5c-428f-9022-4f5956bef2a4',
+        neighborhood_id: userNeighborhoodId || null,
         media_urls: mediaUrls,
         condition: formData.condition,
         status: 'active',
