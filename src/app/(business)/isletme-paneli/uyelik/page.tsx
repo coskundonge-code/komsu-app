@@ -1,5 +1,7 @@
 'use client'
 
+import { toast } from '@/lib/utils/show-toast'
+
 import { useState } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
@@ -53,7 +55,7 @@ export default function UyelikPage() {
           <button className="w-full flex items-center justify-center gap-2 py-3 border border-border rounded-xl font-medium text-text-muted hover:bg-gray-50"><Shield className="w-5 h-5" />Ödeme Yöntemi Değiştir</button>
         </div>
       </div>
-      <PaymentModal isOpen={showPayment} onClose={() => setShowPayment(false)} onSuccess={(id) => { setShowPayment(false); alert('Ödeme başarılı! ID: ' + id) }} paymentType="business_membership" amount={BUSINESS_MEMBERSHIP.monthlyFee} title="Esnaf Üyeliği" description="Aylık esnaf üyelik ödemesi" userId="user_123" userEmail="test@example.com" userName="Test İşletme" />
+      <PaymentModal isOpen={showPayment} onClose={() => setShowPayment(false)} onSuccess={(id) => { setShowPayment(false); toast.success('Ödeme başarılı! ID: ' + id) }} paymentType="business_membership" amount={BUSINESS_MEMBERSHIP.monthlyFee} title="Esnaf Üyeliği" description="Aylık esnaf üyelik ödemesi" userId="user_123" userEmail="test@example.com" userName="Test İşletme" />
     </div>
   )
 }
