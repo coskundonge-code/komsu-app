@@ -99,26 +99,16 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Scraping başarısız olduysa, simülasyon ile devam et (demo modu)
-    console.warn('Scraping failed, falling back to simulation:', scrapeError)
-
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    // Scraping başarısız olduysa, doğrulamayı reddet (güvenlik)
+    console.warn('Scraping failed:', scrapeError)
 
     return NextResponse.json({
-      verified: true,
-      message: 'Belge doğrulaması tamamlandı (demo modu).',
+      verified: false,
+      message: 'Otomatik doğrulama şu anda kullanılamıyor. Lütfen daha sonra tekrar deneyin veya manuel doğrulama yapınız.',
       code: cleanCode,
-      mode: 'simulation',
-      details: {
-        documentType: 'Yerleşim Yeri ve Diğer Adres Belgesi',
-        issueDate: '10.03.2026',
-        validUntil: '09.04.2026',
-        issuedBy: 'Nüfus ve Vatandaşlık İşleri Genel Müdürlüğü',
-        ...(documentInfo || {}),
-      },
-      scrapeError: scrapeError,
+      mode: 'unavailable',
       verificationUrl: 'https://www.turkiye.gov.tr/nvi-yerlesim-yeri-ve-diger-adres-belgesi-sorgulama'
-    })
+    }, { status: 503 })
   } catch (error) {
     console.error('Document verification error:', error)
     return NextResponse.json(
