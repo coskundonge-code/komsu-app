@@ -1,5 +1,7 @@
 'use client'
 
+import { toast } from '@/lib/utils/show-toast'
+
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
@@ -74,7 +76,7 @@ export default function AdresDogrulamaPage() {
       setRequestSent(true)
       setStatus('pending')
     } catch {
-      alert('Referans talebi gonderilirken bir hata olustu.')
+      toast.error('Referans talebi gönderilirken bir hata oluştu.')
     } finally {
       setIsLoading(false)
     }
