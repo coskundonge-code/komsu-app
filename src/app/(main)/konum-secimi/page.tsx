@@ -741,17 +741,17 @@ export default function KonumSecimi() {
               <button
                 onClick={handleConfirmAddress}
                 disabled={isLoading || !formData.cadde || !formData.mahalle || !formData.ilce || !formData.il}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition font-medium"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition font-medium"
               >
                 {isLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Doğrulanıyor...
+                    Haritada aranıyor...
                   </>
                 ) : (
                   <>
-                    <Navigation className="w-4 h-4" />
-                    Adresimi Onayla
+                    <Search className="w-4 h-4" />
+                    Adresimi Haritada Bul
                   </>
                 )}
               </button>
