@@ -1,5 +1,7 @@
 'use client';
 
+import { toast } from '@/lib/utils/show-toast'
+
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
@@ -678,9 +680,7 @@ export default function CreateListingPage() {
               <button
                 type="button"
                 onClick={() =>
-                  alert(
-                    'Konum değiştirme özelliği henüz uygulanmadı.'
-                  )
+                  toast.info('Konum değiştirme özelliği henüz uygulanmadı.')
                 }
                 className="px-3 py-1.5 text-primary hover:bg-primary-light rounded-lg transition-colors text-sm font-medium border border-border"
               >
