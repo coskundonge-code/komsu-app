@@ -2,16 +2,17 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Compass, Plus, Bell, User } from 'lucide-react'
+import { Home, ShoppingBag, Plus, Bell, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export function BottomBar() {
   const pathname = usePathname()
   const unreadCount = 3
 
+  // Keşfet removed — replaced with Satılık & Ücretsiz (Pazar)
   const items = [
     { icon: Home, label: 'Ana Sayfa', href: '/' },
-    { icon: Compass, label: 'Keşfet', href: '/kesfet' },
+    { icon: ShoppingBag, label: 'Pazar', href: '/pazar' },
     { icon: Bell, label: 'Bildirimler', href: '/bildirimler' },
     { icon: User, label: 'Profil', href: '/profil/me' },
   ]
@@ -53,6 +54,7 @@ export function BottomBar() {
           )
         })}
 
+        {/* FAB — Create Post */}
         <Link
           href="/?post=new"
           className="flex flex-col items-center justify-center -mt-5 active:scale-95 transition-transform"

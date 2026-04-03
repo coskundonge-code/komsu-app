@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { User, Store, Heart, Settings, HelpCircle, LogOut, Shield, UserPlus } from 'lucide-react'
+import { User, Store, Heart, Settings, HelpCircle, LogOut, Shield, UserPlus, MessageCircle, CreditCard } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useCurrentUser } from '@/lib/hooks/use-auth'
 
@@ -19,13 +19,11 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
 
   const handleLogout = async () => {
     try {
-      // Client-side sign out first
       const supabase = createClient()
       await supabase.auth.signOut()
     } catch (e) {
       // Ignore client-side errors
     }
-    // Server-side sign out to clear cookies properly
     const form = document.createElement('form')
     form.method = 'POST'
     form.action = '/auth/signout'
@@ -57,12 +55,9 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
       <Link href="/profil/me" onClick={onClose}>
         <div className="px-4 py-4 border-b border-border hover:bg-background transition-colors">
           <div className="flex items-center gap-3">
-            {/* Avatar */}
-            <div className="w-12 h-12 bg-[#404040] rounded-full flex items-center justify-center text-white text-lg font-semibold flex-shrink-0">
+            <div className="w-12 h-12 bg-text-secondary rounded-full flex items-center justify-center text-white text-lg font-semibold flex-shrink-0">
               {profile?.full_name?.[0]?.toUpperCase() || 'K'}
             </div>
-
-            {/* User Details */}
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-text-primary truncate">{profile?.full_name || 'Kullanıcı'}</p>
               <p className="text-xs text-text-muted truncate">{neighborhood?.name || 'Mahalle'}</p>
@@ -83,6 +78,16 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
           <span className="text-sm font-medium">Profilim</span>
         </Link>
 
+        {/* Mesajlar — sidebar'dan taşındı */}
+        <Link
+          href="/mesajlar"
+          onClick={onClose}
+          className="flex items-center gap-3 px-4 py-2.5 text-text-primary hover:bg-background transition-colors"
+        >
+          <MessageCircle className="w-4 h-4 flex-shrink-0" />
+          <span className="text-sm font-medium">Mesajlar</span>
+        </Link>
+
         {/* İşletmem */}
         <Link
           href="/isletme-paneli"
@@ -91,6 +96,16 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
         >
           <Store className="w-4 h-4 flex-shrink-0" />
           <span className="text-sm font-medium">İşletmem</span>
+        </Link>
+
+        {/* Mahallemiz Kart — sidebar'dan taşındı */}
+        <Link
+          href="/mahallem-kart"
+          onClick={onClose}
+          className="flex items-center gap-3 px-4 py-2.5 text-text-primary hover:bg-background transition-colors"
+        >
+          <CreditCard className="w-4 h-4 flex-shrink-0" />
+          <span className="text-sm font-medium">Mahallemiz Kart</span>
         </Link>
 
         {/* Favorilerim */}
@@ -103,16 +118,6 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
           <span className="text-sm font-medium">Favorilerim</span>
         </Link>
 
-        {/* Ayarlar */}
-        <Link
-          href="/ayarlar"
-          onClick={onClose}
-          className="flex items-center gap-3 px-4 py-2.5 text-text-primary hover:bg-background transition-colors"
-        >
-          <Settings className="w-4 h-4 flex-shrink-0" />
-          <span className="text-sm font-medium">Ayarlar</span>
-        </Link>
-
         {/* Komşularını Davet Et */}
         <Link
           href="/davet"
@@ -123,7 +128,19 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
           <span className="text-sm font-medium">Komşularını Davet Et</span>
         </Link>
 
-        {/* Yardım */}
+        <div className="my-1 border-t border-border" />
+
+        {/* Ayarlar — sidebar'dan taşındı */}
+        <Link
+          href="/ayarlar"
+          onClick={onClose}
+          className="flex items-center gap-3 px-4 py-2.5 text-text-primary hover:bg-background transition-colors"
+        >
+          <Settings className="w-4 h-4 flex-shrink-0" />
+          <span className="text-sm font-medium">Ayarlar</span>
+        </Link>
+
+        {/* Yardım — sidebar'dan taşındı */}
         <Link
           href="/yardim"
           onClick={onClose}
@@ -145,8 +162,7 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
           </Link>
         )}
 
-        {/* Divider */}
-        <div className="my-2 border-t border-border" />
+        <div className="my-1 border-t border-border" />
 
         {/* Çıkış Yap */}
         <button

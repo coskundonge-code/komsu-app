@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Search, Plus, Heart, MapPin, ChevronDown, MessageCircle, X, Zap } from 'lucide-react';
+import { Plus, Heart, MapPin, ChevronDown, X, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -10,6 +10,7 @@ import { getListings } from '@/lib/hooks/use-listings';
 
 const tabs = [
   { id: 'all', label: 'Tüm İlanlar' },
+  { id: 'rental', label: 'Kirala & Ödünç Ver' },
   { id: 'yours', label: 'İlanlarınız' },
   { id: 'saved', label: 'Kaydedilenler' },
 ];
@@ -319,7 +320,6 @@ const mockListings = [
 
 export default function MarketplacePage() {
   const [activeTab, setActiveTab] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [visibleCount, setVisibleCount] = useState(6);
   const [listings, setListings] = useState<any[]>([]);
@@ -391,7 +391,6 @@ export default function MarketplacePage() {
 
   // Apply filters and sorting
   let allFiltered = (listings.length > 0 ? listings : mockListings).filter((l) => {
-    if (searchQuery && !l.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     if (activeTab === 'saved' && !favorites.has(l.id)) return false;
     if (selectedCategory && l.category !== selectedCategory) return false;
     if (selectedDistance && parseFloat(l.distance) > selectedDistance) return false;
@@ -489,17 +488,6 @@ export default function MarketplacePage() {
               </Link>
             </div>
 
-            {/* Search Bar */}
-            <div className="relative mb-6">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
-              <input
-                type="text"
-                placeholder="Tüm ilanları ara"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-5 py-3 bg-background border border-border rounded-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-30 transition"
-              />
-            </div>
 
             {/* Tabs */}
             <div className="flex gap-0 border-b border-border -mx-6 px-6">
@@ -731,10 +719,10 @@ export default function MarketplacePage() {
         </div>
 
         {/* Main Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Listings Grid - Takes 3 columns on desktop */}
-          <div className="lg:col-span-3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div>
+          {/* Listings Grid - Full Width */}
+          <div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {filtered.map((listing) => (
                 <Link
                   key={listing.id}
@@ -828,41 +816,6 @@ export default function MarketplacePage() {
                 </button>
               </div>
             )}
-          </div>
-
-          {/* Right Sidebar - Chat Widget */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-6 bg-surface rounded-xl shadow-md border border-border overflow-hidden">
-              <div className="bg-gradient-to-br from-primary to-primary-hover p-4 text-white">
-                <div className="flex items-center gap-2 mb-3">
-                  <MessageCircle className="w-5 h-5 flex-shrink-0" />
-                  <h3 className="text-sm font-bold">Satılık ve Ücretsiz Sohbetleri</h3>
-                </div>
-                <p className="text-xs text-green-100 mb-3">Komşularınız soru soruyor</p>
-
-                <div className="space-y-2 bg-white/10 rounded-lg p-3 mb-3">
-                  <div className="text-xs text-green-50">
-                    <span className="font-semibold">Ayşe K.:</span> Bu laptop halen var mı?
-                  </div>
-                  <div className="text-xs text-green-50">
-                    <span className="font-semibold">Mert D.:</span> Kanepenin boyutları kaç?
-                  </div>
-                  <div className="text-xs text-green-50">
-                    <span className="font-semibold">Zeynep S.:</span> Teslimat yapılıyor mu?
-                  </div>
-                </div>
-
-                <Link href="/mesajlar" className="block w-full px-3 py-2 bg-white text-primary rounded-full font-semibold text-xs hover:bg-green-50 transition-colors text-center">
-                  Sohbeti Aç
-                </Link>
-              </div>
-
-              <div className="px-3 py-2 bg-background">
-                <p className="text-xs text-text-muted text-center">
-                  Bu hafta {filtered.length} yeni ilan
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       </div>

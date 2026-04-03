@@ -2,15 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { Camera, MapPin, AlertTriangle, ArrowRight, Newspaper, Search } from 'lucide-react'
+import { Camera, MapPin, AlertTriangle, ArrowRight, Newspaper } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 
 const PostFormModal = dynamic(() => import('@/components/feed/post-form-modal').then(mod => ({ default: mod.PostFormModal })), { ssr: false })
-import StoriesBar from '@/components/feed/stories-bar'
 import { getFeedImageUrl } from '@/lib/demo-images'
 import { AddressVerificationBanner } from '@/components/feed/address-verification-banner'
-import { FeedPostCard, POST_CATEGORIES, type FeedPostData } from '@/components/feed/post-card'
+import { FeedPostCard, type FeedPostData } from '@/components/feed/post-card'
 import { useCurrentUser } from '@/lib/hooks/use-auth'
 import { getPosts } from '@/lib/hooks/use-posts'
 import { createClient } from '@/lib/supabase/client'
@@ -50,9 +49,7 @@ function getTimeAgo(dateStr: string): string {
 export default function FeedPage() {
   const { user, profile } = useCurrentUser()
   const [activeTab, setActiveTab] = useState('foryou')
-  const [activeCategoryFilter, setActiveCategoryFilter] = useState('tumu')
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
   const [postsToShow, setPostsToShow] = useState(6)
   const [posts, setPosts] = useState(mockPosts)
   const [loading, setLoading] = useState(true)
@@ -110,11 +107,7 @@ export default function FeedPage() {
   }, [user?.id])
 
   const filteredPosts = posts.filter((post) => {
-    const tabMatch = activeTab === 'foryou' || post.feed === activeTab
-    const categoryMatch = activeCategoryFilter === 'tumu' || post.category === activeCategoryFilter
-    if (!searchQuery.trim()) return tabMatch && categoryMatch
-    const q = searchQuery.toLowerCase()
-    return tabMatch && categoryMatch && (post.title.toLowerCase().includes(q) || post.body.toLowerCase().includes(q))
+    return activeTab === 'foryou' || post.feed === activeTab
   })
 
   const pinnedPosts = filteredPosts.filter(p => p.isPinned)
@@ -154,7 +147,6 @@ export default function FeedPage() {
         )}
 
         <AddressVerificationBanner />
-        <StoriesBar />
 
         <div onClick={() => setIsModalOpen(true)} className="bg-surface rounded-xl shadow-card border border-border p-4 hover:shadow-card-hover transition-all cursor-pointer">
           <div className="flex items-center gap-3">
@@ -168,16 +160,6 @@ export default function FeedPage() {
           </div>
         </div>
 
-        <div className="relative">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-          <input
-            type="text" placeholder="Gönderilerde ara..." value={searchQuery}
-            onChange={(e) => { setSearchQuery(e.target.value); setPostsToShow(6) }}
-            aria-label="Gönderilerde ara"
-            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-light transition-all"
-          />
-        </div>
-
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
           {feedTabs.map((tab) => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
@@ -187,20 +169,11 @@ export default function FeedPage() {
           ))}
         </div>
 
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-          {POST_CATEGORIES.map((cat) => (
-            <button key={cat.id} onClick={() => setActiveCategoryFilter(cat.id)}
-              className={cn('px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap border transition-all',
-                activeCategoryFilter === cat.id ? `${cat.badgeColor} border-transparent` : 'border-border text-text-secondary bg-surface hover:border-primary'
-              )}>{cat.label}</button>
-          ))}
-        </div>
-
         <div className="space-y-3">
           {filteredPosts.length === 0 && (
             <div className="bg-surface rounded-xl border border-border p-12 text-center">
-              <p className="text-text-primary font-medium">{searchQuery.trim() ? 'Arama sonucu bulunamadı' : 'Bu kategoride gönderi yok'}</p>
-              <p className="text-text-muted text-sm mt-1">{searchQuery.trim() ? 'Farklı bir arama terimi deneyin' : 'Başka bir sekme deneyin'}</p>
+              <p className="text-text-primary font-medium">Bu sekmede gönderi yok</p>
+              <p className="text-text-muted text-sm mt-1">Başka bir sekme deneyin</p>
             </div>
           )}
           {pinnedPosts.map((post) => <FeedPostCard key={post.id} post={post} />)}

@@ -1,6 +1,6 @@
 'use client';
 
-import { Clock, MapPin, Plus, Search, Heart, Users, Calendar } from 'lucide-react';
+import { Clock, MapPin, Plus, Heart, Users, Calendar } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useMemo } from 'react';
@@ -9,7 +9,7 @@ import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 const MONTH_ABBREVIATIONS = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
 
 type Category = 'all' | 'social' | 'sports' | 'education' | 'culture' | 'music' | 'online';
-type TimeFilter = 'all' | 'thisWeek' | 'thisMonth' | 'online';
+type TimeFilter = 'all' | 'thisWeek' | 'thisMonth';
 type SortOption = 'date' | 'popularity';
 
 const CATEGORY_LABELS: Record<Exclude<Category, 'all'>, string> = {
@@ -25,7 +25,6 @@ const TIME_FILTER_LABELS: Record<TimeFilter, string> = {
   all: 'Tümü',
   thisWeek: 'Bu Hafta',
   thisMonth: 'Bu Ay',
-  online: 'Çevrimiçi',
 };
 
 interface Event {
@@ -213,7 +212,6 @@ export default function EventsPage() {
       .filter((e) => {
         if (selectedTimeFilter === 'thisWeek' && !isThisWeek(e.date)) return false;
         if (selectedTimeFilter === 'thisMonth' && !isThisMonth(e.date)) return false;
-        if (selectedTimeFilter === 'online' && !e.isOnline) return false;
         return e.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           e.location.toLowerCase().includes(searchQuery.toLowerCase());
       })
@@ -230,7 +228,6 @@ export default function EventsPage() {
     all: mockEvents.length,
     thisWeek: mockEvents.filter(e => isThisWeek(e.date)).length,
     thisMonth: mockEvents.filter(e => isThisMonth(e.date)).length,
-    online: mockEvents.filter(e => e.isOnline).length,
   }), []);
 
   const handleInterested = (e: React.MouseEvent, eventId: string) => {
@@ -251,38 +248,17 @@ export default function EventsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary to-primary-hover text-white py-12">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-2">Mahallenizde Neler Oluyor?</h1>
-              <p className="text-green-50 text-lg">Toplam {timeFilterCounts.all} Etkinlik</p>
-            </div>
-            <Link
-              href="/etkinlikler/olustur"
-              className="hidden sm:flex items-center gap-2 px-6 py-3 bg-surface text-primary rounded-full font-semibold hover:bg-gray-50 transition-colors shadow-lg"
-            >
-              <Plus className="w-5 h-5" />
-              Etkinlik Oluştur
-            </Link>
-          </div>
-        </div>
-      </div>
-
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Search Bar */}
-        <div className="mb-8">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Etkinlikleri ara (başlık veya konum)..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 border border-border rounded-full text-base bg-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-          </div>
+        {/* Header with Title and Create Button */}
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-4xl font-bold text-text-primary">Mahallenizde Neler Oluyor?</h1>
+          <Link
+            href="/etkinlikler/olustur"
+            className="hidden sm:flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors font-bold text-sm"
+          >
+            <Plus className="w-5 h-5" />
+            Etkinlik Oluştur
+          </Link>
         </div>
 
         {/* Mobile Create Button */}

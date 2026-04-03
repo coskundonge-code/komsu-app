@@ -1,23 +1,45 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { Search, ChevronDown, Menu, Plus } from 'lucide-react'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { cn } from '@/lib/utils'
 import { SearchDropdown } from './search-dropdown'
 import { UserDropdown } from './user-dropdown'
 import { MobileDrawer } from './mobile-drawer'
 import { NotificationBell } from './notification-bell'
 
+/** Context-aware search placeholders based on current page */
+const searchPlaceholders: Record<string, string> = {
+  '/pazar': 'İlanlarda ara...',
+  '/yerel-haberler': 'Haberlerde ara...',
+  '/uyarilar': 'Uyarılarda ara...',
+  '/gruplar': 'Gruplarda ara...',
+  '/etkinlikler': 'Etkinliklerde ara...',
+  '/askida-bagis': 'Bağışlarda ara...',
+  '/komsuma-yardim': 'Yardım taleplerinde ara...',
+}
+
+function getSearchPlaceholder(pathname: string | null): string {
+  if (!pathname) return 'Mahallende ara...'
+  for (const [route, placeholder] of Object.entries(searchPlaceholders)) {
+    if (pathname.startsWith(route)) return placeholder
+  }
+  return 'Mahallende ara...'
+}
+
 export function Navbar() {
   const router = useRouter()
+  const pathname = usePathname()
   const [isSearchFocused, setIsSearchFocused] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false)
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false)
   const searchRef = useRef<HTMLDivElement>(null)
+
+  const placeholder = useMemo(() => getSearchPlaceholder(pathname), [pathname])
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchQuery.trim()) {
@@ -50,7 +72,7 @@ export function Navbar() {
             <button
               onClick={() => setIsMobileDrawerOpen(true)}
               className="lg:hidden p-2 hover:bg-surface-hover rounded-full transition-colors"
-              aria-label="Menüy\u aç"
+              aria-label="Menüyü aç"
             >
               <Menu className="w-5 h-5 text-text-secondary" />
             </button>
@@ -64,12 +86,13 @@ export function Navbar() {
             </Link>
           </div>
 
+          {/* Context-aware search bar */}
           <div ref={searchRef} className={cn("flex-1 mx-2 sm:mx-4 transition-all duration-300", isSearchFocused ? "sm:max-w-[640px]" : "sm:max-w-[520px]")}>
             <div className="relative">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
               <input
                 type="text"
-                placeholder="Mahallende ara..."
+                placeholder={placeholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => { setIsSearchOpen(true); setIsSearchFocused(true) }}

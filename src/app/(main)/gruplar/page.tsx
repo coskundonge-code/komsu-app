@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { Plus, Search, Users, Lock } from 'lucide-react';
+import { Plus, Users, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { getGroupAvatarUrl, getGroupCoverUrl } from '@/lib/demo-images';
@@ -34,11 +34,11 @@ const mockGroups = [
     slug: 'mahalle-yardimlas',
     name: 'Mahalle Yardımlaşma',
     memberCount: 156,
-    avatar: getGroupAvatarUrl('Mahalle Yardımlaşma', 'Yardımlaşma'),
-    category: 'Yardımlaşma',
+    avatar: getGroupAvatarUrl('Mahalle Yardımlaşma', 'Komşuluk'),
+    category: 'Komşuluk',
     description: 'Komşuluk bağlarını güçlendirerek birbirimize yardım etmek için kurulmuş bir topluluk.',
     privacy: 'Açık',
-    coverImage: getGroupCoverUrl('Mahalle Yardımlaşma', 'Yardımlaşma'),
+    coverImage: getGroupCoverUrl('Mahalle Yardımlaşma', 'Komşuluk'),
   },
   {
     id: '4',
@@ -96,17 +96,6 @@ const mockGroups = [
     coverImage: getGroupCoverUrl('Pazar Pazarlığı', 'Komşuluk'),
   },
   {
-    id: '9',
-    slug: 'evcil-hayvan-dostlari',
-    name: 'Evcil Hayvan Dostları',
-    memberCount: 95,
-    avatar: getGroupAvatarUrl('Evcil Hayvan Dostları', 'Evcil Hayvan'),
-    category: 'Evcil Hayvanlar',
-    description: 'Köpek, kedi, kuş ve diğer evcil hayvanlarımızın bakım ve eğitimi hakkında tartışmalar.',
-    privacy: 'Açık',
-    coverImage: getGroupCoverUrl('Evcil Hayvan Dostları', 'Evcil Hayvan'),
-  },
-  {
     id: '10',
     slug: 'mahalle-spor-ligleri',
     name: 'Mahalle Spor Ligleri',
@@ -124,9 +113,7 @@ const categories = [
   { id: 'Ebeveynler', label: 'Ebeveynler' },
   { id: 'Spor', label: 'Spor' },
   { id: 'Hobi', label: 'Hobi' },
-  { id: 'Yardımlaşma', label: 'Yardımlaşma' },
   { id: 'Komşuluk', label: 'Komşuluk' },
-  { id: 'Evcil Hayvanlar', label: 'Evcil Hayvanlar' },
 ];
 
 type TabType = 'all' | 'mine';
@@ -146,38 +133,17 @@ export default function GroupsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary to-primary-hover text-white py-12 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-start justify-between gap-6">
-            <div>
-              <h1 className="text-4xl font-bold mb-2">Mahalle Grupları</h1>
-              <p className="text-green-100 text-lg">Çıkarlarınızı paylaşan komşuları bulun ve bağlantı kurun</p>
-            </div>
-            <Link
-              href="/gruplar/olustur"
-              className="flex items-center gap-2 px-6 py-3 bg-surface text-primary rounded-lg hover:bg-gray-100 transition-colors font-bold text-sm whitespace-nowrap"
-            >
-              <Plus size={20} />
-              Grup Oluştur
-            </Link>
-          </div>
-        </div>
-      </div>
-
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Search Bar */}
-        <div className="mb-8">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Grupları ara..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 border border-border rounded-full text-base focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-surface"
-            />
-          </div>
+        {/* Header with Title and Create Button */}
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-4xl font-bold text-text-primary">Mahalle Grupları</h1>
+          <Link
+            href="/gruplar/olustur"
+            className="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors font-bold text-sm"
+          >
+            <Plus size={20} />
+            Grup Oluştur
+          </Link>
         </div>
 
         {/* Tabs */}

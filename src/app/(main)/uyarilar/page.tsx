@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import {
-  Search,
   AlertCircle,
   AlertTriangle,
   Cloud,
@@ -309,6 +308,29 @@ export default function AlertsPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Map - Prominent at Top */}
+      <div className="bg-background border-b border-border">
+        <div className="max-w-4xl mx-auto px-4 py-4 sm:py-6">
+          <div className="bg-surface rounded-lg border border-border overflow-hidden">
+            <LeafletMap
+              center={[41.0370, 28.9850]}
+              zoom={13}
+              className="w-full h-[300px] sm:h-[400px]"
+              markers={[
+                { lat: 41.0422, lng: 29.0050, title: 'Su Kesintisi', color: 'blue' },
+                { lat: 41.0350, lng: 28.9900, title: 'Yol Çalışması', color: 'orange' },
+                { lat: 41.0300, lng: 28.9780, title: 'Güvenlik Uyarısı', color: 'red' },
+                { lat: 41.0450, lng: 28.9750, title: 'Gürültü Şikayeti', color: 'orange' },
+              ]}
+              interactive={false}
+            />
+            <div className="p-3">
+              <p className="text-xs text-text-muted text-center">Uyarı konumları haritada gösterilmektedir</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Header Section */}
       <div className="bg-surface border-b border-border sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-5">
@@ -327,18 +349,6 @@ export default function AlertsPage() {
             >
               <Bell size={20} />
             </button>
-          </div>
-
-          {/* Search Bar */}
-          <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
-            <input
-              type="text"
-              placeholder="Uyarılarda ara..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-full text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
-            />
           </div>
 
           {/* Controls Row */}
@@ -402,9 +412,9 @@ export default function AlertsPage() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-2 sm:px-4 py-4 sm:py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="max-w-4xl mx-auto px-2 sm:px-4 py-4 sm:py-6">
         {/* Alerts List */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="space-y-4">
           {filteredAlerts.length === 0 ? (
             <div className="bg-surface rounded-lg border border-border p-12 text-center">
               <AlertCircle size={48} className="mx-auto text-text-muted mb-3" />
@@ -463,90 +473,6 @@ export default function AlertsPage() {
               ))}
             </div>
           )}
-        </div>
-
-        {/* Sidebar */}
-        <div className="lg:col-span-1 space-y-4">
-          {/* Map */}
-          <div className="bg-surface rounded-lg border border-border overflow-hidden">
-            <LeafletMap
-              center={[41.0370, 28.9850]}
-              zoom={13}
-              className="w-full h-48"
-              markers={[
-                { lat: 41.0422, lng: 29.0050, title: 'Su Kesintisi', color: 'blue' },
-                { lat: 41.0350, lng: 28.9900, title: 'Yol Çalışması', color: 'orange' },
-                { lat: 41.0300, lng: 28.9780, title: 'Güvenlik Uyarısı', color: 'red' },
-                { lat: 41.0450, lng: 28.9750, title: 'Gürültü Şikayeti', color: 'orange' },
-              ]}
-              interactive={false}
-            />
-            <div className="p-3">
-              <p className="text-xs text-text-muted text-center">Uyarı konumları haritada gösterilmektedir</p>
-            </div>
-          </div>
-
-          {/* Statistics Card */}
-          <div className="bg-surface rounded-lg border border-border p-5">
-            <h3 className="font-bold text-text-primary mb-5 flex items-center gap-2">
-              <AlertCircle size={18} className="text-primary" />
-              Aciliyet İstatistikleri
-            </h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between pb-3 border-b border-border hover:bg-surface-hover -mx-1 px-1 py-1 rounded transition-colors">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-full bg-red-600 shadow-sm"></div>
-                  <span className="text-sm font-medium text-text-primary">Kritik</span>
-                </div>
-                <span className="font-bold text-lg text-red-600">{alerts.filter(a => a.severity === 'critical' && a.active).length}</span>
-              </div>
-              <div className="flex items-center justify-between pb-3 border-b border-border hover:bg-surface-hover -mx-1 px-1 py-1 rounded transition-colors">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-full bg-orange-500 shadow-sm"></div>
-                  <span className="text-sm font-medium text-text-primary">Yüksek</span>
-                </div>
-                <span className="font-bold text-lg text-orange-500">{alerts.filter(a => a.severity === 'high' && a.active).length}</span>
-              </div>
-              <div className="flex items-center justify-between pb-3 border-b border-border hover:bg-surface-hover -mx-1 px-1 py-1 rounded transition-colors">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-full bg-yellow-500 shadow-sm"></div>
-                  <span className="text-sm font-medium text-text-primary">Orta</span>
-                </div>
-                <span className="font-bold text-lg text-yellow-600">{alerts.filter(a => a.severity === 'medium' && a.active).length}</span>
-              </div>
-              <div className="flex items-center justify-between hover:bg-surface-hover -mx-1 px-1 py-1 rounded transition-colors">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-full bg-green-500 shadow-sm"></div>
-                  <span className="text-sm font-medium text-text-primary">Düşük</span>
-                </div>
-                <span className="font-bold text-lg text-green-600">{alerts.filter(a => a.severity === 'low' && a.active).length}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Category Breakdown Card */}
-          <div className="bg-surface rounded-lg border border-border p-5">
-            <h3 className="font-bold text-text-primary mb-5 flex items-center gap-2">
-              <Zap size={18} className="text-primary" />
-              Kategori Dağılımı
-            </h3>
-            <div className="space-y-2">
-              {filterCategories.filter(c => c.id !== 'all').map((category) => {
-                const count = alerts.filter(a => a.category === category.id && a.active).length;
-                return (
-                  <div key={category.id} className="flex items-center justify-between text-sm hover:bg-surface-hover -mx-1 px-1 py-1.5 rounded transition-colors">
-                    <div className="flex items-center gap-2">
-                      <span className="text-primary">{category.icon}</span>
-                      <span className="text-text-primary font-medium">{category.label}</span>
-                    </div>
-                    <span className="font-bold text-primary bg-primary-light px-2.5 py-0.5 rounded-full text-xs">
-                      {count}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
         </div>
       </div>
 

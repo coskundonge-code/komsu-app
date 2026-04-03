@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import { Navbar } from "@/components/layout/navbar";
 import { Sidebar } from "@/components/layout/sidebar";
 import { BottomBar } from "@/components/layout/bottom-bar";
-import { Footer } from "@/components/layout/footer";
 import { SkipLink } from "@/components/ui/skip-link";
 
 const RightSidebar = dynamic(() => import("@/components/layout/right-sidebar").then((m) => ({ default: m.RightSidebar })), {
@@ -54,7 +53,6 @@ export default function MainLayout({ children }: MainLayoutProps) {
         <RightSidebar />
       </div>
 
-      <Footer className="hidden lg:block" />
       <BottomBar />
       <WelcomeModal />
     </div>

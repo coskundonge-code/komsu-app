@@ -2,11 +2,10 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import {
   X, Home, ShoppingBag, Calendar, Users,
-  MessageCircle, Bell, Heart, Settings, User, LogOut, Repeat, CreditCard,
-  AlertTriangle, Newspaper
+  Heart, LogOut, AlertTriangle, Newspaper, HandHeart
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
@@ -18,36 +17,26 @@ interface MobileDrawerProps {
   onClose: () => void
 }
 
-// Primary navigation items - clean Nextdoor-like structure
-const primaryNavItems = [
+// Mirrors the new 8-item sidebar structure exactly
+const navItems = [
   { icon: Home, label: 'Ana Sayfa', href: '/' },
+  { icon: ShoppingBag, label: 'Satılık & Ücretsiz', href: '/pazar' },
   { icon: Newspaper, label: 'Yerel Haberler', href: '/yerel-haberler' },
-  { icon: AlertTriangle, label: 'UyarÄ±lar', href: '/uyarilar' },
-  { icon: ShoppingBag, label: 'SatÄ±lÄ±k & Ãcretsiz', href: '/pazar' },
-  { icon: Repeat, label: 'Kirala & ÃdÃ¼nÃ§ Ver', href: '/odunc-kirala' },
+  { icon: AlertTriangle, label: 'Uyarılar', href: '/uyarilar' },
   { icon: Users, label: 'Gruplar', href: '/gruplar' },
   { icon: Calendar, label: 'Etkinlikler', href: '/etkinlikler' },
-  { icon: CreditCard, label: 'Mahallemiz Kart', href: '/mahallem-kart' },
-  { icon: Heart, label: 'AskÄ±da BaÄÄ±Å', href: '/askida-bagis' },
-]
-
-// Secondary navigation items
-const secondaryNavItems = [
-  { icon: User, label: 'Profilim', href: '/profil/me' },
-  { icon: MessageCircle, label: 'Mesajlar', href: '/mesajlar' },
-  { icon: Bell, label: 'Bildirimler', href: '/bildirimler' },
-  { icon: Settings, label: 'Ayarlar', href: '/ayarlar' },
+  { icon: Heart, label: 'Askıda Bağış', href: '/askida-bagis' },
+  { icon: HandHeart, label: 'Komşuma Yardım', href: '/komsuma-yardim' },
 ]
 
 export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
   const pathname = usePathname()
-  const router = useRouter()
   const { user, profile } = useCurrentUser()
   const metadata = user?.user_metadata
-  const userName = profile?.full_name || metadata?.full_name || 'KullanÄ±cÄ±'
+  const userName = profile?.full_name || metadata?.full_name || 'Kullanıcı'
   const userNeighborhood = metadata?.ilce && metadata?.il
     ? `${metadata.ilce}, ${metadata.il}`
-    : 'Konum belirtilmemiÅ'
+    : 'Konum belirtilmemiş'
   const userAvatar = getAvatarUrl(userName, 0)
 
   const handleLogout = async () => {
@@ -57,7 +46,6 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
     } catch (e) {
       // Ignore client-side errors
     }
-    // Server-side sign out to clear cookies properly
     const form = document.createElement('form')
     form.method = 'POST'
     form.action = '/auth/signout'
@@ -65,7 +53,6 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
     form.submit()
   }
 
-  // Check if route is active
   const isActive = (href: string) => {
     return pathname === href || (href !== '/' && pathname?.startsWith(href))
   }
@@ -109,7 +96,6 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
             onClick={onClose}
             className="flex items-center gap-3 p-3 rounded-lg hover:bg-background transition-colors"
           >
-            {/* Avatar */}
             <div className="relative flex-shrink-0">
               <img
                 src={userAvatar}
@@ -118,8 +104,6 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
               />
               <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
             </div>
-
-            {/* User Info */}
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-text-primary truncate">
                 {userName}
@@ -131,9 +115,9 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
           </Link>
         </div>
 
-        {/* Primary Navigation */}
+        {/* Navigation — 8 items, same as sidebar */}
         <nav className="flex flex-col gap-1 px-2 py-4">
-          {primaryNavItems.map((item) => {
+          {navItems.map((item) => {
             const Icon = item.icon
             const active = isActive(item.href)
 
@@ -160,35 +144,6 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
           })}
         </nav>
 
-        {/* Divider */}
-        <div className="mx-2 border-t border-border" />
-
-        {/* Secondary Navigation */}
-        <nav className="flex flex-col gap-1 px-2 py-4">
-          {secondaryNavItems.map((item) => {
-            const Icon = item.icon
-            const active = isActive(item.href)
-
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={onClose}
-                className={cn(
-                  'flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200',
-                  'text-sm',
-                  active
-                    ? 'text-primary font-semibold bg-green-50'
-                    : 'text-text-muted hover:text-text-primary hover:bg-background'
-                )}
-              >
-                <Icon className="w-4 h-4 flex-shrink-0" />
-                <span className="flex-1">{item.label}</span>
-              </Link>
-            )
-          })}
-        </nav>
-
         {/* Logout Button */}
         <div className="mt-auto pt-4 px-2 pb-6 border-t border-border">
           <button
@@ -199,7 +154,7 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
             )}
           >
             <LogOut className="w-5 h-5 flex-shrink-0" />
-            <span>ÃÄ±kÄ±Å Yap</span>
+            <span>Çıkış Yap</span>
           </button>
         </div>
       </div>
