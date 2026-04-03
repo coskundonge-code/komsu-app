@@ -46,6 +46,20 @@ export async function getBusinesses(options?: { neighborhoodId?: string; categor
   return { data, error }
 }
 
+export async function createGroup(group: {
+  name: string
+  slug: string
+  description?: string
+  category?: string
+  is_private?: boolean
+  neighborhood_id?: string
+  created_by: string
+}) {
+  const supabase = createClient()
+  const { data, error } = await supabase.from('groups').insert(group as any).select().single()
+  return { data, error }
+}
+
 export async function createBusinessReview(review: Database['public']['Tables']['business_reviews']['Insert']) {
   const supabase = createClient()
   const { data, error } = await supabase.from('business_reviews').insert(review as any).select().single()

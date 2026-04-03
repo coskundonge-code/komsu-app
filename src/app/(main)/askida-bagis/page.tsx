@@ -35,6 +35,7 @@ import { cn } from '@/lib/utils'
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
 import { createClient } from '@/lib/supabase/client'
 import { useCurrentUser } from '@/lib/hooks/use-auth'
+import { getDonations, createDonation, claimDonation } from '@/lib/hooks/use-donations'
 
 // Type definitions
 interface Category {
@@ -161,7 +162,7 @@ function generateQRCode(): string {
 }
 
 export default function AskidaBagisPage() {
-  const { user, profile } = useCurrentUser()
+  const { user, profile, neighborhood } = useCurrentUser()
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [activeTab, setActiveTab] = useState<'donate' | 'redeem'>('donate')
   const [businesses, setBusinesses] = useState<Business[]>([])
@@ -197,6 +198,27 @@ export default function AskidaBagisPage() {
     isAnonymous: false,
     isSent: false,
   })
+
+  // Fetch donations from Supabase
+  useEffect(() => {
+    async function fetchDonations() {
+      const { data, error } = await getDonations({ status: 'available', limit: 20 })
+      if (!error && data && data.length > 0) {
+        const mapped: DonationItem[] = data.map((d: any, i: number) => ({
+          id: d.id,
+          donor: d.profiles?.full_name || 'Anonim',
+          items: d.title,
+          business: d.businesses?.name || 'İşletme',
+          time: new Date(d.created_at).toLocaleDateString('tr-TR'),
+          isAnonymous: false,
+          avatar: d.profiles?.avatar_url || undefined,
+        }))
+        setDonations(mapped)
+        setDonationStats({ total: mapped.length, items: data.reduce((s: number, d: any) => s + (d.quantity || 1), 0), businesses: new Set(data.map((d: any) => d.business_id).filter(Boolean)).size || 8 })
+      }
+    }
+    fetchDonations()
+  }, [])
 
   // Fetch businesses from Supabase
   useEffect(() => {
@@ -266,14 +288,28 @@ export default function AskidaBagisPage() {
   }
 
   const handleDonationSubmit = async () => {
+    if (!user) return
     setDonationModal({ ...donationModal, isProcessing: true })
     try {
-      const supabase = createClient()
+      const qr = generateQRCode()
+      const neighborhoodId = neighborhood?.id || '00000000-0000-0000-0000-000000000000'
 
-      // Record donation in database (would use donations/askida table)
-      // For now, we'll just add it to the local state
+      // Save to Supabase
+      const { data: savedDonation, error } = await createDonation({
+        user_id: user.id,
+        neighborhood_id: neighborhoodId,
+        donation_type: donationModal.business?.category || 'general',
+        title: `Askıda ${donationModal.quantity} ${donationModal.selectedItem} - ${donationModal.business?.name}`,
+        description: donationModal.message || undefined,
+        quantity: donationModal.quantity,
+        business_id: donationModal.business?.id,
+      })
+
+      if (error) console.warn('Donation save error:', error)
+
+      // Also update local state for immediate UI feedback
       const newDonation: DonationItem = {
-        id: `d${Date.now()}`,
+        id: savedDonation?.id || `d${Date.now()}`,
         donor: donationModal.isAnonymous ? 'Anonim' : (profile?.full_name || 'Komşu'),
         items: `${donationModal.quantity} ${donationModal.selectedItem}`,
         business: donationModal.business?.name || 'İşletme',
@@ -289,17 +325,12 @@ export default function AskidaBagisPage() {
         items: prev.items + donationModal.quantity,
       }))
 
-      // Generate QR code
-      const qr = generateQRCode()
-
-      setTimeout(() => {
-        setDonationModal({
-          ...donationModal,
-          isProcessing: false,
-          isSuccess: true,
-          qrCode: qr
-        })
-      }, 800)
+      setDonationModal({
+        ...donationModal,
+        isProcessing: false,
+        isSuccess: true,
+        qrCode: qr
+      })
     } catch (error) {
       console.warn('Error submitting donation:', error)
       setDonationModal({ ...donationModal, isProcessing: false })
@@ -323,7 +354,24 @@ export default function AskidaBagisPage() {
     }, 1200)
   }
 
-  const handleRedeemConfirm = () => {
+  const handleRedeemConfirm = async () => {
+    if (user && redeemModal.qrCode) {
+      // Try to find and claim donation by QR code in Supabase
+      try {
+        const supabase = createClient() as any
+        const { data: donation } = await supabase
+          .from('donations')
+          .select('id')
+          .eq('qr_code', redeemModal.qrCode)
+          .eq('status', 'available')
+          .single()
+        if (donation?.id) {
+          await claimDonation(donation.id, user.id)
+        }
+      } catch (e) {
+        console.warn('Claim error:', e)
+      }
+    }
     setRedeemModal({ ...redeemModal, step: 'success' })
   }
 

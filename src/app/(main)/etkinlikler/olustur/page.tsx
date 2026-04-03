@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { createEvent } from '@/lib/hooks/use-events';
+import { useCurrentUser } from '@/lib/hooks/use-auth';
 import {
   Camera,
   MapPin,
@@ -76,7 +79,11 @@ function isFormValid(formData: FormData): boolean {
 }
 
 export default function CreateEventPage() {
+  const router = useRouter();
+  const { user, neighborhood } = useCurrentUser();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const [formData, setFormData] = useState<FormData>({
     title: '',
     description: '',
@@ -174,15 +181,42 @@ export default function CreateEventPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm()) return;
+    if (!user) { setSubmitError('Giriş yapmalısınız.'); return; }
 
-    if (!validateForm()) {
-      return;
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    try {
+      const startDatetime = `${formData.startDate}T${formData.startTime}:00`;
+      const endDatetime = `${formData.endDate}T${formData.endTime}:00`;
+
+      const { data, error } = await createEvent({
+        title: formData.title,
+        description: formData.description,
+        start_date: startDatetime,
+        end_date: endDatetime,
+        location: formData.isOnlineEvent ? 'Çevrimiçi' : formData.location,
+        is_online: formData.isOnlineEvent,
+        category: formData.category,
+        max_attendees: formData.maxAttendees ? Number(formData.maxAttendees) : null,
+        neighborhood_id: neighborhood?.id,
+        organizer_id: user.id,
+      } as any);
+
+      if (error) {
+        setSubmitError('Etkinlik oluşturulamadı: ' + error.message);
+        setIsSubmitting(false);
+        return;
+      }
+
+      router.push('/etkinlikler');
+    } catch (err: any) {
+      setSubmitError('Hata: ' + err.message);
+      setIsSubmitting(false);
     }
-
-    console.log('Form submitted:', formData);
-    // TODO: Implement actual submission logic (API call)
   };
 
   const categoryName = CATEGORIES.find((c) => c.id === formData.category)?.label || '';
@@ -563,17 +597,20 @@ export default function CreateEventPage() {
 
               {/* Submit Button */}
               <div className="bg-surface rounded-xl shadow-md p-6">
+                {submitError && (
+                  <p className="text-sm text-red-600 mb-3">{submitError}</p>
+                )}
                 <button
                   type="submit"
-                  disabled={!isFormValid(formData)}
+                  disabled={!isFormValid(formData) || isSubmitting}
                   className={`w-full py-3 px-4 rounded-lg font-semibold text-white transition-all flex items-center justify-center gap-2 ${
-                    isFormValid(formData)
+                    isFormValid(formData) && !isSubmitting
                       ? 'bg-primary hover:bg-primary-hover cursor-pointer shadow-md hover:shadow-lg'
                       : 'bg-gray-400 cursor-not-allowed opacity-60'
                   }`}
                 >
                   <Plus className="w-5 h-5" />
-                  Etkinlik Oluştur
+                  {isSubmitting ? 'Oluşturuluyor...' : 'Etkinlik Oluştur'}
                 </button>
               </div>
             </form>

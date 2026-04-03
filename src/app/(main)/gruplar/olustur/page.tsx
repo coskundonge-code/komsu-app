@@ -16,6 +16,9 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { createGroup } from '@/lib/hooks/use-groups-businesses';
+import { useCurrentUser } from '@/lib/hooks/use-auth';
 
 const categories = [
   'Sosyal',
@@ -45,6 +48,8 @@ const exampleRules = `1. Saygılı iletişim kuralı - Tüm üyeler birbirlerine
 5. Yapıcı tartışma - Çatışmalı durumlar yapıcı şekilde çözülmeli`;
 
 export default function CreateGroupPage() {
+  const router = useRouter();
+  const { user, neighborhood } = useCurrentUser();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -58,6 +63,8 @@ export default function CreateGroupPage() {
   const [invitedMembers, setInvitedMembers] = useState<typeof mockMembers>([]);
   const [memberSearch, setMemberSearch] = useState('');
   const [showMemberSuggestions, setShowMemberSuggestions] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   // Pure function to get filtered suggestions - no side effects
   const getFilteredMembers = () => {
@@ -90,13 +97,36 @@ export default function CreateGroupPage() {
     setInvitedMembers(invitedMembers.filter((m) => m.id !== memberId));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', {
-      ...formData,
-      invitedMembers: invitedMembers.map((m) => m.id),
+    if (!user) { setSubmitError('Giriş yapmalısınız.'); return; }
+    if (!formData.name.trim()) { setSubmitError('Grup adı zorunludur.'); return; }
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    const slug = formData.name
+      .toLowerCase()
+      .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's')
+      .replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c')
+      .replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-')
+      .trim() + '-' + Date.now().toString(36);
+
+    const { data, error } = await createGroup({
+      name: formData.name,
+      slug,
+      description: formData.description || undefined,
+      category: formData.category,
+      is_private: formData.privacy === 'private',
+      neighborhood_id: neighborhood?.id,
+      created_by: user.id,
     });
-    // Handle form submission
+
+    setIsSubmitting(false);
+    if (error) {
+      setSubmitError('Grup oluşturulamadı: ' + error.message);
+      return;
+    }
+    router.push('/gruplar');
   };
 
   // Pure function to check if submit is disabled
@@ -402,6 +432,9 @@ export default function CreateGroupPage() {
                 </div>
 
                 {/* Submit Buttons */}
+                {submitError && (
+                  <p className="text-sm text-red-600 py-2">{submitError}</p>
+                )}
                 <div className="flex gap-3 pt-6 border-t" style={{ borderColor: '#e0e0e0' }}>
                   <Link href="/gruplar" className="flex-1">
                     <Button variant="outline" className="w-full">
@@ -410,7 +443,7 @@ export default function CreateGroupPage() {
                   </Link>
                   <button
                     type="submit"
-                    disabled={isSubmitDisabled}
+                    disabled={isSubmitDisabled || isSubmitting}
                     className="flex-1 text-white py-2 px-4 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{
                       backgroundColor: isSubmitDisabled ? '#ccc' : '#00833e',
@@ -426,7 +459,7 @@ export default function CreateGroupPage() {
                       }
                     }}
                   >
-                    Grup Oluştur
+                    {isSubmitting ? 'Oluşturuluyor...' : 'Grup Oluştur'}
                   </button>
                 </div>
               </form>

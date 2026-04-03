@@ -1,7 +1,5 @@
 'use client'
 
-import { toast } from '@/lib/utils/show-toast'
-
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -9,12 +7,16 @@ import {
   Store, MapPin, Percent, CreditCard, CheckCircle, AlertTriangle,
   ArrowRight, ArrowLeft, Shield, Phone, Mail, Clock, Building2
 } from 'lucide-react'
+import { toast } from '@/lib/utils/show-toast'
 import { BUSINESS_MEMBERSHIP } from '@/lib/pricing'
+import { createClient as createTypedClient } from '@/lib/supabase/client'
+import { useCurrentUser } from '@/lib/hooks/use-auth'
 
 type Step = 1 | 2 | 3 | 4
 
 export default function EsnafKayitPage() {
   const router = useRouter()
+  const { user } = useCurrentUser()
   const [step, setStep] = useState<Step>(1)
   const [loading, setLoading] = useState(false)
 
@@ -54,13 +56,43 @@ export default function EsnafKayitPage() {
       toast.warning('Üyelik koşullarını kabul etmelisiniz')
       return
     }
+    if (!user) {
+      toast.warning('Giriş yapmalısınız')
+      return
+    }
 
     setLoading(true)
-    // API'ye kayıt isteği
-    setTimeout(() => {
+    try {
+      const supabase = createTypedClient() as any
+
+      // Generate a slug from business name
+      const slug = businessName
+        .toLowerCase()
+        .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's')
+        .replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c')
+        .replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-')
+        .trim() + '-' + Date.now().toString(36)
+
+      const { error } = await supabase.from('businesses').insert({
+        owner_id: user.id,
+        name: businessName,
+        slug,
+        description: businessDescription || null,
+        address: businessAddress || null,
+        phone: businessPhone || null,
+        is_verified: false,
+      })
+
       setLoading(false)
+      if (error) {
+        toast.error('Kayıt başarısız: ' + error.message)
+        return
+      }
       setStep(4)
-    }, 2000)
+    } catch (err: any) {
+      setLoading(false)
+      toast.error('Bir hata oluştu: ' + err.message)
+    }
   }
 
   return (

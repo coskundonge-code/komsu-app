@@ -3,8 +3,10 @@
 import Image from 'next/image';
 import { Plus, Users, Lock } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getGroupAvatarUrl, getGroupCoverUrl } from '@/lib/demo-images';
+import { getGroups, joinGroup, leaveGroup } from '@/lib/hooks/use-groups-businesses';
+import { useCurrentUser } from '@/lib/hooks/use-auth';
 
 const mockGroups = [
   {
@@ -118,13 +120,66 @@ const categories = [
 
 type TabType = 'all' | 'mine';
 
+interface GroupDisplay {
+  id: string;
+  slug: string;
+  name: string;
+  memberCount: number;
+  avatar: string;
+  category: string;
+  description: string;
+  privacy: string;
+  coverImage: string;
+}
+
+function mapDbGroup(g: any, i: number): GroupDisplay {
+  return {
+    id: g.id,
+    slug: g.slug || g.id,
+    name: g.name,
+    memberCount: g.member_count || 0,
+    avatar: getGroupAvatarUrl(g.name, g.category || 'Genel'),
+    category: g.category || 'Genel',
+    description: g.description || '',
+    privacy: g.is_private ? 'Gizli' : 'Açık',
+    coverImage: getGroupCoverUrl(g.name, g.category || 'Genel'),
+  };
+}
+
 export default function GroupsPage() {
+  const { user } = useCurrentUser();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [activeTab, setActiveTab] = useState<TabType>('all');
-  const [joinedGroups, setJoinedGroups] = useState<Set<string>>(new Set(['1', '3', '5']));
+  const [groups, setGroups] = useState<GroupDisplay[]>(mockGroups);
+  const [joinedGroups, setJoinedGroups] = useState<Set<string>>(new Set());
+  const [loadingJoin, setLoadingJoin] = useState<string | null>(null);
 
-  const filtered = mockGroups.filter((g) => {
+  useEffect(() => {
+    async function fetchGroups() {
+      const { data, error } = await getGroups({ limit: 20 });
+      if (!error && data && data.length > 0) {
+        setGroups(data.map(mapDbGroup));
+      }
+    }
+    fetchGroups();
+  }, []);
+
+  async function handleJoinLeave(groupId: string) {
+    if (!user) return;
+    setLoadingJoin(groupId);
+    const isJoined = joinedGroups.has(groupId);
+    if (isJoined) {
+      await leaveGroup(groupId, user.id);
+      setJoinedGroups(prev => { const n = new Set(prev); n.delete(groupId); return n; });
+    } else {
+      await joinGroup(groupId, user.id);
+      setJoinedGroups(prev => new Set([...prev, groupId]));
+    }
+    setLoadingJoin(null);
+  }
+
+  const filtered = groups.filter((g) => {
     const matchesSearch = g.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = activeCategory === 'all' || g.category === activeCategory;
     const matchesTab = activeTab === 'all' || (activeTab === 'mine' && joinedGroups.has(g.id));
@@ -261,20 +316,16 @@ export default function GroupsPage() {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      setJoinedGroups((prev) => {
-                        const next = new Set(prev);
-                        if (next.has(group.id)) next.delete(group.id);
-                        else next.add(group.id);
-                        return next;
-                      });
+                      handleJoinLeave(group.id);
                     }}
+                    disabled={loadingJoin === group.id}
                     className={`w-full py-2 px-4 border-2 rounded-lg font-bold text-sm transition-all ${
                       joinedGroups.has(group.id)
                         ? 'bg-primary text-white border-primary'
                         : 'border-primary text-primary hover:bg-background'
-                    }`}
+                    } disabled:opacity-50`}
                   >
-                    {joinedGroups.has(group.id) ? '✓ Katıldın' : 'Katıl'}
+                    {loadingJoin === group.id ? '...' : joinedGroups.has(group.id) ? '✓ Katıldın' : 'Katıl'}
                   </button>
                 </div>
               </Link>

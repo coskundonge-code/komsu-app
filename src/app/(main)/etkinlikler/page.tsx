@@ -3,8 +3,10 @@
 import { Clock, MapPin, Plus, Heart, Users, Calendar } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
+import { getEvents, rsvpEvent } from '@/lib/hooks/use-events';
+import { useCurrentUser } from '@/lib/hooks/use-auth';
 
 const MONTH_ABBREVIATIONS = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
 
@@ -199,7 +201,34 @@ function isThisMonth(dateStr: string): boolean {
   return eventDate.getMonth() === today.getMonth() && eventDate.getFullYear() === today.getFullYear();
 }
 
+function mapDbEvent(e: any, i: number): Event {
+  const d = new Date(e.start_date || e.created_at);
+  const categoryMap: Record<string, Exclude<Category, 'all'>> = {
+    social: 'social', sports: 'sports', education: 'education',
+    culture: 'culture', music: 'music', online: 'online',
+  };
+  return {
+    id: e.id,
+    title: e.title,
+    date: e.start_date?.split('T')[0] || new Date().toISOString().split('T')[0],
+    day: d.getDate(),
+    month: d.getMonth(),
+    time: d.toTimeString().slice(0, 5),
+    location: e.location || 'Mahalle',
+    coverImage: e.cover_image || getFeedImageUrl(100 + i, 500, 350),
+    isInterested: false,
+    category: categoryMap[e.category] || 'social',
+    interestedCount: e.attendee_count || 0,
+    attendees: e.attendee_count || 0,
+    organizerName: e.profiles?.full_name || 'Organizatör',
+    organizerImage: getFeedImageUrl(i, 40, 40),
+    isOnline: e.is_online || false,
+  };
+}
+
 export default function EventsPage() {
+  const { user } = useCurrentUser();
+  const [events, setEvents] = useState<Event[]>(mockEvents);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTimeFilter, setSelectedTimeFilter] = useState<TimeFilter>('all');
   const [sortBy, setSortBy] = useState<SortOption>('date');
@@ -207,8 +236,28 @@ export default function EventsPage() {
     mockEvents.reduce((acc, e) => ({ ...acc, [e.id]: e.isInterested }), {})
   );
 
+  useEffect(() => {
+    async function fetchEvents() {
+      const { data, error } = await getEvents({ upcoming: true, limit: 20 });
+      if (!error && data && data.length > 0) {
+        const mapped = data.map(mapDbEvent);
+        setEvents(mapped);
+        setInterested(mapped.reduce((acc: Record<string, boolean>, e) => ({ ...acc, [e.id]: false }), {}));
+      }
+    }
+    fetchEvents();
+  }, []);
+
+  async function handleRsvp(eventId: string) {
+    if (!user) return;
+    const isCurrentlyInterested = interested[eventId];
+    const newStatus = isCurrentlyInterested ? 'not_attending' : 'interested';
+    setInterested(prev => ({ ...prev, [eventId]: !isCurrentlyInterested }));
+    await rsvpEvent(eventId, user.id, newStatus);
+  }
+
   const filtered = useMemo(() => {
-    return mockEvents
+    return events
       .filter((e) => {
         if (selectedTimeFilter === 'thisWeek' && !isThisWeek(e.date)) return false;
         if (selectedTimeFilter === 'thisMonth' && !isThisMonth(e.date)) return false;
@@ -222,28 +271,17 @@ export default function EventsPage() {
           return b.interestedCount - a.interestedCount;
         }
       });
-  }, [searchQuery, selectedTimeFilter, sortBy]);
+  }, [events, searchQuery, selectedTimeFilter, sortBy]);
 
   const timeFilterCounts = useMemo(() => ({
-    all: mockEvents.length,
-    thisWeek: mockEvents.filter(e => isThisWeek(e.date)).length,
-    thisMonth: mockEvents.filter(e => isThisMonth(e.date)).length,
-  }), []);
+    all: events.length,
+    thisWeek: events.filter(e => isThisWeek(e.date)).length,
+    thisMonth: events.filter(e => isThisMonth(e.date)).length,
+  }), [events]);
 
-  const handleInterested = (e: React.MouseEvent, eventId: string) => {
-    e.preventDefault();
-    setInterested((prev) => ({
-      ...prev,
-      [eventId]: !prev[eventId],
-    }));
-  };
-
-  const handleRsvp = (e: React.MouseEvent, eventId: string) => {
-    e.preventDefault();
-    setInterested((prev) => ({
-      ...prev,
-      [eventId]: !prev[eventId],
-    }));
+  const handleInterested = (ev: React.MouseEvent, eventId: string) => {
+    ev.preventDefault();
+    handleRsvp(eventId);
   };
 
   return (
