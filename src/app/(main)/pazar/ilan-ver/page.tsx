@@ -1,7 +1,6 @@
 'use client';
 
-import { toast } from '@/lib/utils/show-toast'
-
+import { toast } from '@/lib/utils/show-toast';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
@@ -22,7 +21,10 @@ interface Photo {
   preview: string;
 }
 
+type ListingType = 'sale' | 'free' | 'rental' | 'lend';
+
 interface ListingFormData {
+  listingType: ListingType;
   title: string;
   category: string;
   condition: string;
@@ -36,6 +38,13 @@ interface ListingFormData {
     shipping: boolean;
   };
 }
+
+const LISTING_TYPES: { value: ListingType; label: string; icon: string; desc: string }[] = [
+  { value: 'sale', label: 'Satılık', icon: '🏷️', desc: 'Ürünü sat' },
+  { value: 'free', label: 'Ücretsiz', icon: '🎁', desc: 'Ücretsiz ver' },
+  { value: 'rental', label: 'Kiralık', icon: '🔑', desc: 'Kiraya ver' },
+  { value: 'lend', label: 'Ödünç Ver', icon: '🤝', desc: 'Ödünç ver' },
+];
 
 const CATEGORIES = [
   'Elektronik',
@@ -69,6 +78,7 @@ const CATEGORY_ID_MAP: Record<string, string> = {
 export default function CreateListingPage() {
   const router = useRouter();
   const [formData, setFormData] = useState<ListingFormData>({
+    listingType: 'sale',
     title: '',
     category: '',
     condition: '',
@@ -139,12 +149,14 @@ export default function CreateListingPage() {
     fetchUserLocation();
   }, []);
 
+  const needsPrice = () => formData.listingType === 'sale';
+
   // Check if form can be submitted (no side effects - safe to call during render)
   const canSubmit = () => {
     if (!formData.title.trim()) return false;
     if (!formData.category) return false;
     if (!formData.condition) return false;
-    if (!formData.isFree && !formData.price.trim()) return false;
+    if (needsPrice() && !formData.price.trim()) return false;
     if (!formData.description.trim()) return false;
     if (!formData.deliveryOptions.pickup && !formData.deliveryOptions.shipping) return false;
     return true;
@@ -163,7 +175,7 @@ export default function CreateListingPage() {
     if (!formData.condition) {
       newErrors.condition = 'Durum seçilmelidir';
     }
-    if (!formData.isFree && !formData.price.trim()) {
+    if (needsPrice() && !formData.price.trim()) {
       newErrors.price = 'Fiyat belirtilmelidir';
     }
     if (!formData.description.trim()) {
@@ -332,17 +344,21 @@ export default function CreateListingPage() {
         }
       }
 
+      // Determine price based on listing type
+      const price = (formData.listingType === 'sale' && formData.price) ? parseInt(formData.price) : 0;
+
       // Create listing record
       const { data, error } = await createListing({
         title: formData.title,
         description: formData.description,
-        price: formData.isFree ? 0 : parseInt(formData.price),
+        price,
         category_id: CATEGORY_ID_MAP[formData.category] || null,
         seller_id: user.id,
         neighborhood_id: userNeighborhoodId || null,
         media_urls: mediaUrls,
         condition: formData.condition,
         status: 'active',
+        listing_type: formData.listingType,
       } as any);
 
       if (error) {
@@ -377,6 +393,36 @@ export default function CreateListingPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Listing Type Selector */}
+          <div className="bg-surface rounded-lg border border-border p-6">
+            <label className="block text-sm font-semibold text-text-primary mb-4">
+              İlan Türü <span className="text-red-500">*</span>
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {LISTING_TYPES.map((type) => (
+                <button
+                  key={type.value}
+                  type="button"
+                  onClick={() => setFormData(prev => ({
+                    ...prev,
+                    listingType: type.value,
+                    isFree: type.value === 'free',
+                    price: type.value !== 'sale' ? '' : prev.price,
+                  }))}
+                  className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-colors ${
+                    formData.listingType === type.value
+                      ? 'border-primary bg-primary-light text-primary'
+                      : 'border-border hover:border-primary hover:bg-background text-text-secondary'
+                  }`}
+                >
+                  <span className="text-2xl">{type.icon}</span>
+                  <span className="text-sm font-semibold">{type.label}</span>
+                  <span className="text-xs text-text-muted">{type.desc}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Progress Bar */}
           <div className="bg-surface rounded-lg border border-border p-4">
             <div className="flex justify-between text-xs font-medium text-text-muted mb-2">
@@ -591,27 +637,13 @@ export default function CreateListingPage() {
             </div>
           </div>
 
-          {/* Price Section */}
-          <div className="bg-surface rounded-lg border border-border p-6">
-            <label className="block text-sm font-semibold text-text-primary mb-3">
-              Fiyat <span className="text-red-500">*</span>
-            </label>
-
-            {/* Free Toggle */}
-            <div className="mb-4 p-3 bg-background rounded-lg">
-              <label className="flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={formData.isFree}
-                  onChange={handleFreeToggle}
-                  className="w-4 h-4 text-primary focus:ring-primary rounded"
-                />
-                <span className="ml-2 text-text-primary font-medium">Ücretsiz olarak veriyorum</span>
+          {/* Price Section - only shown for sale */}
+          {formData.listingType === 'sale' && (
+            <div className="bg-surface rounded-lg border border-border p-6">
+              <label className="block text-sm font-semibold text-text-primary mb-3">
+                Fiyat <span className="text-red-500">*</span>
               </label>
-            </div>
 
-            {/* Price Input */}
-            {!formData.isFree && (
               <div className="relative">
                 <span className="absolute left-4 top-3.5 text-text-muted font-semibold">
                   ₺
@@ -630,12 +662,32 @@ export default function CreateListingPage() {
                   }`}
                 />
               </div>
-            )}
 
-            {errors.price && (
-              <p className="text-red-600 text-sm mt-2">{errors.price}</p>
-            )}
-          </div>
+              {errors.price && (
+                <p className="text-red-600 text-sm mt-2">{errors.price}</p>
+              )}
+            </div>
+          )}
+
+          {/* Rental price - optional for rental */}
+          {(formData.listingType === 'rental') && (
+            <div className="bg-surface rounded-lg border border-border p-6">
+              <label className="block text-sm font-semibold text-text-primary mb-3">
+                Kira Bedeli (İsteğe Bağlı)
+              </label>
+              <div className="relative">
+                <span className="absolute left-4 top-3.5 text-text-muted font-semibold">₺</span>
+                <input
+                  type="number"
+                  value={formData.price}
+                  onChange={handlePriceChange}
+                  placeholder="Günlük/haftalık kira bedeli"
+                  min="0"
+                  className="w-full pl-8 pr-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+            </div>
+          )}
 
           {/* Description */}
           <div className="bg-surface rounded-lg border border-border p-6">
@@ -680,7 +732,9 @@ export default function CreateListingPage() {
               <button
                 type="button"
                 onClick={() =>
-                  toast.info('Konum değiştirme özelliği henüz uygulanmadı.')
+                  toast.info(
+                    'Konum değiştirme özelliği henüz uygulanmadı.'
+                  )
                 }
                 className="px-3 py-1.5 text-primary hover:bg-primary-light rounded-lg transition-colors text-sm font-medium border border-border"
               >

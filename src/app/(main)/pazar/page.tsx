@@ -344,6 +344,7 @@ export default function MarketplacePage() {
             id: item.id,
             title: item.title || 'Başlıksız İlan',
             price: item.price || 0,
+            listing_type: item.listing_type || 'sale',
             image: (item.media_urls && item.media_urls.length > 0 ? item.media_urls[0] : null) || getFeedImageUrl(Math.floor(Math.random() * 30) + 1, 500, 500),
             location: item.neighborhood || 'Bilinmiyor',
             neighborhood: item.neighborhood || 'Bilinmiyor',
@@ -392,6 +393,8 @@ export default function MarketplacePage() {
   // Apply filters and sorting
   let allFiltered = (listings.length > 0 ? listings : mockListings).filter((l) => {
     if (activeTab === 'saved' && !favorites.has(l.id)) return false;
+    if (activeTab === 'rental' && l.listing_type !== 'rental' && l.listing_type !== 'lend') return false;
+    if (activeTab === 'yours') return false; // handled separately
     if (selectedCategory && l.category !== selectedCategory) return false;
     if (selectedDistance && parseFloat(l.distance) > selectedDistance) return false;
     if (selectedCondition && l.condition !== selectedCondition) return false;
