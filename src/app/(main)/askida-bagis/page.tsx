@@ -298,12 +298,13 @@ export default function AskidaBagisPage() {
       const { data: savedDonation, error } = await createDonation({
         user_id: user.id,
         neighborhood_id: neighborhoodId as any,
-        donation_type: donationModal.business?.category || 'general',
+        donation_type: donationModal.selectedItem || donationModal.business?.category || 'general',
         title: `Askıda ${donationModal.quantity} ${donationModal.selectedItem} - ${donationModal.business?.name}`,
         description: donationModal.message || undefined,
         quantity: donationModal.quantity,
         business_id: donationModal.business?.id,
-      })
+        qr_code: qr,
+      } as any)
 
       if (error) console.warn('Donation save error:', error)
 
