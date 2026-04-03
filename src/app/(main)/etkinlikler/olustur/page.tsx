@@ -73,8 +73,7 @@ function isFormValid(formData: FormData): boolean {
     formData.category.length > 0 &&
     hasLocation &&
     formData.maxAttendees !== '' &&
-    Number(formData.maxAttendees) > 0 &&
-    formData.coverImage !== null
+    Number(formData.maxAttendees) > 0
   );
 }
 

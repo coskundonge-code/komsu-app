@@ -12,7 +12,7 @@ export async function getEvents(options?: {
   const supabase = createClient()
   let query = supabase
     .from('events')
-    .select('*, profiles!events_user_id_fkey(full_name, avatar_url), event_attendees(count)')
+    .select('*, profiles!events_organizer_id_fkey(full_name, avatar_url), event_attendees(count)')
     .order('start_date', { ascending: true })
 
   if (options?.neighborhoodId) query = query.eq('neighborhood_id', options.neighborhoodId)
@@ -27,7 +27,7 @@ export async function getEventById(id: string) {
   const supabase = createClient()
   const { data, error } = await supabase
     .from('events')
-    .select('*, profiles!events_user_id_fkey(full_name, avatar_url), event_attendees(*, profiles(full_name, avatar_url))')
+    .select('*, profiles!events_organizer_id_fkey(full_name, avatar_url), event_attendees(*, profiles(full_name, avatar_url))')
     .eq('id', id)
     .single()
   return { data, error }

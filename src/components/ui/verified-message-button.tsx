@@ -84,7 +84,7 @@ export function VerifiedMessageButton({
 
         .from('neighborhood_members')
 
-        .select('id')
+        .select('user_id')
 
         .eq('user_id', user.id)
 
@@ -244,7 +244,7 @@ export function VerifiedMessageButton({
 
         disabled={isLoading}
 
-        className="w-full px-4 py-3 bg-[#00833e] text-white rounded-lg font-semibold hover:bg-[#006b2e] transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full px-4 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-hover transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
 
       >
 
@@ -270,7 +270,7 @@ export function VerifiedMessageButton({
 
               onClick={() => setShowVerificationModal(false)}
 
-              className="absolute right-4 top-4 text-[#8f8f8f] hover:text-[#333] transition-colors"
+              className="absolute right-4 top-4 text-text-muted hover:text-text-primary transition-colors"
 
             >
 
@@ -284,13 +284,13 @@ export function VerifiedMessageButton({
 
             <div className="mb-6">
 
-              <h2 className="text-lg font-bold text-[#333] mb-3">
+              <h2 className="text-lg font-bold text-text-primary mb-3">
 
                 Adres Doğrulaması Gerekli
 
               </h2>
 
-              <p className="text-sm text-[#666] leading-relaxed">
+              <p className="text-sm text-text-secondary leading-relaxed">
 
                 Mesaj gönderebilmek için adresinizi doğrulamanız gerekiyor.
 
@@ -308,9 +308,9 @@ export function VerifiedMessageButton({
 
               <Link
 
-                href="/ayarlar"
+                href="/adres-dogrulama"
 
-                className="w-full px-4 py-3 bg-[#00833e] text-white rounded-lg font-semibold hover:bg-[#006b2e] transition-colors text-center block"
+                className="w-full px-4 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-hover transition-colors text-center block"
 
               >
 
@@ -322,7 +322,7 @@ export function VerifiedMessageButton({
 
                 onClick={() => setShowVerificationModal(false)}
 
-                className="w-full px-4 py-3 border-2 border-[#e0e0e0] text-[#666] rounded-lg font-semibold hover:bg-[#f5f5f5] transition-colors"
+                className="w-full px-4 py-3 border-2 border-border text-text-secondary rounded-lg font-semibold hover:bg-surface-active transition-colors"
 
               >
 
