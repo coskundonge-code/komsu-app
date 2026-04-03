@@ -46,7 +46,7 @@ export async function getDonations(options?: {
 
 export async function createDonation(donation: {
   user_id: string
-  neighborhood_id: string
+  neighborhood_id?: string | null
   donation_type: string
   title: string
   description?: string

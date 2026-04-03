@@ -292,12 +292,12 @@ export default function AskidaBagisPage() {
     setDonationModal({ ...donationModal, isProcessing: true })
     try {
       const qr = generateQRCode()
-      const neighborhoodId = neighborhood?.id || '00000000-0000-0000-0000-000000000000'
+      const neighborhoodId = neighborhood?.id || null
 
       // Save to Supabase
       const { data: savedDonation, error } = await createDonation({
         user_id: user.id,
-        neighborhood_id: neighborhoodId,
+        neighborhood_id: neighborhoodId as any,
         donation_type: donationModal.business?.category || 'general',
         title: `Askıda ${donationModal.quantity} ${donationModal.selectedItem} - ${donationModal.business?.name}`,
         description: donationModal.message || undefined,
