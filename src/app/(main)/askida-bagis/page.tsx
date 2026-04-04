@@ -294,6 +294,12 @@ export default function AskidaBagisPage() {
       const qr = generateQRCode()
       const neighborhoodId = neighborhood?.id || null
 
+      // Only pass business_id if it looks like a real UUID (not mock data like '1','2'...)
+      const isValidUUID = (id: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)
+      const businessId = donationModal.business?.id && isValidUUID(donationModal.business.id)
+        ? donationModal.business.id
+        : null
+
       // Save to Supabase
       const { data: savedDonation, error } = await createDonation({
         user_id: user.id,
@@ -302,11 +308,15 @@ export default function AskidaBagisPage() {
         title: `Askıda ${donationModal.quantity} ${donationModal.selectedItem} - ${donationModal.business?.name}`,
         description: donationModal.message || undefined,
         quantity: donationModal.quantity,
-        business_id: donationModal.business?.id,
+        business_id: businessId,
         qr_code: qr,
       } as any)
 
-      if (error) console.warn('Donation save error:', error)
+      if (error) {
+        console.warn('Donation save error:', error)
+        setDonationModal({ ...donationModal, isProcessing: false })
+        return
+      }
 
       // Also update local state for immediate UI feedback
       const newDonation: DonationItem = {
