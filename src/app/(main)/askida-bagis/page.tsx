@@ -164,9 +164,11 @@ function generateQRCode(): string {
 export default function AskidaBagisPage() {
   const { user, profile, neighborhood } = useCurrentUser()
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
-  const [activeTab, setActiveTab] = useState<'donate' | 'redeem'>('donate')
+  const [activeTab, setActiveTab] = useState<'donate' | 'available' | 'redeem'>('donate')
   const [businesses, setBusinesses] = useState<Business[]>([])
   const [donations, setDonations] = useState<DonationItem[]>(mockDonations)
+  const [availableDonations, setAvailableDonations] = useState<any[]>([])
+  const [claimingId, setClaimingId] = useState<string | null>(null)
   const [donationStats, setDonationStats] = useState({ total: mockDonations.length, items: 47, businesses: 8 })
 
   const [donationModal, setDonationModal] = useState<DonationModalState>({
@@ -202,8 +204,11 @@ export default function AskidaBagisPage() {
   // Fetch donations from Supabase
   useEffect(() => {
     async function fetchDonations() {
-      const { data, error } = await getDonations({ status: 'available', limit: 20 })
+      const { data, error } = await getDonations({ status: 'available', limit: 50 })
       if (!error && data && data.length > 0) {
+        // Store raw data for "Askıda Ne Var?" tab
+        setAvailableDonations(data)
+        // Map for donation wall
         const mapped: DonationItem[] = data.map((d: any, i: number) => ({
           id: d.id,
           donor: d.profiles?.full_name || 'Anonim',
@@ -405,6 +410,24 @@ export default function AskidaBagisPage() {
     }, 2000)
   }
 
+  const handleClaimDonation = async (donationId: string) => {
+    if (!user) return
+    setClaimingId(donationId)
+    try {
+      const { data, error } = await claimDonation(donationId, user.id)
+      if (!error) {
+        setAvailableDonations(prev => prev.filter(d => d.id !== donationId))
+        setDonationStats(prev => ({ ...prev, items: Math.max(0, prev.items - 1) }))
+      } else {
+        console.warn('Claim error:', error)
+      }
+    } catch (e) {
+      console.warn('Claim exception:', e)
+    } finally {
+      setClaimingId(null)
+    }
+  }
+
   const getItemPrice = (category: string): number => {
     const prices: Record<string, number> = { bread: 12, meat: 50, milk: 18, barber: 25, coffee: 8, medicine: 100, book: 35, cleaning: 45 }
     return prices[category] || 50
@@ -466,6 +489,19 @@ export default function AskidaBagisPage() {
             <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
             <span className="hidden sm:inline">Bağış Yap</span>
             <span className="sm:hidden">Bağış</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('available')}
+            className={cn(
+              'flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-xl font-bold text-center transition-all flex items-center justify-center gap-1 sm:gap-2 whitespace-nowrap text-sm sm:text-base',
+              activeTab === 'available'
+                ? 'bg-primary text-white shadow-lg'
+                : 'bg-surface text-text-primary border border-border hover:border-primary'
+            )}
+          >
+            <Gift className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">Askıda Ne Var?</span>
+            <span className="sm:hidden">Ne Var?</span>
           </button>
           <button
             onClick={() => setActiveTab('redeem')}
@@ -582,6 +618,111 @@ export default function AskidaBagisPage() {
               ))}
             </div>
           </>
+        )}
+
+        {/* === AVAILABLE DONATIONS TAB === */}
+        {activeTab === 'available' && (
+          <div>
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h2 className="text-lg sm:text-xl font-bold text-text-primary flex items-center gap-2">
+                <Gift className="w-5 h-5 text-primary" />
+                Askıda Bekleyen Bağışlar
+              </h2>
+              <span className="text-sm text-text-muted bg-surface border border-border rounded-full px-3 py-1">
+                {availableDonations.length} bağış
+              </span>
+            </div>
+
+            {availableDonations.length === 0 ? (
+              <div className="text-center py-16 bg-surface rounded-xl border border-border">
+                <div className="text-5xl mb-4">🙏</div>
+                <p className="text-text-primary font-semibold mb-1">Şu an askıda bağış yok</p>
+                <p className="text-text-muted text-sm mb-6">İlk bağışı sen yap, komşularını mutlu et!</p>
+                <button
+                  onClick={() => setActiveTab('donate')}
+                  className="bg-primary text-white font-bold px-6 py-2.5 rounded-xl hover:bg-primary-hover transition-colors"
+                >
+                  Bağış Yap
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {availableDonations.map((d: any) => {
+                  const typeEmojis: Record<string, string> = {
+                    Ekmek: '🍞', Kahve: '☕', Kitap: '📚', Et: '🥩', Süt: '🥛',
+                    Traş: '✂️', İlaç: '💊', Temizlik: '🧹', standard: '🎁',
+                  }
+                  const emoji = typeEmojis[d.donation_type] || '🎁'
+                  const isExpired = d.expires_at && new Date(d.expires_at) < new Date()
+                  const daysLeft = d.expires_at
+                    ? Math.max(0, Math.ceil((new Date(d.expires_at).getTime() - Date.now()) / 86400000))
+                    : null
+
+                  return (
+                    <div key={d.id} className="bg-surface rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col">
+                      {/* Header */}
+                      <div className="bg-gradient-to-r from-[#e8f5e9] to-[#f0fdf4] px-4 py-3 flex items-center gap-3 border-b border-border">
+                        <span className="text-3xl">{emoji}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-text-primary text-sm truncate">{d.title}</p>
+                          <p className="text-xs text-text-muted truncate">
+                            {d.businesses?.name || 'İşletme'}
+                          </p>
+                        </div>
+                        <div className="flex-shrink-0 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">
+                          ×{d.quantity || 1}
+                        </div>
+                      </div>
+
+                      {/* Body */}
+                      <div className="p-4 flex flex-col flex-grow gap-3">
+                        {d.description && (
+                          <p className="text-xs text-text-muted italic">"{d.description}"</p>
+                        )}
+                        <div className="flex items-center justify-between text-xs text-text-muted">
+                          <span>
+                            {new Date(d.created_at).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })}
+                          </span>
+                          {daysLeft !== null && (
+                            <span className={daysLeft <= 3 ? 'text-red-500 font-semibold' : 'text-text-muted'}>
+                              {daysLeft > 0 ? `${daysLeft} gün kaldı` : 'Bugün son gün'}
+                            </span>
+                          )}
+                        </div>
+
+                        <button
+                          onClick={() => handleClaimDonation(d.id)}
+                          disabled={!!claimingId || isExpired}
+                          className={cn(
+                            'w-full font-bold py-2.5 px-3 rounded-lg transition-colors flex items-center justify-center gap-2 mt-auto text-sm',
+                            isExpired
+                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                              : claimingId === d.id
+                              ? 'bg-primary/60 text-white cursor-not-allowed'
+                              : 'bg-primary hover:bg-primary-hover text-white'
+                          )}
+                        >
+                          {claimingId === d.id ? (
+                            <>
+                              <span className="animate-spin text-base">⏳</span>
+                              Alınıyor...
+                            </>
+                          ) : isExpired ? (
+                            'Süresi Doldu'
+                          ) : (
+                            <>
+                              <Check className="w-4 h-4" />
+                              Bağışı Al
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
         )}
 
         {/* === REDEEM TAB === */}
