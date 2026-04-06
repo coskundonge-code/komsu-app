@@ -1,123 +1,144 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { ChevronRight, MapPin, Building2 } from 'lucide-react'
+import { ChevronRight, MapPin, Building2, Search, X } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 const GoogleMap = dynamic(() => import('@/components/map/google-map'), { ssr: false })
 
-interface District {
+interface NeighborhoodRow {
+  id: string
   name: string
-  neighborhoods: string[]
+  city: string
+  district: string
+  slug: string
 }
-
-interface City {
-  name: string
-  districts: District[]
-}
-
-const CITIES: City[] = [
-  {
-    name: 'İstanbul',
-    districts: [
-      {
-        name: 'Beşiktaş',
-        neighborhoods: ['Akaretler', 'Bebek', 'Bezmiamen', 'Fulya', 'Levent', 'Ortaköy', 'Rumeli Hisar', 'Tarabya'],
-      },
-      {
-        name: 'Kadıköy',
-        neighborhoods: ['Acibadem', 'Bağdat Caddesi', 'Çiftehavuzlar', 'Göztepe', 'Hasanpaşa', 'Kozyatağı', 'Moda', 'Sahrayıcedit'],
-      },
-      {
-        name: 'Maltepe',
-        neighborhoods: ['Cevizli', 'Güzeltepe', 'Idealist Mah', 'Kumkapı', 'Maltepe', 'Merter', 'Ozanlar', 'Bahçelievler'],
-      },
-      {
-        name: 'Üsküdar',
-        neighborhoods: ['Baltalimani', 'Beylerbeyi', 'Bulgurlu', 'Çengelköy', 'Kuleli', 'Kuzguncuk', 'Levent', 'Salacak'],
-      },
-    ],
-  },
-  {
-    name: 'Ankara',
-    districts: [
-      {
-        name: 'Çankaya',
-        neighborhoods: ['Bilkent', 'Gaziosmanpaşa', 'İncesu', 'Kavaklıdere', 'Maltepe', 'Turan', 'Yıldız'],
-      },
-      {
-        name: 'Keçiören',
-        neighborhoods: ['Arapça', 'Başkent', 'Demetevler', 'Elmalı', 'Kızılay', 'Menderes', 'Şeneş'],
-      },
-      {
-        name: 'Cebeci',
-        neighborhoods: ['Cebeci', 'Dikmen', 'Emek', 'Ergenekon', 'Kastamonu', 'Selamet'],
-      },
-    ],
-  },
-  {
-    name: 'İzmir',
-    districts: [
-      {
-        name: 'Alsancak',
-        neighborhoods: ['Alsancak', 'Göztepe', 'Güzelyali', 'Hilal', 'Mithatpaşa', 'Yamanlar'],
-      },
-      {
-        name: 'Konak',
-        neighborhoods: ['Alsancak', 'Bayraklı', 'Caferağa', 'Çiğli', 'Gaziemir', 'İnciraltı'],
-      },
-      {
-        name: 'Bornova',
-        neighborhoods: ['Arnavutkoy', 'Bornova', 'Çiğli', 'Gaziemir', 'Güzelyali'],
-      },
-    ],
-  },
-  {
-    name: 'Bursa',
-    districts: [
-      {
-        name: 'Nilüfer',
-        neighborhoods: ['Ataşehir', 'Cekirge', 'Gursu', 'Ihlasli', 'İnegöl', 'Kaymakamlar', 'Nilüfer', 'Uludag'],
-      },
-      {
-        name: 'Osmangazi',
-        neighborhoods: ['Alsancak', 'Çekirge', 'Gemlik', 'Harmancık', 'Osmangazi'],
-      },
-    ],
-  },
-  {
-    name: 'Gaziantep',
-    districts: [
-      {
-        name: 'Şahinbey',
-        neighborhoods: ['Ahlilik', 'Işıktepe', 'Pinarbaşi', 'Sahinbey', 'Tatlisu'],
-      },
-      {
-        name: 'Şehitkâmil',
-        neighborhoods: ['Altintepe', 'Cumhuriyet', 'Demirtepe', 'Ismetiye', 'Sahinbey'],
-      },
-    ],
-  },
-]
 
 export default function AddressVerificationPage() {
   const [selectedCity, setSelectedCity] = useState('')
   const [selectedDistrict, setSelectedDistrict] = useState('')
   const [selectedNeighborhood, setSelectedNeighborhood] = useState('')
+  const [selectedNeighborhoodId, setSelectedNeighborhoodId] = useState('')
   const [addressDetail, setAddressDetail] = useState('')
   const [postalCode, setPostalCode] = useState('')
   const [error, setError] = useState('')
 
-  const currentCity = CITIES.find((c) => c.name === selectedCity)
-  const currentDistrict = currentCity?.districts.find((d) => d.name === selectedDistrict)
+  // Data from Supabase
+  const [cities, setCities] = useState<string[]>([])
+  const [districts, setDistricts] = useState<string[]>([])
+  const [neighborhoods, setNeighborhoods] = useState<NeighborhoodRow[]>([])
+  const [allNeighborhoods, setAllNeighborhoods] = useState<NeighborhoodRow[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // Autocomplete state
+  const [neighborhoodSearch, setNeighborhoodSearch] = useState('')
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [manualEntry, setManualEntry] = useState(false)
+  const searchRef = useRef<HTMLDivElement>(null)
+
+  // Load all neighborhoods on mount
+  useEffect(() => {
+    async function loadNeighborhoods() {
+      const supabase = createClient()
+      const { data, error } = await supabase
+        .from('neighborhoods')
+        .select('id, name, city, district, slug')
+        .order('city')
+        .order('district')
+        .order('name')
+
+      if (data && !error) {
+        setAllNeighborhoods(data)
+        // Extract unique cities
+        const uniqueCities = [...new Set(data.map((n: NeighborhoodRow) => n.city))].sort()
+        setCities(uniqueCities)
+      }
+      setLoading(false)
+    }
+    loadNeighborhoods()
+  }, [])
+
+  // Update districts when city changes
+  useEffect(() => {
+    if (selectedCity) {
+      const cityNeighborhoods = allNeighborhoods.filter(n => n.city === selectedCity)
+      const uniqueDistricts = [...new Set(cityNeighborhoods.map(n => n.district))].sort()
+      setDistricts(uniqueDistricts)
+    } else {
+      setDistricts([])
+    }
+    setSelectedDistrict('')
+    setSelectedNeighborhood('')
+    setSelectedNeighborhoodId('')
+    setNeighborhoodSearch('')
+  }, [selectedCity, allNeighborhoods])
+
+  // Update neighborhoods when district changes
+  useEffect(() => {
+    if (selectedCity && selectedDistrict) {
+      const filtered = allNeighborhoods.filter(
+        n => n.city === selectedCity && n.district === selectedDistrict
+      )
+      setNeighborhoods(filtered)
+    } else {
+      setNeighborhoods([])
+    }
+    setSelectedNeighborhood('')
+    setSelectedNeighborhoodId('')
+    setNeighborhoodSearch('')
+  }, [selectedDistrict, selectedCity, allNeighborhoods])
+
+  // Close suggestions on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  // Filter suggestions based on search
+  const filteredSuggestions = neighborhoods.filter(n =>
+    n.name.toLowerCase().includes(neighborhoodSearch.toLowerCase())
+  )
+
+  // Also search across ALL neighborhoods if user is typing and no city/district selected
+  const globalSuggestions = neighborhoodSearch.length >= 2 && !selectedDistrict
+    ? allNeighborhoods.filter(n =>
+        n.name.toLowerCase().includes(neighborhoodSearch.toLowerCase())
+      ).slice(0, 10)
+    : []
+
+  const handleSelectNeighborhood = (n: NeighborhoodRow) => {
+    setSelectedNeighborhood(n.name)
+    setSelectedNeighborhoodId(n.id)
+    setNeighborhoodSearch(n.name)
+    setShowSuggestions(false)
+    // Auto-set city and district if not already set
+    if (!selectedCity || selectedCity !== n.city) {
+      setSelectedCity(n.city)
+    }
+    if (!selectedDistrict || selectedDistrict !== n.district) {
+      // Need to wait for districts to populate
+      setTimeout(() => setSelectedDistrict(n.district), 100)
+    }
+  }
 
   const handleContinue = (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
-    if (!selectedCity || !selectedDistrict || !selectedNeighborhood || !addressDetail || !postalCode) {
+    if (!selectedCity || !selectedDistrict || (!selectedNeighborhood && !manualEntry) || !addressDetail || !postalCode) {
       setError('Lütfen tüm alanları doldurun')
+      return
+    }
+
+    if (manualEntry && !neighborhoodSearch.trim()) {
+      setError('Lütfen mahalle adını girin')
       return
     }
 
@@ -126,14 +147,24 @@ export default function AddressVerificationPage() {
       return
     }
 
+    const neighborhoodName = manualEntry ? neighborhoodSearch.trim() : selectedNeighborhood
+
     // TODO: Save address and proceed to next step
     console.log({
       city: selectedCity,
       district: selectedDistrict,
-      neighborhood: selectedNeighborhood,
+      neighborhood: neighborhoodName,
+      neighborhoodId: selectedNeighborhoodId || null,
       addressDetail,
       postalCode,
     })
+  }
+
+  const selectStyle = {
+    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238f8f8f' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+    backgroundRepeat: 'no-repeat' as const,
+    backgroundPosition: 'right 1rem center',
+    paddingRight: '2.5rem',
   }
 
   return (
@@ -249,146 +280,197 @@ export default function AddressVerificationPage() {
             </div>
           )}
 
-          {/* Form */}
-          <form onSubmit={handleContinue} className="space-y-5">
-            {/* City Selector */}
-            <div>
-              <label htmlFor="city" className="block text-sm font-semibold text-text-primary mb-2.5">
-                Şehir
-              </label>
-              <select
-                id="city"
-                value={selectedCity}
-                onChange={(e) => {
-                  setSelectedCity(e.target.value)
-                  setSelectedDistrict('')
-                  setSelectedNeighborhood('')
-                }}
-                className="w-full px-4 py-3 border border-border rounded-xl text-sm text-text-primary bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition appearance-none cursor-pointer"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238f8f8f' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'right 1rem center',
-                  paddingRight: '2.5rem',
-                }}
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+              <p className="text-text-muted text-sm">Mahalle verileri yükleniyor...</p>
+            </div>
+          ) : (
+            <form onSubmit={handleContinue} className="space-y-5">
+              {/* City Selector */}
+              <div>
+                <label htmlFor="city" className="block text-sm font-semibold text-text-primary mb-2.5">
+                  Şehir
+                </label>
+                <select
+                  id="city"
+                  value={selectedCity}
+                  onChange={(e) => setSelectedCity(e.target.value)}
+                  className="w-full px-4 py-3 border border-border rounded-xl text-sm text-text-primary bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition appearance-none cursor-pointer"
+                  style={selectStyle}
+                >
+                  <option value="">Şehir seçin</option>
+                  {cities.map((city) => (
+                    <option key={city} value={city}>
+                      {city}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* District Selector */}
+              <div>
+                <label htmlFor="district" className="block text-sm font-semibold text-text-primary mb-2.5">
+                  İlçe
+                </label>
+                <select
+                  id="district"
+                  value={selectedDistrict}
+                  onChange={(e) => setSelectedDistrict(e.target.value)}
+                  disabled={!selectedCity}
+                  className="w-full px-4 py-3 border border-border rounded-xl text-sm text-text-primary bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition appearance-none cursor-pointer disabled:bg-background disabled:text-text-muted disabled:cursor-not-allowed"
+                  style={selectStyle}
+                >
+                  <option value="">İlçe seçin</option>
+                  {districts.map((district) => (
+                    <option key={district} value={district}>
+                      {district}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Neighborhood Autocomplete */}
+              <div>
+                <label htmlFor="neighborhood" className="block text-sm font-semibold text-text-primary mb-2.5">
+                  Mahalle
+                </label>
+                <div ref={searchRef} className="relative">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+                    <input
+                      id="neighborhood"
+                      type="text"
+                      value={neighborhoodSearch}
+                      onChange={(e) => {
+                        setNeighborhoodSearch(e.target.value)
+                        setShowSuggestions(true)
+                        setManualEntry(false)
+                        if (!e.target.value) {
+                          setSelectedNeighborhood('')
+                          setSelectedNeighborhoodId('')
+                        }
+                      }}
+                      onFocus={() => setShowSuggestions(true)}
+                      placeholder={selectedDistrict ? 'Mahalle adı yazın...' : 'Önce şehir ve ilçe seçin veya mahalle adı yazın'}
+                      className="w-full pl-9 pr-9 py-3 border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    />
+                    {neighborhoodSearch && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNeighborhoodSearch('')
+                          setSelectedNeighborhood('')
+                          setSelectedNeighborhoodId('')
+                          setManualEntry(false)
+                        }}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Suggestions dropdown */}
+                  {showSuggestions && neighborhoodSearch.length >= 1 && (
+                    <div className="absolute z-50 w-full mt-1 bg-surface border border-border rounded-xl shadow-lg max-h-48 overflow-y-auto">
+                      {(selectedDistrict ? filteredSuggestions : globalSuggestions).length > 0 ? (
+                        <>
+                          {(selectedDistrict ? filteredSuggestions : globalSuggestions).map((n) => (
+                            <button
+                              key={n.id}
+                              type="button"
+                              onClick={() => handleSelectNeighborhood(n)}
+                              className="w-full text-left px-4 py-2.5 text-sm hover:bg-primary/5 transition flex items-center justify-between"
+                            >
+                              <span className="font-medium text-text-primary">{n.name}</span>
+                              {!selectedDistrict && (
+                                <span className="text-xs text-text-muted">{n.district}, {n.city}</span>
+                              )}
+                            </button>
+                          ))}
+                        </>
+                      ) : (
+                        <div className="px-4 py-3">
+                          <p className="text-sm text-text-muted mb-2">Mahalle bulunamadı</p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setManualEntry(true)
+                              setSelectedNeighborhood(neighborhoodSearch)
+                              setShowSuggestions(false)
+                            }}
+                            className="text-sm text-primary font-medium hover:text-primary-hover"
+                          >
+                            &quot;{neighborhoodSearch}&quot; olarak elle gir
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+                {selectedNeighborhood && !manualEntry && (
+                  <p className="text-xs text-primary mt-1.5 flex items-center gap-1">
+                    <MapPin className="w-3 h-3" /> {selectedNeighborhood} seçildi
+                  </p>
+                )}
+                {manualEntry && (
+                  <p className="text-xs text-amber-600 mt-1.5">Elle girilen mahalle: {neighborhoodSearch}</p>
+                )}
+              </div>
+
+              {/* Address Detail Textarea */}
+              <div>
+                <label htmlFor="addressDetail" className="block text-sm font-semibold text-text-primary mb-2.5">
+                  Adres Detayı
+                </label>
+                <textarea
+                  id="addressDetail"
+                  value={addressDetail}
+                  onChange={(e) => setAddressDetail(e.target.value)}
+                  placeholder="Sokak adı, bina numarası, daire numarası vb."
+                  rows={4}
+                  className="w-full px-4 py-3 border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition resize-none"
+                />
+              </div>
+
+              {/* Postal Code Input */}
+              <div>
+                <label htmlFor="postalCode" className="block text-sm font-semibold text-text-primary mb-2.5">
+                  Posta Kodu
+                </label>
+                <input
+                  id="postalCode"
+                  type="text"
+                  maxLength={5}
+                  value={postalCode}
+                  onChange={(e) => setPostalCode(e.target.value.replace(/\D/g, ''))}
+                  placeholder="34000"
+                  className="w-full px-4 py-3 border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                />
+              </div>
+
+              {/* Map */}
+              <div className="w-full h-48 rounded-xl overflow-hidden border border-border">
+                <GoogleMap
+                  center={[41.0370, 28.9850]}
+                  zoom={13}
+                  className="w-full h-full"
+                  showUserLocation={true}
+                  onClick={(lat, lng) => console.log('Seçilen konum:', lat, lng)}
+                />
+              </div>
+
+              {/* Continue Button */}
+              <button
+                type="submit"
+                className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed mt-8 shadow-sm hover:shadow-md flex items-center justify-center gap-2"
               >
-                <option value="">Şehir seçin</option>
-                {CITIES.map((city) => (
-                  <option key={city.name} value={city.name}>
-                    {city.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* District Selector */}
-            <div>
-              <label htmlFor="district" className="block text-sm font-semibold text-text-primary mb-2.5">
-                İçe Düşen İçerik
-              </label>
-              <select
-                id="district"
-                value={selectedDistrict}
-                onChange={(e) => {
-                  setSelectedDistrict(e.target.value)
-                  setSelectedNeighborhood('')
-                }}
-                disabled={!selectedCity}
-                className="w-full px-4 py-3 border border-border rounded-xl text-sm text-text-primary bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition appearance-none cursor-pointer disabled:bg-background disabled:text-text-muted disabled:cursor-not-allowed"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238f8f8f' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'right 1rem center',
-                  paddingRight: '2.5rem',
-                }}
-              >
-                <option value="">İçe düşen içerik seçin</option>
-                {currentCity?.districts.map((district) => (
-                  <option key={district.name} value={district.name}>
-                    {district.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Neighborhood Selector */}
-            <div>
-              <label htmlFor="neighborhood" className="block text-sm font-semibold text-text-primary mb-2.5">
-                Mahalle
-              </label>
-              <select
-                id="neighborhood"
-                value={selectedNeighborhood}
-                onChange={(e) => setSelectedNeighborhood(e.target.value)}
-                disabled={!selectedDistrict}
-                className="w-full px-4 py-3 border border-border rounded-xl text-sm text-text-primary bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition appearance-none cursor-pointer disabled:bg-background disabled:text-text-muted disabled:cursor-not-allowed"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238f8f8f' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'right 1rem center',
-                  paddingRight: '2.5rem',
-                }}
-              >
-                <option value="">Mahalle seçin</option>
-                {currentDistrict?.neighborhoods.map((neighborhood) => (
-                  <option key={neighborhood} value={neighborhood}>
-                    {neighborhood}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Address Detail Textarea */}
-            <div>
-              <label htmlFor="addressDetail" className="block text-sm font-semibold text-text-primary mb-2.5">
-                Adres Detayı
-              </label>
-              <textarea
-                id="addressDetail"
-                value={addressDetail}
-                onChange={(e) => setAddressDetail(e.target.value)}
-                placeholder="Sokak adı, bina numarası, daire numarası vb."
-                rows={4}
-                className="w-full px-4 py-3 border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition resize-none"
-              />
-            </div>
-
-            {/* Postal Code Input */}
-            <div>
-              <label htmlFor="postalCode" className="block text-sm font-semibold text-text-primary mb-2.5">
-                Posta Kodu
-              </label>
-              <input
-                id="postalCode"
-                type="text"
-                maxLength={5}
-                value={postalCode}
-                onChange={(e) => setPostalCode(e.target.value.replace(/\D/g, ''))}
-                placeholder="34000"
-                className="w-full px-4 py-3 border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
-              />
-            </div>
-
-            {/* Map */}
-            <div className="w-full h-48 rounded-xl overflow-hidden border border-border">
-              <GoogleMap
-                center={[41.0370, 28.9850]}
-                zoom={13}
-                className="w-full h-full"
-                showUserLocation={true}
-                onClick={(lat, lng) => console.log('Seçilen konum:', lat, lng)}
-              />
-            </div>
-
-            {/* Continue Button */}
-            <button
-              type="submit"
-              className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed mt-8 shadow-sm hover:shadow-md flex items-center justify-center gap-2"
-            >
-              Devam Et
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </form>
+                Devam Et
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </form>
+          )}
 
           {/* Back link */}
           <div className="mt-8 pt-6 border-t border-border text-center">
