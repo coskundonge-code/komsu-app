@@ -84,7 +84,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
 
 
-      <div className="max-w-[1440px] mx-auto w-full flex flex-1 px-0 xl:px-4">
+      <div className="w-full flex flex-1 px-0 xl:px-4">
 
         <Sidebar className="sticky top-14 h-[calc(100vh-56px)]" />
 
