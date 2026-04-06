@@ -112,10 +112,10 @@ export async function getBusinessesWithProducts(options?: {
   const supabase = createClient()
   let query = supabase
     .from('businesses')
-    .select(\`
+    .select(`
       id, name, logo_url, address, rating_avg, review_count, cover_url,
       donation_products!inner(id, name, description, price, image_url, category, is_active, sort_order, total_donated)
-    \`)
+    `)
     .eq('donation_products.is_active', true)
 
   if (options?.neighborhoodId) query = query.eq('neighborhood_id', options.neighborhoodId)
