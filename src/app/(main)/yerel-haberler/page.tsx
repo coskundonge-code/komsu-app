@@ -42,9 +42,9 @@ const localNews: NewsItem[] = [
 
     id: "1",
 
-    title: "Mahallede Yeni Kanalizasyon Projesi BaÅladÄ±",
+    title: "Mahallede Yeni Kanalizasyon Projesi Başladı",
 
-    description: "Sokaklar altÄ±nda yeni kanalizasyon sistemi kurulmasÄ± iÃ§in Ã§alÄ±Åmalar baÅlamÄ±ÅtÄ±r.",
+    description: "Sokaklar altında yeni kanalizasyon sistemi kurulması için çalışmalar başlamıştır.",
 
     distance: "250m",
 
@@ -54,11 +54,11 @@ const localNews: NewsItem[] = [
 
     type: "local",
 
-    time: "2 saat Ã¶nce",
+    time: "2 saat önce",
 
     icon: "news",
 
-    source: "MuhtarlÄ±k",
+    source: "Muhtarlık",
 
   },
 
@@ -66,9 +66,9 @@ const localNews: NewsItem[] = [
 
     id: "2",
 
-    title: "Belediye: Yol OnarÄ±m ÃalÄ±ÅmalarÄ± BaÅlayacak",
+    title: "Belediye: Yol Onarım Çalışmaları Başlayacak",
 
-    description: "Ana cadde yol onarÄ±m Ã§alÄ±ÅmalarÄ± 20 Mart'ta baÅlayacak, 3 hafta sÃ¼recektir.",
+    description: "Ana cadde yol onarım çalışmaları 20 Mart'ta başlayacak, 3 hafta sürecektir.",
 
     distance: "500m",
 
@@ -78,7 +78,7 @@ const localNews: NewsItem[] = [
 
     type: "municipal",
 
-    time: "4 saat Ã¶nce",
+    time: "4 saat önce",
 
     icon: "news",
 
@@ -90,9 +90,9 @@ const localNews: NewsItem[] = [
 
     id: "3",
 
-    title: "Mahalle MuhtarÄ± Yeni Sosyal Tesis AÃ§Ä±lÄ±ÅÄ±nÄ± YaptÄ±",
+    title: "Mahalle Muhtarı Yeni Sosyal Tesis Açılışını Yaptı",
 
-    description: "Mahallede hizmet vermek Ã¼zere yeni sosyal tesis resmi olarak aÃ§Ä±lmÄ±ÅtÄ±r.",
+    description: "Mahallede hizmet vermek üzere yeni sosyal tesis resmi olarak açılmıştır.",
 
     distance: "180m",
 
@@ -102,11 +102,11 @@ const localNews: NewsItem[] = [
 
     type: "local",
 
-    time: "1 saat Ã¶nce",
+    time: "1 saat önce",
 
     icon: "news",
 
-    source: "MuhtarlÄ±k",
+    source: "Muhtarlık",
 
   },
 
@@ -114,9 +114,9 @@ const localNews: NewsItem[] = [
 
     id: "4",
 
-    title: "Su Kesintisi Duyurusu: ÃarÅamba gÃ¼nÃ¼",
+    title: "Su Kesintisi Duyurusu: Çarşamba günü",
 
-    description: "Ä°Ã§me suyu aÄÄ±nÄ± geniÅletme projesi kapsamÄ±nda ÃarÅamba gÃ¼nÃ¼ 08:00-16:00 arasÄ± su kesintisi olacaktÄ±r.",
+    description: "İçme suyu ağını genişletme projesi kapsamında Çarşamba günü 08:00-16:00 arası su kesintisi olacaktır.",
 
     distance: "600m",
 
@@ -126,7 +126,7 @@ const localNews: NewsItem[] = [
 
     type: "announcement",
 
-    time: "6 saat Ã¶nce",
+    time: "6 saat önce",
 
     icon: "news",
 
@@ -138,9 +138,9 @@ const localNews: NewsItem[] = [
 
     id: "5",
 
-    title: "Okul AÃ§Ä±lÄ±Å Tarihi Duyurusu",
+    title: "Okul Açılış Tarihi Duyurusu",
 
-    description: "Mahalle ilkokulu 17 Mart tarihinde eÄitim Ã¶Äretim faaliyetlerine baÅlayacaktÄ±r.",
+    description: "Mahalle ilkokulu 17 Mart tarihinde eğitim öğretim faaliyetlerine başlayacaktır.",
 
     distance: "450m",
 
@@ -150,7 +150,7 @@ const localNews: NewsItem[] = [
 
     type: "municipal",
 
-    time: "3 saat Ã¶nce",
+    time: "3 saat önce",
 
     icon: "news",
 
@@ -162,9 +162,9 @@ const localNews: NewsItem[] = [
 
     id: "6",
 
-    title: "Mahalle Temizlik HaftasÄ± BaÅlamÄ±ÅtÄ±r",
+    title: "Mahalle Temizlik Haftası Başlamıştır",
 
-    description: "Bu hafta boyunca mahalle cadde ve sokaklarÄ± temizlenecektir. AraÃ§larÄ± uygun yerlere park etmeye Ã¶zen gÃ¶sterin.",
+    description: "Bu hafta boyunca mahalle cadde ve sokakları temizlenecektir. Araçları uygun yerlere park etmeye özen gösterin.",
 
     distance: "750m",
 
@@ -174,11 +174,11 @@ const localNews: NewsItem[] = [
 
     type: "local",
 
-    time: "5 saat Ã¶nce",
+    time: "5 saat önce",
 
     icon: "news",
 
-    source: "MuhtarlÄ±k",
+    source: "Muhtarlık",
 
   },
 
@@ -186,9 +186,9 @@ const localNews: NewsItem[] = [
 
     id: "7",
 
-    title: "Ä°tfaiye TatbikatÄ± YapÄ±lacak",
+    title: "İtfaiye Tatbikatı Yapılacak",
 
-    description: "Mahalle Ã§erÃ§evesinde gÃ¼venlik altyapÄ±sÄ±nÄ±n teste tabi tutulmasÄ± amacÄ±yla tatbikat yapÄ±lacaktÄ±r.",
+    description: "Mahalle çerçevesinde güvenlik altyapısının teste tabi tutulması amacıyla tatbikat yapılacaktır.",
 
     distance: "900m",
 
@@ -198,7 +198,7 @@ const localNews: NewsItem[] = [
 
     type: "announcement",
 
-    time: "2 saat Ã¶nce",
+    time: "2 saat önce",
 
     icon: "news",
 
@@ -212,7 +212,7 @@ const localNews: NewsItem[] = [
 
     title: "Mahalle Park Yenileme Projesi Sona Erdi",
 
-    description: "Uzun sÃ¼redir devam eden park yenileme projesi tamamlanmÄ±Å, park halkÄ±n kullanÄ±mÄ±na aÃ§Ä±lmÄ±ÅtÄ±r.",
+    description: "Uzun süredir devam eden park yenileme projesi tamamlanmış, park halkın kullanımına açılmıştır.",
 
     distance: "400m",
 
@@ -222,11 +222,11 @@ const localNews: NewsItem[] = [
 
     type: "local",
 
-    time: "7 saat Ã¶nce",
+    time: "7 saat önce",
 
     icon: "news",
 
-    source: "MuhtarlÄ±k",
+    source: "Muhtarlık",
 
   },
 
@@ -234,9 +234,9 @@ const localNews: NewsItem[] = [
 
     id: "9",
 
-    title: "SaÄlÄ±k TaramasÄ± HaftasÄ± BaÅlÄ±yor",
+    title: "Sağlık Taraması Haftası Başlıyor",
 
-    description: "Halk saÄlÄ±ÄÄ± merkezinde Ã¼cretsiz saÄlÄ±k taramasÄ± hizmetleri verilecektir.",
+    description: "Halk sağlığı merkezinde ücretsiz sağlık taraması hizmetleri verilecektir.",
 
     distance: "350m",
 
@@ -246,7 +246,7 @@ const localNews: NewsItem[] = [
 
     type: "municipal",
 
-    time: "4 saat Ã¶nce",
+    time: "4 saat önce",
 
     icon: "news",
 
@@ -258,9 +258,9 @@ const localNews: NewsItem[] = [
 
     id: "10",
 
-    title: "Mahalle Bilgi Panosu GÃ¼ncellendi",
+    title: "Mahalle Bilgi Panosu Güncellendi",
 
-    description: "Mahalle giriÅ kapÄ±sÄ±nda bulunan bilgi panosu yeni haberler ve duyurularla gÃ¼ncellendi.",
+    description: "Mahalle giriş kapısında bulunan bilgi panosu yeni haberler ve duyurularla güncellendi.",
 
     distance: "200m",
 
@@ -270,11 +270,11 @@ const localNews: NewsItem[] = [
 
     type: "local",
 
-    time: "6 saat Ã¶nce",
+    time: "6 saat önce",
 
     icon: "news",
 
-    source: "MuhtarlÄ±k",
+    source: "Muhtarlık",
 
   },
 
@@ -310,7 +310,7 @@ const getSourceColor = (source: string) => {
 
   switch (source) {
 
-    case "MuhtarlÄ±k":
+    case "Muhtarlık":
 
       return "bg-amber-100 text-amber-700 border-amber-200";
 
@@ -380,7 +380,7 @@ export default function YerelHaberlerPage() {
 
             icon: "news",
 
-            source: "MuhtarlÄ±k",
+            source: "Muhtarlık",
 
           }));
 
@@ -406,7 +406,7 @@ export default function YerelHaberlerPage() {
 
   const filterCategories = [
 
-    { id: "all", label: "TÃ¼mÃ¼" },
+    { id: "all", label: "Tümü" },
 
     { id: "municipal", label: "Belediye" },
 
@@ -490,9 +490,9 @@ export default function YerelHaberlerPage() {
 
             <Newspaper size={48} className="mx-auto text-text-muted mb-3" />
 
-            <p className="text-text-primary font-medium">Haber bulunamadÄ±</p>
+            <p className="text-text-primary font-medium">Haber bulunamadı</p>
 
-            <p className="text-text-muted text-sm mt-1">SeÃ§ilen kategoride haber yok</p>
+            <p className="text-text-muted text-sm mt-1">Seçilen kategoride haber yok</p>
 
           </div>
 
