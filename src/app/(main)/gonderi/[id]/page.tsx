@@ -26,17 +26,17 @@ const mockPost = {
 
   id: '1',
 
-  author: { name: 'Ayse K.', initial: 'A', neighborhood: 'KadÄ±kÃ¶y, Moda', profileId: 'ayse-k' },
+  author: { name: 'Ayse K.', initial: 'A', neighborhood: 'Kadıköy, Moda', profileId: 'ayse-k' },
 
-  timeAgo: '2 saat Ã¶nce',
+  timeAgo: '2 saat önce',
 
   category: 'Etkinlikler',
 
   categoryColor: 'bg-cat-event-light text-cat-event',
 
-  title: 'Mahalle PikniÄi Bu AkÅam!',
+  title: 'Mahalle Pikniği Bu Akşam!',
 
-  body: 'Merhaba komÅular, bu akÅam saat 20:00\'de mahalle parkÄ±nda piknik yapÄ±yoruz. KatÄ±lmak isteyen herkesi bekliyoruz! YanÄ±nÄ±za battaniye ve atÄ±ÅtÄ±rmalÄ±k getirmeniz yeterli.\n\nBuluÅma noktasÄ±: Moda ParkÄ± ana giriÅ\nSaat: 20:00\n\nHerkesi bekliyoruz!',
+  body: 'Merhaba komşular, bu akşam saat 20:00\'de mahalle parkında piknik yapıyoruz. Katılmak isteyen herkesi bekliyoruz! Yanınıza battaniye ve atıştırmalık getirmeniz yeterli.\n\nBuluşma noktası: Moda Parkı ana giriş\nSaat: 20:00\n\nHerkesi bekliyoruz!',
 
   image: getFeedImageUrl(58),
 
@@ -50,11 +50,11 @@ const mockPost = {
 
 const mockComments = [
 
-  { id: '1', author: 'Mehmet Y.', initial: 'M', text: 'Harika bir fikir! Kesinlikle geliriz.', timeAgo: '1 saat Ã¶nce', likes: 3 },
+  { id: '1', author: 'Mehmet Y.', initial: 'M', text: 'Harika bir fikir! Kesinlikle geliriz.', timeAgo: '1 saat önce', likes: 3 },
 
-  { id: '2', author: 'Fatma C.', initial: 'F', text: 'Ãocuklar Ã§ok sevinecek, biz de geliyoruz!', timeAgo: '45 dk Ã¶nce', likes: 5 },
+  { id: '2', author: 'Fatma C.', initial: 'F', text: 'Çocuklar çok sevinecek, biz de geliyoruz!', timeAgo: '45 dk önce', likes: 5 },
 
-  { id: '3', author: 'Ali R.', initial: 'A', text: 'Ben de salata hazÄ±rlayÄ±p getireyim.', timeAgo: '30 dk Ã¶nce', likes: 2 },
+  { id: '3', author: 'Ali R.', initial: 'A', text: 'Ben de salata hazırlayıp getireyim.', timeAgo: '30 dk önce', likes: 2 },
 
 ]
 
@@ -104,7 +104,7 @@ export default function PostDetailPage() {
 
             initial: (postData.profiles?.full_name || 'A')[0].toUpperCase(),
 
-            neighborhood: 'KadÄ±kÃ¶y, Moda',
+            neighborhood: 'Kadıköy, Moda',
 
             profileId: postData.user_id,
 
@@ -196,7 +196,7 @@ export default function PostDetailPage() {
 
             text: commentData.body,
 
-            timeAgo: 'Az Ã¶nce',
+            timeAgo: 'Az önce',
 
             likes: 0,
 
@@ -242,7 +242,7 @@ export default function PostDetailPage() {
 
         <ArrowLeft className="w-4 h-4" />
 
-        Geri DÃ¶n
+        Geri Dön
 
       </Link>
 
@@ -272,7 +272,7 @@ export default function PostDetailPage() {
 
                 <p className="text-xs text-text-muted flex items-center gap-1">
 
-                  {mockPost.author.neighborhood} Â· {mockPost.timeAgo} Â· <Globe className="w-3 h-3" />
+                  {mockPost.author.neighborhood} · {mockPost.timeAgo} · <Globe className="w-3 h-3" />
 
                 </p>
 
@@ -318,7 +318,7 @@ export default function PostDetailPage() {
 
         <div className="px-4 py-2 flex items-center justify-between text-xs text-text-muted border-t border-border-light">
 
-          <span>{mockPost.reactions + (liked ? 1 : 0)} beÄeni</span>
+          <span>{mockPost.reactions + (liked ? 1 : 0)} beğeni</span>
 
           <span>{mockPost.comments} yorum</span>
 
@@ -346,7 +346,7 @@ export default function PostDetailPage() {
 
               <Heart className={cn('w-5 h-5', liked && 'fill-current')} />
 
-              {liked ? 'BeÄendin' : 'BeÄen'}
+              {liked ? 'Beğendin' : 'Beğen'}
 
             </button>
 
@@ -426,7 +426,7 @@ export default function PostDetailPage() {
 
                   <Send className="w-4 h-4" />
 
-                  {submittingComment ? 'GÃ¶nderiliyor...' : 'GÃ¶nder'}
+                  {submittingComment ? 'Gönderiliyor...' : 'Gönder'}
 
                 </button>
 
