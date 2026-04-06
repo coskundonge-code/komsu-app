@@ -22,12 +22,12 @@ interface HelpRequest {
 }
 
 const CATEGORIES = [
-  { id: 'all', label: 'TÃ¼mÃ¼', icon: 'ð ' },
-  { id: 'elderly', label: 'YaÅlÄ± BakÄ±m', icon: 'ð´' },
-  { id: 'shopping', label: 'AlÄ±ÅveriÅ', icon: 'ð' },
-  { id: 'health', label: 'SaÄlÄ±k', icon: 'ð¥' },
-  { id: 'household', label: 'Ev Ä°Åleri', icon: 'ð¡' },
-  { id: 'transport', label: 'UlaÅÄ±m', icon: 'ð' },
+  { id: 'all', label: 'Tümü', icon: '🏠' },
+  { id: 'elderly', label: 'Yaşlı Bakım', icon: '👴' },
+  { id: 'shopping', label: 'Alışveriş', icon: '🛒' },
+  { id: 'health', label: 'Sağlık', icon: '🏥' },
+  { id: 'household', label: 'Ev İşleri', icon: '🏡' },
+  { id: 'transport', label: 'Ulaşım', icon: '🚗' },
 ] as const;
 
 const CATEGORY_COLORS: Record<Category, { bg: string; text: string; border: string }> = {
@@ -40,12 +40,12 @@ const CATEGORY_COLORS: Record<Category, { bg: string; text: string; border: stri
 };
 
 const CATEGORY_LABELS: Record<Category, string> = {
-  all: 'TÃ¼mÃ¼',
-  elderly: 'YaÅlÄ± BakÄ±m',
-  shopping: 'AlÄ±ÅveriÅ',
-  health: 'SaÄlÄ±k',
-  household: 'Ev Ä°Åleri',
-  transport: 'UlaÅÄ±m',
+  all: 'Tümü',
+  elderly: 'Yaşlı Bakım',
+  shopping: 'Alışveriş',
+  health: 'Sağlık',
+  household: 'Ev İşleri',
+  transport: 'Ulaşım',
 };
 
 function timeAgo(dateStr: string): string {
@@ -53,10 +53,10 @@ function timeAgo(dateStr: string): string {
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffH = Math.floor(diffMs / (1000 * 60 * 60));
-  if (diffH < 1) return 'az Ã¶nce';
-  if (diffH < 24) return `${diffH} saat Ã¶nce`;
+  if (diffH < 1) return 'az önce';
+  if (diffH < 24) return `${diffH} saat önce`;
   const diffD = Math.floor(diffH / 24);
-  return `${diffD} gÃ¼n Ã¶nce`;
+  return `${diffD} gün önce`;
 }
 
 function mapDbToLocal(r: HelpRequestType): HelpRequest {
@@ -115,9 +115,9 @@ export default function KomsumaYardim() {
   }
 
   async function handleCreate() {
-    if (!user) { setCreateForm(f => ({ ...f, error: 'GiriÅ yapmalÄ±sÄ±nÄ±z.' })); return; }
+    if (!user) { setCreateForm(f => ({ ...f, error: 'Giriş yapmalısınız.' })); return; }
     if (!createForm.title.trim() || !createForm.description.trim()) {
-      setCreateForm(f => ({ ...f, error: 'BaÅlÄ±k ve aÃ§Ä±klama zorunludur.' }));
+      setCreateForm(f => ({ ...f, error: 'Başlık ve açıklama zorunludur.' }));
       return;
     }
     setCreateForm(f => ({ ...f, submitting: true, error: '' }));
@@ -163,8 +163,8 @@ export default function KomsumaYardim() {
                 <HandHeart className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-text-primary">KomÅuma YardÄ±m</h1>
-                <p className="text-[13px] text-text-muted mt-0.5">KomÅularÄ±nÄ±za yardÄ±m edin veya yardÄ±m isteyin</p>
+                <h1 className="text-xl font-bold text-text-primary">Komşuma Yardım</h1>
+                <p className="text-[13px] text-text-muted mt-0.5">Komşularınıza yardım edin veya yardım isteyin</p>
               </div>
             </div>
             <button
@@ -187,7 +187,7 @@ export default function KomsumaYardim() {
                   : 'text-text-muted hover:text-text-secondary'
               )}
             >
-              YardÄ±m Talepleri
+              Yardım Talepleri
             </button>
             <button
               onClick={() => { setActiveTab('offers'); setSelectedCategory('all'); }}
@@ -198,7 +198,7 @@ export default function KomsumaYardim() {
                   : 'text-text-muted hover:text-text-secondary'
               )}
             >
-              YardÄ±m Teklifleri
+              Yardım Teklifleri
             </button>
           </div>
         </div>
@@ -255,19 +255,19 @@ export default function KomsumaYardim() {
               <Heart className="w-8 h-8 text-primary/40" />
             </div>
             <h3 className="text-lg font-semibold text-text-primary mb-2">
-              {activeTab === 'requests' ? 'HenÃ¼z yardÄ±m talebi yok' : 'HenÃ¼z yardÄ±m teklifi yok'}
+              {activeTab === 'requests' ? 'Henüz yardım talebi yok' : 'Henüz yardım teklifi yok'}
             </h3>
             <p className="text-sm text-text-muted mb-6 max-w-sm mx-auto">
               {activeTab === 'requests'
-                ? 'Ä°lk yardÄ±m talebini oluÅturarak komÅularÄ±nÄ±zdan destek isteyin.'
-                : 'KomÅularÄ±nÄ±za yardÄ±m teklif ederek topluluÄunuza katkÄ±da bulunun.'}
+                ? 'İlk yardım talebini oluşturarak komşularınızdan destek isteyin.'
+                : 'Komşularınıza yardım teklif ederek topluluğunuza katkıda bulunun.'}
             </p>
             <button
               onClick={() => setShowCreateModal(true)}
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary-hover transition-all shadow-sm hover:shadow-md"
             >
               <Plus className="w-4 h-4" />
-              {activeTab === 'requests' ? 'YardÄ±m Talep Et' : 'YardÄ±m Teklif Et'}
+              {activeTab === 'requests' ? 'Yardım Talep Et' : 'Yardım Teklif Et'}
             </button>
           </div>
         )}
@@ -281,7 +281,7 @@ export default function KomsumaYardim() {
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-border">
               <h2 className="text-lg font-bold text-text-primary">
-                {activeTab === 'requests' ? 'YardÄ±m Talep Et' : 'YardÄ±m Teklif Et'}
+                {activeTab === 'requests' ? 'Yardım Talep Et' : 'Yardım Teklif Et'}
               </h2>
               <button
                 onClick={() => setShowCreateModal(false)}
@@ -301,31 +301,31 @@ export default function KomsumaYardim() {
                   className="w-full border border-border rounded-xl px-4 py-3 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 >
                   <option value="general">Genel</option>
-                  <option value="elderly">YaÅlÄ± BakÄ±m</option>
-                  <option value="shopping">AlÄ±ÅveriÅ</option>
-                  <option value="health">SaÄlÄ±k</option>
-                  <option value="household">Ev Ä°Åleri</option>
-                  <option value="transport">UlaÅÄ±m</option>
+                  <option value="elderly">Yaşlı Bakım</option>
+                  <option value="shopping">Alışveriş</option>
+                  <option value="health">Sağlık</option>
+                  <option value="household">Ev İşleri</option>
+                  <option value="transport">Ulaşım</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-text-primary mb-2">BaÅlÄ±k</label>
+                <label className="block text-sm font-semibold text-text-primary mb-2">Başlık</label>
                 <input
                   type="text"
                   value={createForm.title}
                   onChange={e => setCreateForm(f => ({ ...f, title: e.target.value }))}
-                  placeholder="KÄ±sa bir baÅlÄ±k girin..."
+                  placeholder="Kısa bir başlık girin..."
                   className="w-full border border-border rounded-xl px-4 py-3 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-text-primary mb-2">AÃ§Ä±klama</label>
+                <label className="block text-sm font-semibold text-text-primary mb-2">Açıklama</label>
                 <textarea
                   value={createForm.description}
                   onChange={e => setCreateForm(f => ({ ...f, description: e.target.value }))}
-                  placeholder="DetaylarÄ± aÃ§Ä±klayÄ±n..."
+                  placeholder="Detayları açıklayın..."
                   rows={4}
                   className="w-full border border-border rounded-xl px-4 py-3 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
                 />
@@ -340,7 +340,7 @@ export default function KomsumaYardim() {
                 />
                 <span className="flex items-center gap-2 text-sm text-text-primary">
                   <AlertCircle className="w-4 h-4 text-red-500" />
-                  Acil yardÄ±m gerekiyor
+                  Acil yardım gerekiyor
                 </span>
               </label>
 
@@ -359,7 +359,7 @@ export default function KomsumaYardim() {
                 disabled={createForm.submitting}
                 className="w-full py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary-hover transition-all disabled:opacity-50 shadow-sm"
               >
-                {createForm.submitting ? 'Kaydediliyor...' : 'GÃ¶nder'}
+                {createForm.submitting ? 'Kaydediliyor...' : 'Gönder'}
               </button>
             </div>
           </div>
@@ -411,7 +411,7 @@ function RequestCard({ request, onHelp }: RequestCardProps) {
         {request.helpers && request.helpers > 0 ? (
           <div className="flex items-center gap-1.5 text-primary">
             <Users className="w-3.5 h-3.5" />
-            <span className="font-medium">{request.helpers} yardÄ±mcÄ±</span>
+            <span className="font-medium">{request.helpers} yardımcı</span>
           </div>
         ) : null}
       </div>
@@ -422,7 +422,7 @@ function RequestCard({ request, onHelp }: RequestCardProps) {
         className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-primary/5 text-primary font-semibold text-sm rounded-xl hover:bg-primary hover:text-white transition-all border border-primary/20 hover:border-primary"
       >
         <HandHeart className="w-4 h-4" />
-        YardÄ±m Et
+        Yardım Et
         <ArrowRight className="w-3.5 h-3.5 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
       </button>
     </div>
