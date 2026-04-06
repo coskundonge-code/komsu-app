@@ -32,13 +32,13 @@ import { createClient } from '@/lib/supabase/client'
 
 const feedTabs = [
 
-  { id: 'foryou', label: 'Senin Ä°Ã§in' },
+  { id: 'foryou', label: 'Senin İçin' },
 
-  { id: 'recent', label: 'Son PaylaÅÄ±lanlar' },
+  { id: 'recent', label: 'Son Paylaşılanlar' },
 
-  { id: 'nearby', label: 'YakÄ±n Mahalleler' },
+  { id: 'nearby', label: 'Yakın Mahalleler' },
 
-  { id: 'trending', label: 'GÃ¼ndem' },
+  { id: 'trending', label: 'Gündem' },
 
 ]
 
@@ -46,21 +46,21 @@ const feedTabs = [
 
 const mockPosts: FeedPostData[] = [
 
-  { id: 'pinned-1', author: { name: 'Ibrahim M. (Muhtar)', initial: 'I', neighborhood: 'KadÄ±kÃ¶y, Moda', profileId: 'ibrahim-muhtar' }, timeAgo: '3 sa', isSponsored: false, isPinned: true, category: 'safety', title: 'Mahallede ÅÃ¼pheli Faaliyet - Dikkat', body: 'DeÄerli mahalleli komÅularÄ±mÄ±z, son iki haftada mahalle Ã§eperinde bazÄ± ÅÃ¼pheli hareketliler yaÅanmistir. LÃ¼tfen Ã§evre dikkat edin ve yetkililerine haber veriniz.', image: getFeedImageUrl(100), reactions: 156, comments: 42, feed: 'foryou' },
+  { id: 'pinned-1', author: { name: 'Ibrahim M. (Muhtar)', initial: 'I', neighborhood: 'Kadıköy, Moda', profileId: 'ibrahim-muhtar' }, timeAgo: '3 sa', isSponsored: false, isPinned: true, category: 'safety', title: 'Mahallede Şüpheli Faaliyet - Dikkat', body: 'Değerli mahalleli komşularımız, son iki haftada mahalle çeperinde bazı şüpheli hareketliler yaşanmistir. Lütfen çevre dikkat edin ve yetkililerine haber veriniz.', image: getFeedImageUrl(100), reactions: 156, comments: 42, feed: 'foryou' },
 
-  { id: '1', author: { name: 'Ayse K.', initial: 'A', neighborhood: 'KadÄ±kÃ¶y, Moda', profileId: 'ayse-k' }, timeAgo: '2 dk', isSponsored: false, isPinned: false, category: 'event', title: 'Mahalle PikniÄi Bu AkÅam!', body: 'Merhaba komÅular, bu akÅam saat 20:00\'de mahalle parkÄ±nda piknik yapÄ±yoruz. KatÄ±lmak isteyen herkesi bekliyoruz! YanÄ±nÄ±za battaniye ve atÄ±ÅtÄ±rmalÄ±k getirmeniz yeterli.', image: getFeedImageUrl(58), reactions: 24, comments: 8, feed: 'foryou' },
+  { id: '1', author: { name: 'Ayse K.', initial: 'A', neighborhood: 'Kadıköy, Moda', profileId: 'ayse-k' }, timeAgo: '2 dk', isSponsored: false, isPinned: false, category: 'event', title: 'Mahalle Pikniği Bu Akşam!', body: 'Merhaba komşular, bu akşam saat 20:00\'de mahalle parkında piknik yapıyoruz. Katılmak isteyen herkesi bekliyoruz! Yanınıza battaniye ve atıştırmalık getirmeniz yeterli.', image: getFeedImageUrl(58), reactions: 24, comments: 8, feed: 'foryou' },
 
-  { id: '2', author: { name: 'Mehmet Y.', initial: 'M', neighborhood: 'KadÄ±kÃ¶y, CaferaÄa', profileId: 'mehmet-y' }, timeAgo: '1 sa', isSponsored: false, isPinned: false, category: 'lost_found', title: 'KayÄ±p Kedi - Turuncu Tekir', body: 'Pazartesi gÃ¼nÃ¼ turuncu renkli kedim mahallede kayboldu. AdÄ± Mismis, Ã§ok uysal ve evcil. GÃ¶rÃ¼rseniz lÃ¼tfen haber verin.', image: getFeedImageUrl(59), reactions: 42, comments: 15, feed: 'recent' },
+  { id: '2', author: { name: 'Mehmet Y.', initial: 'M', neighborhood: 'Kadıköy, Caferağa', profileId: 'mehmet-y' }, timeAgo: '1 sa', isSponsored: false, isPinned: false, category: 'lost_found', title: 'Kayıp Kedi - Turuncu Tekir', body: 'Pazartesi günü turuncu renkli kedim mahallede kayboldu. Adı Mismis, çok uysal ve evcil. Görürseniz lütfen haber verin.', image: getFeedImageUrl(59), reactions: 42, comments: 15, feed: 'recent' },
 
-  { id: '3', author: { name: 'Fatma C.', initial: 'F', neighborhood: 'KadÄ±kÃ¶y, Moda', profileId: 'fatma-c' }, timeAgo: '3 sa', isSponsored: false, isPinned: false, category: 'recommendation', title: 'Yeni Kafede Harika Ãilekli Cheesecake!', body: 'Yeni aÃ§Ä±lan Moda Kafe\'yi denediniz mi? Kahveleri harika ve fiyatlar gayet makul. Bir denemenizi tavsiye ederim!', reactions: 18, comments: 5, feed: 'foryou' },
+  { id: '3', author: { name: 'Fatma C.', initial: 'F', neighborhood: 'Kadıköy, Moda', profileId: 'fatma-c' }, timeAgo: '3 sa', isSponsored: false, isPinned: false, category: 'recommendation', title: 'Yeni Kafede Harika Çilekli Cheesecake!', body: 'Yeni açılan Moda Kafe\'yi denediniz mi? Kahveleri harika ve fiyatlar gayet makul. Bir denemenizi tavsiye ederim!', reactions: 18, comments: 5, feed: 'foryou' },
 
-  { id: '4', author: { name: 'Emre D.', initial: 'E', neighborhood: 'KadÄ±kÃ¶y, Moda', profileId: 'emre-d' }, timeAgo: '5 sa', isSponsored: false, isPinned: false, category: 'safety', title: 'Mahallede ÅÃ¼pheli AraÃ§', body: 'DÃ¼n gece saat 23:00 civarÄ±nda Moda Caddesi Ã¼zerinde uzun sÃ¼re park halinde bekleyen koyu renkli bir arac dikkatimi Ã§ekti.', image: getFeedImageUrl(61), reactions: 67, comments: 23, feed: 'trending' },
+  { id: '4', author: { name: 'Emre D.', initial: 'E', neighborhood: 'Kadıköy, Moda', profileId: 'emre-d' }, timeAgo: '5 sa', isSponsored: false, isPinned: false, category: 'safety', title: 'Mahallede Şüpheli Araç', body: 'Dün gece saat 23:00 civarında Moda Caddesi üzerinde uzun süre park halinde bekleyen koyu renkli bir arac dikkatimi çekti.', image: getFeedImageUrl(61), reactions: 67, comments: 23, feed: 'trending' },
 
-  { id: '5', author: { name: 'Ali R.', initial: 'A', neighborhood: 'ÃskÃ¼dar, ÃengelkÃ¶y', profileId: 'ali-r' }, timeAgo: '6 sa', isSponsored: false, isPinned: false, category: 'recommendation', title: 'ÃengelkÃ¶y Sahilinde Yeni YÃ¼rÃ¼yÃ¼Å Yolu', body: 'Belediye sahil boyunca harika bir yÃ¼rÃ¼yÃ¼Å yolu yaptÄ±. AkÅam saatlerinde Ã§ok gÃ¼zel oluyor.', image: getFeedImageUrl(62), reactions: 31, comments: 9, feed: 'nearby' },
+  { id: '5', author: { name: 'Ali R.', initial: 'A', neighborhood: 'Üsküdar, Çengelköy', profileId: 'ali-r' }, timeAgo: '6 sa', isSponsored: false, isPinned: false, category: 'recommendation', title: 'Çengelköy Sahilinde Yeni Yürüyüş Yolu', body: 'Belediye sahil boyunca harika bir yürüyüş yolu yaptı. Akşam saatlerinde çok güzel oluyor.', image: getFeedImageUrl(62), reactions: 31, comments: 9, feed: 'nearby' },
 
-  { id: '6', author: { name: 'Zeynep A.', initial: 'Z', neighborhood: 'KadÄ±kÃ¶y, Moda', profileId: 'zeynep-a' }, timeAgo: '10 sa', isSponsored: false, isPinned: false, category: 'general', title: 'Mahallede Ä°yi Bir ElektrikÃ§i Biliyor Musunuz?', body: 'Evimin elektrik sisteminde sorun var. Mahallede gÃ¼venilir bir elektrikÃ§i biliyor musunuz?', reactions: 12, comments: 8, feed: 'foryou' },
+  { id: '6', author: { name: 'Zeynep A.', initial: 'Z', neighborhood: 'Kadıköy, Moda', profileId: 'zeynep-a' }, timeAgo: '10 sa', isSponsored: false, isPinned: false, category: 'general', title: 'Mahallede İyi Bir Elektrikçi Biliyor Musunuz?', body: 'Evimin elektrik sisteminde sorun var. Mahallede güvenilir bir elektrikçi biliyor musunuz?', reactions: 12, comments: 8, feed: 'foryou' },
 
-  { id: '7', author: { name: 'Nur Y.', initial: 'N', neighborhood: 'KadÄ±kÃ¶y, Moda', profileId: 'nur-y' }, timeAgo: '14 sa', isSponsored: false, isPinned: false, category: 'general', title: 'Mahalle Temizlik EtkinliÄi', body: 'Cumartesi sabahÄ± mahalle parkÄ±nda ortak temizlik etkinliÄi yapÄ±yoruz. Herkesi katÄ±lmaya davet ediyoruz.', image: getFeedImageUrl(65), reactions: 48, comments: 16, feed: 'foryou' },
+  { id: '7', author: { name: 'Nur Y.', initial: 'N', neighborhood: 'Kadıköy, Moda', profileId: 'nur-y' }, timeAgo: '14 sa', isSponsored: false, isPinned: false, category: 'general', title: 'Mahalle Temizlik Etkinliği', body: 'Cumartesi sabahı mahalle parkında ortak temizlik etkinliği yapıyoruz. Herkesi katılmaya davet ediyoruz.', image: getFeedImageUrl(65), reactions: 48, comments: 16, feed: 'foryou' },
 
 ]
 
@@ -76,7 +76,7 @@ function getTimeAgo(dateStr: string): string {
 
   const diffMins = Math.floor(diffMs / 60000)
 
-  if (diffMins < 1) return 'Az Ã¶nce'
+  if (diffMins < 1) return 'Az önce'
 
   if (diffMins < 60) return `${diffMins} dk`
 
@@ -108,7 +108,7 @@ export default function FeedPage() {
 
   const [loading, setLoading] = useState(true)
 
-  const [userNeighborhood, setUserNeighborhood] = useState('KadÄ±kÃ¶y, Moda')
+  const [userNeighborhood, setUserNeighborhood] = useState('Kadıköy, Moda')
 
 
 
@@ -304,7 +304,7 @@ export default function FeedPage() {
 
             <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">{profile?.full_name?.[0]?.toUpperCase() || 'K'}</div>
 
-            <div className="flex-1 px-4 py-2.5 bg-background text-text-muted rounded-full text-sm">Mahallenize bir Åeyler paylaÅÄ±n...</div>
+            <div className="flex-1 px-4 py-2.5 bg-background text-text-muted rounded-full text-sm">Mahallenize bir şeyler paylaşın...</div>
 
             <button className="p-2 hover:bg-surface-hover rounded-full transition-colors"><Camera className="w-5 h-5 text-text-muted" /></button>
 
@@ -346,9 +346,9 @@ export default function FeedPage() {
 
             <div className="bg-surface rounded-xl border border-border p-12 text-center">
 
-              <p className="text-text-primary font-medium">Bu sekmede gÃ¶nderi yok</p>
+              <p className="text-text-primary font-medium">Bu sekmede gönderi yok</p>
 
-              <p className="text-text-muted text-sm mt-1">BaÅka bir sekme deneyin</p>
+              <p className="text-text-muted text-sm mt-1">Başka bir sekme deneyin</p>
 
             </div>
 
@@ -368,7 +368,7 @@ export default function FeedPage() {
 
             <button onClick={() => setPostsToShow(postsToShow + 4)} className="px-6 py-2.5 bg-primary text-white font-semibold rounded-full hover:bg-primary-hover transition-all shadow-sm hover:shadow-md">
 
-              Daha Fazla GÃ¶nderi YÃ¼kle
+              Daha Fazla Gönderi Yükle
 
             </button>
 
