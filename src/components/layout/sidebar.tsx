@@ -42,8 +42,8 @@ export function Sidebar({ className, ...props }: SidebarProps) {
   return (
     <aside
       className={cn(
-        'hidden lg:flex flex-col bg-surface border-r border-border transition-all duration-300 overflow-y-auto overflow-x-hidden',
-        isCollapsed ? 'w-[72px]' : 'w-[240px]',
+        'hidden lg:flex flex-col bg-surface transition-all duration-300 overflow-y-auto overflow-x-hidden',
+        isCollapsed ? 'w-[72px]' : 'w-[260px]',
         'flex-shrink-0',
         className
       )}
@@ -51,23 +51,23 @@ export function Sidebar({ className, ...props }: SidebarProps) {
       {...props}
     >
       {/* User Profile Card */}
-      <div className={cn('px-3 pt-4 pb-2', isCollapsed && 'px-2')}>
+      <div className={cn('px-3 pt-5 pb-3', isCollapsed && 'px-2')}>
         <Link href="/profil/me">
           <div className={cn(
-            'flex items-center gap-3 p-2.5 rounded-xl bg-primary-light/50 border border-primary-light transition-all hover:bg-primary-light/70',
+            'flex items-center gap-3 p-3 rounded-xl hover:bg-surface-hover transition-all',
             isCollapsed && 'justify-center p-2'
           )}>
             <div className="relative flex-shrink-0">
-              <div className="w-9 h-9 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">
+              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold shadow-sm">
                 {nameInitial}
               </div>
               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full ring-2 ring-white" />
             </div>
             {!isCollapsed && (
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-text-primary truncate">{fullName}</p>
-                <p className="text-xs text-text-muted truncate flex items-center gap-1">
-                  <MapPin className="w-3 h-3" />
+                <p className="text-[15px] font-semibold text-text-primary truncate">{fullName}</p>
+                <p className="text-xs text-text-muted truncate flex items-center gap-1 mt-0.5">
+                  <MapPin className="w-3 h-3 flex-shrink-0" />
                   {locationText}
                 </p>
               </div>
@@ -76,8 +76,8 @@ export function Sidebar({ className, ...props }: SidebarProps) {
         </Link>
       </div>
 
-      {/* Main Navigation - 8 items */}
-      <nav className={cn('flex flex-col gap-0.5 px-2 py-2', isCollapsed && 'px-1.5')} aria-label="Ana sayfalar">
+      {/* Main Navigation */}
+      <nav className={cn('flex flex-col gap-0.5 px-3 py-1', isCollapsed && 'px-1.5')} aria-label="Ana sayfalar">
         {navItems.map((item) => {
           const Icon = item.icon
           const active = isActive(item.href)
@@ -87,22 +87,22 @@ export function Sidebar({ className, ...props }: SidebarProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 relative group',
-                'text-[14px] font-medium',
+                'flex items-center gap-3.5 px-3 py-2.5 rounded-xl transition-all duration-200 relative group',
+                'text-[15px]',
                 active
                   ? 'text-primary bg-primary-light font-semibold'
-                  : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary',
+                  : 'text-text-primary hover:bg-surface-hover',
                 isCollapsed && 'justify-center px-2'
               )}
               title={isCollapsed ? item.label : undefined}
               aria-current={active ? 'page' : undefined}
             >
               {active && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 bg-primary rounded-r-full" />
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-7 bg-primary rounded-r-full" />
               )}
               <Icon className={cn(
-                'w-5 h-5 flex-shrink-0',
-                active ? 'text-primary' : 'text-text-muted group-hover:text-text-secondary'
+                'w-[22px] h-[22px] flex-shrink-0',
+                active ? 'text-primary' : 'text-text-secondary group-hover:text-text-primary'
               )} />
               {!isCollapsed && <span className="flex-1 truncate">{item.label}</span>}
               {isCollapsed && (
@@ -115,8 +115,27 @@ export function Sidebar({ className, ...props }: SidebarProps) {
         })}
       </nav>
 
-      {/* Collapse Toggle */}
-      <div className="mt-auto pt-2 pb-4 px-2">
+      {/* Bottom section */}
+      <div className="mt-auto px-3 pb-4">
+        {/* Settings & Help */}
+        {!isCollapsed && (
+          <div className="border-t border-border-light pt-3 mb-3">
+            <Link
+              href="/ayarlar"
+              className="block text-[13px] text-text-muted hover:text-text-secondary py-1.5 px-3 transition-colors"
+            >
+              Ayarlar
+            </Link>
+            <Link
+              href="/yardim"
+              className="block text-[13px] text-text-muted hover:text-text-secondary py-1.5 px-3 transition-colors"
+            >
+              Yardım Merkezi
+            </Link>
+          </div>
+        )}
+
+        {/* Collapse Toggle */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className={cn(
