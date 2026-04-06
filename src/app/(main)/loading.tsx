@@ -15,7 +15,7 @@ export default function Loading() {
       </div>
 
       {/* Main content area - 3 column layout */}
-      <div className="max-w-[1440px] mx-auto w-full flex flex-1 px-0 xl:px-4">
+      <div className="w-full flex flex-1 px-0 xl:px-4">
         {/* Left Sidebar skeleton */}
         <aside className="hidden lg:block sticky top-14 h-[calc(100vh-56px)] w-64 border-r border-border bg-surface p-4 flex-shrink-0">
           <div className="space-y-4">
