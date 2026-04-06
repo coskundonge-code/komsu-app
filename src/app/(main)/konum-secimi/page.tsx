@@ -376,7 +376,7 @@ export default function KonumSecimi() {
   // Handle cadde selection
   const handleCaddeSelect = (cadde: string) => {
     setFormData(prev => ({ ...prev, cadde }))
-    setCaddeSearch('')
+    setCaddeSearch(cadde)
     setShowCaddeDropdown(false)
   }
 
@@ -786,101 +786,27 @@ export default function KonumSecimi() {
             </div>
           </div>
 
-          {/* Right side - Map */}
-          <div className="hidden lg:block">
-            <div className="sticky top-6">
-              <div className="bg-surface border border-border rounded-lg overflow-hidden">
-                <div className="relative h-96 lg:h-[600px]">
-                  <MapComponent
-                    center={mapCenter}
-                    zoom={mapZoom}
-                    mapType={mapType}
-                    pinLat={pinLat}
-                    pinLng={pinLng}
-                    onMapClick={handleMapClick}
-                    onMarkerDragEnd={handleMarkerDragEnd}
-                  />
-
-                  {/* Map controls */}
-                  <div className="absolute top-4 right-4 flex flex-col gap-2">
-                    <button
-                      onClick={() => setMapType(mapType === 'satellite' ? 'street' : 'satellite')}
-                      className="p-2 bg-surface border border-border rounded-lg hover:bg-primary hover:text-white transition shadow-md"
-                      title={mapType === 'satellite' ? 'Harita görünümüne geç' : 'Uydu görünümüne geç'}
-                    >
-                      <span className="text-xs font-bold">{mapType === 'satellite' ? '🗺️' : '🛰️'}</span>
-                    </button>
-                  </div>
-
-                  {/* Pin indicator */}
-                  {pinLat && pinLng && (
-                    <div className="absolute bottom-4 left-4 px-3 py-2 bg-primary text-white rounded-lg text-xs font-medium shadow-md">
-                      ✓ Konum işaretlendi — sürükleyerek taşıyabilirsiniz
-                    </div>
-                  )}
-                </div>
-
-                {/* Map info */}
-                <div className="p-4 bg-surface border-t border-border">
-                  <p className="text-xs text-text-muted">
-                    {pinLat && pinLng ? (
-                      <span className="text-green-600 font-medium">✓ Adres haritada konumlandırıldı — ikonu sürükleyerek konumunuzu ayarlayabilirsiniz</span>
-                    ) : (
-                      <span>Harita üzerinde tıklayarak veya adresi onaylayarak konumunuzu belirleyiniz</span>
-                    )}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile map - below form */}
-        <div className="lg:hidden mt-6">
-          <div className="bg-surface border border-border rounded-lg overflow-hidden">
-            <div className="relative h-96">
-              <MapComponent
-                center={mapCenter}
-                zoom={mapZoom}
-                mapType={mapType}
-                pinLat={pinLat}
-                pinLng={pinLng}
-                onMapClick={handleMapClick}
-                onMarkerDragEnd={handleMarkerDragEnd}
-              />
-
-              {/* Map controls */}
-              <div className="absolute top-4 right-4 flex flex-col gap-2">
-                <button
-                  onClick={() => setMapType(mapType === 'satellite' ? 'street' : 'satellite')}
-                  className="p-2 bg-surface border border-border rounded-lg hover:bg-primary hover:text-white transition shadow-md"
-                  title={mapType === 'satellite' ? 'Harita görünümüne geç' : 'Uydu görünümüne geç'}
-                >
-                  <span className="text-xs font-bold">{mapType === 'satellite' ? '🗺️' : '🛰️'}</span>
-                </button>
-              </div>
-
-              {/* Pin indicator */}
-              {pinLat && pinLng && (
-                <div className="absolute bottom-4 left-4 px-3 py-2 bg-primary text-white rounded-lg text-xs font-medium shadow-md">
-                  ✓ Konum işaretlendi — sürükleyerek taşıyabilirsiniz
-                </div>
-              )}
-            </div>
-
-            {/* Map info */}
-            <div className="p-4 bg-surface border-t border-border">
-              <p className="text-xs text-text-muted">
-                {pinLat && pinLng ? (
-                  <span className="text-green-600 font-medium">✓ Adres haritada konumlandırıldı — ikonu sürükleyerek konumunuzu ayarlayabilirsiniz</span>
-                ) : (
-                  <span>Harita üzerinde tıklayarak veya adresi onaylayarak konumunuzu belirleyiniz</span>
-                )}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+          {/(�Y��YHHX\
+��CB�]��\�Ә[YOH�Y[�Θ���ȏ�B�]��\�Ә[YOH��X��H�M���B�]��\�Ә[YOH���\�\��X�H�ܙ\��ܙ\�X�ܙ\���[�Y[�ݙ\����ZY[���B�]��\�Ә[YOH��[]]�HNM�ΚV͌H��B�X\��\ۙ[�B��[�\�^�X\�[�\�CB����O^�X\���_CB�X\\O^�X\\_CB�[�]^�[�]CB�[���^�[���CB�ۓX\�X��^�[�SX\�X��CB�ۓX\��\��Y�[�^�[�SX\��\��Y�[�CB�σB�B��ʈX\�۝���
+��CB�]��\�Ә[YOH�X���]H�M�Y�M�^�^X���\L���B��]ۃB�ې�X��^�
+HO��]X\\JX\\HOOH	��][]I��	���Y]	��	��][]I�_CB��\�Ә[YOH�L���\�\��X�H�ܙ\��ܙ\�X�ܙ\���[�Y[�ݙ\����\�[X\�Hݙ\��^]�]H�[��][ۈ�Y��[Y�B�]O^�X\\HOOH	��][]I��	�\�]H�휰���p��H�p����	�^YH�휰���p��H�p���CB��B��[��\�Ә[YOH�^^��۝X�����X\\HOOH	��][]I��	�'���#���	�'��;�#��O��[��B�؝]ۏ�B��]��B�B��ʈ[�[�X�]܈
+��CB��[�]	��[���	��
+B�]��\�Ә[YOH�X���]H���KMY�ML�KL���\�[X\�H^]�]H��[�Y[�^^��۝[YY][H�Y��[Y��B�8�$��۝[Hqg�\�][�H8�%�����^Y\�Z�qg�,^XX�[\��[�^�B��]��B�
+_CB��]��B�B��ʈX\[���
+��CB�]��\�Ә[YOH�M��\�\��X�H�ܙ\�]�ܙ\�X�ܙ\���B��\�Ә[YOH�^^�^]^[]]Y��B��[�]	��[����
+B��[��\�Ә[YOH�^YܙY[�M��۝[YY][H���$�Y�\�\�]YH�۝[[[�1,\�,[1,H8�%Z�۝H�����^Y\�Z��۝[][�^�H^X\�^XX�[\��[�^���[��B�
+H�
+B��[��\�]H0��\�[�H1,Z�^X\�Z��^XHY�\�Hۘ^[^X\�Z��۝[][�^�H�[\�^Z[�^���[��B�
+_CB���B��]��B��]��B��]��B��]��B��]��B�B��ʈ[ؚ[HX\H�[���ܛH
+��CB�]��\�Ә[YOH�ΚY[�]M���B�]��\�Ә[YOH���\�\��X�H�ܙ\��ܙ\�X�ܙ\���[�Y[�ݙ\����ZY[���B�]��\�Ә[YOH��[]]�HNM���B�X\��\ۙ[�B��[�\�^�X\�[�\�CB����O^�X\���_CB�X\\O^�X\\_CB�[�]^�[�]CB�[���^�[���CB�ۓX\�X��^�[�SX\�X��CB�ۓX\��\��Y�[�^�[�SX\��\��Y�[�CB�σB�B��ʈX\�۝���
+��CB�]��\�Ә[YOH�X���]H�M�Y�M�^�^X���\L���B��]ۃB�ې�X��^�
+HO��]X\\JX\\HOOH	��][]I��	���Y]	��	��][]I�_CB��\�Ә[YOH�L���\�\��X�H�ܙ\��ܙ\�X�ܙ\���[�Y[�ݙ\����\�[X\�Hݙ\��^]�]H�[��][ۈ�Y��[Y�B�]O^�X\\HOOH	��][]I��	�\�]H�휰���p��H�p����	�^YH�휰���p��H�p���CB��B��[��\�Ә[YOH�^^��۝X�����X\\HOOH	��][]I��	�'���#���	�'��;�#��O��[��B�؝]ۏ�B��]��B�B��ʈ[�[�X�]܈
+��CB��[�]	��[���	��
+B�]��\�Ә[YOH�X���]H���KMY�ML�KL���\�[X\�H^]�]H��[�Y[�^^��۝[YY][H�Y��[Y��B�8�$��۝[Hqg�\�][�H8�%�����^Y\�Z�qg�,^XX�[\��[�^�B��]��B�
+_CB��]��B�B��ʈX\[���
+��CB�]��\�Ә[YOH�M��\�\��X�H�ܙ\�]�ܙ\�X�ܙ\���B��\�Ә[YOH�^^�^]^[]]Y��B��[�]	��[����
+B��[��\�Ә[YOH�^YܙY[�M��۝[YY][H���$�Y�\�\�]YH�۝[[[�1,\�,[1,H8�%Z�۝H�����^Y\�Z��۝[][�^�H^X\�^XX�[\��[�^���[��B�
+H�
+B��[��\�]H0��\�[�H1,Z�^X\�Z��^XHY�\�Hۘ^[^X\�Z��۝[][�^�H�[\�^Z[�^���[��B�
+_CB���B��]��B��]��B��]��B��]��B��]��B�
+CB�CB
