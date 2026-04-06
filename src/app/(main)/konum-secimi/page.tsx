@@ -48,7 +48,7 @@ const GITHUB_JSON_URL = 'https://raw.githubusercontent.com/adilmustafayilmaz/tur
 async function loadAllData() {
   if (cachedData) return cachedData
   const response = await fetch(GITHUB_JSON_URL)
-  if (!response.ok) throw new Error('Veri kaynağına ulaşılamadı')
+  if (!response.ok) throw new Error('Veri kaynaÄÄ±na ulaÅÄ±lamadÄ±')
   cachedData = await response.json()
   return cachedData!
 }
@@ -58,7 +58,7 @@ async function fetchMahalleler(ilName: string, ilceName: string): Promise<Mahall
   try {
     const data = await loadAllData()
 
-    // Find province key: JSON uses UPPERCASE ("İSTANBUL"), our data uses mixed case ("İstanbul")
+    // Find province key: JSON uses UPPERCASE ("Ä°STANBUL"), our data uses mixed case ("Ä°stanbul")
     const ilUpper = ilName.toLocaleUpperCase('tr')
     const provinceData = data[ilUpper] || data[ilName]
     if (!provinceData) {
@@ -98,23 +98,23 @@ async function geocodeAddress(address: string, components?: { il?: string; ilce?
     const { il, ilce, mahalle, cadde, binaNo } = components
     // Strategy 2: Without building number
     if (cadde && mahalle && ilce && il) {
-      queries.push(`${cadde}, ${mahalle}, ${ilce}, ${il}, Türkiye`)
+      queries.push(`${cadde}, ${mahalle}, ${ilce}, ${il}, TÃ¼rkiye`)
     }
     // Strategy 3: With "Mah." suffix for mahalle
     if (cadde && mahalle && ilce && il) {
-      queries.push(`${cadde}, ${mahalle} Mah., ${ilce}, ${il}, Türkiye`)
+      queries.push(`${cadde}, ${mahalle} Mah., ${ilce}, ${il}, TÃ¼rkiye`)
     }
     // Strategy 4: Just street + district + province
     if (cadde && ilce && il) {
-      queries.push(`${cadde}, ${ilce}, ${il}, Türkiye`)
+      queries.push(`${cadde}, ${ilce}, ${il}, TÃ¼rkiye`)
     }
     // Strategy 5: Just neighborhood + district (will at least center on the area)
     if (mahalle && ilce && il) {
-      queries.push(`${mahalle}, ${ilce}, ${il}, Türkiye`)
+      queries.push(`${mahalle}, ${ilce}, ${il}, TÃ¼rkiye`)
     }
     // Strategy 6: Just district + province
     if (ilce && il) {
-      queries.push(`${ilce}, ${il}, Türkiye`)
+      queries.push(`${ilce}, ${il}, TÃ¼rkiye`)
     }
   }
 
@@ -291,7 +291,7 @@ export default function KonumSecimi() {
 
     setCaddeLoading(true)
     caddeTimerRef.current = setTimeout(async () => {
-      const address = `${formData.mahalle}, ${formData.ilce?.name}, ${formData.il?.name}, Türkiye`
+      const address = `${formData.mahalle}, ${formData.ilce?.name}, ${formData.il?.name}, TÃ¼rkiye`
       const searchAddress = `${value}, ${address}`
 
       try {
@@ -399,7 +399,7 @@ export default function KonumSecimi() {
   // Handle address confirmation (geocode full address)
   const handleConfirmAddress = async () => {
     if (!formData.cadde || !formData.mahalle || !formData.ilce || !formData.il) {
-      setError('Lütfen İl, İlçe, Mahalle ve Cadde/Sokak seçiniz')
+      setError('LÃ¼tfen Ä°l, Ä°lÃ§e, Mahalle ve Cadde/Sokak seÃ§iniz')
       return
     }
 
@@ -407,7 +407,7 @@ export default function KonumSecimi() {
     setError('')
 
     try {
-      const fullAddress = `${formData.binaNo ? `${formData.binaNo}, ` : ''}${formData.cadde}, ${formData.mahalle}, ${formData.ilce.name}, ${formData.il.name}, Türkiye`
+      const fullAddress = `${formData.binaNo ? `${formData.binaNo}, ` : ''}${formData.cadde}, ${formData.mahalle}, ${formData.ilce.name}, ${formData.il.name}, TÃ¼rkiye`
       const result = await geocodeAddress(fullAddress, {
         il: formData.il.name,
         ilce: formData.ilce.name,
@@ -424,10 +424,10 @@ export default function KonumSecimi() {
         setFormData(prev => ({ ...prev, postaKodu: result.postalCode }))
         setConfirmed(true)
       } else {
-        setError('Adres bulunamadı. Lütfen bilgileri kontrol ediniz veya harita üzerinden konumunuzu işaretleyiniz.')
+        setError('Adres bulunamadÄ±. LÃ¼tfen bilgileri kontrol ediniz veya harita Ã¼zerinden konumunuzu iÅaretleyiniz.')
       }
     } catch (error) {
-      setError('Adres doğrulama hatası')
+      setError('Adres doÄrulama hatasÄ±')
       console.error(error)
     } finally {
       setIsLoading(false)
@@ -437,7 +437,7 @@ export default function KonumSecimi() {
   // Handle save to database
   const handleSave = async () => {
     if (!formData.il || !formData.ilce || !pinLat || !pinLng) {
-      setError('Lütfen il, ilçe seçip haritada konumunuzu işaretleyiniz')
+      setError('LÃ¼tfen il, ilÃ§e seÃ§ip haritada konumunuzu iÅaretleyiniz')
       return
     }
 
@@ -447,7 +447,7 @@ export default function KonumSecimi() {
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
-        setError('Kullanıcı oturumu bulunamadı')
+        setError('KullanÄ±cÄ± oturumu bulunamadÄ±')
         return
       }
 
@@ -509,12 +509,12 @@ export default function KonumSecimi() {
 
       if (metaError) throw metaError
 
-      setSuccessMessage('Adres başarıyla kaydedildi!')
+      setSuccessMessage('Adres baÅarÄ±yla kaydedildi!')
       setTimeout(() => {
         router.push('/')
       }, 1500)
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Kaydetme hatası')
+      setError(error instanceof Error ? error.message : 'Kaydetme hatasÄ±')
       console.error(error)
     } finally {
       setIsSaving(false)
@@ -528,9 +528,9 @@ export default function KonumSecimi() {
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-2">
             <MapPin className="w-6 h-6 text-primary" />
-            <h1 className="text-3xl font-bold text-text-primary">Konum Seçimi</h1>
+            <h1 className="text-3xl font-bold text-text-primary">Konum SeÃ§imi</h1>
           </div>
-          <p className="text-text-muted">Mahallemiz için adresinizi belirtiniz</p>
+          <p className="text-text-muted">Mahallemiz iÃ§in adresinizi belirtiniz</p>
         </div>
 
         {/* Main content grid */}
@@ -553,14 +553,14 @@ export default function KonumSecimi() {
               </div>
             )}
 
-            {/* İl Selection */}
+            {/* Ä°l Selection */}
             <div ref={ilDropdownRef} className="relative">
-              <label className="block text-sm font-medium text-text-primary mb-2">İl *</label>
+              <label className="block text-sm font-medium text-text-primary mb-2">Ä°l *</label>
               <button
                 onClick={() => setShowIlDropdown(!showIlDropdown)}
                 className="w-full flex items-center justify-between px-4 py-2 bg-surface border border-border rounded-lg text-text-primary hover:border-primary/50 transition"
               >
-                <span>{formData.il?.name || 'İl seçiniz'}</span>
+                <span>{formData.il?.name || 'Ä°l seÃ§iniz'}</span>
                 <ChevronDown className={`w-4 h-4 transition ${showIlDropdown ? 'rotate-180' : ''}`} />
               </button>
 
@@ -588,15 +588,15 @@ export default function KonumSecimi() {
               )}
             </div>
 
-            {/* İlçe Selection */}
+            {/* Ä°lÃ§e Selection */}
             <div ref={ilceDropdownRef} className="relative">
-              <label className="block text-sm font-medium text-text-primary mb-2">İlçe *</label>
+              <label className="block text-sm font-medium text-text-primary mb-2">Ä°lÃ§e *</label>
               <button
                 onClick={() => setShowIlceDropdown(!showIlceDropdown)}
                 disabled={!formData.il}
                 className="w-full flex items-center justify-between px-4 py-2 bg-surface border border-border rounded-lg text-text-primary hover:border-primary/50 disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <span>{formData.ilce?.name || 'İlçe seçiniz'}</span>
+                <span>{formData.ilce?.name || 'Ä°lÃ§e seÃ§iniz'}</span>
                 <ChevronDown className={`w-4 h-4 transition ${showIlceDropdown ? 'rotate-180' : ''}`} />
               </button>
 
@@ -634,7 +634,7 @@ export default function KonumSecimi() {
               >
                 <span className="flex items-center gap-2">
                   {mahalleLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-                  {formData.mahalle || 'Mahalle seçiniz'}
+                  {formData.mahalle || 'Mahalle seÃ§iniz'}
                 </span>
                 <ChevronDown className={`w-4 h-4 transition ${showMahalleDropdown ? 'rotate-180' : ''}`} />
               </button>
@@ -660,7 +660,7 @@ export default function KonumSecimi() {
                         </button>
                       ))
                     ) : (
-                      <div className="px-4 py-2 text-text-muted">Mahalle bulunamadı</div>
+                      <div className="px-4 py-2 text-text-muted">Mahalle bulunamadÄ±</div>
                     )}
                   </div>
                 </div>
@@ -673,7 +673,7 @@ export default function KonumSecimi() {
               <div className="relative flex items-center">
                 <input
                   type="text"
-                  placeholder="Cadde/Sokak adını yazınız"
+                  placeholder="Cadde/Sokak adÄ±nÄ± yazÄ±nÄ±z"
                   value={caddeSearch}
                   onChange={(e) => handleCaddeSearch(e.target.value)}
                   disabled={!formData.mahalle}
@@ -705,19 +705,19 @@ export default function KonumSecimi() {
               <label className="block text-sm font-medium text-text-primary mb-2">Bina No</label>
               <input
                 type="text"
-                placeholder="Bina numarası"
+                placeholder="Bina numarasÄ±"
                 value={formData.binaNo}
                 onChange={(e) => setFormData(prev => ({ ...prev, binaNo: e.target.value }))}
                 className="w-full px-4 py-2 bg-surface border border-border rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
 
-            {/* Bina Adı */}
+            {/* Bina AdÄ± */}
             <div>
-              <label className="block text-sm font-medium text-text-primary mb-2">Bina Adı</label>
+              <label className="block text-sm font-medium text-text-primary mb-2">Bina AdÄ±</label>
               <input
                 type="text"
-                placeholder="Bina adı (ör: Gül Sitesi)"
+                placeholder="Bina adÄ± (Ã¶r: GÃ¼l Sitesi)"
                 value={formData.binaAdi}
                 onChange={(e) => setFormData(prev => ({ ...prev, binaAdi: e.target.value }))}
                 className="w-full px-4 py-2 bg-surface border border-border rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:ring-1 focus:ring-primary"
@@ -746,7 +746,7 @@ export default function KonumSecimi() {
                 {isLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Haritada aranıyor...
+                    Haritada aranÄ±yor...
                   </>
                 ) : (
                   <>
@@ -781,32 +781,106 @@ export default function KonumSecimi() {
             <div className="lg:hidden p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
               <div className="flex items-start gap-2">
                 <MousePointerClick className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
-                <p className="text-xs text-blue-600">Harita üzerinde binanızı işaretlemek için tıklayınız</p>
+                <p className="text-xs text-blue-600">Harita Ã¼zerinde binanÄ±zÄ± iÅaretlemek iÃ§in tÄ±klayÄ±nÄ±z</p>
               </div>
             </div>
           </div>
 
-          {/(�Y��YHHX\
-��CB�]��\�Ә[YOH�Y[�Θ���ȏ�B�]��\�Ә[YOH��X��H�M���B�]��\�Ә[YOH���\�\��X�H�ܙ\��ܙ\�X�ܙ\���[�Y[�ݙ\����ZY[���B�]��\�Ә[YOH��[]]�HNM�ΚV͌H��B�X\��\ۙ[�B��[�\�^�X\�[�\�CB����O^�X\���_CB�X\\O^�X\\_CB�[�]^�[�]CB�[���^�[���CB�ۓX\�X��^�[�SX\�X��CB�ۓX\��\��Y�[�^�[�SX\��\��Y�[�CB�σB�B��ʈX\�۝���
-��CB�]��\�Ә[YOH�X���]H�M�Y�M�^�^X���\L���B��]ۃB�ې�X��^�
-HO��]X\\JX\\HOOH	��][]I��	���Y]	��	��][]I�_CB��\�Ә[YOH�L���\�\��X�H�ܙ\��ܙ\�X�ܙ\���[�Y[�ݙ\����\�[X\�Hݙ\��^]�]H�[��][ۈ�Y��[Y�B�]O^�X\\HOOH	��][]I��	�\�]H�휰���p��H�p����	�^YH�휰���p��H�p���CB��B��[��\�Ә[YOH�^^��۝X�����X\\HOOH	��][]I��	�'���#���	�'��;�#��O��[��B�؝]ۏ�B��]��B�B��ʈ[�[�X�]܈
-��CB��[�]	��[���	��
-B�]��\�Ә[YOH�X���]H���KMY�ML�KL���\�[X\�H^]�]H��[�Y[�^^��۝[YY][H�Y��[Y��B�8�$��۝[Hqg�\�][�H8�%�����^Y\�Z�qg�,^XX�[\��[�^�B��]��B�
-_CB��]��B�B��ʈX\[���
-��CB�]��\�Ә[YOH�M��\�\��X�H�ܙ\�]�ܙ\�X�ܙ\���B��\�Ә[YOH�^^�^]^[]]Y��B��[�]	��[����
-B��[��\�Ә[YOH�^YܙY[�M��۝[YY][H���$�Y�\�\�]YH�۝[[[�1,\�,[1,H8�%Z�۝H�����^Y\�Z��۝[][�^�H^X\�^XX�[\��[�^���[��B�
-H�
-B��[��\�]H0��\�[�H1,Z�^X\�Z��^XHY�\�Hۘ^[^X\�Z��۝[][�^�H�[\�^Z[�^���[��B�
-_CB���B��]��B��]��B��]��B��]��B��]��B�B��ʈ[ؚ[HX\H�[���ܛH
-��CB�]��\�Ә[YOH�ΚY[�]M���B�]��\�Ә[YOH���\�\��X�H�ܙ\��ܙ\�X�ܙ\���[�Y[�ݙ\����ZY[���B�]��\�Ә[YOH��[]]�HNM���B�X\��\ۙ[�B��[�\�^�X\�[�\�CB����O^�X\���_CB�X\\O^�X\\_CB�[�]^�[�]CB�[���^�[���CB�ۓX\�X��^�[�SX\�X��CB�ۓX\��\��Y�[�^�[�SX\��\��Y�[�CB�σB�B��ʈX\�۝���
-��CB�]��\�Ә[YOH�X���]H�M�Y�M�^�^X���\L���B��]ۃB�ې�X��^�
-HO��]X\\JX\\HOOH	��][]I��	���Y]	��	��][]I�_CB��\�Ә[YOH�L���\�\��X�H�ܙ\��ܙ\�X�ܙ\���[�Y[�ݙ\����\�[X\�Hݙ\��^]�]H�[��][ۈ�Y��[Y�B�]O^�X\\HOOH	��][]I��	�\�]H�휰���p��H�p����	�^YH�휰���p��H�p���CB��B��[��\�Ә[YOH�^^��۝X�����X\\HOOH	��][]I��	�'���#���	�'��;�#��O��[��B�؝]ۏ�B��]��B�B��ʈ[�[�X�]܈
-��CB��[�]	��[���	��
-B�]��\�Ә[YOH�X���]H���KMY�ML�KL���\�[X\�H^]�]H��[�Y[�^^��۝[YY][H�Y��[Y��B�8�$��۝[Hqg�\�][�H8�%�����^Y\�Z�qg�,^XX�[\��[�^�B��]��B�
-_CB��]��B�B��ʈX\[���
-��CB�]��\�Ә[YOH�M��\�\��X�H�ܙ\�]�ܙ\�X�ܙ\���B��\�Ә[YOH�^^�^]^[]]Y��B��[�]	��[����
-B��[��\�Ә[YOH�^YܙY[�M��۝[YY][H���$�Y�\�\�]YH�۝[[[�1,\�,[1,H8�%Z�۝H�����^Y\�Z��۝[][�^�H^X\�^XX�[\��[�^���[��B�
-H�
-B��[��\�]H0��\�[�H1,Z�^X\�Z��^XHY�\�Hۘ^[^X\�Z��۝[][�^�H�[\�^Z[�^���[��B�
-_CB���B��]��B��]��B��]��B��]��B��]��B�
-CB�CB
+          {/* Right side - Map */}
+          <div className="hidden lg:block">
+            <div className="sticky top-6">
+              <div className="bg-surface border border-border rounded-lg overflow-hidden">
+                <div className="relative h-96 lg:h-[600px]">
+                  <MapComponent
+                    center={mapCenter}
+                    zoom={mapZoom}
+                    mapType={mapType}
+                    pinLat={pinLat}
+                    pinLng={pinLng}
+                    onMapClick={handleMapClick}
+                    onMarkerDragEnd={handleMarkerDragEnd}
+                  />
+
+                  {/* Map controls */}
+                  <div className="absolute top-4 right-4 flex flex-col gap-2">
+                    <button
+                      onClick={() => setMapType(mapType === 'satellite' ? 'street' : 'satellite')}
+                      className="p-2 bg-surface border border-border rounded-lg hover:bg-primary hover:text-white transition shadow-md"
+                      title={mapType === 'satellite' ? 'Harita gÃ¶rÃ¼nÃ¼mÃ¼ne geÃ§' : 'Uydu gÃ¶rÃ¼nÃ¼mÃ¼ne geÃ§'}
+                    >
+                      <span className="text-xs font-bold">{mapType === 'satellite' ? 'ðºï¸' : 'ð°ï¸'}</span>
+                    </button>
+                  </div>
+
+                  {/* Pin indicator */}
+                  {pinLat && pinLng && (
+                    <div className="absolute bottom-4 left-4 px-3 py-2 bg-primary text-white rounded-lg text-xs font-medium shadow-md">
+                      â Konum iÅaretlendi â sÃ¼rÃ¼kleyerek taÅÄ±yabilirsiniz
+                    </div>
+                  )}
+                </div>
+
+                {/* Map info */}
+                <div className="p-4 bg-surface border-t border-border">
+                  <p className="text-xs text-text-muted">
+                    {pinLat && pinLng ? (
+                      <span className="text-green-600 font-medium">â Adres haritada konumlandÄ±rÄ±ldÄ± â ikonu sÃ¼rÃ¼kleyerek konumunuzu ayarlayabilirsiniz</span>
+                    ) : (
+                      <span>Harita Ã¼zerinde tÄ±klayarak veya adresi onaylayarak konumunuzu belirleyiniz</span>
+                    )}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile map - below form */}
+        <div className="lg:hidden mt-6">
+          <div className="bg-surface border border-border rounded-lg overflow-hidden">
+            <div className="relative h-96">
+              <MapComponent
+                center={mapCenter}
+                zoom={mapZoom}
+                mapType={mapType}
+                pinLat={pinLat}
+                pinLng={pinLng}
+                onMapClick={handleMapClick}
+                onMarkerDragEnd={handleMarkerDragEnd}
+              />
+
+              {/* Map controls */}
+              <div className="absolute top-4 right-4 flex flex-col gap-2">
+                <button
+                  onClick={() => setMapType(mapType === 'satellite' ? 'street' : 'satellite')}
+                  className="p-2 bg-surface border border-border rounded-lg hover:bg-primary hover:text-white transition shadow-md"
+                  title={mapType === 'satellite' ? 'Harita gÃ¶rÃ¼nÃ¼mÃ¼ne geÃ§' : 'Uydu gÃ¶rÃ¼nÃ¼mÃ¼ne geÃ§'}
+                >
+                  <span className="text-xs font-bold">{mapType === 'satellite' ? 'ðºï¸' : 'ð°ï¸'}</span>
+                </button>
+              </div>
+
+              {/* Pin indicator */}
+              {pinLat && pinLng && (
+                <div className="absolute bottom-4 left-4 px-3 py-2 bg-primary text-white rounded-lg text-xs font-medium shadow-md">
+                  â Konum iÅaretlendi â sÃ¼rÃ¼kleyerek taÅÄ±yabilirsiniz
+                </div>
+              )}
+            </div>
+
+            {/* Map info */}
+            <div className="p-4 bg-surface border-t border-border">
+              <p className="text-xs text-text-muted">
+                {pinLat && pinLng ? (
+                  <span className="text-green-600 font-medium">â Adres haritada konumlandÄ±rÄ±ldÄ± â ikonu sÃ¼rÃ¼kleyerek konumunuzu ayarlayabilirsiniz</span>
+                ) : (
+                  <span>Harita Ã¼zerinde tÄ±klayarak veya adresi onaylayarak konumunuzu belirleyiniz</span>
+                )}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
