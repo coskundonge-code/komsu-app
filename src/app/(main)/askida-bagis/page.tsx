@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Image from 'next/image'
 import {
   Heart,
@@ -30,12 +30,30 @@ import {
   Copy,
   Share2,
   ArrowRight,
+  CreditCard,
+  ExternalLink,
+  Loader2,
+  Package,
+  Edit3,
+  Settings,
+  AlertCircle,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
 import { createClient } from '@/lib/supabase/client'
 import { useCurrentUser } from '@/lib/hooks/use-auth'
 import { getDonations, createDonation, claimDonation } from '@/lib/hooks/use-donations'
+import {
+  getDonationProducts,
+  getBusinessProducts,
+  createDonationProduct,
+  updateDonationProduct,
+  deleteDonationProduct,
+  getBusinessesWithProducts,
+  incrementProductDonationCount,
+  type DonationProduct,
+} from '@/lib/hooks/use-donation-products'
+import { useSearchParams } from 'next/navigation'
 
 // Type definitions
 interface Category {
@@ -57,6 +75,7 @@ interface Business {
   suspendedLabel: string
   image: string
   avatar: string
+  products?: DonationProduct[]
 }
 
 interface DonationItem {
@@ -76,6 +95,7 @@ interface DonationItem {
 interface DonationModalState {
   isOpen: boolean
   business: Business | null
+  selectedProduct: DonationProduct | null
   quantity: number
   selectedItem: string
   isAnonymous: boolean
@@ -83,6 +103,17 @@ interface DonationModalState {
   isProcessing: boolean
   isSuccess: boolean
   qrCode: string
+  step: 'form' | 'payment' | 'success'
+  paymentUrl: string
+  donationId: string
+}
+
+interface PaymentFormState {
+  cardNumber: string
+  cardName: string
+  expiry: string
+  cvv: string
+  errors: Record<string, string>
 }
 
 interface RedeemModalState {
@@ -109,6 +140,16 @@ interface ThankYouModalState {
   isSent: boolean
 }
 
+interface ProductManageModalState {
+  isOpen: boolean
+  businessId: string
+  businessName: string
+  products: DonationProduct[]
+  editingProduct: Partial<DonationProduct> | null
+  isLoading: boolean
+  isSaving: boolean
+}
+
 // Categories
 const categories: Category[] = [
   { id: 'all', name: 'Tümü', emoji: '🛒', icon: <ShoppingCart className="w-5 h-5" />, label: 'Tümü' },
@@ -122,18 +163,42 @@ const categories: Category[] = [
   { id: 'cleaning', name: 'Askıda Temizlik', emoji: '🧹', icon: <Trash2 className="w-5 h-5" />, label: 'Temizlik' },
 ]
 
-// Mock businesses
+// Mock businesses (fallback)
 const mockBusinesses: Business[] = [
-  { id: '1', name: 'Sıcak Ekmek Fırını', neighborhood: 'Kadıköy', mahalle: 'Moda', category: 'bread', rating: 4.8, suspendedCount: 12, suspendedLabel: 'Askıda 12 ekmek', image: getFeedImageUrl(0, 300, 250), avatar: getAvatarUrl('Sıcak Ekmek', 0) },
-  { id: '2', name: 'Güven Kasabı', neighborhood: 'Kadıköy', mahalle: 'Caferağa', category: 'meat', rating: 4.7, suspendedCount: 3, suspendedLabel: 'Askıda 3 kg et', image: getFeedImageUrl(1, 300, 250), avatar: getAvatarUrl('Güven Kasabı', 1) },
-  { id: '3', name: 'Taze Mandıra', neighborhood: 'Kadıköy', mahalle: 'Moda', category: 'milk', rating: 4.9, suspendedCount: 8, suspendedLabel: 'Askıda 8 litre süt', image: getFeedImageUrl(2, 300, 250), avatar: getAvatarUrl('Taze Mandıra', 2) },
-  { id: '4', name: 'Ali Usta Berber', neighborhood: 'Kadıköy', mahalle: 'Caferağa', category: 'barber', rating: 4.6, suspendedCount: 5, suspendedLabel: 'Askıda 5 traş', image: getFeedImageUrl(3, 300, 250), avatar: getAvatarUrl('Ali Usta Berber', 3) },
-  { id: '5', name: 'Kahve Durağı', neighborhood: 'Kadıköy', mahalle: 'Moda', category: 'coffee', rating: 4.7, suspendedCount: 15, suspendedLabel: 'Askıda 15 kahve', image: getFeedImageUrl(4, 300, 250), avatar: getAvatarUrl('Kahve Durağı', 4) },
-  { id: '6', name: 'Hayat Eczanesi', neighborhood: 'Kadıköy', mahalle: 'Osmanağa', category: 'medicine', rating: 4.8, suspendedCount: 2, suspendedLabel: 'Askıda 2 ilaç paketi', image: getFeedImageUrl(5, 300, 250), avatar: getAvatarUrl('Hayat Eczanesi', 5) },
-  { id: '7', name: 'Kültür Kitapevi', neighborhood: 'Kadıköy', mahalle: 'Bahariye', category: 'book', rating: 4.7, suspendedCount: 20, suspendedLabel: 'Askıda 20 kitap', image: getFeedImageUrl(6, 300, 250), avatar: getAvatarUrl('Kültür Kitapevi', 6) },
-  { id: '8', name: 'Temiz Market', neighborhood: 'Kadıköy', mahalle: 'Moda', category: 'cleaning', rating: 4.5, suspendedCount: 4, suspendedLabel: 'Askıda 4 temizlik paketi', image: getFeedImageUrl(7, 300, 250), avatar: getAvatarUrl('Temiz Market', 7) },
-  { id: '9', name: 'Bereket Bakkal', neighborhood: 'Kadıköy', mahalle: 'Caferağa', category: 'bread', rating: 4.6, suspendedCount: 6, suspendedLabel: 'Askıda 6 erzak', image: getFeedImageUrl(8, 300, 250), avatar: getAvatarUrl('Bereket Bakkal', 8) },
-  { id: '10', name: 'Lezzet Lokantası', neighborhood: 'Kadıköy', mahalle: 'Moda', category: 'bread', rating: 4.8, suspendedCount: 10, suspendedLabel: 'Askıda 10 yemek', image: getFeedImageUrl(9, 300, 250), avatar: getAvatarUrl('Lezzet Lokantası', 9) },
+  { id: '1', name: 'Sıcak Ekmek Fırını', neighborhood: 'Kadıköy', mahalle: 'Moda', category: 'bread', rating: 4.8, suspendedCount: 12, suspendedLabel: 'Askıda 12 ekmek', image: getFeedImageUrl(0, 300, 250), avatar: getAvatarUrl('Sıcak Ekmek', 0), products: [
+    { id: 'mp1', business_id: '1', name: 'Ekmek', description: 'Taze günlük ekmek', price: 12, is_active: true, sort_order: 0, total_donated: 45, created_at: '', updated_at: '' },
+    { id: 'mp2', business_id: '1', name: 'Simit', description: 'Taze simit', price: 15, is_active: true, sort_order: 1, total_donated: 23, created_at: '', updated_at: '' },
+    { id: 'mp3', business_id: '1', name: 'Poğaça', description: 'Peynirli poğaça', price: 20, is_active: true, sort_order: 2, total_donated: 12, created_at: '', updated_at: '' },
+  ]},
+  { id: '2', name: 'Güven Kasabı', neighborhood: 'Kadıköy', mahalle: 'Caferağa', category: 'meat', rating: 4.7, suspendedCount: 3, suspendedLabel: 'Askıda 3 kg et', image: getFeedImageUrl(1, 300, 250), avatar: getAvatarUrl('Güven Kasabı', 1), products: [
+    { id: 'mp4', business_id: '2', name: '1 kg Kıyma', description: 'Taze dana kıyma', price: 350, is_active: true, sort_order: 0, total_donated: 8, created_at: '', updated_at: '' },
+    { id: 'mp5', business_id: '2', name: '1 kg Kuşbaşı', description: 'Dana kuşbaşı', price: 400, is_active: true, sort_order: 1, total_donated: 5, created_at: '', updated_at: '' },
+  ]},
+  { id: '3', name: 'Taze Mandıra', neighborhood: 'Kadıköy', mahalle: 'Moda', category: 'milk', rating: 4.9, suspendedCount: 8, suspendedLabel: 'Askıda 8 litre süt', image: getFeedImageUrl(2, 300, 250), avatar: getAvatarUrl('Taze Mandıra', 2), products: [
+    { id: 'mp6', business_id: '3', name: '1 Lt Süt', description: 'Günlük taze süt', price: 35, is_active: true, sort_order: 0, total_donated: 30, created_at: '', updated_at: '' },
+    { id: 'mp7', business_id: '3', name: 'Peynir Paketi', description: 'Beyaz peynir 500g', price: 120, is_active: true, sort_order: 1, total_donated: 10, created_at: '', updated_at: '' },
+    { id: 'mp8', business_id: '3', name: 'Yoğurt (1 kg)', description: 'Ev yapımı yoğurt', price: 60, is_active: true, sort_order: 2, total_donated: 18, created_at: '', updated_at: '' },
+  ]},
+  { id: '4', name: 'Ali Usta Berber', neighborhood: 'Kadıköy', mahalle: 'Caferağa', category: 'barber', rating: 4.6, suspendedCount: 5, suspendedLabel: 'Askıda 5 traş', image: getFeedImageUrl(3, 300, 250), avatar: getAvatarUrl('Ali Usta Berber', 3), products: [
+    { id: 'mp9', business_id: '4', name: 'Saç Traşı', description: 'Erkek saç traşı', price: 150, is_active: true, sort_order: 0, total_donated: 15, created_at: '', updated_at: '' },
+    { id: 'mp10', business_id: '4', name: 'Sakal Traşı', description: 'Klasik ustura ile', price: 100, is_active: true, sort_order: 1, total_donated: 8, created_at: '', updated_at: '' },
+  ]},
+  { id: '5', name: 'Kahve Durağı', neighborhood: 'Kadıköy', mahalle: 'Moda', category: 'coffee', rating: 4.7, suspendedCount: 15, suspendedLabel: 'Askıda 15 kahve', image: getFeedImageUrl(4, 300, 250), avatar: getAvatarUrl('Kahve Durağı', 4), products: [
+    { id: 'mp11', business_id: '5', name: 'Türk Kahvesi', description: 'Geleneksel Türk kahvesi', price: 40, is_active: true, sort_order: 0, total_donated: 50, created_at: '', updated_at: '' },
+    { id: 'mp12', business_id: '5', name: 'Çay', description: 'Demli çay', price: 15, is_active: true, sort_order: 1, total_donated: 80, created_at: '', updated_at: '' },
+    { id: 'mp13', business_id: '5', name: 'Latte', description: 'Sütlü kahve', price: 65, is_active: true, sort_order: 2, total_donated: 20, created_at: '', updated_at: '' },
+  ]},
+  { id: '6', name: 'Hayat Eczanesi', neighborhood: 'Kadıköy', mahalle: 'Osmanağa', category: 'medicine', rating: 4.8, suspendedCount: 2, suspendedLabel: 'Askıda 2 ilaç paketi', image: getFeedImageUrl(5, 300, 250), avatar: getAvatarUrl('Hayat Eczanesi', 5), products: [
+    { id: 'mp14', business_id: '6', name: 'İlaç Paketi', description: 'Temel ilaç seti', price: 200, is_active: true, sort_order: 0, total_donated: 5, created_at: '', updated_at: '' },
+  ]},
+  { id: '7', name: 'Kültür Kitapevi', neighborhood: 'Kadıköy', mahalle: 'Bahariye', category: 'book', rating: 4.7, suspendedCount: 20, suspendedLabel: 'Askıda 20 kitap', image: getFeedImageUrl(6, 300, 250), avatar: getAvatarUrl('Kültür Kitapevi', 6), products: [
+    { id: 'mp15', business_id: '7', name: 'Roman', description: 'Seçili romanlardan biri', price: 80, is_active: true, sort_order: 0, total_donated: 25, created_at: '', updated_at: '' },
+    { id: 'mp16', business_id: '7', name: 'Çocuk Kitabı', description: 'Resimli çocuk kitabı', price: 60, is_active: true, sort_order: 1, total_donated: 35, created_at: '', updated_at: '' },
+  ]},
+  { id: '8', name: 'Temiz Market', neighborhood: 'Kadıköy', mahalle: 'Moda', category: 'cleaning', rating: 4.5, suspendedCount: 4, suspendedLabel: 'Askıda 4 temizlik paketi', image: getFeedImageUrl(7, 300, 250), avatar: getAvatarUrl('Temiz Market', 7), products: [
+    { id: 'mp17', business_id: '8', name: 'Temizlik Paketi', description: 'Deterjan + yumuşatıcı', price: 150, is_active: true, sort_order: 0, total_donated: 10, created_at: '', updated_at: '' },
+    { id: 'mp18', business_id: '8', name: 'Hijyen Paketi', description: 'Sabun, şampuan, diş macunu', price: 120, is_active: true, sort_order: 1, total_donated: 8, created_at: '', updated_at: '' },
+  ]},
 ]
 
 // Mock donation wall
@@ -161,19 +226,44 @@ function generateQRCode(): string {
   return code
 }
 
-export default function AskidaBagisPage() {
+// Format card number with spaces
+function formatCardNumber(value: string): string {
+  const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '')
+  const matches = v.match(/\d{4,16}/g)
+  const match = (matches && matches[0]) || ''
+  const parts = []
+  for (let i = 0, len = match.length; i < len; i += 4) {
+    parts.push(match.substring(i, i + 4))
+  }
+  return parts.length ? parts.join(' ') : v
+}
+
+// Format expiry MM/YY
+function formatExpiry(value: string): string {
+  const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '')
+  if (v.length >= 2) return v.substring(0, 2) + '/' + v.substring(2, 4)
+  return v
+}
+
+function AskidaBagisPageContent() {
   const { user, profile, neighborhood } = useCurrentUser()
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
-  const [activeTab, setActiveTab] = useState<'donate' | 'available' | 'redeem'>('donate')
+  const [activeTab, setActiveTab] = useState<'donate' | 'available' | 'redeem' | 'manage'>('donate')
   const [businesses, setBusinesses] = useState<Business[]>([])
   const [donations, setDonations] = useState<DonationItem[]>(mockDonations)
   const [availableDonations, setAvailableDonations] = useState<any[]>([])
   const [claimingId, setClaimingId] = useState<string | null>(null)
   const [donationStats, setDonationStats] = useState({ total: mockDonations.length, items: 47, businesses: 8 })
+  const [userBusiness, setUserBusiness] = useState<any>(null)
+
+  const searchParams = useSearchParams()
+  const paymentStatus = searchParams.get('payment')
+  const paymentDonationId = searchParams.get('donationId')
 
   const [donationModal, setDonationModal] = useState<DonationModalState>({
     isOpen: false,
     business: null,
+    selectedProduct: null,
     quantity: 1,
     selectedItem: 'standard',
     isAnonymous: false,
@@ -181,7 +271,31 @@ export default function AskidaBagisPage() {
     isProcessing: false,
     isSuccess: false,
     qrCode: '',
+    step: 'form',
+    paymentUrl: '',
+    donationId: '',
   })
+
+  const [paymentForm, setPaymentForm] = useState<PaymentFormState>({
+    cardNumber: '',
+    cardName: '',
+    expiry: '',
+    cvv: '',
+    errors: {},
+  })
+
+  // iyzico odeme callback sonrasi
+  useEffect(() => {
+    if (paymentStatus === 'success' && paymentDonationId) {
+      setDonationModal(prev => ({
+        ...prev,
+        isOpen: true,
+        step: 'success',
+        isSuccess: true,
+        donationId: paymentDonationId,
+      }))
+    }
+  }, [paymentStatus, paymentDonationId])
 
   const [redeemModal, setRedeemModal] = useState<RedeemModalState>({
     isOpen: false,
@@ -201,14 +315,22 @@ export default function AskidaBagisPage() {
     isSent: false,
   })
 
+  const [productManageModal, setProductManageModal] = useState<ProductManageModalState>({
+    isOpen: false,
+    businessId: '',
+    businessName: '',
+    products: [],
+    editingProduct: null,
+    isLoading: false,
+    isSaving: false,
+  })
+
   // Fetch donations from Supabase
   useEffect(() => {
     async function fetchDonations() {
       const { data, error } = await getDonations({ status: 'available', limit: 50 })
       if (!error && data && data.length > 0) {
-        // Store raw data for "Askıda Ne Var?" tab
         setAvailableDonations(data)
-        // Map for donation wall
         const mapped: DonationItem[] = data.map((d: any, i: number) => ({
           id: d.id,
           donor: d.profiles?.full_name || 'Anonim',
@@ -225,23 +347,39 @@ export default function AskidaBagisPage() {
     fetchDonations()
   }, [])
 
-  // Fetch businesses from Supabase
+  // Fetch businesses with their donation products from Supabase
   useEffect(() => {
     async function fetchBusinesses() {
       try {
-        const supabase = createClient()
-        const { data, error } = await supabase
-          .from('businesses')
-          .select('*')
-          .limit(10) as any
+        // Try to fetch businesses with donation products
+        const { data: bwp, error: bwpError } = await getBusinessesWithProducts()
 
-        if (error) {
-          console.warn('Could not fetch businesses:', error)
-          setBusinesses(mockBusinesses)
+        if (!bwpError && bwp && bwp.length > 0) {
+          const mappedBusinesses = bwp.map((b: any, index: number) => ({
+            id: b.id,
+            name: b.name,
+            neighborhood: 'Kadıköy',
+            mahalle: 'Moda',
+            category: b.donation_products?.[0]?.category || 'general',
+            rating: b.rating || 4.5 + (index % 5) * 0.1,
+            suspendedCount: b.donation_products?.reduce((s: number, p: any) => s + (p.total_donated || 0), 0) || 0,
+            suspendedLabel: `${b.donation_products?.length || 0} ürün`,
+            image: b.image_urls?.[0] || getFeedImageUrl(index, 300, 250),
+            avatar: b.logo_url || getAvatarUrl(b.name, index),
+            products: b.donation_products || [],
+          } as Business))
+          setBusinesses(mappedBusinesses)
           return
         }
 
-        if (data && data.length > 0) {
+        // Fallback: fetch businesses without products
+        const supabase = createClient() as any
+        const { data, error } = await supabase
+          .from('businesses')
+          .select('*')
+          .limit(10)
+
+        if (!error && data && data.length > 0) {
           const mappedBusinesses = data.map((business: any, index: number) => ({
             id: business.id,
             name: business.name,
@@ -253,6 +391,7 @@ export default function AskidaBagisPage() {
             suspendedLabel: `Askıda ${2 + (index % 10)} öğe`,
             image: getFeedImageUrl(index, 300, 250),
             avatar: getAvatarUrl(business.name, index),
+            products: [],
           } as Business))
           setBusinesses(mappedBusinesses)
         } else {
@@ -267,6 +406,25 @@ export default function AskidaBagisPage() {
     fetchBusinesses()
   }, [])
 
+  // Fetch user's business (for management tab)
+  useEffect(() => {
+    if (!user) return
+    async function fetchUserBusiness() {
+      try {
+        const supabase = createClient() as any
+        const { data } = await supabase
+          .from('businesses')
+          .select('*')
+          .eq('owner_id', user.id)
+          .single()
+        setUserBusiness(data)
+      } catch (e) {
+        // User may not have a business
+      }
+    }
+    fetchUserBusiness()
+  }, [user])
+
   // Filter businesses
   const displayBusinesses = businesses.length > 0 ? businesses : mockBusinesses
   const filteredBusinesses =
@@ -278,6 +436,7 @@ export default function AskidaBagisPage() {
     setDonationModal({
       isOpen: true,
       business,
+      selectedProduct: business.products?.[0] || null,
       quantity: 1,
       selectedItem: 'standard',
       isAnonymous: false,
@@ -285,36 +444,64 @@ export default function AskidaBagisPage() {
       isProcessing: false,
       isSuccess: false,
       qrCode: '',
+      step: 'form',
+      paymentUrl: '',
+      donationId: '',
     })
+    setPaymentForm({ cardNumber: '', cardName: '', expiry: '', cvv: '', errors: {} })
   }
 
   const closeDonationModal = () => {
     setDonationModal({ ...donationModal, isOpen: false, isSuccess: false })
   }
 
+  const validatePaymentForm = (): boolean => {
+    const errors: Record<string, string> = {}
+    const cardNum = paymentForm.cardNumber.replace(/\s/g, '')
+    if (cardNum.length < 16) errors.cardNumber = 'Geçerli bir kart numarası girin'
+    if (!paymentForm.cardName.trim()) errors.cardName = 'Kart üzerindeki isim gerekli'
+    if (paymentForm.expiry.length < 5) errors.expiry = 'GG/AA formatında girin'
+    if (paymentForm.cvv.length < 3) errors.cvv = 'CVV gerekli'
+    setPaymentForm(prev => ({ ...prev, errors }))
+    return Object.keys(errors).length === 0
+  }
+
+  const getTotalPrice = () => {
+    if (!donationModal.selectedProduct) return 0
+    return donationModal.selectedProduct.price * donationModal.quantity
+  }
+
   const handleDonationSubmit = async () => {
     if (!user) return
+    if (!validatePaymentForm()) return
+
     setDonationModal({ ...donationModal, isProcessing: true })
     try {
       const qr = generateQRCode()
       const neighborhoodId = neighborhood?.id || null
 
-      // Only pass business_id if it looks like a real UUID (not mock data like '1','2'...)
       const isValidUUID = (id: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)
       const businessId = donationModal.business?.id && isValidUUID(donationModal.business.id)
         ? donationModal.business.id
         : null
 
-      // Save to Supabase
+      const totalPrice = getTotalPrice()
+      const productName = donationModal.selectedProduct?.name || 'Ürün'
+      const itemName = `${donationModal.quantity} ${productName}`
+
+      // 1. Save donation as 'pending_payment'
       const { data: savedDonation, error } = await createDonation({
         user_id: user.id,
         neighborhood_id: neighborhoodId as any,
-        donation_type: donationModal.selectedItem || donationModal.business?.category || 'general',
-        title: `Askıda ${donationModal.quantity} ${donationModal.selectedItem} - ${donationModal.business?.name}`,
+        donation_type: donationModal.selectedProduct?.category || donationModal.business?.category || 'general',
+        title: `Askıda ${itemName} - ${donationModal.business?.name}`,
         description: donationModal.message || undefined,
         quantity: donationModal.quantity,
         business_id: businessId,
         qr_code: qr,
+        amount: totalPrice,
+        status: 'pending_payment',
+        payment_status: 'pending',
       } as any)
 
       if (error) {
@@ -323,30 +510,91 @@ export default function AskidaBagisPage() {
         return
       }
 
-      // Also update local state for immediate UI feedback
-      const newDonation: DonationItem = {
-        id: savedDonation?.id || `d${Date.now()}`,
-        donor: donationModal.isAnonymous ? 'Anonim' : (profile?.full_name || 'Komşu'),
-        items: `${donationModal.quantity} ${donationModal.selectedItem}`,
-        business: donationModal.business?.name || 'İşletme',
-        time: 'az önce',
-        isAnonymous: donationModal.isAnonymous,
-        avatar: !donationModal.isAnonymous ? getAvatarUrl(profile?.full_name || 'User', 0) : undefined,
-      }
+      const donationId = savedDonation?.id || `d${Date.now()}`
 
-      setDonations([newDonation, ...donations])
-      setDonationStats(prev => ({
-        ...prev,
-        total: prev.total + 1,
-        items: prev.items + donationModal.quantity,
-      }))
+      // 2. Call iyzico payment API
+      const nameParts = (profile?.full_name || 'Anonim Bagisci').split(' ')
+      const buyerName = nameParts[0] || 'Anonim'
+      const buyerSurname = nameParts.slice(1).join(' ') || 'Bagisci'
 
-      setDonationModal({
-        ...donationModal,
-        isProcessing: false,
-        isSuccess: true,
-        qrCode: qr
+      const paymentResponse = await fetch('/api/payment/iyzico', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          donationId,
+          amount: totalPrice,
+          buyerName,
+          buyerSurname,
+          buyerEmail: user.email || 'donor@mahallemiz.app',
+          buyerPhone: profile?.phone || '+905000000000',
+          buyerId: user.id,
+          businessName: donationModal.business?.name || 'Isletme',
+          itemName,
+        }),
       })
+
+      const paymentData = await paymentResponse.json()
+
+      if (paymentData.success) {
+        if (paymentData.mode === 'simulation') {
+          // Simulation mode: show success directly
+          const supabase = createClient() as any
+          await supabase
+            .from('donations')
+            .update({ status: 'available', payment_status: 'completed' })
+            .eq('id', donationId)
+
+          // Update product donation count
+          if (donationModal.selectedProduct?.id && isValidUUID(donationModal.selectedProduct.id)) {
+            await incrementProductDonationCount(donationModal.selectedProduct.id, donationModal.quantity)
+          }
+
+          const newDonation: DonationItem = {
+            id: donationId,
+            donor: donationModal.isAnonymous ? 'Anonim' : (profile?.full_name || 'Komsu'),
+            items: itemName,
+            business: donationModal.business?.name || 'Isletme',
+            time: 'az once',
+            isAnonymous: donationModal.isAnonymous,
+            avatar: !donationModal.isAnonymous ? getAvatarUrl(profile?.full_name || 'User', 0) : undefined,
+          }
+
+          setDonations([newDonation, ...donations])
+          setDonationStats(prev => ({
+            ...prev,
+            total: prev.total + 1,
+            items: prev.items + donationModal.quantity,
+          }))
+
+          setDonationModal({
+            ...donationModal,
+            isProcessing: false,
+            isSuccess: true,
+            step: 'success',
+            qrCode: qr,
+            donationId,
+          })
+        } else {
+          // Real iyzico: redirect to payment page
+          setDonationModal({
+            ...donationModal,
+            isProcessing: false,
+            step: 'payment',
+            paymentUrl: paymentData.paymentPageUrl || '',
+            donationId,
+            qrCode: qr,
+          })
+
+          if (paymentData.paymentPageUrl) {
+            window.open(paymentData.paymentPageUrl, '_blank')
+          }
+        }
+      } else {
+        console.warn('Payment initiation failed:', paymentData)
+        const supabase = createClient() as any
+        await supabase.from('donations').delete().eq('id', donationId)
+        setDonationModal({ ...donationModal, isProcessing: false })
+      }
     } catch (error) {
       console.warn('Error submitting donation:', error)
       setDonationModal({ ...donationModal, isProcessing: false })
@@ -354,7 +602,6 @@ export default function AskidaBagisPage() {
   }
 
   const handleRedeemScan = () => {
-    // Simulate QR scan → found donation
     setTimeout(() => {
       setRedeemModal({
         ...redeemModal,
@@ -372,7 +619,6 @@ export default function AskidaBagisPage() {
 
   const handleRedeemConfirm = async () => {
     if (user && redeemModal.qrCode) {
-      // Try to find and claim donation by QR code in Supabase
       try {
         const supabase = createClient() as any
         const { data: donation } = await supabase
@@ -428,14 +674,82 @@ export default function AskidaBagisPage() {
     }
   }
 
-  const getItemPrice = (category: string): number => {
-    const prices: Record<string, number> = { bread: 12, meat: 50, milk: 18, barber: 25, coffee: 8, medicine: 100, book: 35, cleaning: 45 }
-    return prices[category] || 50
+  // === Product Management ===
+  const openProductManageModal = async (businessId: string, businessName: string) => {
+    setProductManageModal({
+      isOpen: true,
+      businessId,
+      businessName,
+      products: [],
+      editingProduct: null,
+      isLoading: true,
+      isSaving: false,
+    })
+
+    const { data, error } = await getBusinessProducts(businessId)
+    setProductManageModal(prev => ({
+      ...prev,
+      products: data || [],
+      isLoading: false,
+    }))
   }
 
-  const getTotalPrice = () => {
-    if (!donationModal.business) return 0
-    return getItemPrice(donationModal.business.category) * donationModal.quantity
+  const handleSaveProduct = async () => {
+    const ep = productManageModal.editingProduct
+    if (!ep || !ep.name || !ep.price) return
+
+    setProductManageModal(prev => ({ ...prev, isSaving: true }))
+
+    if (ep.id) {
+      // Update existing
+      const { data, error } = await updateDonationProduct(ep.id, {
+        name: ep.name,
+        description: ep.description || '',
+        price: ep.price,
+        category: ep.category || '',
+      })
+      if (!error && data) {
+        setProductManageModal(prev => ({
+          ...prev,
+          products: prev.products.map(p => p.id === data.id ? data : p),
+          editingProduct: null,
+          isSaving: false,
+        }))
+      } else {
+        setProductManageModal(prev => ({ ...prev, isSaving: false }))
+      }
+    } else {
+      // Create new
+      const { data, error } = await createDonationProduct({
+        business_id: productManageModal.businessId,
+        name: ep.name,
+        description: ep.description || '',
+        price: ep.price,
+        category: ep.category || '',
+        sort_order: productManageModal.products.length,
+      })
+      if (!error && data) {
+        setProductManageModal(prev => ({
+          ...prev,
+          products: [...prev.products, data],
+          editingProduct: null,
+          isSaving: false,
+        }))
+      } else {
+        console.warn('Create product error:', error)
+        setProductManageModal(prev => ({ ...prev, isSaving: false }))
+      }
+    }
+  }
+
+  const handleDeleteProduct = async (productId: string) => {
+    const { error } = await deleteDonationProduct(productId)
+    if (!error) {
+      setProductManageModal(prev => ({
+        ...prev,
+        products: prev.products.filter(p => p.id !== productId),
+      }))
+    }
   }
 
   return (
@@ -475,7 +789,7 @@ export default function AskidaBagisPage() {
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-5 sm:py-8">
 
-        {/* Donate / Redeem Tabs */}
+        {/* Tabs */}
         <div className="flex gap-2 sm:gap-3 mb-6 sm:mb-8 overflow-x-auto">
           <button
             onClick={() => setActiveTab('donate')}
@@ -516,6 +830,21 @@ export default function AskidaBagisPage() {
             <span className="hidden sm:inline">Bağış Kullan</span>
             <span className="sm:hidden">Kullan</span>
           </button>
+          {userBusiness && (
+            <button
+              onClick={() => setActiveTab('manage')}
+              className={cn(
+                'flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-xl font-bold text-center transition-all flex items-center justify-center gap-1 sm:gap-2 whitespace-nowrap text-sm sm:text-base',
+                activeTab === 'manage'
+                  ? 'bg-primary text-white shadow-lg'
+                  : 'bg-surface text-text-primary border border-border hover:border-primary'
+              )}
+            >
+              <Store className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Ürünlerim</span>
+              <span className="sm:hidden">Ürünler</span>
+            </button>
+          )}
         </div>
 
         {/* === DONATE TAB === */}
@@ -531,15 +860,15 @@ export default function AskidaBagisPage() {
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm flex-shrink-0">1</div>
                   <div>
-                    <p className="text-sm font-semibold text-text-primary">Esnaf Seç</p>
-                    <p className="text-xs text-text-muted">Bağış yapacağın esnafı seç</p>
+                    <p className="text-sm font-semibold text-text-primary">Esnaf & Ürün Seç</p>
+                    <p className="text-xs text-text-muted">İşletmenin bağış ürünlerinden birini seç</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm flex-shrink-0">2</div>
                   <div>
-                    <p className="text-sm font-semibold text-text-primary">Bağışla</p>
-                    <p className="text-xs text-text-muted">Miktar belirle, gizli/açık seç</p>
+                    <p className="text-sm font-semibold text-text-primary">Öde & Bağışla</p>
+                    <p className="text-xs text-text-muted">Kredi kartı ile güvenli ödeme yap</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -580,7 +909,7 @@ export default function AskidaBagisPage() {
               </div>
             </div>
 
-            {/* Business Cards Grid */}
+            {/* Business Cards Grid - Now shows products */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 mb-8 sm:mb-12">
               {filteredBusinesses.map((business) => (
                 <div
@@ -589,10 +918,9 @@ export default function AskidaBagisPage() {
                 >
                   <div className="relative h-32 sm:h-40 w-full bg-background overflow-hidden">
                     <Image src={business.image} alt={business.name} fill unoptimized className="object-cover" />
-                    {/* Suspended badge */}
                     <div className="absolute bottom-2 left-2 bg-primary text-white text-xs font-bold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full flex items-center gap-1">
-                      <Heart className="w-3 h-3" />
-                      {business.suspendedLabel}
+                      <Package className="w-3 h-3" />
+                      {business.products?.length || 0} ürün
                     </div>
                   </div>
                   <div className="p-3 sm:p-4 flex flex-col flex-grow">
@@ -606,6 +934,19 @@ export default function AskidaBagisPage() {
                         {business.rating}
                       </div>
                     </div>
+
+                    {/* Product list preview */}
+                    {business.products && business.products.length > 0 && (
+                      <div className="mb-3 space-y-1.5">
+                        {business.products.slice(0, 3).map((product) => (
+                          <div key={product.id} className="flex items-center justify-between bg-background rounded-lg px-2.5 py-1.5">
+                            <span className="text-xs text-text-primary font-medium truncate">{product.name}</span>
+                            <span className="text-xs font-bold text-primary whitespace-nowrap ml-2">{product.price} TL</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                     <button
                       onClick={() => openDonationModal(business)}
                       className="w-full bg-primary hover:bg-primary-hover text-white font-medium py-2 sm:py-2.5 px-2 sm:px-3 rounded-lg transition-colors flex items-center justify-center gap-2 mt-auto text-sm"
@@ -660,7 +1001,6 @@ export default function AskidaBagisPage() {
 
                   return (
                     <div key={d.id} className="bg-surface rounded-xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col">
-                      {/* Header */}
                       <div className="bg-gradient-to-r from-[#e8f5e9] to-[#f0fdf4] px-4 py-3 flex items-center gap-3 border-b border-border">
                         <span className="text-3xl">{emoji}</span>
                         <div className="flex-1 min-w-0">
@@ -670,14 +1010,13 @@ export default function AskidaBagisPage() {
                           </p>
                         </div>
                         <div className="flex-shrink-0 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">
-                          ×{d.quantity || 1}
+                          x{d.quantity || 1}
                         </div>
                       </div>
 
-                      {/* Body */}
                       <div className="p-4 flex flex-col flex-grow gap-3">
                         {d.description && (
-                          <p className="text-xs text-text-muted italic">"{d.description}"</p>
+                          <p className="text-xs text-text-muted italic">&ldquo;{d.description}&rdquo;</p>
                         )}
                         <div className="flex items-center justify-between text-xs text-text-muted">
                           <span>
@@ -703,17 +1042,11 @@ export default function AskidaBagisPage() {
                           )}
                         >
                           {claimingId === d.id ? (
-                            <>
-                              <span className="animate-spin text-base">⏳</span>
-                              Alınıyor...
-                            </>
+                            <><span className="animate-spin text-base">⏳</span>Alınıyor...</>
                           ) : isExpired ? (
                             'Süresi Doldu'
                           ) : (
-                            <>
-                              <Check className="w-4 h-4" />
-                              Bağışı Al
-                            </>
+                            <><Check className="w-4 h-4" />Bağışı Al</>
                           )}
                         </button>
                       </div>
@@ -728,7 +1061,6 @@ export default function AskidaBagisPage() {
         {/* === REDEEM TAB === */}
         {activeTab === 'redeem' && (
           <div className="max-w-lg mx-auto px-4">
-            {/* How to redeem */}
             <div className="bg-surface rounded-xl border border-border p-4 sm:p-6 mb-4 sm:mb-6 text-center">
               <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#e8f5e9] rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
                 <ScanLine className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
@@ -738,7 +1070,6 @@ export default function AskidaBagisPage() {
                 Esnaftaki karekodu telefonunla okut ve askıdaki ürünü al. Kimliğin gizli kalır.
               </p>
 
-              {/* Privacy info */}
               <div className="bg-background rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 text-left">
                 <div className="flex items-center gap-2 mb-2">
                   <Shield className="w-5 h-5 text-primary" />
@@ -759,7 +1090,6 @@ export default function AskidaBagisPage() {
               </button>
             </div>
 
-            {/* Steps */}
             <div className="space-y-3">
               {[
                 { step: '1', title: 'Esnafa Git', desc: 'Askıda bağışı olan bir esnafa git' },
@@ -782,6 +1112,63 @@ export default function AskidaBagisPage() {
           </div>
         )}
 
+        {/* === MANAGE (Business Products) TAB === */}
+        {activeTab === 'manage' && userBusiness && (
+          <div className="max-w-2xl mx-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-lg sm:text-xl font-bold text-text-primary flex items-center gap-2">
+                <Store className="w-5 h-5 text-primary" />
+                Bağış Ürünlerim
+              </h2>
+              <span className="text-xs text-text-muted bg-surface border border-border rounded-full px-3 py-1">
+                En fazla 3 ürün
+              </span>
+            </div>
+
+            <div className="bg-surface rounded-xl border border-border p-4 sm:p-5 mb-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-full bg-background flex items-center justify-center overflow-hidden">
+                  {userBusiness.logo_url ? (
+                    <Image src={userBusiness.logo_url} alt={userBusiness.name} width={48} height={48} unoptimized className="rounded-full" />
+                  ) : (
+                    <Store className="w-6 h-6 text-text-muted" />
+                  )}
+                </div>
+                <div>
+                  <p className="font-bold text-text-primary">{userBusiness.name}</p>
+                  <p className="text-xs text-text-muted">{userBusiness.address}</p>
+                </div>
+              </div>
+
+              <p className="text-sm text-text-muted mb-4">
+                Aşağıda bağış ürünlerinizi yönetebilirsiniz. Her işletme en fazla 3 aktif bağış ürünü tanımlayabilir.
+                Müşteriler bu ürünlerden satın alarak ihtiyaç sahiplerine bağışta bulunabilir.
+              </p>
+
+              <button
+                onClick={() => openProductManageModal(userBusiness.id, userBusiness.name)}
+                className="w-full bg-primary hover:bg-primary-hover text-white font-bold py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
+              >
+                <Settings className="w-4 h-4" />
+                Ürünleri Yönet
+              </button>
+            </div>
+
+            <div className="bg-[#fffbe6] border border-[#ffe58f] rounded-xl p-4 text-sm">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="w-5 h-5 text-[#d48806] flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-semibold text-[#d48806] mb-1">Nasıl Çalışır?</p>
+                  <p className="text-[#8c6d1f] text-xs">
+                    Tanımladığınız ürünler bağış sayfasında görünecektir. Bağışçılar bu ürünleri satın alarak komşulara bağışta bulunur.
+                    Ödeme tamamlandığında QR kod oluşturulur ve ihtiyaç sahibi bu kodu sizde okutarak ürünü teslim alır.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Donation Wall */}
         <div className="mt-8 sm:mt-12 mb-6 sm:mb-8">
           <h2 className="text-lg sm:text-xl font-bold text-text-primary mb-3 sm:mb-4 flex items-center gap-2">
@@ -798,14 +1185,13 @@ export default function AskidaBagisPage() {
                     index < donations.length - 1 ? 'border-b border-[#f0f2f5]' : ''
                   )}
                 >
-                  {/* Donation info */}
                   <div className="flex items-start gap-2 sm:gap-3">
                     {donation.isAnonymous ? (
                       <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-background flex items-center justify-center text-base sm:text-lg">
                         🙏
                       </div>
                     ) : (
-                      <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden flex-shrink-0">
+                      <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden">
                         <Image src={donation.avatar || ''} alt={donation.donor} width={40} height={40} unoptimized />
                       </div>
                     )}
@@ -830,7 +1216,6 @@ export default function AskidaBagisPage() {
                     </div>
                   </div>
 
-                  {/* Thank you message if exists */}
                   {donation.hasThankYou && (
                     <div className="mt-2 sm:mt-3 bg-[#f0fdf4] border border-[#bbf7d0] rounded-lg p-2 sm:p-3 ml-10 sm:ml-[52px]">
                       <div className="flex items-start gap-1 sm:gap-1.5 mb-1">
@@ -852,11 +1237,11 @@ export default function AskidaBagisPage() {
         </div>
       </div>
 
-      {/* === DONATION MODAL === */}
+      {/* === DONATION MODAL (with product selection + credit card form) === */}
       {donationModal.isOpen && donationModal.business && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-surface rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto mx-auto">
-            <div className="sticky top-0 flex items-center justify-between p-4 sm:p-5 border-b border-border bg-surface rounded-t-2xl gap-2">
+            <div className="sticky top-0 flex items-center justify-between p-4 sm:p-5 border-b border-border bg-surface rounded-t-2xl gap-2 z-10">
               <h3 className="text-base sm:text-lg font-bold text-text-primary">Bağış Yap</h3>
               <button onClick={closeDonationModal} className="text-[#666] hover:text-text-primary flex-shrink-0">
                 <X className="w-5 h-5" />
@@ -864,7 +1249,7 @@ export default function AskidaBagisPage() {
             </div>
 
             <div className="p-4 sm:p-5">
-              {!donationModal.isSuccess ? (
+              {donationModal.step === 'form' && (
                 <>
                   {/* Business */}
                   <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 p-3 bg-background rounded-lg">
@@ -874,6 +1259,41 @@ export default function AskidaBagisPage() {
                       <p className="text-xs text-text-muted truncate">{donationModal.business.neighborhood}, {donationModal.business.mahalle}</p>
                     </div>
                   </div>
+
+                  {/* Product Selection */}
+                  {donationModal.business.products && donationModal.business.products.length > 0 && (
+                    <div className="mb-4 sm:mb-5">
+                      <label className="block text-sm font-semibold text-text-primary mb-2">Ürün Seç</label>
+                      <div className="space-y-2">
+                        {donationModal.business.products.map((product) => (
+                          <label
+                            key={product.id}
+                            className={cn(
+                              'flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all',
+                              donationModal.selectedProduct?.id === product.id
+                                ? 'border-primary bg-[#e8f5e9]'
+                                : 'border-border hover:border-primary'
+                            )}
+                          >
+                            <input
+                              type="radio"
+                              name="product"
+                              checked={donationModal.selectedProduct?.id === product.id}
+                              onChange={() => setDonationModal({ ...donationModal, selectedProduct: product })}
+                              className="w-4 h-4 text-primary flex-shrink-0"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-text-primary">{product.name}</p>
+                              {product.description && (
+                                <p className="text-xs text-text-muted">{product.description}</p>
+                              )}
+                            </div>
+                            <span className="text-sm font-bold text-primary whitespace-nowrap">{product.price} TL</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Quantity */}
                   <div className="mb-4 sm:mb-5">
@@ -939,11 +1359,15 @@ export default function AskidaBagisPage() {
                     />
                   </div>
 
-                  {/* Price */}
+                  {/* Price Summary */}
                   <div className="bg-background rounded-lg p-3 sm:p-4 mb-4 sm:mb-5">
                     <div className="flex justify-between text-sm mb-1">
+                      <span className="text-[#666]">Ürün</span>
+                      <span className="text-text-primary">{donationModal.selectedProduct?.name || 'Seçiniz'}</span>
+                    </div>
+                    <div className="flex justify-between text-sm mb-1">
                       <span className="text-[#666]">Birim fiyat</span>
-                      <span className="text-text-primary">₺{getItemPrice(donationModal.business.category)}</span>
+                      <span className="text-text-primary">{donationModal.selectedProduct?.price || 0} TL</span>
                     </div>
                     <div className="flex justify-between text-sm mb-2 pb-2 border-b border-border">
                       <span className="text-[#666]">Adet</span>
@@ -951,43 +1375,177 @@ export default function AskidaBagisPage() {
                     </div>
                     <div className="flex justify-between">
                       <span className="font-bold text-text-primary">Toplam</span>
-                      <span className="text-lg sm:text-xl font-bold text-primary">₺{getTotalPrice()}</span>
+                      <span className="text-lg sm:text-xl font-bold text-primary">{getTotalPrice()} TL</span>
+                    </div>
+                  </div>
+
+                  {/* Credit Card Form (Fake iyzico) */}
+                  <div className="mb-4 sm:mb-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <CreditCard className="w-4 h-4 text-[#1a1f71]" />
+                      <span className="text-sm font-semibold text-text-primary">Kart Bilgileri</span>
+                      <span className="text-xs text-text-muted ml-auto flex items-center gap-1">
+                        <Shield className="w-3 h-3" />
+                        iyzico ile güvenli
+                      </span>
+                    </div>
+
+                    <div className="space-y-3">
+                      {/* Card Number */}
+                      <div>
+                        <input
+                          type="text"
+                          placeholder="0000 0000 0000 0000"
+                          value={paymentForm.cardNumber}
+                          onChange={(e) => setPaymentForm({ ...paymentForm, cardNumber: formatCardNumber(e.target.value), errors: { ...paymentForm.errors, cardNumber: '' } })}
+                          maxLength={19}
+                          className={cn(
+                            'w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none font-mono tracking-wider',
+                            paymentForm.errors.cardNumber ? 'border-red-400 focus:border-red-500' : 'border-border focus:border-primary'
+                          )}
+                        />
+                        {paymentForm.errors.cardNumber && (
+                          <p className="text-xs text-red-500 mt-1">{paymentForm.errors.cardNumber}</p>
+                        )}
+                      </div>
+
+                      {/* Card Name */}
+                      <div>
+                        <input
+                          type="text"
+                          placeholder="Kart Üzerindeki İsim"
+                          value={paymentForm.cardName}
+                          onChange={(e) => setPaymentForm({ ...paymentForm, cardName: e.target.value.toUpperCase(), errors: { ...paymentForm.errors, cardName: '' } })}
+                          className={cn(
+                            'w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none uppercase',
+                            paymentForm.errors.cardName ? 'border-red-400 focus:border-red-500' : 'border-border focus:border-primary'
+                          )}
+                        />
+                        {paymentForm.errors.cardName && (
+                          <p className="text-xs text-red-500 mt-1">{paymentForm.errors.cardName}</p>
+                        )}
+                      </div>
+
+                      {/* Expiry + CVV */}
+                      <div className="flex gap-3">
+                        <div className="flex-1">
+                          <input
+                            type="text"
+                            placeholder="AA/YY"
+                            value={paymentForm.expiry}
+                            onChange={(e) => setPaymentForm({ ...paymentForm, expiry: formatExpiry(e.target.value), errors: { ...paymentForm.errors, expiry: '' } })}
+                            maxLength={5}
+                            className={cn(
+                              'w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none font-mono text-center',
+                              paymentForm.errors.expiry ? 'border-red-400 focus:border-red-500' : 'border-border focus:border-primary'
+                            )}
+                          />
+                          {paymentForm.errors.expiry && (
+                            <p className="text-xs text-red-500 mt-1">{paymentForm.errors.expiry}</p>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <input
+                            type="text"
+                            placeholder="CVV"
+                            value={paymentForm.cvv}
+                            onChange={(e) => setPaymentForm({ ...paymentForm, cvv: e.target.value.replace(/\D/g, '').slice(0, 4), errors: { ...paymentForm.errors, cvv: '' } })}
+                            maxLength={4}
+                            className={cn(
+                              'w-full border rounded-lg px-3 py-2.5 text-sm focus:outline-none font-mono text-center',
+                              paymentForm.errors.cvv ? 'border-red-400 focus:border-red-500' : 'border-border focus:border-primary'
+                            )}
+                          />
+                          {paymentForm.errors.cvv && (
+                            <p className="text-xs text-red-500 mt-1">{paymentForm.errors.cvv}</p>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
 
                   <button
                     onClick={handleDonationSubmit}
-                    disabled={donationModal.isProcessing}
-                    className="w-full bg-primary hover:bg-primary-hover disabled:opacity-70 text-white font-bold py-2 sm:py-3 px-3 sm:px-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
+                    disabled={donationModal.isProcessing || !donationModal.selectedProduct}
+                    className="w-full bg-primary hover:bg-primary-hover disabled:opacity-70 text-white font-bold py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
                   >
                     {donationModal.isProcessing ? (
-                      <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />İşleniyor...</>
+                      <><Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />Ödeme işleniyor...</>
                     ) : (
-                      <><Heart className="w-4 h-4 sm:w-5 sm:h-5" />Bağışı Tamamla</>
+                      <><CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />{getTotalPrice()} TL Öde ve Bağışla</>
                     )}
                   </button>
+
+                  <p className="text-xs text-text-muted text-center mt-2">
+                    Test modunda gerçek ödeme alınmaz
+                  </p>
                 </>
-              ) : (
-                /* Success with QR Code */
+              )}
+
+              {donationModal.step === 'payment' && (
+                <div className="text-center py-6 sm:py-8">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-50 rounded-full mb-4">
+                    <CreditCard className="w-8 h-8 text-blue-600" />
+                  </div>
+                  <h4 className="text-lg sm:text-xl font-bold text-text-primary mb-2">Ödeme Bekleniyor</h4>
+                  <p className="text-sm text-[#666] mb-6">
+                    iyzico ödeme sayfası yeni bir sekmede açıldı. Ödemenizi tamamladıktan sonra bu sayfa otomatik güncellenecektir.
+                  </p>
+
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <Loader2 className="w-4 h-4 text-blue-600 animate-spin" />
+                      <span className="text-sm font-medium text-blue-800">Ödeme tamamlanmayı bekliyor...</span>
+                    </div>
+                    <p className="text-xs text-blue-600">
+                      Toplam: {getTotalPrice()} TL
+                    </p>
+                  </div>
+
+                  {donationModal.paymentUrl && (
+                    <a
+                      href={donationModal.paymentUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm text-primary hover:underline mb-4"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      Ödeme sayfasını tekrar aç
+                    </a>
+                  )}
+
+                  <div className="mt-4">
+                    <button
+                      onClick={closeDonationModal}
+                      className="text-sm text-text-muted hover:text-text-primary"
+                    >
+                      İptal et
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {donationModal.step === 'success' && (
                 <div className="text-center py-3 sm:py-4">
                   <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-[#e8f5e9] rounded-full mb-3 sm:mb-4">
                     <Check className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
                   </div>
-                  <h4 className="text-lg sm:text-xl font-bold text-text-primary mb-2">Bağışınız Tamamlandı!</h4>
+                  <h4 className="text-lg sm:text-xl font-bold text-text-primary mb-2">Ödeme Başarılı, Bağışınız Tamamlandı!</h4>
                   <p className="text-sm text-[#666] mb-4 sm:mb-6">
-                    {donationModal.quantity} adet bağış {donationModal.business.name} için askıya alındı.
+                    {donationModal.business ? `${donationModal.quantity} adet ${donationModal.selectedProduct?.name || 'ürün'} ${donationModal.business.name} için askıya alındı.` : 'Bağışınız askıya alındı ve komşularınız tarafından görülebilir.'}
                   </p>
 
-                  {/* QR Code Display */}
-                  <div className="bg-background rounded-xl p-4 sm:p-6 mb-3 sm:mb-4 inline-block w-full sm:w-auto">
-                    <div className="w-40 h-40 sm:w-48 sm:h-48 bg-surface rounded-lg flex items-center justify-center mx-auto mb-2 sm:mb-3 border-2 border-dashed border-primary">
-                      <div className="text-center">
-                        <QrCode className="w-16 h-16 sm:w-20 sm:h-20 text-primary mx-auto mb-1 sm:mb-2" />
-                        <p className="text-xs text-text-muted">Bağış Karekodu</p>
+                  {donationModal.qrCode && (
+                    <div className="bg-background rounded-xl p-4 sm:p-6 mb-3 sm:mb-4 inline-block w-full sm:w-auto">
+                      <div className="w-40 h-40 sm:w-48 sm:h-48 bg-surface rounded-lg flex items-center justify-center mx-auto mb-2 sm:mb-3 border-2 border-dashed border-primary">
+                        <div className="text-center">
+                          <QrCode className="w-16 h-16 sm:w-20 sm:h-20 text-primary mx-auto mb-1 sm:mb-2" />
+                          <p className="text-xs text-text-muted">Bağış Karekodu</p>
+                        </div>
                       </div>
+                      <p className="text-xs sm:text-sm font-mono font-bold text-text-primary break-all">{donationModal.qrCode}</p>
                     </div>
-                    <p className="text-xs sm:text-sm font-mono font-bold text-text-primary break-all">{donationModal.qrCode}</p>
-                  </div>
+                  )}
 
                   <p className="text-xs text-text-muted mb-3 sm:mb-4 px-2">
                     Bu karekod esnafa iletildi. İhtiyaç sahibi komşular bu kodu okutarak hizmetten yararlanacak.
@@ -1024,7 +1582,6 @@ export default function AskidaBagisPage() {
             </div>
 
             <div className="p-4 sm:p-5">
-              {/* Step: Scan */}
               {redeemModal.step === 'scan' && (
                 <div className="text-center">
                   <div className="w-48 h-48 sm:w-64 sm:h-64 bg-background rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 border-2 border-dashed border-primary">
@@ -1034,7 +1591,6 @@ export default function AskidaBagisPage() {
                     </div>
                   </div>
 
-                  {/* Privacy toggle for recipient */}
                   <div className="bg-background rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 text-left">
                     <p className="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
                       <Shield className="w-4 h-4 text-primary" />
@@ -1070,7 +1626,6 @@ export default function AskidaBagisPage() {
                 </div>
               )}
 
-              {/* Step: Confirm */}
               {redeemModal.step === 'confirm' && redeemModal.donationInfo && (
                 <div>
                   <div className="bg-[#e8f5e9] rounded-xl p-4 sm:p-5 mb-4 sm:mb-5 text-center">
@@ -1116,7 +1671,6 @@ export default function AskidaBagisPage() {
                 </div>
               )}
 
-              {/* Step: Success */}
               {redeemModal.step === 'success' && (
                 <div className="text-center py-3 sm:py-4">
                   <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-[#e8f5e9] rounded-full mb-3 sm:mb-4">
@@ -1185,7 +1739,6 @@ export default function AskidaBagisPage() {
                     </p>
                   </div>
 
-                  {/* Your privacy */}
                   <div className="mb-4 sm:mb-5">
                     <p className="text-sm font-semibold text-text-primary mb-2 sm:mb-3 flex items-center gap-2">
                       <Shield className="w-4 h-4 text-primary" />
@@ -1219,7 +1772,6 @@ export default function AskidaBagisPage() {
                     </div>
                   </div>
 
-                  {/* Message */}
                   <div className="mb-4 sm:mb-5">
                     <label className="block text-sm font-semibold text-text-primary mb-2">Mesajınız</label>
                     <textarea
@@ -1266,6 +1818,177 @@ export default function AskidaBagisPage() {
           </div>
         </div>
       )}
+
+      {/* === PRODUCT MANAGEMENT MODAL === */}
+      {productManageModal.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-surface rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto mx-auto">
+            <div className="sticky top-0 flex items-center justify-between p-4 sm:p-5 border-b border-border bg-surface rounded-t-2xl gap-2 z-10">
+              <h3 className="text-base sm:text-lg font-bold text-text-primary flex items-center gap-2">
+                <Package className="w-5 h-5 text-primary" />
+                Bağış Ürünleri - {productManageModal.businessName}
+              </h3>
+              <button onClick={() => setProductManageModal({ ...productManageModal, isOpen: false })} className="text-[#666] hover:text-text-primary flex-shrink-0">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-4 sm:p-5">
+              {productManageModal.isLoading ? (
+                <div className="text-center py-8">
+                  <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto mb-3" />
+                  <p className="text-sm text-text-muted">Ürünler yükleniyor...</p>
+                </div>
+              ) : (
+                <>
+                  {/* Existing Products */}
+                  <div className="space-y-3 mb-4">
+                    {productManageModal.products.map((product) => (
+                      <div key={product.id} className="flex items-center gap-3 p-3 bg-background rounded-lg border border-border">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-text-primary">{product.name}</p>
+                          {product.description && (
+                            <p className="text-xs text-text-muted truncate">{product.description}</p>
+                          )}
+                          <p className="text-xs text-primary font-semibold mt-1">{product.price} TL · {product.total_donated || 0} kez bağışlandı</p>
+                        </div>
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <button
+                            onClick={() => setProductManageModal(prev => ({ ...prev, editingProduct: { ...product } }))}
+                            className="p-1.5 text-text-muted hover:text-primary rounded-lg hover:bg-surface transition-colors"
+                          >
+                            <Edit3 className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteProduct(product.id)}
+                            className="p-1.5 text-text-muted hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+
+                    {productManageModal.products.length === 0 && !productManageModal.editingProduct && (
+                      <div className="text-center py-6">
+                        <Package className="w-10 h-10 text-text-muted mx-auto mb-2" />
+                        <p className="text-sm text-text-muted">Henüz bağış ürünü eklenmemiş</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Add/Edit Product Form */}
+                  {productManageModal.editingProduct ? (
+                    <div className="bg-[#e8f5e9] rounded-lg p-4 border border-[#bbf7d0]">
+                      <h4 className="text-sm font-bold text-text-primary mb-3">
+                        {productManageModal.editingProduct.id ? 'Ürün Düzenle' : 'Yeni Ürün Ekle'}
+                      </h4>
+                      <div className="space-y-3">
+                        <input
+                          type="text"
+                          placeholder="Ürün adı (ör: Ekmek, Kahve, Saç Traşı)"
+                          value={productManageModal.editingProduct.name || ''}
+                          onChange={(e) => setProductManageModal(prev => ({
+                            ...prev,
+                            editingProduct: { ...prev.editingProduct!, name: e.target.value }
+                          }))}
+                          className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Açıklama (isteğe bağlı)"
+                          value={productManageModal.editingProduct.description || ''}
+                          onChange={(e) => setProductManageModal(prev => ({
+                            ...prev,
+                            editingProduct: { ...prev.editingProduct!, description: e.target.value }
+                          }))}
+                          className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
+                        />
+                        <div className="flex gap-3">
+                          <div className="flex-1">
+                            <label className="block text-xs text-text-muted mb-1">Fiyat (TL)</label>
+                            <input
+                              type="number"
+                              placeholder="0"
+                              min="1"
+                              value={productManageModal.editingProduct.price || ''}
+                              onChange={(e) => setProductManageModal(prev => ({
+                                ...prev,
+                                editingProduct: { ...prev.editingProduct!, price: parseFloat(e.target.value) || 0 }
+                              }))}
+                              className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <label className="block text-xs text-text-muted mb-1">Kategori</label>
+                            <select
+                              value={productManageModal.editingProduct.category || ''}
+                              onChange={(e) => setProductManageModal(prev => ({
+                                ...prev,
+                                editingProduct: { ...prev.editingProduct!, category: e.target.value }
+                              }))}
+                              className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary bg-white"
+                            >
+                              <option value="">Seçiniz</option>
+                              {categories.filter(c => c.id !== 'all').map(c => (
+                                <option key={c.id} value={c.id}>{c.emoji} {c.name}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <button
+                            onClick={handleSaveProduct}
+                            disabled={productManageModal.isSaving || !productManageModal.editingProduct.name || !productManageModal.editingProduct.price}
+                            className="flex-1 bg-primary hover:bg-primary-hover disabled:opacity-50 text-white font-bold py-2 rounded-lg text-sm flex items-center justify-center gap-2"
+                          >
+                            {productManageModal.isSaving ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Check className="w-4 h-4" />
+                            )}
+                            Kaydet
+                          </button>
+                          <button
+                            onClick={() => setProductManageModal(prev => ({ ...prev, editingProduct: null }))}
+                            className="px-4 py-2 border border-border rounded-lg text-sm text-text-muted hover:bg-surface"
+                          >
+                            İptal
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : productManageModal.products.length < 3 ? (
+                    <button
+                      onClick={() => setProductManageModal(prev => ({
+                        ...prev,
+                        editingProduct: { name: '', description: '', price: 0, category: '' }
+                      }))}
+                      className="w-full border-2 border-dashed border-primary text-primary font-medium py-3 rounded-lg hover:bg-[#e8f5e9] transition-colors flex items-center justify-center gap-2 text-sm"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Yeni Ürün Ekle ({productManageModal.products.length}/3)
+                    </button>
+                  ) : (
+                    <p className="text-center text-xs text-text-muted py-2">
+                      Maksimum 3 ürün sınırına ulaşıldı
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+  )
+}
+
+export default function AskidaBagisPage() {
+  return (
+    <Suspense fallback={<div className="w-full py-12 text-center text-text-muted">Yükleniyor...</div>}>
+      <AskidaBagisPageContent />
+    </Suspense>
   )
 }
