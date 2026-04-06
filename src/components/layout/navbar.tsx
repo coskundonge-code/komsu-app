@@ -67,7 +67,7 @@ export function Navbar() {
   return (
     <>
       <nav className="sticky top-0 z-50 bg-surface border-b border-border" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
-        <div className="max-w-[1440px] mx-auto flex items-center justify-between h-14 px-3 sm:px-6">
+        <div className="w-full flex items-center justify-between h-14 px-3 sm:px-6">
           <div className="flex items-center gap-2 min-w-fit lg:min-w-[200px]">
             <button
               onClick={() => setIsMobileDrawerOpen(true)}
