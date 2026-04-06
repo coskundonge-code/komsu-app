@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Heart, MapPin, Clock, AlertCircle, Plus, X, ChevronDown } from 'lucide-react';
+import { Heart, MapPin, Clock, AlertCircle, Plus, X, Users, HandHeart, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getHelpRequests, createHelpRequest, offerHelp, type HelpRequest as HelpRequestType } from '@/lib/hooks/use-help-requests';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
@@ -22,30 +22,30 @@ interface HelpRequest {
 }
 
 const CATEGORIES = [
-  { id: 'all', label: 'Tümü' },
-  { id: 'elderly', label: 'Yaşlı Bakım' },
-  { id: 'shopping', label: 'Alışveriş' },
-  { id: 'health', label: 'Sağlık' },
-  { id: 'household', label: 'Ev İşleri' },
-  { id: 'transport', label: 'Ulaşım' },
+  { id: 'all', label: 'TÃ¼mÃ¼', icon: 'ð ' },
+  { id: 'elderly', label: 'YaÅlÄ± BakÄ±m', icon: 'ð´' },
+  { id: 'shopping', label: 'AlÄ±ÅveriÅ', icon: 'ð' },
+  { id: 'health', label: 'SaÄlÄ±k', icon: 'ð¥' },
+  { id: 'household', label: 'Ev Ä°Åleri', icon: 'ð¡' },
+  { id: 'transport', label: 'UlaÅÄ±m', icon: 'ð' },
 ] as const;
 
-const CATEGORY_COLORS: Record<Category, { bg: string; text: string }> = {
-  all: { bg: 'bg-gray-100', text: 'text-gray-700' },
-  elderly: { bg: 'bg-purple-100', text: 'text-purple-700' },
-  shopping: { bg: 'bg-blue-100', text: 'text-blue-700' },
-  health: { bg: 'bg-red-100', text: 'text-red-700' },
-  household: { bg: 'bg-yellow-100', text: 'text-yellow-700' },
-  transport: { bg: 'bg-green-100', text: 'text-green-700' },
+const CATEGORY_COLORS: Record<Category, { bg: string; text: string; border: string }> = {
+  all: { bg: 'bg-gray-50', text: 'text-gray-700', border: 'border-gray-200' },
+  elderly: { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200' },
+  shopping: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
+  health: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200' },
+  household: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
+  transport: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
 };
 
 const CATEGORY_LABELS: Record<Category, string> = {
-  all: 'Tümü',
-  elderly: 'Yaşlı Bakım',
-  shopping: 'Alışveriş',
-  health: 'Sağlık',
-  household: 'Ev İşleri',
-  transport: 'Ulaşım',
+  all: 'TÃ¼mÃ¼',
+  elderly: 'YaÅlÄ± BakÄ±m',
+  shopping: 'AlÄ±ÅveriÅ',
+  health: 'SaÄlÄ±k',
+  household: 'Ev Ä°Åleri',
+  transport: 'UlaÅÄ±m',
 };
 
 function timeAgo(dateStr: string): string {
@@ -53,10 +53,10 @@ function timeAgo(dateStr: string): string {
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffH = Math.floor(diffMs / (1000 * 60 * 60));
-  if (diffH < 1) return 'az önce';
-  if (diffH < 24) return `${diffH} saat önce`;
+  if (diffH < 1) return 'az Ã¶nce';
+  if (diffH < 24) return `${diffH} saat Ã¶nce`;
   const diffD = Math.floor(diffH / 24);
-  return `${diffD} gün önce`;
+  return `${diffD} gÃ¼n Ã¶nce`;
 }
 
 function mapDbToLocal(r: HelpRequestType): HelpRequest {
@@ -115,9 +115,9 @@ export default function KomsumaYardim() {
   }
 
   async function handleCreate() {
-    if (!user) { setCreateForm(f => ({ ...f, error: 'Giriş yapmalısınız.' })); return; }
+    if (!user) { setCreateForm(f => ({ ...f, error: 'GiriÅ yapmalÄ±sÄ±nÄ±z.' })); return; }
     if (!createForm.title.trim() || !createForm.description.trim()) {
-      setCreateForm(f => ({ ...f, error: 'Başlık ve açıklama zorunludur.' }));
+      setCreateForm(f => ({ ...f, error: 'BaÅlÄ±k ve aÃ§Ä±klama zorunludur.' }));
       return;
     }
     setCreateForm(f => ({ ...f, submitting: true, error: '' }));
@@ -153,96 +153,121 @@ export default function KomsumaYardim() {
     : items.filter(r => r.category === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-surface">
-      {/* Header */}
-      <div className="border-b border-border bg-surface sticky top-0 z-10">
-        <div className="max-w-[680px] mx-auto px-4 py-4">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold text-text-primary">Komşuma Yardım</h1>
+    <div className="min-h-screen">
+      {/* Hero Header */}
+      <div className="bg-surface border-b border-border">
+        <div className="px-4 sm:px-6 py-5">
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                <HandHeart className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-text-primary">KomÅuma YardÄ±m</h1>
+                <p className="text-[13px] text-text-muted mt-0.5">KomÅularÄ±nÄ±za yardÄ±m edin veya yardÄ±m isteyin</p>
+              </div>
+            </div>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-hover transition-all shadow-sm hover:shadow-md"
             >
-              <Plus className="w-6 h-6 text-primary" />
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">Yeni Talep</span>
             </button>
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-2">
+          <div className="flex gap-1 p-1 bg-background rounded-xl">
             <button
               onClick={() => { setActiveTab('requests'); setSelectedCategory('all'); }}
               className={cn(
-                'px-4 py-2 rounded-lg font-medium transition-colors',
-                activeTab === 'requests' ? 'bg-primary text-white' : 'bg-gray-100 text-text-primary hover:bg-gray-200'
+                'flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all',
+                activeTab === 'requests'
+                  ? 'bg-surface text-text-primary shadow-sm'
+                  : 'text-text-muted hover:text-text-secondary'
               )}
             >
-              Yardım Talepleri
+              YardÄ±m Talepleri
             </button>
             <button
               onClick={() => { setActiveTab('offers'); setSelectedCategory('all'); }}
               className={cn(
-                'px-4 py-2 rounded-lg font-medium transition-colors',
-                activeTab === 'offers' ? 'bg-primary text-white' : 'bg-gray-100 text-text-primary hover:bg-gray-200'
+                'flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all',
+                activeTab === 'offers'
+                  ? 'bg-surface text-text-primary shadow-sm'
+                  : 'text-text-muted hover:text-text-secondary'
               )}
             >
-              Yardım Teklifleri
+              YardÄ±m Teklifleri
             </button>
           </div>
         </div>
       </div>
 
       {/* Category Filters */}
-      <div className="border-b border-border bg-surface">
-        <div className="max-w-[680px] mx-auto px-4 py-3">
-          <div className="flex gap-2 overflow-x-auto pb-2">
+      <div className="bg-surface border-b border-border">
+        <div className="px-4 sm:px-6 py-3">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
             {CATEGORIES.map((category) => (
               <button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id as Category)}
                 className={cn(
-                  'px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap transition-colors',
+                  'flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all border',
                   selectedCategory === category.id
-                    ? 'bg-primary text-white'
-                    : 'bg-gray-100 text-text-secondary hover:bg-gray-200'
+                    ? 'bg-primary text-white border-primary shadow-sm'
+                    : 'bg-surface text-text-secondary border-border hover:border-gray-300 hover:bg-surface-hover'
                 )}
               >
-                {category.label}
+                <span className="text-base">{category.icon}</span>
+                <span>{category.label}</span>
               </button>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="max-w-[680px] mx-auto px-4 py-6">
+      {/* Content Area */}
+      <div className="px-4 sm:px-6 py-5">
         {loading ? (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {[1, 2, 3].map(i => (
-              <div key={i} className="bg-surface border border-border rounded-lg p-4 animate-pulse">
-                <div className="h-4 bg-gray-200 rounded w-1/4 mb-3" />
-                <div className="h-5 bg-gray-200 rounded w-3/4 mb-2" />
-                <div className="h-4 bg-gray-200 rounded w-full mb-1" />
-                <div className="h-4 bg-gray-200 rounded w-5/6" />
+              <div key={i} className="bg-surface border border-border rounded-xl p-5 animate-pulse">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="h-6 bg-gray-100 rounded-full w-24" />
+                  <div className="h-6 bg-gray-100 rounded-full w-16" />
+                </div>
+                <div className="h-5 bg-gray-100 rounded w-3/4 mb-3" />
+                <div className="h-4 bg-gray-100 rounded w-full mb-2" />
+                <div className="h-4 bg-gray-100 rounded w-5/6" />
               </div>
             ))}
           </div>
         ) : filteredItems.length > 0 ? (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {filteredItems.map((request) => (
               <RequestCard key={request.id} request={request} onHelp={() => handleOfferHelp(request.id)} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <Heart className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-text-secondary mb-4">
-              {activeTab === 'requests' ? 'Henüz yardım talebi yok' : 'Henüz yardım teklifi yok'}
+          <div className="text-center py-16 bg-surface rounded-2xl border border-border">
+            <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Heart className="w-8 h-8 text-primary/40" />
+            </div>
+            <h3 className="text-lg font-semibold text-text-primary mb-2">
+              {activeTab === 'requests' ? 'HenÃ¼z yardÄ±m talebi yok' : 'HenÃ¼z yardÄ±m teklifi yok'}
+            </h3>
+            <p className="text-sm text-text-muted mb-6 max-w-sm mx-auto">
+              {activeTab === 'requests'
+                ? 'Ä°lk yardÄ±m talebini oluÅturarak komÅularÄ±nÄ±zdan destek isteyin.'
+                : 'KomÅularÄ±nÄ±za yardÄ±m teklif ederek topluluÄunuza katkÄ±da bulunun.'}
             </p>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-opacity-90 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary-hover transition-all shadow-sm hover:shadow-md"
             >
-              {activeTab === 'requests' ? 'Yardım Talep Et' : 'Yardım Teklif Et'}
+              <Plus className="w-4 h-4" />
+              {activeTab === 'requests' ? 'YardÄ±m Talep Et' : 'YardÄ±m Teklif Et'}
             </button>
           </div>
         )}
@@ -250,79 +275,91 @@ export default function KomsumaYardim() {
 
       {/* Create Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-surface rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md p-6 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowCreateModal(false)} />
+          <div className="relative bg-surface rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg p-0 max-h-[90vh] overflow-hidden shadow-2xl">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
               <h2 className="text-lg font-bold text-text-primary">
-                {activeTab === 'requests' ? 'Yardım Talep Et' : 'Yardım Teklif Et'}
+                {activeTab === 'requests' ? 'YardÄ±m Talep Et' : 'YardÄ±m Teklif Et'}
               </h2>
-              <button onClick={() => setShowCreateModal(false)} className="p-1 hover:bg-gray-100 rounded">
-                <X className="w-5 h-5 text-text-secondary" />
+              <button
+                onClick={() => setShowCreateModal(false)}
+                className="p-2 hover:bg-surface-hover rounded-full transition-colors"
+              >
+                <X className="w-5 h-5 text-text-muted" />
               </button>
             </div>
 
-            <div className="space-y-4">
+            {/* Modal Body */}
+            <div className="px-6 py-5 space-y-5 overflow-y-auto max-h-[calc(90vh-140px)]">
               <div>
-                <label className="block text-sm font-medium text-text-primary mb-1">Kategori</label>
+                <label className="block text-sm font-semibold text-text-primary mb-2">Kategori</label>
                 <select
                   value={createForm.category}
                   onChange={e => setCreateForm(f => ({ ...f, category: e.target.value }))}
-                  className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 >
                   <option value="general">Genel</option>
-                  <option value="elderly">Yaşlı Bakım</option>
-                  <option value="shopping">Alışveriş</option>
-                  <option value="health">Sağlık</option>
-                  <option value="household">Ev İşleri</option>
-                  <option value="transport">Ulaşım</option>
+                  <option value="elderly">YaÅlÄ± BakÄ±m</option>
+                  <option value="shopping">AlÄ±ÅveriÅ</option>
+                  <option value="health">SaÄlÄ±k</option>
+                  <option value="household">Ev Ä°Åleri</option>
+                  <option value="transport">UlaÅÄ±m</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-text-primary mb-1">Başlık</label>
+                <label className="block text-sm font-semibold text-text-primary mb-2">BaÅlÄ±k</label>
                 <input
                   type="text"
                   value={createForm.title}
                   onChange={e => setCreateForm(f => ({ ...f, title: e.target.value }))}
-                  placeholder="Kısa bir başlık girin..."
-                  className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="KÄ±sa bir baÅlÄ±k girin..."
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-text-primary mb-1">Açıklama</label>
+                <label className="block text-sm font-semibold text-text-primary mb-2">AÃ§Ä±klama</label>
                 <textarea
                   value={createForm.description}
                   onChange={e => setCreateForm(f => ({ ...f, description: e.target.value }))}
-                  placeholder="Detayları açıklayın..."
+                  placeholder="DetaylarÄ± aÃ§Ä±klayÄ±n..."
                   rows={4}
-                  className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
                 />
               </div>
 
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label className="flex items-center gap-3 p-3 rounded-xl border border-border hover:bg-surface-hover cursor-pointer transition-colors">
                 <input
                   type="checkbox"
                   checked={createForm.is_urgent}
                   onChange={e => setCreateForm(f => ({ ...f, is_urgent: e.target.checked }))}
-                  className="w-4 h-4 accent-primary"
+                  className="w-4 h-4 accent-primary rounded"
                 />
-                <span className="text-sm text-text-primary flex items-center gap-1">
+                <span className="flex items-center gap-2 text-sm text-text-primary">
                   <AlertCircle className="w-4 h-4 text-red-500" />
-                  Acil
+                  Acil yardÄ±m gerekiyor
                 </span>
               </label>
 
               {createForm.error && (
-                <p className="text-sm text-red-600">{createForm.error}</p>
+                <div className="flex items-center gap-2 p-3 bg-red-50 rounded-xl border border-red-100">
+                  <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                  <p className="text-sm text-red-700">{createForm.error}</p>
+                </div>
               )}
+            </div>
 
+            {/* Modal Footer */}
+            <div className="px-6 py-4 border-t border-border bg-surface-hover/50">
               <button
                 onClick={handleCreate}
                 disabled={createForm.submitting}
-                className="w-full py-3 bg-primary text-white font-semibold rounded-xl hover:bg-opacity-90 transition-colors disabled:opacity-50"
+                className="w-full py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary-hover transition-all disabled:opacity-50 shadow-sm"
               >
-                {createForm.submitting ? 'Kaydediliyor...' : 'Gönder'}
+                {createForm.submitting ? 'Kaydediliyor...' : 'GÃ¶nder'}
               </button>
             </div>
           </div>
@@ -341,52 +378,52 @@ function RequestCard({ request, onHelp }: RequestCardProps) {
   const colors = CATEGORY_COLORS[request.category];
 
   return (
-    <div className="bg-surface border border-border rounded-lg p-4 hover:shadow-sm transition-shadow">
-      <div className="flex items-start justify-between mb-3">
-        <span className={cn('px-2 py-1 rounded-full text-xs font-semibold', colors.bg, colors.text)}>
+    <div className="bg-surface border border-border rounded-xl p-5 hover:shadow-md transition-all group">
+      {/* Top row: category + urgency */}
+      <div className="flex items-center gap-2 mb-3">
+        <span className={cn('px-3 py-1 rounded-full text-xs font-semibold border', colors.bg, colors.text, colors.border)}>
           {CATEGORY_LABELS[request.category]}
         </span>
         {request.urgency === 'acil' && (
-          <div className="flex items-center gap-1 px-2 py-1 bg-red-50 rounded-full">
-            <AlertCircle className="w-4 h-4 text-red-600" />
+          <span className="flex items-center gap-1 px-3 py-1 bg-red-50 border border-red-200 rounded-full">
+            <AlertCircle className="w-3.5 h-3.5 text-red-600" />
             <span className="text-xs font-semibold text-red-600">Acil</span>
-          </div>
+          </span>
         )}
       </div>
 
-      <h3 className="text-lg font-semibold text-text-primary mb-2">{request.title}</h3>
-      <p className="text-text-secondary text-sm mb-3">{request.description}</p>
+      {/* Title & description */}
+      <h3 className="text-[16px] font-bold text-text-primary mb-1.5 group-hover:text-primary transition-colors">
+        {request.title}
+      </h3>
+      <p className="text-text-secondary text-[14px] leading-relaxed mb-4 line-clamp-2">{request.description}</p>
 
-      <div className="flex items-center gap-4 mb-4 text-xs text-text-secondary">
-        <div className="flex items-center gap-1">
-          <MapPin className="w-4 h-4" />
+      {/* Meta info */}
+      <div className="flex items-center gap-4 mb-4 text-[13px] text-text-muted">
+        <div className="flex items-center gap-1.5">
+          <MapPin className="w-3.5 h-3.5" />
           <span>{request.location}</span>
         </div>
-        <div className="flex items-center gap-1">
-          <Clock className="w-4 h-4" />
+        <div className="flex items-center gap-1.5">
+          <Clock className="w-3.5 h-3.5" />
           <span>{request.postedTime}</span>
         </div>
+        {request.helpers && request.helpers > 0 ? (
+          <div className="flex items-center gap-1.5 text-primary">
+            <Users className="w-3.5 h-3.5" />
+            <span className="font-medium">{request.helpers} yardÄ±mcÄ±</span>
+          </div>
+        ) : null}
       </div>
 
-      <div className="flex items-center justify-between mb-4 pb-4 border-t border-border">
-        <div className="flex items-center gap-2 mt-3">
-          {request.helpers && request.helpers > 0 && (
-            <div className="flex items-center gap-1 text-xs text-primary">
-              <Heart className="w-4 h-4 fill-current" />
-              <span className="font-medium">{request.helpers} kişi yardım etmeyi teklif etti</span>
-            </div>
-          )}
-          {request.anonymous && (
-            <span className="text-xs text-text-secondary bg-gray-100 px-2 py-1 rounded">Anonim</span>
-          )}
-        </div>
-      </div>
-
+      {/* Action */}
       <button
         onClick={onHelp}
-        className="w-full px-4 py-2 bg-primary text-white font-medium rounded-lg hover:bg-opacity-90 transition-colors"
+        className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-primary/5 text-primary font-semibold text-sm rounded-xl hover:bg-primary hover:text-white transition-all border border-primary/20 hover:border-primary"
       >
-        Yardım Et
+        <HandHeart className="w-4 h-4" />
+        YardÄ±m Et
+        <ArrowRight className="w-3.5 h-3.5 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
       </button>
     </div>
   );
