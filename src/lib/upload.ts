@@ -47,3 +47,50 @@ export async function uploadMultipleImages(
     errors: results.filter(r => r.error).map(r => r.error!)
   }
 }
+
+/**
+ * Upload a video file to Supabase storage
+ * Max 100MB, accepted formats: mp4, mov, webm
+ */
+export async function uploadVideo(
+  file: File,
+  bucket: string,
+  folder: string
+): Promise<{ url: string | null; error: string | null }> {
+  // Validate video file
+  const MAX_VIDEO_SIZE = 100 * 1024 * 1024; // 100MB
+  const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/quicktime', 'video/webm'];
+
+  if (!ALLOWED_VIDEO_TYPES.includes(file.type)) {
+    return { url: null, error: 'Desteklenmeyen video formatı. MP4, MOV veya WebM yükleyin.' };
+  }
+
+  if (file.size > MAX_VIDEO_SIZE) {
+    return { url: null, error: 'Video dosyası çok büyük. Maksimum 100MB olmalı.' };
+  }
+
+  return uploadImage(file, bucket, folder);
+}
+
+/**
+ * Upload multiple media files (images + videos)
+ */
+export async function uploadMultipleMedia(
+  files: File[],
+  bucket: string,
+  folder: string
+): Promise<{ urls: string[]; errors: string[] }> {
+  const results = await Promise.all(
+    files.map(file => {
+      if (file.type.startsWith('video/')) {
+        return uploadVideo(file, bucket, folder);
+      }
+      return uploadImage(file, bucket, folder);
+    })
+  )
+
+  return {
+    urls: results.filter(r => r.url).map(r => r.url!),
+    errors: results.filter(r => r.error).map(r => r.error!)
+  }
+}
