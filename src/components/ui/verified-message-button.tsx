@@ -22,6 +22,8 @@ interface VerifiedMessageButtonProps {
 
   listingTitle?: string;
 
+  listingId?: string;
+
 }
 
 
@@ -33,6 +35,8 @@ export function VerifiedMessageButton({
   recipientName,
 
   listingTitle,
+
+  listingId,
 
 }: VerifiedMessageButtonProps) {
 
@@ -154,7 +158,13 @@ export function VerifiedMessageButton({
 
       } else {
 
-        // Create new conversation
+        // Create new conversation (marketplace type if listing context exists)
+
+        const conversationType = listingId ? 'marketplace' : 'direct';
+
+        const conversationTitle = listingTitle
+          ? `${listingTitle} - ${recipientName}`
+          : `Chat with ${recipientName}`;
 
         const { data: newConversation, error: createError } = await supabase
 
@@ -162,9 +172,11 @@ export function VerifiedMessageButton({
 
           .insert({
 
-            type: 'direct',
+            type: conversationType,
 
-            title: `Chat with ${recipientName}`,
+            title: conversationTitle,
+
+            ...(listingId ? { listing_id: listingId } : {}),
 
           } as any)
 
@@ -215,6 +227,15 @@ export function VerifiedMessageButton({
       }
 
 
+
+      // Send initial listing message if this is a new marketplace conversation
+      if (listingTitle && listingId && conversationId) {
+        await supabase.from('messages').insert({
+          conversation_id: conversationId,
+          sender_id: user.id,
+          body: `Merhaba, "${listingTitle}" ilan\u0131n\u0131z hakk\u0131nda bilgi almak istiyorum.`,
+        } as any);
+      }
 
       // Redirect to messages with selected conversation
 
