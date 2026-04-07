@@ -154,8 +154,9 @@ export default function ListingDetailPage({
 }: {
   params: { id: string };
 }) {
-  const [mockListing, setMockListing] = useState(mockListingsDB[params.id] || mockListingsDB['1']);
+  const [mockListing, setMockListing] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
@@ -164,11 +165,17 @@ export default function ListingDetailPage({
     const fetchListing = async () => {
       try {
         setLoading(true);
+        setNotFound(false);
         const { data, error } = await getListingById(params.id);
 
         if (error) {
-          console.warn('Error fetching listing, using mock data:', error);
-          setMockListing(mockListingsDB[params.id] || mockListingsDB['1']);
+          console.warn('Error fetching listing:', error);
+          const mockData = mockListingsDB[params.id];
+          if (mockData) {
+            setMockListing(mockData);
+          } else {
+            setNotFound(true);
+          }
         } else if (data) {
           // Map DB fields to UI format - enhanced detail page
           const listing = {
@@ -205,11 +212,21 @@ export default function ListingDetailPage({
           };
           setMockListing(listing);
         } else {
-          setMockListing(mockListingsDB[params.id] || mockListingsDB['1']);
+          const mockData = mockListingsDB[params.id];
+          if (mockData) {
+            setMockListing(mockData);
+          } else {
+            setNotFound(true);
+          }
         }
       } catch (err) {
         console.error('Error fetching listing:', err);
-        setMockListing(mockListingsDB[params.id] || mockListingsDB['1']);
+        const mockData = mockListingsDB[params.id];
+        if (mockData) {
+          setMockListing(mockData);
+        } else {
+          setNotFound(true);
+        }
       } finally {
         setLoading(false);
       }
@@ -674,6 +691,7 @@ export default function ListingDetailPage({
                   recipientId={mockListing.seller.id}
                   recipientName={mockListing.seller.name}
                   listingTitle={mockListing.title}
+                  listingId={mockListing.id}
                 />
                 <Link
                   href={`/profil/${mockListing.seller.id}`}
