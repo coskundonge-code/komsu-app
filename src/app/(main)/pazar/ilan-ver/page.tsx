@@ -13,7 +13,9 @@ import {
 } from 'lucide-react';
 import { createListing } from '@/lib/hooks/use-listings';
 import { createClient } from '@/lib/supabase/client';
-import { uploadMultipleImages } from '@/lib/upload';
+import { uploadMultipleMedia } from '@/lib/upload';
+import { checkCanPost, consumeFreeQuota, LISTING_FEE, FREE_LISTING_LIMIT } from '@/lib/services/listing-quota';
+import { moderateMediaFiles, analyzeContent, submitForModeration } from '@/lib/services/content-moderation';
 
 interface Photo {
   id: string;
