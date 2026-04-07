@@ -460,7 +460,7 @@ export default function CreateListingPage() {
               <input
                 type="file"
                 multiple
-                accept="image/*"
+                accept="image/*,video/mp4,video/quicktime,video/webm"
                 onChange={handlePhotoInput}
                 className="hidden"
                 id="photo-input"
