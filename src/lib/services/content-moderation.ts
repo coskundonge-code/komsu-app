@@ -607,6 +607,99 @@ export async function getModerationStats(): Promise<ModerationStats> {
   }
 }
 
+// ============ MEDIA CONTENT MODERATION ============
+
+/**
+ * Medya dosyalar\u0131n\u0131 (foto\u011fraf/video) moderasyondan ge\u00e7ir
+ * M\u00fcstehcenlik, vah\u015fet, \u015fiddet, nefret sembolleri vb. kontrol eder
+ */
+export async function moderateMediaFiles(
+  files: File[]
+): Promise<{
+  approved: File[];
+  rejected: { file: File; reason: string }[];
+  hasRejected: boolean;
+}> {
+  const approved: File[] = [];
+  const rejected: { file: File; reason: string }[] = [];
+
+  for (const file of files) {
+    const result = await moderateSingleMedia(file);
+    if (result.isApproved) {
+      approved.push(file);
+    } else {
+      rejected.push({ file, reason: result.reason });
+    }
+  }
+
+  return { approved, rejected, hasRejected: rejected.length > 0 };
+}
+
+async function moderateSingleMedia(
+  file: File
+): Promise<{ isApproved: boolean; reason: string }> {
+  // 1. Dosya ad\u0131 kontrol\u00fc
+  const suspiciousNames = /\b(nsfw|xxx|porn|nude|naked|gore|blood|kill|weapon|sex|erotic)\b/i;
+  if (suspiciousNames.test(file.name)) {
+    return { isApproved: false, reason: 'Dosya ad\u0131 uygunsuz i\u00e7erik bar\u0131nd\u0131r\u0131yor.' };
+  }
+
+  // 2. Dosya tipi kontrol\u00fc
+  const allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif'];
+  const allowedVideoTypes = ['video/mp4', 'video/quicktime', 'video/webm'];
+  const isImage = allowedImageTypes.includes(file.type);
+  const isVideo = allowedVideoTypes.includes(file.type);
+
+  if (!isImage && !isVideo) {
+    return { isApproved: false, reason: 'Desteklenmeyen dosya format\u0131.' };
+  }
+
+  // 3. Dosya boyutu kontrol\u00fc
+  const maxSize = isVideo ? 100 * 1024 * 1024 : 20 * 1024 * 1024;
+  if (file.size > maxSize) {
+    return { isApproved: false, reason: `Dosya boyutu \u00e7ok b\u00fcy\u00fck. Maksimum ${isVideo ? '100MB' : '20MB'} olmal\u0131.` };
+  }
+
+  // 4. Server-side AI g\u00f6rsel moderasyonu
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('type', isVideo ? 'video' : 'image');
+
+    const response = await fetch('/api/moderate-media', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      if (!result.approved) {
+        const categoryLabels: Record<string, string> = {
+          nudity: 'm\u00fcstehcen i\u00e7erik',
+          violence: '\u015fiddet i\u00e7eri\u011fi',
+          gore: 'vah\u015fet/kanl\u0131 i\u00e7erik',
+          hate: 'nefret s\u00f6ylemi/sembolleri',
+          drugs: 'uyu\u015fturucu i\u00e7eri\u011fi',
+          weapons: 'silah i\u00e7eri\u011fi',
+          self_harm: 'kendine zarar verme',
+          child_abuse: '\u00e7ocuk istismar\u0131',
+        };
+        const flagNames = (result.flags || [])
+          .map((f: string) => categoryLabels[f] || f)
+          .join(', ');
+        return {
+          isApproved: false,
+          reason: `Bu dosyada uygunsuz i\u00e7erik tespit edildi: ${flagNames}.`,
+        };
+      }
+    }
+  } catch {
+    console.warn('Media moderation API unavailable, using basic checks only');
+  }
+
+  return { isApproved: true, reason: '' };
+}
+
 // ============ UTILITIES ============
 
 function escapeRegex(string: string): string {
