@@ -393,7 +393,10 @@ export default function MarketplacePage() {
   // Apply filters and sorting
   let allFiltered = (listings.length > 0 ? listings : mockListings).filter((l) => {
     if (activeTab === 'saved' && !favorites.has(l.id)) return false;
-    if (activeTab === 'rental' && l.listing_type !== 'rental' && l.listing_type !== 'lend') return false;
+    if (activeTab === 'sale' && l.listing_type !== 'sale') return false;
+    if (activeTab === 'rental' && l.listing_type !== 'rental') return false;
+    if (activeTab === 'lend' && l.listing_type !== 'lend') return false;
+    if (activeTab === 'free' && !l.isFree && l.listing_type !== 'free') return false;
     if (activeTab === 'yours') return false; // handled separately
     if (selectedCategory && l.category !== selectedCategory) return false;
     if (selectedDistance && parseFloat(l.distance) > selectedDistance) return false;
@@ -481,7 +484,7 @@ export default function MarketplacePage() {
           <div className="p-6">
             {/* Title and Action Button */}
             <div className="flex items-center justify-between mb-6">
-              <h1 className="text-2xl font-bold text-text-primary">Satılık ve Ücretsiz</h1>
+              <h1 className="text-2xl font-bold text-text-primary">Pazar</h1>
               <Link
                 href="/pazar/ilan-ver"
                 className="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-full hover:bg-primary-hover transition-colors text-sm font-semibold shadow-sm"
