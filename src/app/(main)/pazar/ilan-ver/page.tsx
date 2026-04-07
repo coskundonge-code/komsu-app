@@ -856,7 +856,11 @@ export default function CreateListingPage() {
                   : 'bg-[#e0e0e0] text-text-muted cursor-not-allowed'
               }`}
             >
-              {isSubmitting ? 'Yayınlanıyor...' : 'İlanı Yayınla'}
+              {isSubmitting
+                ? 'Yayınlanıyor...'
+                : quotaBlocked && (formData.listingType === 'sale' || formData.listingType === 'rental')
+                  ? '⛔ İlan Hakkınız Doldu'
+                  : 'İlanı Yayınla'}
             </button>
           </div>
 
