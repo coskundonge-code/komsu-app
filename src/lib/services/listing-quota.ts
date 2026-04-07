@@ -8,9 +8,11 @@
 import { createClient } from '@/lib/supabase/client';
 
 // Constants
-export const FREE_LISTING_LIMIT = 3;
-export const LISTING_FEE = 250; // TRY
+export const FREE_LISTING_LIMIT = 1; // Her kullanıcıya yılda 1 ücretsiz Satılık/Kiralık ilan hakkı
+export const LISTING_FEE = 9.90; // TRY - Ücretsiz hak bittikten sonra ilan başına ücret
 export const CURRENCY = 'TRY';
+// Not: Ücretsiz kota sadece 'sale' ve 'rental' ilan türleri için geçerlidir.
+// 'free' ve 'lend' türündeki ilanlar her zaman ücretsizdir.
 
 export interface UserQuota {
   userId: string;
@@ -153,9 +155,23 @@ export async function consumeFreeQuota(userId: string): Promise<UserQuota | null
 
 /**
  * Check if user can post a free listing
+ * @param listingType - 'sale' | 'rental' | 'free' | 'lend'
+ * For 'free' and 'lend' types, quota is not consumed (always free to post)
+ * For 'sale' and 'rental' types, user gets 1 free per year then pays 9.90 TL
  */
-export async function checkCanPost(userId: string): Promise<QuotaCheckResult | null> {
+export async function checkCanPost(userId: string, listingType?: string): Promise<QuotaCheckResult | null> {
   try {
+    // 'free' and 'lend' type listings are always free to post - no quota consumed
+    if (listingType === 'free' || listingType === 'lend') {
+      return {
+        canPostFree: true,
+        freeUsed: 0,
+        freeLimit: FREE_LISTING_LIMIT,
+        remainingFree: FREE_LISTING_LIMIT,
+        year: new Date().getFullYear(),
+      };
+    }
+
     const quota = await getUserQuota(userId);
     if (!quota) return null;
 
