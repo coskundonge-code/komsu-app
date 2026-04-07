@@ -1,291 +1,349 @@
 // @ts-nocheck
-// İşletme Abonelik Sistemi
+/**
+ * İşletme Abonelik Sistemi
+ * Tek plan: 1.900₺/ay veya 19.900₺/yıl (12 ay peşin)
+ * İlk 3 ay ücretsiz deneme - kredi kartı gerekmez
+ * Süre dolunca sayfa blur/kilitlenir, ilan çıkılamaz
+ */
 
-export type PackageType = 'temel' | 'profesyonel' | 'premium';
+import { createClient } from '@/lib/supabase/client';
+
+// Sabitler
+export const MONTHLY_PRICE = 1900; // TL/ay
+export const YEARLY_PRICE = 19900; // TL/yıl (12 ay peşin)
+export const FREE_TRIAL_MONTHS = 3; // Ücretsiz deneme süresi
+export const CURRENCY = 'TRY';
+
 export type BillingPeriod = 'monthly' | 'yearly';
-export type SubscriptionStatus = 'active' | 'expired' | 'trial' | 'cancelled' | 'pending';
+export type SubscriptionStatus = 'trial' | 'active' | 'expired' | 'cancelled';
 
-export interface Feature {
-  id: string;
-  name: string;
-  included: boolean;
-}
-
-export interface BusinessPackage {
-  id: PackageType;
-  name: string;
-  description: string;
-  monthlyPrice: number; // TL cinsinden
-  yearlyPrice: number; // TL cinsinden
-  yearlyDiscount: number; // % olarak
-  maxPhotos: number;
-  features: Feature[];
-  popular?: boolean;
-}
-
-export interface Subscription {
+export interface BusinessSubscription {
   id: string;
   businessId: string;
-  packageId: PackageType;
   status: SubscriptionStatus;
-  billingPeriod: BillingPeriod;
+  billingPeriod: BillingPeriod | null; // null during trial
+  trialStartDate: string;
+  trialEndDate: string;
+  subscriptionStartDate: string | null;
+  subscriptionEndDate: string | null;
   currentPrice: number;
-  startDate: Date;
-  endDate: Date;
-  renewalDate?: Date;
   autoRenew: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  paymentMethodId?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface SubscriptionHistoryEntry {
-  id: string;
-  subscriptionId: string;
-  action: 'created' | 'renewed' | 'upgraded' | 'downgraded' | 'cancelled';
-  fromPackage?: PackageType;
-  toPackage?: PackageType;
-  amount: number;
-  timestamp: Date;
+export interface SubscriptionCheckResult {
+  isActive: boolean; // true if trial or active paid
+  status: SubscriptionStatus;
+  isTrialPeriod: boolean;
+  trialDaysRemaining: number;
+  trialEndDate: string | null;
+  canPostListings: boolean;
+  shouldBlur: boolean; // true if expired - page should be blurred/locked
+  subscription?: BusinessSubscription;
 }
 
-export const BUSINESS_PACKAGES: Record<PackageType, BusinessPackage> = {
-  temel: {
-    id: 'temel',
-    name: 'Temel',
-    description: 'Yeni işletmeler için ideal',
-    monthlyPrice: 299,
-    yearlyPrice: 3588, // 299 * 12 * 0.8 (20% indirim)
-    yearlyDiscount: 20,
-    maxPhotos: 5,
-    features: [
-      { id: 'profile', name: 'Temel profil', included: true },
-      { id: 'photos', name: 'En fazla 5 fotoğraf', included: true },
-      { id: 'category', name: 'Kategori listeleme', included: true },
-      { id: 'reviews', name: 'Yorum sistemi', included: true },
-      { id: 'badge', name: 'Premium rozet', included: false },
-      { id: 'analytics', name: 'Analitik', included: false },
-      { id: 'campaigns', name: 'Kampanya oluşturma', included: false },
-      { id: 'priority', name: 'Öncelikli destek', included: false },
-      { id: 'ads', name: 'Reklam kredisi', included: false },
-    ],
-  },
-  profesyonel: {
-    id: 'profesyonel',
-    name: 'Profesyonel',
-    description: 'Büyüyen işletmeler için',
-    monthlyPrice: 599,
-    yearlyPrice: 7190, // 599 * 12 * 0.8 (20% indirim)
-    yearlyDiscount: 20,
-    maxPhotos: 20,
-    popular: true,
-    features: [
-      { id: 'profile', name: 'Öne çıkan profil', included: true },
-      { id: 'photos', name: 'En fazla 20 fotoğraf', included: true },
-      { id: 'category', name: 'Kategori listeleme', included: true },
-      { id: 'reviews', name: 'Yorum sistemi', included: true },
-      { id: 'badge', name: 'Premium rozet', included: false },
-      { id: 'analytics', name: 'Temel analitik', included: true },
-      { id: 'campaigns', name: 'Kampanya oluşturma', included: true },
-      { id: 'priority', name: 'Öncelikli destek', included: false },
-      { id: 'ads', name: 'Reklam kredisi', included: false },
-    ],
-  },
-  premium: {
-    id: 'premium',
-    name: 'Premium',
-    description: 'Kurumlararası işletmeler için',
-    monthlyPrice: 999,
-    yearlyPrice: 11990, // 999 * 12 * 0.8 (20% indirim)
-    yearlyDiscount: 20,
-    maxPhotos: 999, // Sınırsız
-    features: [
-      { id: 'profile', name: 'Premium profil (öne çıkan)', included: true },
-      { id: 'photos', name: 'Sınırsız fotoğraf', included: true },
-      { id: 'category', name: 'Kategori listeleme', included: true },
-      { id: 'reviews', name: 'Yorum sistemi', included: true },
-      { id: 'badge', name: 'Premium rozet', included: true },
-      { id: 'analytics', name: 'Gelişmiş analitik', included: true },
-      { id: 'campaigns', name: 'Kampanya oluşturma', included: true },
-      { id: 'priority', name: 'Öncelikli 24/7 destek', included: true },
-      { id: 'ads', name: 'Aylık reklam kredisi', included: true },
-    ],
-  },
-};
-
-/**
- * Tüm paket bilgilerini döndürür
- * @returns Paket listesi
- */
-export function getAvailablePackages(): BusinessPackage[] {
-  return Object.values(BUSINESS_PACKAGES);
+export interface PricingInfo {
+  monthlyPrice: number;
+  yearlyPrice: number;
+  yearlySavings: number;
+  freeTrialMonths: number;
+  currency: string;
 }
 
 /**
- * Belirli bir paketi ID ile alır
- * @param packageId - Paket ID'si
- * @returns Paket bilgileri
+ * Fiyat bilgilerini döndürür
  */
-export function getPackageById(packageId: PackageType): BusinessPackage {
-  return BUSINESS_PACKAGES[packageId];
-}
-
-/**
- * Yeni abonelik oluşturur
- * @param businessId - İşletme ID'si
- * @param packageId - Paket ID'si
- * @param billingPeriod - Faturalama dönemi (aylık/yıllık)
- * @returns Yeni abonelik
- */
-export async function createSubscription(
-  businessId: string,
-  packageId: PackageType,
-  billingPeriod: BillingPeriod = 'monthly'
-): Promise<Subscription> {
-  const pkg = getPackageById(packageId);
-  const now = new Date();
-
-  // Fiyat hesapla
-  const currentPrice = billingPeriod === 'monthly' ? pkg.monthlyPrice : pkg.yearlyPrice;
-
-  // Bitiş tarihi hesapla
-  const endDate = new Date(now);
-  if (billingPeriod === 'monthly') {
-    endDate.setMonth(endDate.getMonth() + 1);
-  } else {
-    endDate.setFullYear(endDate.getFullYear() + 1);
-  }
-
-  const subscription: Subscription = {
-    id: `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    businessId,
-    packageId,
-    status: 'pending', // Ödeme sonrası 'active' olacak
-    billingPeriod,
-    currentPrice,
-    startDate: now,
-    endDate,
-    autoRenew: true,
-    createdAt: now,
-    updatedAt: now,
+export function getPricingInfo(): PricingInfo {
+  const yearlySavings = (MONTHLY_PRICE * 12) - YEARLY_PRICE;
+  return {
+    monthlyPrice: MONTHLY_PRICE,
+    yearlyPrice: YEARLY_PRICE,
+    yearlySavings,
+    freeTrialMonths: FREE_TRIAL_MONTHS,
+    currency: CURRENCY,
   };
-
-  // TODO: Veritabanına kaydet
-  console.log('Abonelik oluşturuldu:', subscription);
-
-  return subscription;
 }
 
 /**
- * Aboneliği iptal eder
- * @param subscriptionId - Abonelik ID'si
- * @returns İptal sonucu
+ * Yeni işletme oluştururken ücretsiz deneme başlatır
+ * Kredi kartı gerekmez
  */
-export async function cancelSubscription(subscriptionId: string): Promise<boolean> {
-  // TODO: Veritabanında abonelik durumunu 'cancelled' olarak güncelle
-  console.log('Abonelik iptal edildi:', subscriptionId);
+export async function startFreeTrial(businessId: string): Promise<BusinessSubscription | null> {
+  try {
+    const supabase = createClient();
+    const now = new Date();
+    const trialEnd = new Date(now);
+    trialEnd.setMonth(trialEnd.getMonth() + FREE_TRIAL_MONTHS);
 
-  return true;
-}
+    const { data, error } = await supabase
+      .from('business_subscriptions')
+      .insert({
+        business_id: businessId,
+        status: 'trial',
+        billing_period: null,
+        trial_start_date: now.toISOString(),
+        trial_end_date: trialEnd.toISOString(),
+        subscription_start_date: null,
+        subscription_end_date: null,
+        current_price: 0,
+        auto_renew: false,
+      })
+      .select()
+      .single();
 
-/**
- * Abone yükseltme işlemi
- * @param subscriptionId - Abonelik ID'si
- * @param newPackageId - Yeni paket ID'si
- * @returns Güncellenmiş abonelik
- */
-export async function upgradeSubscription(
-  subscriptionId: string,
-  newPackageId: PackageType
-): Promise<Subscription | null> {
-  // TODO: Mevcut aboneliği getir
-  // TODO: Yeni paket fiyatı ile ödeme yap
-  // TODO: Aboneliği güncelle
-  console.log('Abonelik yükseltildi:', { subscriptionId, newPackageId });
+    if (error) {
+      console.error('Error starting free trial:', error);
+      return null;
+    }
 
-  return null;
+    return mapSubscription(data);
+  } catch (error) {
+    console.error('Error in startFreeTrial:', error);
+    return null;
+  }
 }
 
 /**
  * İşletmenin abonelik durumunu kontrol eder
- * @param businessId - İşletme ID'si
- * @returns Abonelik durumu ve bilgileri
+ * Bu fonksiyon sayfa görüntüleme ve ilan paylaşma öncesi çağrılmalı
  */
-export async function checkSubscriptionStatus(
-  businessId: string
-): Promise<{ status: SubscriptionStatus; subscription?: Subscription }> {
-  // TODO: Veritabanından abonelik bilgilerini getir
-  const now = new Date();
+export async function checkSubscriptionStatus(businessId: string): Promise<SubscriptionCheckResult> {
+  try {
+    const supabase = createClient();
 
-  // Mock veri - gerçek uygulamada veritabanından gelir
-  const mockSubscription: Subscription = {
-    id: `sub_mock_${businessId}`,
-    businessId,
-    packageId: 'profesyonel',
-    status: 'active',
-    billingPeriod: 'monthly',
-    currentPrice: 599,
-    startDate: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000),
-    endDate: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
-    autoRenew: true,
-    createdAt: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000),
-    updatedAt: now,
+    const { data, error } = await supabase
+      .from('business_subscriptions')
+      .select('*')
+      .eq('business_id', businessId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (error && error.code !== 'PGRST116') {
+      console.error('Error checking subscription:', error);
+      return getExpiredResult();
+    }
+
+    if (!data) {
+      return getExpiredResult();
+    }
+
+    const subscription = mapSubscription(data);
+    const now = new Date();
+
+    // Deneme süresinde mi?
+    if (subscription.status === 'trial') {
+      const trialEnd = new Date(subscription.trialEndDate);
+      if (now < trialEnd) {
+        const daysRemaining = Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+        return {
+          isActive: true,
+          status: 'trial',
+          isTrialPeriod: true,
+          trialDaysRemaining: daysRemaining,
+          trialEndDate: subscription.trialEndDate,
+          canPostListings: true,
+          shouldBlur: false,
+          subscription,
+        };
+      } else {
+        // Deneme süresi dolmuş
+        await updateSubscriptionStatus(subscription.id, 'expired');
+        return {
+          isActive: false,
+          status: 'expired',
+          isTrialPeriod: false,
+          trialDaysRemaining: 0,
+          trialEndDate: subscription.trialEndDate,
+          canPostListings: false,
+          shouldBlur: true,
+          subscription,
+        };
+      }
+    }
+
+    // Aktif abonelik mi?
+    if (subscription.status === 'active' && subscription.subscriptionEndDate) {
+      const subEnd = new Date(subscription.subscriptionEndDate);
+      if (now < subEnd) {
+        return {
+          isActive: true,
+          status: 'active',
+          isTrialPeriod: false,
+          trialDaysRemaining: 0,
+          trialEndDate: null,
+          canPostListings: true,
+          shouldBlur: false,
+          subscription,
+        };
+      } else {
+        // Abonelik süresi dolmuş
+        await updateSubscriptionStatus(subscription.id, 'expired');
+        return {
+          isActive: false,
+          status: 'expired',
+          isTrialPeriod: false,
+          trialDaysRemaining: 0,
+          trialEndDate: null,
+          canPostListings: false,
+          shouldBlur: true,
+          subscription,
+        };
+      }
+    }
+
+    // İptal edilmiş veya süresi dolmuş
+    return {
+      isActive: false,
+      status: subscription.status,
+      isTrialPeriod: false,
+      trialDaysRemaining: 0,
+      trialEndDate: null,
+      canPostListings: false,
+      shouldBlur: true,
+      subscription,
+    };
+  } catch (error) {
+    console.error('Error in checkSubscriptionStatus:', error);
+    return getExpiredResult();
+  }
+}
+
+/**
+ * Abonelik durumunu günceller
+ */
+async function updateSubscriptionStatus(subscriptionId: string, status: SubscriptionStatus): Promise<void> {
+  try {
+    const supabase = createClient();
+    await supabase
+      .from('business_subscriptions')
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq('id', subscriptionId);
+  } catch (error) {
+    console.error('Error updating subscription status:', error);
+  }
+}
+
+/**
+ * Ücretli abonelik başlatır (deneme süresi sonrası)
+ */
+export async function activateSubscription(
+  businessId: string,
+  billingPeriod: BillingPeriod
+): Promise<BusinessSubscription | null> {
+  try {
+    const supabase = createClient();
+    const now = new Date();
+    const endDate = new Date(now);
+    const price = billingPeriod === 'monthly' ? MONTHLY_PRICE : YEARLY_PRICE;
+
+    if (billingPeriod === 'monthly') {
+      endDate.setMonth(endDate.getMonth() + 1);
+    } else {
+      endDate.setFullYear(endDate.getFullYear() + 1);
+    }
+
+    // Mevcut aboneliği güncelle
+    const { data, error } = await supabase
+      .from('business_subscriptions')
+      .update({
+        status: 'active',
+        billing_period: billingPeriod,
+        subscription_start_date: now.toISOString(),
+        subscription_end_date: endDate.toISOString(),
+        current_price: price,
+        auto_renew: true,
+        updated_at: now.toISOString(),
+      })
+      .eq('business_id', businessId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error activating subscription:', error);
+      return null;
+    }
+
+    return mapSubscription(data);
+  } catch (error) {
+    console.error('Error in activateSubscription:', error);
+    return null;
+  }
+}
+
+/**
+ * Aboneliği iptal eder
+ */
+export async function cancelSubscription(businessId: string): Promise<boolean> {
+  try {
+    const supabase = createClient();
+    const { error } = await supabase
+      .from('business_subscriptions')
+      .update({
+        status: 'cancelled',
+        auto_renew: false,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('business_id', businessId);
+
+    if (error) {
+      console.error('Error cancelling subscription:', error);
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error('Error in cancelSubscription:', error);
+    return false;
+  }
+}
+
+// Helper: DB row → TypeScript interface
+function mapSubscription(row: any): BusinessSubscription {
+  return {
+    id: row.id,
+    businessId: row.business_id,
+    status: row.status,
+    billingPeriod: row.billing_period,
+    trialStartDate: row.trial_start_date,
+    trialEndDate: row.trial_end_date,
+    subscriptionStartDate: row.subscription_start_date,
+    subscriptionEndDate: row.subscription_end_date,
+    currentPrice: row.current_price || 0,
+    autoRenew: row.auto_renew || false,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
   };
-
-  if (mockSubscription.endDate < now) {
-    return { status: 'expired', subscription: mockSubscription };
-  }
-
-  return { status: 'active', subscription: mockSubscription };
 }
 
-/**
- * Abonelik geçmişini alır
- * @param subscriptionId - Abonelik ID'si
- * @returns Geçmiş kayıtları
- */
-export async function getSubscriptionHistory(
-  subscriptionId: string
-): Promise<SubscriptionHistoryEntry[]> {
-  // TODO: Veritabanından geçmiş kayıtlarını getir
-  console.log('Abonelik geçmişi getiriliyor:', subscriptionId);
-
-  return [];
+// Helper: Expired default result
+function getExpiredResult(): SubscriptionCheckResult {
+  return {
+    isActive: false,
+    status: 'expired',
+    isTrialPeriod: false,
+    trialDaysRemaining: 0,
+    trialEndDate: null,
+    canPostListings: false,
+    shouldBlur: true,
+  };
 }
 
-/**
- * Belirli bir paketteki maximum fotoğraf sayısını alır
- * @param packageId - Paket ID'si
- * @returns Maximum fotoğraf sayısı
- */
-export function getMaxPhotosForPackage(packageId: PackageType): number {
-  return getPackageById(packageId).maxPhotos;
+// Legacy exports for backward compatibility
+export type PackageType = 'temel' | 'profesyonel' | 'premium';
+export interface BusinessPackage {
+  id: PackageType;
+  name: string;
+  description: string;
+  monthlyPrice: number;
+  yearlyPrice: number;
+  yearlyDiscount: number;
+  maxPhotos: number;
+  features: { id: string; name: string; included: boolean }[];
+  popular?: boolean;
 }
-
-/**
- * Paketi yenileme tarihini hesaplar
- * @param startDate - Başlangıç tarihi
- * @param billingPeriod - Faturalama dönemi
- * @returns Yenileme tarihi
- */
-export function calculateRenewalDate(startDate: Date, billingPeriod: BillingPeriod): Date {
-  const renewalDate = new Date(startDate);
-
-  if (billingPeriod === 'monthly') {
-    renewalDate.setMonth(renewalDate.getMonth() + 1);
-  } else {
-    renewalDate.setFullYear(renewalDate.getFullYear() + 1);
-  }
-
-  return renewalDate;
-}
-
-/**
- * Yıllık fiyat indirimini hesaplar
- * @param monthlyPrice - Aylık fiyat
- * @param discount - İndirim yüzdesi
- * @returns Yıllık fiyat
- */
-export function calculateYearlyPrice(monthlyPrice: number, discount: number): number {
-  return Math.round(monthlyPrice * 12 * (1 - discount / 100));
-}
+export const BUSINESS_PACKAGES: Record<PackageType, BusinessPackage> = {
+  temel: { id: 'temel', name: 'Temel', description: '', monthlyPrice: MONTHLY_PRICE, yearlyPrice: YEARLY_PRICE, yearlyDiscount: 0, maxPhotos: 999, features: [], popular: false },
+  profesyonel: { id: 'profesyonel', name: 'Profesyonel', description: '', monthlyPrice: MONTHLY_PRICE, yearlyPrice: YEARLY_PRICE, yearlyDiscount: 0, maxPhotos: 999, features: [], popular: true },
+  premium: { id: 'premium', name: 'Premium', description: '', monthlyPrice: MONTHLY_PRICE, yearlyPrice: YEARLY_PRICE, yearlyDiscount: 0, maxPhotos: 999, features: [], popular: false },
+};
