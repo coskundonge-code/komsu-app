@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
+import { checkSubscriptionStatus, SubscriptionCheckResult, MONTHLY_PRICE, YEARLY_PRICE, FREE_TRIAL_MONTHS } from '@/lib/services/business-subscription';
+import SubscriptionExpiredOverlay from '@/components/business/subscription-expired-overlay';
 import {
   Eye,
   Star,
@@ -115,6 +117,7 @@ export default function IsletmePaneliPage() {
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [hasNoBusiness, setHasNoBusiness] = useState(false);
+  const [subStatus, setSubStatus] = useState<SubscriptionCheckResult | null>(null);
 
   // Fetch business data for current user
   useEffect(() => {
@@ -138,6 +141,14 @@ export default function IsletmePaneliPage() {
 
         if (!error && data) {
           setBusiness(data);
+
+          // Abonelik durumu kontrolü
+          try {
+            const subResult = await checkSubscriptionStatus((data as any).id);
+            setSubStatus(subResult);
+          } catch (subErr) {
+            console.log('Subscription check skipped:', subErr);
+          }
 
           // Fetch reviews for this business
           const { data: reviewData } = await (supabase as any)
@@ -208,6 +219,34 @@ export default function IsletmePaneliPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Subscription Expired Overlay */}
+      {subStatus?.shouldBlur && (
+        <SubscriptionExpiredOverlay
+          businessName={businessName}
+          isOwner={true}
+        />
+      )}
+
+      {/* Trial Banner */}
+      {subStatus?.isTrialPeriod && (
+        <div className="mb-6 bg-gradient-to-r from-[#fef3c7] to-[#fde68a] rounded-xl p-4 flex items-center gap-4 border border-[#f59e0b]/20">
+          <div className="w-10 h-10 bg-[#f59e0b] rounded-lg flex items-center justify-center flex-shrink-0">
+            <span className="text-white text-lg">🎁</span>
+          </div>
+          <div className="flex-1">
+            <p className="font-bold text-[#92400e] text-sm">
+              Ücretsiz Deneme: {subStatus.trialDaysRemaining} gün kaldı
+            </p>
+            <p className="text-xs text-[#92400e]/70 mt-0.5">
+              Deneme süreniz dolmadan abonelik başlatarak kesintisiz kullanmaya devam edin.
+            </p>
+          </div>
+          <button className="px-4 py-2 bg-[#f59e0b] hover:bg-[#d97706] text-white text-sm font-semibold rounded-lg transition-colors whitespace-nowrap">
+            Abone Ol
+          </button>
+        </div>
+      )}
+
       {/* Header Section */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-text-primary mb-2">Hoşgeldiniz, {businessName}</h1>
