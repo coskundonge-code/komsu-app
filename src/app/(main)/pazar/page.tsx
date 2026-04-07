@@ -393,7 +393,7 @@ export default function MarketplacePage() {
   // Apply filters and sorting
   let allFiltered = (listings.length > 0 ? listings : mockListings).filter((l) => {
     if (activeTab === 'saved' && !favorites.has(l.id)) return false;
-    if (activeTab === 'sale' && l.listing_type !== 'sale') return false;
+    if (activeTab === 'sale' && l.listing_type !== 'sale' && l.listing_type !== 'rental') return false;
     if (activeTab === 'rental' && l.listing_type !== 'rental') return false;
     if (activeTab === 'lend' && l.listing_type !== 'lend') return false;
     if (activeTab === 'free' && !l.isFree && l.listing_type !== 'free') return false;
