@@ -22,7 +22,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 import { AddressVerificationStatus } from '@/components/verification/address-verification-status';
@@ -42,43 +42,43 @@ const badgeStyles: Record<string, { icon: typeof Award; color: string; bgFrom: s
 const mockRecentPosts = [
   {
     id: '1',
-    author: 'CoÅkun DÃ¶nge',
-    text: 'Gelecek cumartesi yine mahalle kahvaltÄ±sÄ± yapacaÄÄ±z! Herkes katÄ±lmaya davetli ð',
+    author: 'Coşkun Dönge',
+    text: 'Gelecek cumartesi yine mahalle kahvaltısı yapacağız! Herkes katılmaya davetli 🎉',
     likes: 45,
     comments: 12,
-    time: '2 gÃ¼n',
+    time: '2 gün',
   },
   {
     id: '2',
-    author: 'CoÅkun DÃ¶nge',
-    text: 'Mahallede yeni bir spor kulÃ¼bÃ¼ kuruyoruz. Futbol ve voleybol turnuvalarÄ± dÃ¼zenlenecek!',
+    author: 'Coşkun Dönge',
+    text: 'Mahallede yeni bir spor kulübü kuruyoruz. Futbol ve voleybol turnuvaları düzenlenecek!',
     likes: 67,
     comments: 23,
-    time: '5 gÃ¼n',
+    time: '5 gün',
   },
   {
     id: '3',
-    author: 'CoÅkun DÃ¶nge',
-    text: 'KÃ¼tÃ¼phanede edebiyat klasikleri tartÄ±ÅmasÄ± yapacaÄÄ±z. "Araba SevdasÄ±" hakkÄ±nda konuÅacaÄÄ±z.',
+    author: 'Coşkun Dönge',
+    text: 'Kütüphanede edebiyat klasikleri tartışması yapacağız. "Araba Sevdası" hakkında konuşacağız.',
     likes: 34,
     comments: 15,
-    time: '8 gÃ¼n',
+    time: '8 gün',
   },
   {
     id: '4',
-    author: 'CoÅkun DÃ¶nge',
-    text: 'Yeni kitap Ã¶nerileriniz var mÄ±? Åu sÄ±ralar yazÄ±mda yoÄunlaÅmaya baÅladÄ±ÄÄ±m dÃ¶nemler hakkÄ±nda okuduÄumuz mÃ¼zayaka var.',
+    author: 'Coşkun Dönge',
+    text: 'Yeni kitap önerileriniz var mı? Şu sıralar yazımda yoğunlaşmaya başladığım dönemler hakkında okuyacağımız müzakere var.',
     likes: 28,
     comments: 8,
-    time: '12 gÃ¼n',
+    time: '12 gün',
   },
   {
     id: '5',
-    author: 'CoÅkun DÃ¶nge',
-    text: 'Mahalle pikniÄi Ã§ok gÃ¼zel geÃ§ti! KatÄ±lan herkese teÅekkÃ¼rler. ÃnÃ¼mÃ¼zdeki ay yine buluÅalÄ±m.',
+    author: 'Coşkun Dönge',
+    text: 'Mahalle pikniği çok güzel geçti! Katılan herkese teşekkürler. Önümüzdeki ay yine buluşalım.',
     likes: 56,
     comments: 19,
-    time: '15 gÃ¼n',
+    time: '15 gün',
   },
 ];
 
@@ -87,38 +87,38 @@ const mockRecommendations = [
     id: '1',
     business: 'Moda Kahvesi',
     category: 'Kahvehane',
-    description: 'Harika kahvesi ve sÄ±cak ortamÄ± ile mahalle\'nin en gÃ¼zel kahvesi. Sahipleri Ã§ok misafirperver.',
+    description: 'Harika kahvesi ve sıcak ortamı ile mahallenin en güzel kahvesi. Sahipleri çok misafirperver.',
     rating: 5,
   },
   {
     id: '2',
-    business: 'Elif PazarlamasÄ±',
+    business: 'Elif Pazarlaması',
     category: 'Market',
-    description: 'Ãok taze ve kaliteli Ã¼rÃ¼nleri var. FiyatlarÄ± makul ve kasa hattÄ± hÄ±zlÄ±.',
+    description: 'Çok taze ve kaliteli ürünleri var. Fiyatları makul ve kasa hattı hızlı.',
     rating: 4.5,
   },
   {
     id: '3',
-    business: 'Spor Merkezi KadÄ±kÃ¶y',
+    business: 'Spor Merkezi Kadıköy',
     category: 'Spor Tesisi',
-    description: 'Modern ekipmanlarÄ± ve deneyimli antrenÃ¶rleriyle tavsiye ediyorum. Ãyelik fiyatlarÄ± ise Ã§ok uygun.',
+    description: 'Modern ekipmanları ve deneyimli antrenörleriyle tavsiye ediyorum. Üyelik fiyatları ise çok uygun.',
     rating: 4.8,
   },
 ];
 
 const mockNeighbors = [
-  { id: '1', name: 'AyÅe YÄ±lmaz', initials: 'AY' },
+  { id: '1', name: 'Ayşe Yılmaz', initials: 'AY' },
   { id: '2', name: 'Mehmet Kara', initials: 'MK' },
-  { id: '3', name: 'Zeynep Ãelik', initials: 'ZÃ' },
+  { id: '3', name: 'Zeynep Çelik', initials: 'ZÇ' },
   { id: '4', name: 'Ali Demir', initials: 'AD' },
-  { id: '5', name: 'Fatma Åahin', initials: 'FÅ' },
-  { id: '6', name: 'Can Ãzer', initials: 'CÃ' },
+  { id: '5', name: 'Fatma Şahin', initials: 'FŞ' },
+  { id: '6', name: 'Can Özer', initials: 'CÖ' },
 ];
 
 const tabs = [
-  { id: 'posts', label: 'GÃ¶nderiler' },
-  { id: 'recommendations', label: 'Ãneriler' },
-  { id: 'marketplace', label: 'Pazar Yeri Ä°lanlarÄ±' },
+  { id: 'posts', label: 'Gönderiler' },
+  { id: 'recommendations', label: 'Öneriler' },
+  { id: 'marketplace', label: 'Pazar Yeri İlanları' },
   { id: 'groups', label: 'Gruplar' },
 ];
 
@@ -132,15 +132,17 @@ function getInitials(name: string): string {
 function formatJoinDate(dateStr: string): string {
   const date = new Date(dateStr);
   const months = [
-    'Ocak', 'Åubat', 'Mart', 'Nisan', 'MayÄ±s', 'Haziran',
-    'Temmuz', 'AÄustos', 'EylÃ¼l', 'Ekim', 'KasÄ±m', 'AralÄ±k',
+    'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+    'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
   ];
   return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
 }
 
-export default function ProfilePage({ params }: { params: { id: string } }) {
+export default function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const [activeTab, setActiveTab] = useState('posts');
   const { user, loading: authLoading } = useCurrentUser();
+  const fetchedRef = useRef<string | null>(null);
 
   // Profile data from Supabase
   const [profileData, setProfileData] = useState<any>(null);
@@ -149,12 +151,13 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
   const [postsData, setPostsData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const isOwnProfile = params.id === 'me' || (user && params.id === user.id);
-  const targetUserId = params.id === 'me' ? user?.id : params.id;
+  const isOwnProfile = id === 'me' || (user && id === user.id);
+  const targetUserId = id === 'me' ? user?.id : id;
 
   useEffect(() => {
     async function fetchProfile() {
-      if (!targetUserId) return;
+      if (!targetUserId || fetchedRef.current === targetUserId) return;
+      fetchedRef.current = targetUserId;
       setLoading(true);
       try {
         const result = await getFullProfile(targetUserId);
@@ -173,7 +176,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
   }, [targetUserId, authLoading]);
 
   // Derived display values (real data with fallbacks)
-  const displayName = profileData?.full_name || 'KullanÄ±cÄ±';
+  const displayName = profileData?.full_name || 'Kullanıcı';
   const displayInitials = getInitials(displayName);
   const displayBio = profileData?.bio || '';
   const displayNeighborhood = addressData
@@ -229,7 +232,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
       <div className="relative h-56 bg-gradient-to-b from-[#00833e] to-[#006b32] overflow-hidden">
         <img
           src={getFeedImageUrl(78, 1200, 400)}
-          alt="Profil KapaÄÄ±"
+          alt="Profil Kapağı"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40" />
@@ -281,12 +284,12 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                           className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-all card-hover"
                         >
                           <Edit size={16} />
-                          Profili DÃ¼zenle
+                          Profili Düzenle
                         </Link>
                       ) : (
                         <button className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-[#00833e] text-[#00833e] hover:bg-[#00833e]/5 font-medium rounded-lg transition-all card-hover text-sm">
                           <UserPlus size={16} />
-                          KomÅu Ekle
+                          Komşu Ekle
                         </button>
                       )}
                     </div>
@@ -303,7 +306,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                     {displayJoinDate && (
                       <div className="flex items-center gap-2 text-[#8f8f8f]">
                         <Calendar size={16} className="text-[#00833e]" />
-                        <span className="text-sm">{displayJoinDate} tarihinde katÄ±ldÄ±</span>
+                        <span className="text-sm">{displayJoinDate} tarihinde katıldı</span>
                       </div>
                     )}
                   </div>
@@ -332,15 +335,15 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
               <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 text-center card-hover">
                 <p className="text-2xl font-bold text-[#00833e]">{displayStats.posts}</p>
-                <p className="text-xs text-[#8f8f8f] mt-1 font-medium">GÃ¶nderi</p>
+                <p className="text-xs text-[#8f8f8f] mt-1 font-medium">Gönderi</p>
               </div>
               <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 text-center card-hover">
                 <p className="text-2xl font-bold text-[#00833e]">{displayStats.helps}</p>
-                <p className="text-xs text-[#8f8f8f] mt-1 font-medium">YardÄ±m</p>
+                <p className="text-xs text-[#8f8f8f] mt-1 font-medium">Yardım</p>
               </div>
               <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 text-center card-hover">
                 <p className="text-2xl font-bold text-[#00833e]">{displayStats.neighbors}</p>
-                <p className="text-xs text-[#8f8f8f] mt-1 font-medium">KomÅu</p>
+                <p className="text-xs text-[#8f8f8f] mt-1 font-medium">Komşu</p>
               </div>
               <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 text-center card-hover">
                 <p className="text-2xl font-bold text-[#f39c12]">4.9</p>
@@ -375,7 +378,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                   <div className="divide-y divide-[#e0e0e0]">
                     {displayPosts.length === 0 ? (
                       <div className="p-8 text-center">
-                        <p className="text-[#8f8f8f]">HenÃ¼z gÃ¶nderi yok</p>
+                        <p className="text-[#8f8f8f]">Henüz gönderi yok</p>
                       </div>
                     ) : (
                       displayPosts.map((post) => (
@@ -412,7 +415,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                   <div className="divide-y divide-[#e0e0e0]">
                     <div className="p-8 text-center">
                       <MessageSquare size={32} className="mx-auto text-[#e0e0e0] mb-2" />
-                      <p className="text-[#8f8f8f]">HenÃ¼z pazar yeri ilanÄ± yok</p>
+                      <p className="text-[#8f8f8f]">Henüz pazar yeri ilanı yok</p>
                     </div>
                   </div>
                 )}
@@ -422,7 +425,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                   <div className="divide-y divide-[#e0e0e0]">
                     <div className="p-8 text-center">
                       <Users size={32} className="mx-auto text-[#e0e0e0] mb-2" />
-                      <p className="text-[#8f8f8f]">HenÃ¼z grup Ã¼yeliÄi yok</p>
+                      <p className="text-[#8f8f8f]">Henüz grup üyeliği yok</p>
                     </div>
                   </div>
                 )}
@@ -433,7 +436,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                     {mockRecommendations.length === 0 ? (
                       <div className="p-8 text-center">
                         <Star size={32} className="mx-auto text-[#e0e0e0] mb-2" />
-                        <p className="text-[#8f8f8f]">HenÃ¼z Ã¶neri yok</p>
+                        <p className="text-[#8f8f8f]">Henüz öneri yok</p>
                       </div>
                     ) : (
                       mockRecommendations.map((rec) => (
@@ -478,7 +481,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
               <div className="px-4 py-4 border-b border-[#e0e0e0]">
                 <h3 className="text-sm font-bold text-[#333] flex items-center gap-2">
                   <Users size={16} className="text-[#00833e]" />
-                  KomÅular
+                  Komşular
                 </h3>
               </div>
               <div className="p-4 space-y-3">
@@ -493,7 +496,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                   </div>
                 ))}
                 <button className="w-full mt-3 py-2 text-sm font-medium text-[#00833e] border border-[#00833e] rounded hover:bg-[#00833e]/5 transition-colors">
-                  TÃ¼mÃ¼nÃ¼ GÃ¶r
+                  Tümünü Gör
                 </button>
               </div>
             </div>
@@ -510,7 +513,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
                 {displayBadges.length === 0 ? (
                   <div className="p-4 text-center">
                     <Award size={32} className="mx-auto text-[#e0e0e0] mb-2" />
-                    <p className="text-xs text-[#8f8f8f]">HenÃ¼z rozet kazanÄ±lmadÄ±</p>
+                    <p className="text-xs text-[#8f8f8f]">Henüz rozet kazanılmadı</p>
                   </div>
                 ) : (
                   displayBadges.map((badge) => {
@@ -549,19 +552,19 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
               </div>
               <div className="p-4 space-y-3">
                 <div>
-                  <p className="text-xs font-medium text-[#8f8f8f] mb-1">BÃ¶lge</p>
-                  <p className="text-sm font-medium text-[#333]">{displayNeighborhood || 'BelirtilmemiÅ'}</p>
+                  <p className="text-xs font-medium text-[#8f8f8f] mb-1">Bölge</p>
+                  <p className="text-sm font-medium text-[#333]">{displayNeighborhood || 'Belirtilmemiş'}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-medium text-[#8f8f8f] mb-1">Mahalle NÃ¼fusu</p>
-                  <p className="text-sm font-medium text-[#333]">2.500+ komÅu</p>
+                  <p className="text-xs font-medium text-[#8f8f8f] mb-1">Mahalle Nüfusu</p>
+                  <p className="text-sm font-medium text-[#333]">2.500+ komşu</p>
                 </div>
                 <div>
                   <p className="text-xs font-medium text-[#8f8f8f] mb-1">Etkinlikler</p>
                   <p className="text-sm font-medium text-[#333]">Ayda 8-10 etkinlik</p>
                 </div>
                 <button className="w-full mt-2 py-2 text-sm font-medium text-[#00833e] border border-[#00833e] rounded hover:bg-[#00833e]/5 transition-colors">
-                  Mahalle SayfasÄ±
+                  Mahalle Sayfası
                 </button>
               </div>
             </div>
