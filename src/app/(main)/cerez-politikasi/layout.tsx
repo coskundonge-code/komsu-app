@@ -6,7 +6,7 @@ export const metadata: Metadata = generatePageMetadata({
   description:
     "Mahallemiz Çerez Politikası. Çerezlerin nasıl kullanıldığını ve ayarlarınızı nasıl yönetebileceğinizi öğrenin.",
   openGraph: {
-    url: "https://mahallem.com/cerez-politikasi",
+    url: "https://komsu-app.vercel.app/cerez-politikasi",
     title: 'Çerez Politikası',
     description:
       "Mahallemiz Çerez Politikası. Çerezlerin nasıl kullanıldığını ve ayarlarınızı nasıl yönetebileceğinizi öğrenin.",
