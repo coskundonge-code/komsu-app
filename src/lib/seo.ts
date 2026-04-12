@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-export const BASE_URL = "https://mahallem.com";
+export const BASE_URL = "https://komsu-app.vercel.app";
 
 export const DEFAULT_OG_IMAGE = {
   url: `${BASE_URL}/icon-512.png`,
