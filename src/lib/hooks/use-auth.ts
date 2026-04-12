@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/client'
 import { useEffect, useState } from 'react'
+import type { User } from '@supabase/supabase-js'
 import type { Database } from '@/lib/supabase/types'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
@@ -13,7 +14,7 @@ type Neighborhood = {
 }
 
 export function useCurrentUser() {
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [neighborhood, setNeighborhood] = useState<Neighborhood | null>(null)
   const [loading, setLoading] = useState(true)
@@ -49,12 +50,12 @@ export function useCurrentUser() {
           .single()
 
         if (neighborhoodData?.neighborhoods) {
-          const nb = neighborhoodData.neighborhoods as any
+          const nb = neighborhoodData.neighborhoods as Neighborhood
           setNeighborhood({
             id: nb.id,
             name: nb.name,
             district: nb.district,
-            city: nb.city
+            city: nb.city,
           })
         }
       }

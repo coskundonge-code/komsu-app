@@ -6,7 +6,7 @@ export const metadata: Metadata = generatePageMetadata({
   description:
     "Mahallemiz Gizlilik Politikası. Verileriniz nasıl korunduğunu ve kullanıldığını öğrenin.",
   openGraph: {
-    url: "https://mahallem.com/gizlilik",
+    url: "https://komsu-app.vercel.app/gizlilik",
     title: 'Gizlilik Politikası',
     description:
       "Mahallemiz Gizlilik Politikası. Verileriniz nasıl korunduğunu ve kullanıldığını öğrenin.",

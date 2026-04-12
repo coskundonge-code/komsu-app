@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   authors: [
     {
       name: "Mahallemiz",
-      url: "https://www.mahallemiz.com.tr",
+      url: "https://komsu-app.vercel.app",
     },
   ],
   creator: "Mahallemiz",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Mahallemiz",
     locale: "tr_TR",
-    url: "https://www.mahallemiz.com.tr",
+    url: "https://komsu-app.vercel.app",
     images: [
       {
         url: "/icon-512.png",
@@ -64,6 +64,10 @@ export const metadata: Metadata = {
         type: "image/png",
       },
     ],
+  },
+  metadataBase: new URL("https://komsu-app.vercel.app"),
+  alternates: {
+    canonical: "/",
   },
   twitter: {
     card: "summary_large_image",

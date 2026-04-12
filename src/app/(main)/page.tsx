@@ -240,6 +240,8 @@ export default function FeedPage() {
 
       <div className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 space-y-3">
 
+        <h1 className="sr-only">Mahallemiz - Mahalleni Keşfet, Komşularınla Bağlan</h1>
+
         {pinnedPosts.length > 0 && (
 
           <div className="bg-surface rounded-xl shadow-card border border-border overflow-hidden">

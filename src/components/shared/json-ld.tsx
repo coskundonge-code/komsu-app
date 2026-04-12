@@ -3,7 +3,7 @@ export function JsonLd() {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     name: "Mahallemiz",
-    url: "https://mahallem.com",
+    url: "https://komsu-app.vercel.app",
     description:
       "Türkiye'nin mahalle sosyal ağı. Mahallemiz ile mahallenizdeki komşularınızla tanışın, haberleşin, alışveriş yapın, etkinliklere katılın ve yerel işletmeleri keşfedin.",
     applicationCategory: "SocialNetworkingApplication",

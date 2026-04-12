@@ -1,5 +1,6 @@
 'use client'
 
+import { useQuery } from '@tanstack/react-query'
 import { createClient as createTypedClient } from '@/lib/supabase/client'
 import type { Database } from '@/lib/supabase/types'
 
@@ -7,6 +8,32 @@ const createClient = () => createTypedClient()
 
 type Post = Database['public']['Tables']['posts']['Row']
 type PostInsert = Database['public']['Tables']['posts']['Insert']
+
+// --- React Query hooks (use these in components) ---
+
+export type PostsOptions = {
+  neighborhoodId?: string
+  postType?: string
+  limit?: number
+  offset?: number
+}
+
+export function usePosts(options?: PostsOptions) {
+  return useQuery({
+    queryKey: ['posts', options],
+    queryFn: () => getPosts(options),
+  })
+}
+
+export function usePostById(id: string) {
+  return useQuery({
+    queryKey: ['post', id],
+    queryFn: () => getPostById(id),
+    enabled: !!id,
+  })
+}
+
+// --- Async query utilities (use these in mutations / server-side logic) ---
 
 export async function getPosts(options?: {
   neighborhoodId?: string

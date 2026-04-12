@@ -175,7 +175,7 @@ export default function CookiePolicyPage() {
               <p>
                 <strong>Web Sitesi:</strong>{' '}
                 <a
-                  href="https://mahallem.com"
+                  href="https://komsu-app.vercel.app"
                   className="text-primary hover:text-primary-hover transition-colors"
                   target="_blank"
                   rel="noopener noreferrer"
