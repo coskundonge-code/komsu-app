@@ -22,7 +22,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 import { AddressVerificationStatus } from '@/components/verification/address-verification-status';
@@ -138,9 +138,11 @@ function formatJoinDate(dateStr: string): string {
   return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
 }
 
-export default function ProfilePage({ params }: { params: { id: string } }) {
+export default function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const [activeTab, setActiveTab] = useState('posts');
   const { user, loading: authLoading } = useCurrentUser();
+  const fetchedRef = useRef<string | null>(null);
 
   // Profile data from Supabase
   const [profileData, setProfileData] = useState<any>(null);
@@ -149,12 +151,13 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
   const [postsData, setPostsData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const isOwnProfile = params.id === 'me' || (user && params.id === user.id);
-  const targetUserId = params.id === 'me' ? user?.id : params.id;
+  const isOwnProfile = id === 'me' || (user && id === user.id);
+  const targetUserId = id === 'me' ? user?.id : id;
 
   useEffect(() => {
     async function fetchProfile() {
-      if (!targetUserId) return;
+      if (!targetUserId || fetchedRef.current === targetUserId) return;
+      fetchedRef.current = targetUserId;
       setLoading(true);
       try {
         const result = await getFullProfile(targetUserId);
