@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   authors: [
     {
       name: "Mahallemiz",
-      url: "https://www.mahallemiz.com.tr",
+      url: "https://komsu-app.vercel.app",
     },
   ],
   creator: "Mahallemiz",
