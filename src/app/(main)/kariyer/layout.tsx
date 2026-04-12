@@ -6,7 +6,7 @@ export const metadata: Metadata = generatePageMetadata({
   description:
     "Mahallemiz Kariyer. Ekibimize katılın ve mahalle topluluklarını güçlendirmeye yardımcı olun.",
   openGraph: {
-    url: "https://mahallem.com/kariyer",
+    url: "https://komsu-app.vercel.app/kariyer",
     title: 'Kariyer',
     description:
       "Mahallemiz Kariyer. Ekibimize katılın ve mahalle topluluklarını güçlendirmeye yardımcı olun.",
