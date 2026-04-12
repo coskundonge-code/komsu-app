@@ -97,6 +97,8 @@ export function Navbar() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => { setIsSearchOpen(true); setIsSearchFocused(true) }}
                 onKeyDown={handleSearchKeyDown}
+                autoComplete="off"
+                name="mahalle-search"
                 className={cn(
                   "w-full pl-10 pr-4 py-2 bg-background border rounded-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none transition-all duration-200",
                   isSearchFocused
