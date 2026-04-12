@@ -10,15 +10,14 @@ import { UserDropdown } from './user-dropdown'
 import { MobileDrawer } from './mobile-drawer'
 import { NotificationBell } from './notification-bell'
 
-/** Context-aware search placeholders based on current page */
 const searchPlaceholders: Record<string, string> = {
-  '/pazar': 'İlanlarda ara...',
+  '/pazar': 'Ilanlarda ara...',
   '/yerel-haberler': 'Haberlerde ara...',
-  '/uyarilar': 'Uyarılarda ara...',
+  '/uyarilar': 'Uyarilarda ara...',
   '/gruplar': 'Gruplarda ara...',
   '/etkinlikler': 'Etkinliklerde ara...',
-  '/askida-bagis': 'Bağışlarda ara...',
-  '/komsuma-yardim': 'Yardım taleplerinde ara...',
+  '/askida-bagis': 'Bagislarda ara...',
+  '/komsuma-yardim': 'Yardim taleplerinde ara...',
 }
 
 function getSearchPlaceholder(pathname: string | null): string {
@@ -72,7 +71,7 @@ export function Navbar() {
             <button
               onClick={() => setIsMobileDrawerOpen(true)}
               className="lg:hidden p-2 hover:bg-surface-hover rounded-full transition-colors"
-              aria-label="Menüyü aç"
+              aria-label="Menuyu ac"
             >
               <Menu className="w-5 h-5 text-text-secondary" />
             </button>
@@ -86,17 +85,24 @@ export function Navbar() {
             </Link>
           </div>
 
-          {/* Context-aware search bar */}
           <div ref={searchRef} className={cn("flex-1 mx-2 sm:mx-4 transition-all duration-300", isSearchFocused ? "sm:max-w-[640px]" : "sm:max-w-[520px]")}>
             <div className="relative">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
               <input
-                type="text"
+                type="search"
+                role="searchbox"
                 placeholder={placeholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => { setIsSearchOpen(true); setIsSearchFocused(true) }}
                 onKeyDown={handleSearchKeyDown}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                name="mahalle-search"
+                data-form-type="other"
+                data-lpignore="true"
                 className={cn(
                   "w-full pl-10 pr-4 py-2 bg-background border rounded-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none transition-all duration-200",
                   isSearchFocused
@@ -118,7 +124,7 @@ export function Navbar() {
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white text-sm font-semibold rounded-full hover:bg-primary-hover transition-colors shadow-sm hover:shadow-md"
             >
               <Plus className="w-4 h-4" />
-              <span className="hidden md:inline">Paylaş</span>
+              <span className="hidden md:inline">Paylas</span>
             </Link>
 
             <NotificationBell />
