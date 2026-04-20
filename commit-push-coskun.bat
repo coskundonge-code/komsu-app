@@ -135,17 +135,19 @@ if errorlevel 1 (
     echo [5/7] Commit mesaji yaz - bos birakirsan tarih-saat otomatik:
     set /p MSG=">>> "
     if "!MSG!"=="" (
-        for /f "tokens=2 delims==" %%a in ('wmic os get localdatetime /value ^| find "="') do set dt=%%a
-        set MSG=update: local changes on !TARGET! (!dt:~0,4!-!dt:~4,2!-!dt:~6,2! !dt:~8,2!:!dt:~10,2!)
+        for /f "delims=" %%a in ('powershell -NoProfile -Command "Get-Date -Format yyyy-MM-dd_HH:mm"') do set dt=%%a
+        if "!dt!"=="" set dt=%DATE% %TIME%
+        set MSG=update: local changes on !TARGET! (!dt!)
     )
     echo [5/7] commit msg: !MSG! >> "%LOG%"
     git commit -m "!MSG!" 1>>"%LOG%" 2>&1
     if errorlevel 1 (
-        echo [HATA] Commit basarisiz. Log: %LOG%
-        pause
-        exit /b 1
+        echo [UYARI] Commit fail oldu (muhtemelen 'nothing to commit' - Drive sync dokunmus olabilir).
+        echo [5/7] commit failed but continuing, checking status >> "%LOG%"
+        git status --short >> "%LOG%"
+    ) else (
+        echo [OK] Commit atildi.
     )
-    echo [OK] Commit atildi.
 ) else (
     echo [5/7] Commit edilecek bir degisiklik yok. Atliyorum.
     echo [5/7] nothing to commit >> "%LOG%"
@@ -182,7 +184,7 @@ echo [7/7] git push origin !TARGET! >> "%LOG%"
 git push -u origin !TARGET! 1>>"%LOG%" 2>&1
 if errorlevel 1 (
     echo.
-    echo [HATA] Push basarisiz. Muhtemelen PAT suresi dolmus.
+    echo [HATA] Push basarisiz. Muhtemelen PAT suresi dolmus veya commit edilecek bir sey yok.
     echo Claude'a "PAT'i yenile" de. Log: %LOG%
     pause
     exit /b 1
