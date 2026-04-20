@@ -84,3 +84,8 @@ Thumbs.db
 node_modules
 
 .claude/worktrees/
+# local helper log (auto-generated)
+commit-push-coskun.log
+
+# Local run logs (commit-push-coskun.log vb.)
+*.log
