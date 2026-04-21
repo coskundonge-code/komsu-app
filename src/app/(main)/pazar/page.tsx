@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Plus, Heart, MapPin, ChevronDown, X, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
-import { getListings } from '@/lib/hooks/use-listings';
+import { useListings } from '@/lib/hooks/use-listings';
 
 const tabs = [
   { id: 'all', label: 'Tüm İlanlar' },
@@ -318,12 +318,20 @@ const mockListings = [
   },
 ];
 
+function formatTimeAgo(date: Date): string {
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+  if (diffHours < 24) return `${diffHours} saat`;
+  if (diffDays < 30) return `${diffDays} gün`;
+  return `${Math.floor(diffDays / 30)} ay`;
+}
+
 export default function MarketplacePage() {
   const [activeTab, setActiveTab] = useState('all');
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [visibleCount, setVisibleCount] = useState(6);
-  const [listings, setListings] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
   // Filter state
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -333,55 +341,28 @@ export default function MarketplacePage() {
   const [selectedSort, setSelectedSort] = useState('newest');
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
-  // Fetch real listings on mount
-  useEffect(() => {
-    const fetchListings = async () => {
-      try {
-        const { data, error } = await getListings({ status: 'active', limit: 50 });
-        if (data) {
-          // Transform DB data to UI format
-          const transformed = (data as any[]).map((item: any) => ({
-            id: item.id,
-            title: item.title || 'Başlıksız İlan',
-            price: item.price || 0,
-            listing_type: item.listing_type || 'sale',
-            image: (item.media_urls && item.media_urls.length > 0 ? item.media_urls[0] : null) || getFeedImageUrl(Math.floor(Math.random() * 30) + 1, 500, 500),
-            location: item.neighborhood || 'Bilinmiyor',
-            neighborhood: item.neighborhood || 'Bilinmiyor',
-            timeAgo: item.created_at ? formatTimeAgo(new Date(item.created_at)) : '1 saat',
-            distance: `${Math.floor(Math.random() * 10) + 1} km`, // Fallback
-            isFree: (item.price === 0 || item.price === null),
-            featured: Math.random() > 0.7,
-            category: (item as any).listing_categories?.name || 'Diğer',
-            condition: item.item_condition || 'good',
-            rating: Math.random() * 2 + 3,
-            reviewCount: Math.floor(Math.random() * 20),
-          }));
-          setListings(transformed);
-        } else if (error) {
-          console.warn('Error fetching listings:', error);
-          setListings(mockListings);
-        }
-      } catch (err) {
-        console.error('Error:', err);
-        setListings(mockListings);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data: listingsResult, isLoading: loading } = useListings({ status: 'active', limit: 50 });
 
-    fetchListings();
-  }, []);
-
-  const formatTimeAgo = (date: Date): string => {
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-    if (diffHours < 24) return `${diffHours} saat`;
-    if (diffDays < 30) return `${diffDays} gün`;
-    return `${Math.floor(diffDays / 30)} ay`;
-  };
+  const listings = useMemo(() => {
+    if (!listingsResult?.data) return [];
+    return (listingsResult.data as any[]).map((item) => ({
+      id: item.id,
+      title: item.title || 'Başlıksız İlan',
+      price: item.price || 0,
+      listing_type: item.listing_type || 'sale',
+      image: (item.media_urls && item.media_urls.length > 0 ? item.media_urls[0] : null) || getFeedImageUrl(Math.floor(Math.random() * 30) + 1, 500, 500),
+      location: item.neighborhoods?.name || 'Bilinmiyor',
+      neighborhood: item.neighborhoods?.name || 'Bilinmiyor',
+      timeAgo: item.created_at ? formatTimeAgo(new Date(item.created_at)) : '1 saat',
+      distance: `${Math.floor(Math.random() * 10) + 1} km`,
+      isFree: item.price === 0 || item.price === null,
+      featured: Math.random() > 0.7,
+      category: item.listing_categories?.name || 'Diğer',
+      condition: item.condition || 'good',
+      rating: Math.random() * 2 + 3,
+      reviewCount: Math.floor(Math.random() * 20),
+    }));
+  }, [listingsResult]);
 
   const toggleFavorite = (id: string) => {
     const next = new Set(favorites);

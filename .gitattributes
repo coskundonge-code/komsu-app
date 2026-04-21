@@ -1,0 +1,28 @@
+# Line-ending normalizasyonu
+# Tum metin dosyalarini depoda LF olarak sakla; otomatik tespit yap.
+# Bu sayede Windows/Linux karisik calisma ortaminda CRLF/LF "sahte degisiklik" sorunu olmaz.
+* text=auto eol=lf
+
+# Binary dosyalar icin dokunma
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.avif binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.mp4 binary
+*.mov binary
+*.mp3 binary
+*.wav binary
+
+# Kesin CRLF olmasi gerekenler (Windows batch/cmd)
+*.bat text eol=crlf
+*.cmd text eol=crlf

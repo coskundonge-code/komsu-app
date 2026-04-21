@@ -1,6 +1,6 @@
-import { type NextRequest } from 'next/server'
-import { NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
+import type { User } from '@supabase/supabase-js'
 
 const publicRoutes = [
   '/giris',
@@ -49,6 +49,28 @@ function matchesRoute(path: string, routes: string[]): boolean {
   return routes.some(route => path === route || path.startsWith(route + '/'))
 }
 
+/** Returns a redirect response if the user fails location/eDevlet checks, otherwise null. */
+function checkVerification(request: NextRequest, user: User): NextResponse | null {
+  const metadata = user.user_metadata || {}
+
+  if (!metadata.location_confirmed_at) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/konum-secimi'
+    return NextResponse.redirect(url)
+  }
+
+  if (metadata.edevlet_verification_deadline && !metadata.edevlet_verified_at) {
+    const deadline = new Date(metadata.edevlet_verification_deadline)
+    if (deadline < new Date()) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/hesap-kilitli'
+      return NextResponse.redirect(url)
+    }
+  }
+
+  return null
+}
+
 export async function middleware(request: NextRequest) {
   const { response, user } = await updateSession(request)
   const path = request.nextUrl.pathname
@@ -57,28 +79,11 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
-  // Public routes - allow access but check location for logged-in users
+  // Public routes - allow access but enforce verification for logged-in users
   if (matchesRoute(path, publicRoutes)) {
     if (user && !matchesRoute(path, locationExemptRoutes)) {
-      const metadata = user.user_metadata || {}
-      const locationConfirmedAt = metadata.location_confirmed_at
-      const edevletVerifiedAt = metadata.edevlet_verified_at
-      const edevletDeadline = metadata.edevlet_verification_deadline
-
-      if (!locationConfirmedAt) {
-        const url = request.nextUrl.clone()
-        url.pathname = '/konum-secimi'
-        return NextResponse.redirect(url)
-      }
-
-      if (edevletDeadline && !edevletVerifiedAt) {
-        const deadline = new Date(edevletDeadline)
-        if (deadline < new Date()) {
-          const url = request.nextUrl.clone()
-          url.pathname = '/hesap-kilitli'
-          return NextResponse.redirect(url)
-        }
-      }
+      const redirect = checkVerification(request, user)
+      if (redirect) return redirect
     }
     return response
   }
@@ -92,27 +97,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  // Check location for ALL authenticated protected routes
+  // Enforce verification for all authenticated protected routes
   if (!matchesRoute(path, locationExemptRoutes)) {
-    const metadata = user.user_metadata || {}
-    const locationConfirmedAt = metadata.location_confirmed_at
-    const edevletVerifiedAt = metadata.edevlet_verified_at
-    const edevletDeadline = metadata.edevlet_verification_deadline
-
-    if (!locationConfirmedAt) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/konum-secimi'
-      return NextResponse.redirect(url)
-    }
-
-    if (edevletDeadline && !edevletVerifiedAt) {
-      const deadline = new Date(edevletDeadline)
-      if (deadline < new Date()) {
-        const url = request.nextUrl.clone()
-        url.pathname = '/hesap-kilitli'
-        return NextResponse.redirect(url)
-      }
-    }
+    const redirect = checkVerification(request, user)
+    if (redirect) return redirect
   }
 
   return response
