@@ -1,567 +1,189 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import {
-  Search,
-  ChevronLeft,
-  ChevronRight,
-  Flag,
-  Trash2,
-  Star,
-} from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { createClient } from '@/lib/supabase/client';
+import { Search, ChevronLeft, ChevronRight, Star, MessageSquare, Trash2 } from 'lucide-react';
 
-interface Review {
-  id: string;
-  reviewer: string;
-  business: string;
-  rating: number;
-  comment: string;
-  date: string;
-  flagged: boolean;
-  verifiedPurchase: boolean;
-  antiSpamScore: number;
-  status: 'onaylanmış' | 'beklemede' | 'reddedildi';
-  helpfulCount: number;
+// AUDIT_REPORT.md K3 — gerçek comments + business_reviews tablolarına bağlı
+
+type CommentRow = {
+  id: string
+  source: 'post_comment' | 'business_review'
+  body: string | null
+  rating: number | null
+  created_at: string
+  author_name: string
+  context: string  // post title or business name
 }
 
-const MOCK_REVIEWS: Review[] = [
-  {
-    id: '1',
-    reviewer: 'Ahmet K.',
-    business: 'Özgür Elektrik',
-    rating: 5,
-    comment: 'Çok hızlı ve profesyonel hizmet. Kesinlikle tavsiye ediyorum!',
-    date: '2024-03-09',
-    flagged: false,
-    verifiedPurchase: true,
-    antiSpamScore: 0.98,
-    status: 'onaylanmış',
-    helpfulCount: 12,
-  },
-  {
-    id: '2',
-    reviewer: 'Fatma D.',
-    business: 'Ayakkabı Tamircisi Ali',
-    rating: 4,
-    comment: 'İyi iş yapıyor ama biraz yavaş. Yine de tavsiye ediyorum.',
-    date: '2024-03-08',
-    flagged: false,
-    verifiedPurchase: true,
-    antiSpamScore: 0.95,
-    status: 'onaylanmış',
-    helpfulCount: 8,
-  },
-  {
-    id: '3',
-    reviewer: 'Mustafa T.',
-    business: 'Bahçe Tasarımı Pro',
-    rating: 3,
-    comment: 'Orta düzey hizmet. Daha iyi olabilir ama kabul edilebilir.',
-    date: '2024-03-07',
-    flagged: false,
-    verifiedPurchase: true,
-    antiSpamScore: 0.89,
-    status: 'onaylanmış',
-    helpfulCount: 3,
-  },
-  {
-    id: '4',
-    reviewer: 'Elif Y.',
-    business: 'Temizlik Şirketi Temizim',
-    rating: 5,
-    comment: 'Mükemmel! Ev temiz ve düzenli. Herkese tavsiye ediyorum!!!',
-    date: '2024-03-06',
-    flagged: true,
-    verifiedPurchase: true,
-    antiSpamScore: 0.72,
-    status: 'beklemede',
-    helpfulCount: 45,
-  },
-  {
-    id: '5',
-    reviewer: 'Hasan B.',
-    business: 'Kuaför Şiddet',
-    rating: 2,
-    comment: 'Berbat hizmet, kesinlikle tavsiye etmiyorum.',
-    date: '2024-03-05',
-    flagged: false,
-    verifiedPurchase: true,
-    antiSpamScore: 0.91,
-    status: 'onaylanmış',
-    helpfulCount: 2,
-  },
-  {
-    id: '6',
-    reviewer: 'Ayşe S.',
-    business: 'Çatı Onarımı Servis',
-    rating: 5,
-    comment: 'Harika iş! Zamanında ve profesyonel. En iyileri!',
-    date: '2024-03-04',
-    flagged: false,
-    verifiedPurchase: true,
-    antiSpamScore: 0.96,
-    status: 'onaylanmış',
-    helpfulCount: 18,
-  },
-  {
-    id: '7',
-    reviewer: 'İbrahim M.',
-    business: 'Fotoğrafçı Düşle',
-    rating: 5,
-    comment: 'Fotoğraflarım çok güzel çıktı! Çok memnunum.',
-    date: '2024-03-03',
-    flagged: false,
-    verifiedPurchase: true,
-    antiSpamScore: 0.94,
-    status: 'onaylanmış',
-    helpfulCount: 25,
-  },
-  {
-    id: '8',
-    reviewer: 'Bot User 1',
-    business: 'Oto Elektrikçi Hasan',
-    rating: 5,
-    comment: 'HARIKA HARIKA HARIKA!!! EN İYİSİ!!! HERKES GIT!!!',
-    date: '2024-03-02',
-    flagged: true,
-    verifiedPurchase: false,
-    antiSpamScore: 0.15,
-    status: 'reddedildi',
-    helpfulCount: 0,
-  },
-  {
-    id: '9',
-    reviewer: 'Zeynep A.',
-    business: 'Pasta Şefi Aylin',
-    rating: 5,
-    comment: 'Pastaları lezzetli ve güzel. Özel günümüzde eğlenceli.',
-    date: '2024-03-01',
-    flagged: false,
-    verifiedPurchase: true,
-    antiSpamScore: 0.97,
-    status: 'onaylanmış',
-    helpfulCount: 31,
-  },
-  {
-    id: '10',
-    reviewer: 'Cengiz K.',
-    business: 'Kuru Temizleme Yıldız',
-    rating: 4,
-    comment: 'İyi hizmet, ama fiyat biraz yüksek bence.',
-    date: '2024-02-29',
-    flagged: false,
-    verifiedPurchase: true,
-    antiSpamScore: 0.88,
-    status: 'onaylanmış',
-    helpfulCount: 5,
-  },
-  {
-    id: '11',
-    reviewer: 'Demet N.',
-    business: 'Pet Bakımı Fluffy',
-    rating: 5,
-    comment: 'Evcil hayvanım çok mutlu! Güvenilir ve profesyonel.',
-    date: '2024-02-28',
-    flagged: false,
-    verifiedPurchase: true,
-    antiSpamScore: 0.99,
-    status: 'onaylanmış',
-    helpfulCount: 22,
-  },
-  {
-    id: '12',
-    reviewer: 'Serkan H.',
-    business: 'İngilizce Öğretimi Deniz',
-    rating: 4,
-    comment: 'Dersleri eğlenceli ve öğretici. Başarılı öğrenme deneyimi.',
-    date: '2024-02-27',
-    flagged: false,
-    verifiedPurchase: true,
-    antiSpamScore: 0.93,
-    status: 'onaylanmış',
-    helpfulCount: 7,
-  },
-  {
-    id: '13',
-    reviewer: 'Kemal A.',
-    business: 'Özgür Elektrik',
-    rating: 4,
-    comment: 'Güvenilir ve hızlı hizmet. Kesinlikle tekrar ederim.',
-    date: '2024-02-26',
-    flagged: false,
-    verifiedPurchase: true,
-    antiSpamScore: 0.90,
-    status: 'onaylanmış',
-    helpfulCount: 11,
-  },
-  {
-    id: '14',
-    reviewer: 'Yusuf P.',
-    business: 'Bahçe Tasarımı Pro',
-    rating: 3,
-    comment: 'Makul fiyat, makul sonuç. Bekleneni sağladı.',
-    date: '2024-02-25',
-    flagged: false,
-    verifiedPurchase: true,
-    antiSpamScore: 0.85,
-    status: 'onaylanmış',
-    helpfulCount: 1,
-  },
-  {
-    id: '15',
-    reviewer: 'Ali K.',
-    business: 'Temizlik Şirketi Temizim',
-    rating: 5,
-    comment: 'Her seferinde muhteşem. Güvenle tavsiye edebiliyorum.',
-    date: '2024-02-24',
-    flagged: false,
-    verifiedPurchase: true,
-    antiSpamScore: 0.96,
-    status: 'onaylanmış',
-    helpfulCount: 19,
-  },
-];
+async function fetchComments(): Promise<CommentRow[]> {
+  const supabase = createClient()
 
-const STATUS_CONFIG = {
-  onaylanmış: { label: 'Onaylanmış', color: 'bg-green-100 text-green-800' },
-  beklemede: { label: 'Beklemede', color: 'bg-yellow-100 text-yellow-800' },
-  reddedildi: { label: 'Reddedildi', color: 'bg-red-100 text-red-800' },
-};
+  const [postComments, bizReviews] = await Promise.all([
+    supabase
+      .from('comments')
+      .select(`id, body, created_at,
+               profiles!comments_author_id_fkey ( full_name ),
+               posts ( title )`)
+      .order('created_at', { ascending: false })
+      .limit(250),
+    supabase
+      .from('business_reviews')
+      .select(`id, body, rating, created_at,
+               profiles ( full_name ),
+               businesses ( name )`)
+      .order('created_at', { ascending: false })
+      .limit(250),
+  ])
+
+  if (postComments.error) throw postComments.error
+  if (bizReviews.error) throw bizReviews.error
+
+  const comments: CommentRow[] = ((postComments.data as any[]) || []).map((c) => ({
+    id: c.id, source: 'post_comment', body: c.body, rating: null,
+    created_at: c.created_at,
+    author_name: c.profiles?.full_name || '—',
+    context: c.posts?.title || 'Gönderi',
+  }))
+  const reviews: CommentRow[] = ((bizReviews.data as any[]) || []).map((r) => ({
+    id: r.id, source: 'business_review', body: r.body, rating: r.rating,
+    created_at: r.created_at,
+    author_name: r.profiles?.full_name || '—',
+    context: r.businesses?.name || 'İşletme',
+  }))
+
+  return [...comments, ...reviews].sort((a, b) =>
+    new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  )
+}
 
 export default function YorumlarPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedReview, setSelectedReview] = useState<Review | null>(null);
+  const queryClient = useQueryClient()
+  const [searchTerm, setSearchTerm] = useState('')
+  const [sourceFilter, setSourceFilter] = useState<'all' | 'post_comment' | 'business_review'>('all')
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 15
 
-  const itemsPerPage = 10;
+  const { data: comments = [], isLoading, error } = useQuery({
+    queryKey: ['admin', 'comments-and-reviews'],
+    queryFn: fetchComments,
+  })
 
-  const filteredReviews = useMemo(() => {
-    return MOCK_REVIEWS.filter((review) => {
-      const matchesSearch =
-        review.reviewer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        review.business.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        review.comment.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesStatus = !statusFilter || review.status === statusFilter;
-      return matchesSearch && matchesStatus;
-    });
-  }, [searchTerm, statusFilter]);
-
-  const paginatedReviews = useMemo(() => {
-    const startIdx = (currentPage - 1) * itemsPerPage;
-    return filteredReviews.slice(startIdx, startIdx + itemsPerPage);
-  }, [filteredReviews, currentPage]);
-
-  const totalPages = Math.ceil(filteredReviews.length / itemsPerPage);
-
-  const totalReviews = MOCK_REVIEWS.length;
-  const avgRating = (
-    MOCK_REVIEWS.reduce((sum, r) => sum + r.rating, 0) / MOCK_REVIEWS.length
-  ).toFixed(1);
-  const flaggedCount = MOCK_REVIEWS.filter((r) => r.flagged).length;
-  const verifiedCount = MOCK_REVIEWS.filter((r) => r.verifiedPurchase).length;
-
-  const stats = [
-    {
-      title: 'Toplam Yorum',
-      value: totalReviews,
-      icon: '💬',
-      color: '#00833e',
+  const deleteMutation = useMutation({
+    mutationFn: async ({ id, source }: { id: string; source: CommentRow['source'] }) => {
+      const supabase = createClient()
+      const table = source === 'post_comment' ? 'comments' : 'business_reviews'
+      const { error } = await supabase.from(table).delete().eq('id', id)
+      if (error) throw error
     },
-    {
-      title: 'Ortalama Rating',
-      value: `${avgRating}⭐`,
-      icon: '⭐',
-      color: '#FF9800',
-    },
-    {
-      title: 'İşaretli Yorumlar',
-      value: flaggedCount,
-      icon: '🚩',
-      color: '#F44336',
-    },
-    {
-      title: 'Doğrulanmış Satışlar',
-      value: verifiedCount,
-      icon: '✓',
-      color: '#4CAF50',
-    },
-  ];
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'comments-and-reviews'] }),
+  })
+
+  const filtered = useMemo(() => {
+    return comments.filter((c) => {
+      const q = searchTerm.toLowerCase()
+      const matchesSearch = !q || (c.body || '').toLowerCase().includes(q) || c.author_name.toLowerCase().includes(q)
+      const matchesSource = sourceFilter === 'all' || c.source === sourceFilter
+      return matchesSearch && matchesSource
+    })
+  }, [comments, searchTerm, sourceFilter])
+
+  const paginated = useMemo(() => filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage), [filtered, currentPage])
+  const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage))
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Yorum ve Değerlendirme Yönetimi
-        </h1>
-        <p className="text-gray-600">
-          İşletme yorumlarını yönetin, onaylayın ve sahte yorumları filtreleyin
-        </p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3"><MessageSquare className="text-primary" /> Yorum Yönetimi</h1>
+        <p className="text-gray-600">Gönderi yorumları ve işletme değerlendirmeleri</p>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {stats.map((stat, idx) => (
-          <div key={idx} className="bg-surface p-6 rounded-lg border border-border">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-gray-600 text-sm">{stat.title}</p>
-                <p className="text-3xl font-bold mt-2" style={{ color: stat.color }}>
-                  {stat.value}
-                </p>
-              </div>
-              <div className="text-2xl">{stat.icon}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Filters */}
-      <div className="bg-surface p-6 rounded-lg border border-border mb-6">
-        <div className="flex gap-4 flex-wrap">
-          <div className="flex-1 min-w-64">
-            <div className="relative">
-              <Search className="absolute left-3 top-3 text-gray-400" size={20} />
-              <input
-                type="text"
-                placeholder="Yorum, yazar veya işletme ara..."
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-          </div>
-          <select
-            value={statusFilter}
-            onChange={(e) => {
-              setStatusFilter(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            <option value="">Tüm Durumlar</option>
-            <option value="onaylanmış">Onaylanmış</option>
-            <option value="beklemede">Beklemede</option>
-            <option value="reddedildi">Reddedildi</option>
-          </select>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="bg-surface p-6 rounded-lg border border-border">
+          <p className="text-gray-600 text-sm">Toplam</p>
+          <p className="text-3xl font-bold mt-2 text-primary">{comments.length}</p>
+        </div>
+        <div className="bg-surface p-6 rounded-lg border border-border">
+          <p className="text-gray-600 text-sm">Gönderi Yorumu</p>
+          <p className="text-3xl font-bold mt-2 text-blue-600">{comments.filter(c => c.source === 'post_comment').length}</p>
+        </div>
+        <div className="bg-surface p-6 rounded-lg border border-border">
+          <p className="text-gray-600 text-sm">İşletme Değerlendirmesi</p>
+          <p className="text-3xl font-bold mt-2 text-yellow-600">{comments.filter(c => c.source === 'business_review').length}</p>
         </div>
       </div>
 
-      {/* Reviews Table */}
-      <div className="bg-surface rounded-lg border border-border overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border bg-background">
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                  Yorum
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                  İşletme
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                  Rating
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                  Durum
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                  Anti-Spam
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                  İşlem
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedReviews.map((review) => {
-                const statusConfig = STATUS_CONFIG[review.status];
-                const antiSpamColor =
-                  review.antiSpamScore > 0.8
-                    ? 'text-green-600'
-                    : review.antiSpamScore > 0.5
-                      ? 'text-yellow-600'
-                      : 'text-red-600';
-                return (
-                  <tr
-                    key={review.id}
-                    className="border-b border-border hover:bg-background"
-                  >
+      <div className="bg-surface p-6 rounded-lg border border-border mb-6 flex gap-4 flex-wrap">
+        <div className="flex-1 min-w-64 relative">
+          <Search className="absolute left-3 top-3 text-gray-400" size={20} />
+          <input type="text" placeholder="İçerik veya yazar ara..." value={searchTerm}
+            onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1) }}
+            className="w-full pl-10 pr-4 py-2 border border-border rounded-lg" />
+        </div>
+        <select value={sourceFilter} onChange={(e) => { setSourceFilter(e.target.value as any); setCurrentPage(1) }}
+          className="px-4 py-2 border border-border rounded-lg">
+          <option value="all">Tümü</option>
+          <option value="post_comment">Gönderi Yorumları</option>
+          <option value="business_review">İşletme Değerlendirmeleri</option>
+        </select>
+      </div>
+
+      {isLoading && <div className="bg-surface p-8 rounded-lg text-center text-gray-600">Yükleniyor…</div>}
+      {error && <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg">Hata: {(error as Error).message}</div>}
+
+      {!isLoading && !error && (
+        <div className="bg-surface rounded-lg border border-border overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-background border-b border-border">
+                <tr>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">Tür</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">Yazar</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">İçerik</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">Bağlam</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">Puan</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">Tarih</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">İşlem</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginated.map((c) => (
+                  <tr key={`${c.source}-${c.id}`} className="border-b border-border hover:bg-background">
                     <td className="px-6 py-4">
-                      <div>
-                        <p className="font-semibold text-gray-900">{review.reviewer}</p>
-                        <p className="text-xs text-gray-500 mt-1 line-clamp-2">
-                          {review.comment}
-                        </p>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <p className="font-medium text-gray-900">{review.business}</p>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-1">
-                        {Array.from({ length: review.rating }).map((_, i) => (
-                          <Star
-                            key={i}
-                            size={16}
-                            className="fill-yellow-400 text-yellow-400"
-                          />
-                        ))}
-                        <span className="ml-1 font-medium text-gray-900">
-                          {review.rating}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${statusConfig.color}`}
-                      >
-                        {statusConfig.label}
+                      <span className={`text-xs px-2 py-1 rounded-full ${c.source === 'post_comment' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                        {c.source === 'post_comment' ? 'Yorum' : 'Değerlendirme'}
                       </span>
                     </td>
+                    <td className="px-6 py-4 text-sm">{c.author_name}</td>
+                    <td className="px-6 py-4 text-sm text-gray-700 max-w-md truncate">{c.body || '—'}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500 truncate max-w-xs">{c.context}</td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-primary"
-                            style={{ width: `${review.antiSpamScore * 100}%` }}
-                          />
-                        </div>
-                        <span className={`text-sm font-medium ${antiSpamColor}`}>
-                          {Math.round(review.antiSpamScore * 100)}%
+                      {c.rating !== null && (
+                        <span className="inline-flex items-center gap-1 text-sm">
+                          <Star size={14} className="text-yellow-500 fill-yellow-500" /> {c.rating}/5
                         </span>
-                      </div>
+                      )}
                     </td>
+                    <td className="px-6 py-4 text-sm text-gray-500">{new Date(c.created_at).toLocaleDateString('tr-TR')}</td>
                     <td className="px-6 py-4">
-                      <button
-                        onClick={() => setSelectedReview(review)}
-                        className="text-primary hover:text-primary-hover font-medium text-sm"
-                      >
-                        Detay
+                      <button onClick={() => { if (confirm('Bu yorumu silmek istiyor musunuz?')) deleteMutation.mutate({ id: c.id, source: c.source }) }}
+                        disabled={deleteMutation.isPending}
+                        className="text-red-600 hover:text-red-800 p-1 rounded disabled:opacity-50">
+                        <Trash2 size={16} />
                       </button>
                     </td>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        <div className="flex items-center justify-between px-6 py-4 border-t border-border">
-          <span className="text-sm text-gray-600">
-            {filteredReviews.length === 0 ? (
-              'Sonuç bulunamadı'
-            ) : (
-              <>
-                Sayfa {currentPage} / {totalPages} ({filteredReviews.length} yorum)
-              </>
-            )}
-          </span>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-              disabled={currentPage === 1}
-              className="p-2 hover:bg-background rounded-lg disabled:opacity-50 transition"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-              disabled={currentPage === totalPages}
-              className="p-2 hover:bg-background rounded-lg disabled:opacity-50 transition"
-            >
-              <ChevronRight size={20} />
-            </button>
+                ))}
+                {paginated.length === 0 && (<tr><td colSpan={7} className="px-6 py-12 text-center text-gray-500">Yorum bulunamadı.</td></tr>)}
+              </tbody>
+            </table>
           </div>
-        </div>
-      </div>
-
-      {/* Detail Modal */}
-      {selectedReview && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-surface rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto">
-            <div className="p-6 border-b border-border flex justify-between items-start">
-              <h2 className="text-xl font-bold text-gray-900">Yorum Detayı</h2>
-              <button
-                onClick={() => setSelectedReview(null)}
-                className="text-gray-500 hover:text-gray-900"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="p-6 space-y-4">
-              <div>
-                <p className="text-sm text-gray-500 font-semibold">Yorum</p>
-                <p className="text-gray-900 mt-1">{selectedReview.comment}</p>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-500 font-semibold">Yorum Sahibi</p>
-                  <p className="text-gray-900 mt-1">{selectedReview.reviewer}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 font-semibold">İşletme</p>
-                  <p className="text-gray-900 mt-1">{selectedReview.business}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 font-semibold">Rating</p>
-                  <p className="text-gray-900 mt-1">{selectedReview.rating}/5 ⭐</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 font-semibold">Anti-Spam Skoru</p>
-                  <p className="text-gray-900 mt-1">
-                    {Math.round(selectedReview.antiSpamScore * 100)}%
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 font-semibold">Doğrulanmış Satış</p>
-                  <p className="text-gray-900 mt-1">
-                    {selectedReview.verifiedPurchase ? '✓ Evet' : '✕ Hayır'}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 font-semibold">Yardımcı Sayısı</p>
-                  <p className="text-gray-900 mt-1">{selectedReview.helpfulCount}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-6 border-t border-border flex gap-3">
-              <button
-                onClick={() => setSelectedReview(null)}
-                className="flex-1 px-4 py-2 border border-border rounded-lg text-gray-900 font-medium hover:bg-background"
-              >
-                Kapat
-              </button>
-              {selectedReview.status === 'beklemede' && (
-                <>
-                  <button
-                    onClick={() => setSelectedReview(null)}
-                    className="flex-1 px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-hover"
-                  >
-                    Onayla
-                  </button>
-                  <button
-                    onClick={() => setSelectedReview(null)}
-                    className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600"
-                  >
-                    Reddet
-                  </button>
-                </>
-              )}
-              {selectedReview.status === 'onaylanmış' && (
-                <button
-                  onClick={() => setSelectedReview(null)}
-                  className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600"
-                >
-                  Kaldır
-                </button>
-              )}
+          <div className="flex items-center justify-between px-6 py-4 border-t border-border">
+            <span className="text-sm text-gray-600">Sayfa {currentPage} / {totalPages} ({filtered.length} kayıt)</span>
+            <div className="flex gap-2">
+              <button onClick={() => setCurrentPage(Math.max(1, currentPage - 1))} disabled={currentPage === 1} className="p-2 hover:bg-background rounded-lg disabled:opacity-50"><ChevronLeft size={20} /></button>
+              <button onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))} disabled={currentPage === totalPages} className="p-2 hover:bg-background rounded-lg disabled:opacity-50"><ChevronRight size={20} /></button>
             </div>
           </div>
         </div>

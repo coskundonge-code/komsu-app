@@ -4,6 +4,12 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { MockDataBanner } from '@/components/admin/mock-data-banner';
+
+// AUDIT_REPORT.md K3: kalan tek mock panel = odemeler (K1 ödeme altyapısına bağımlı).
+const MOCK_DATA_ROUTES: Record<string, string> = {
+  '/admin/odemeler': 'payments tablosu (K1 — ödeme altyapısı) tamamlandığında bağlanacak',
+};
 import {
   Menu,
   X,
@@ -172,7 +178,15 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
         {/* Content Area */}
         <div className="flex-1 overflow-auto">
-          <div className="p-4 sm:p-8">{children}</div>
+          <div className="p-4 sm:p-8">
+            {MOCK_DATA_ROUTES[pathname] && (
+              <MockDataBanner
+                panelName={pathname.replace('/admin/', '')}
+                realTablesNote={MOCK_DATA_ROUTES[pathname]}
+              />
+            )}
+            {children}
+          </div>
         </div>
       </div>
     </div>

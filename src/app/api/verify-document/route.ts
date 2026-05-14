@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { rateLimit, getClientIp, rateLimitResponse } from '@/lib/rate-limit'
+import { createClient as createServerClient } from '@/lib/supabase/server'
+import { createClient as createAdminClient } from '@supabase/supabase-js'
 
 /**
  * POST /api/verify-document
@@ -30,6 +33,12 @@ const tcPattern = /^[1-9]\d{10}$/
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit: IP başına 5 doğrulama denemesi / 10 dakika
+    // (eDevlet scraper pahalı + brute-force barkod denemelerini engeller)
+    const ip = getClientIp(request)
+    const rl = await rateLimit(`verify-doc:${ip}`, { limit: 5, windowMs: 10 * 60_000 })
+    if (!rl.success) return rateLimitResponse(rl) as any
+
     const body: VerifyRequest = await request.json()
     const { code, tcKimlikNo, documentInfo } = body
 
@@ -99,12 +108,63 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Scraping başarısız olduysa, doğrulamayı reddet (güvenlik)
+    // -------------------------------------------------------------------
+    // Fallback: Scraping başarısız oldu.
+    //
+    // documentInfo (frontend OCR çıktısı) varsa, manuel admin onay kuyruğuna
+    // pending kayıt at; admin paneldeki /admin/dogrulama görsel inceleme
+    // yapacak. documentInfo yoksa eski 503 davranışı.
+    // -------------------------------------------------------------------
     console.warn('Scraping failed:', scrapeError)
+
+    if (documentInfo && (documentInfo.fullName || documentInfo.address)) {
+      try {
+        const supabase = await createServerClient()
+        const { data: { user } } = await supabase.auth.getUser()
+
+        if (user) {
+          const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+          const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+          if (SUPABASE_URL && SERVICE_KEY) {
+            const admin = createAdminClient(SUPABASE_URL, SERVICE_KEY, {
+              auth: { autoRefreshToken: false, persistSession: false },
+            })
+            // Aynı barkod için pending kayıt varsa upsert (idempotency)
+            await admin.from('address_verifications').upsert(
+              {
+                user_id: user.id,
+                verification_status: 'pending',
+                barcode_value: cleanCode,
+                document_uploaded_at: new Date().toISOString(),
+                address_text: [
+                  documentInfo.address,
+                  documentInfo.neighborhood,
+                  documentInfo.district,
+                  documentInfo.city,
+                ].filter(Boolean).join(', ') || null,
+              },
+              { onConflict: 'user_id,barcode_value' as any },
+            )
+          }
+        }
+      } catch (err) {
+        console.error('[verify-document] manual queue write failed:', err)
+        // pending kayıt başarısız olsa bile kullanıcıya makul mesaj döndür
+      }
+
+      return NextResponse.json({
+        verified: false,
+        pending: true,
+        message: 'Otomatik doğrulama şu anda kullanılamıyor. Belgeniz manuel inceleme kuyruğuna alındı; en geç 24 saat içinde sonuçlandırılacak.',
+        code: cleanCode,
+        mode: 'manual_review',
+        verificationUrl: 'https://www.turkiye.gov.tr/nvi-yerlesim-yeri-ve-diger-adres-belgesi-sorgulama',
+      }, { status: 202 })
+    }
 
     return NextResponse.json({
       verified: false,
-      message: 'Otomatik doğrulama şu anda kullanılamıyor. Lütfen daha sonra tekrar deneyin veya manuel doğrulama yapınız.',
+      message: 'Otomatik doğrulama şu anda kullanılamıyor. Lütfen belgenizi PDF olarak yüklemeyi deneyin (manuel inceleme kuyruğuna alınır) veya daha sonra tekrar deneyin.',
       code: cleanCode,
       mode: 'unavailable',
       verificationUrl: 'https://www.turkiye.gov.tr/nvi-yerlesim-yeri-ve-diger-adres-belgesi-sorgulama'

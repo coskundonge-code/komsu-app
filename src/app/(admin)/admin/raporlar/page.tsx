@@ -1,372 +1,178 @@
 'use client';
 
-import { useState } from 'react';
-import { BarChart3, TrendingUp, Users, UserCheck, MessageSquare, UserPlus, Download, ChevronDown, RefreshCw } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { createClient } from '@/lib/supabase/client';
+import { BarChart3, Users, MapPin, MessageSquare, ShoppingBag, Calendar, Store, Heart } from 'lucide-react';
 
-const timeRanges = [
-  { id: 'week', label: 'Bu Hafta' },
-  { id: 'month', label: 'Bu Ay' },
-  { id: 'quarter', label: 'Son 3 Ay' },
-  { id: 'year', label: 'Son 1 Yıl' },
-];
+// AUDIT_REPORT.md K3 — gerçek DB istatistiklerine bağlı
 
-const STATS = [
-  {
-    id: 1,
-    label: 'Toplam Kullanıcı',
-    value: '15,847',
-    change: '+8.2%',
-    icon: Users,
-    bgColor: '#e6f4ec',
-    textColor: '#00833e',
-  },
-  {
-    id: 2,
-    label: 'Aktif Kullanıcı',
-    value: '11,234',
-    change: '+12.5%',
-    icon: UserCheck,
-    bgColor: '#dbeafe',
-    textColor: '#1e40af',
-  },
-  {
-    id: 3,
-    label: 'Toplam Gönderi',
-    value: '52,847',
-    change: '+15.3%',
-    icon: MessageSquare,
-    bgColor: '#fce7f3',
-    textColor: '#be185d',
-  },
-  {
-    id: 4,
-    label: 'Yeni Kayıtlar',
-    value: '2,345',
-    change: '+6.7%',
-    icon: UserPlus,
-    bgColor: '#fef3c7',
-    textColor: '#92400e',
-  },
-];
+type Stats = {
+  totalUsers: number
+  verifiedUsers: number
+  edevletVerifiedUsers: number
+  totalNeighborhoods: number
+  totalPosts: number
+  totalListings: number
+  activeListings: number
+  totalEvents: number
+  totalBusinesses: number
+  verifiedBusinesses: number
+  totalDonations: number
+  totalHelpRequests: number
+  totalMessages: number
+  newUsers7d: number
+  newPosts7d: number
+}
 
-const GROWTH_DATA = [
-  { week: 'Hafta 1', users: 1200, posts: 2400, active: 900 },
-  { week: 'Hafta 2', users: 1900, posts: 2210, active: 1400 },
-  { week: 'Hafta 3', users: 2000, posts: 2290, active: 1500 },
-  { week: 'Hafta 4', users: 2780, posts: 2000, active: 2100 },
-];
+async function fetchStats(): Promise<Stats> {
+  const supabase = createClient()
+  const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
 
-const CONTENT_BREAKDOWN = [
-  { name: 'Paylaşımlar', count: 23500, percentage: 44, color: 'bg-primary' },
-  { name: 'Yorumlar', count: 15200, percentage: 29, color: 'bg-blue-500' },
-  { name: 'Raporlar', count: 8900, percentage: 17, color: 'bg-red-500' },
-  { name: 'Diğer', count: 4847, percentage: 10, color: 'bg-gray-400' },
-];
+  const queries = [
+    supabase.from('profiles').select('*', { count: 'exact', head: true }),
+    supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('is_verified', true),
+    supabase.from('profiles').select('*', { count: 'exact', head: true }).not('edevlet_verified_at', 'is', null),
+    supabase.from('neighborhoods').select('*', { count: 'exact', head: true }),
+    supabase.from('posts').select('*', { count: 'exact', head: true }),
+    supabase.from('listings').select('*', { count: 'exact', head: true }),
+    supabase.from('listings').select('*', { count: 'exact', head: true }).eq('status', 'active'),
+    supabase.from('events').select('*', { count: 'exact', head: true }),
+    supabase.from('businesses').select('*', { count: 'exact', head: true }),
+    supabase.from('businesses').select('*', { count: 'exact', head: true }).eq('is_verified', true),
+    supabase.from('donations').select('*', { count: 'exact', head: true }),
+    supabase.from('help_requests').select('*', { count: 'exact', head: true }),
+    supabase.from('messages').select('*', { count: 'exact', head: true }),
+    supabase.from('profiles').select('*', { count: 'exact', head: true }).gte('created_at', since7d),
+    supabase.from('posts').select('*', { count: 'exact', head: true }).gte('created_at', since7d),
+  ]
 
-const TOP_NEIGHBORHOODS = [
-  { rank: 1, name: 'Kadıköy', users: 2847, posts: 5234, engagement: 84 },
-  { rank: 2, name: 'Beşiktaş', users: 2156, posts: 4123, engagement: 78 },
-  { rank: 3, name: 'Moda', users: 1987, posts: 3456, engagement: 81 },
-  { rank: 4, name: 'Caferağa', users: 1654, posts: 2890, engagement: 75 },
-  { rank: 5, name: 'Fenerbahçe', users: 1423, posts: 2456, engagement: 72 },
-];
+  const results = await Promise.all(queries)
 
-const HOURLY_ACTIVITY = [
-  { hour: '00:00', activity: 120 },
-  { hour: '04:00', activity: 85 },
-  { hour: '08:00', activity: 450 },
-  { hour: '12:00', activity: 890 },
-  { hour: '16:00', activity: 1200 },
-  { hour: '20:00', activity: 950 },
-  { hour: '23:00', activity: 320 },
-];
+  return {
+    totalUsers: results[0].count || 0,
+    verifiedUsers: results[1].count || 0,
+    edevletVerifiedUsers: results[2].count || 0,
+    totalNeighborhoods: results[3].count || 0,
+    totalPosts: results[4].count || 0,
+    totalListings: results[5].count || 0,
+    activeListings: results[6].count || 0,
+    totalEvents: results[7].count || 0,
+    totalBusinesses: results[8].count || 0,
+    verifiedBusinesses: results[9].count || 0,
+    totalDonations: results[10].count || 0,
+    totalHelpRequests: results[11].count || 0,
+    totalMessages: results[12].count || 0,
+    newUsers7d: results[13].count || 0,
+    newPosts7d: results[14].count || 0,
+  }
+}
 
-export default function AdminReportsPage() {
-  const [selectedRange, setSelectedRange] = useState('month');
-  const [openDropdown, setOpenDropdown] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+export default function RaporlarPage() {
+  const { data: stats, isLoading, error } = useQuery({
+    queryKey: ['admin', 'reports-stats'],
+    queryFn: fetchStats,
+  })
 
-  const selectedLabel = timeRanges.find((r) => r.id === selectedRange)?.label || 'Bu Ay';
+  if (isLoading) {
+    return (
+      <div className="p-8 max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+          <BarChart3 className="text-primary" /> Raporlar ve Analiz
+        </h1>
+        <div className="bg-surface p-8 rounded-lg text-center text-gray-600">Yükleniyor…</div>
+      </div>
+    )
+  }
+  if (error) {
+    return (
+      <div className="p-8 max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Raporlar</h1>
+        <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg">
+          Hata: {(error as Error).message}
+        </div>
+      </div>
+    )
+  }
+  if (!stats) return null
 
-  const handleExport = () => {
-    setIsExporting(true);
-    console.log('Rapor indiriliyor...');
-    setTimeout(() => setIsExporting(false), 1500);
-  };
-
-  const handleRefresh = () => {
-    setIsRefreshing(true);
-    console.log('Veriler yenileniyor...');
-    setTimeout(() => setIsRefreshing(false), 1000);
-  };
+  const cards = [
+    { label: 'Toplam Kullanıcı', value: stats.totalUsers, icon: Users, color: '#00833e', sub: `Son 7 gün: +${stats.newUsers7d}` },
+    { label: 'Doğrulanmış',       value: stats.verifiedUsers, icon: Users, color: '#22c55e', sub: `eDevlet: ${stats.edevletVerifiedUsers}` },
+    { label: 'Mahalle',            value: stats.totalNeighborhoods, icon: MapPin, color: '#3b82f6', sub: '' },
+    { label: 'Gönderi',            value: stats.totalPosts, icon: MessageSquare, color: '#8b5cf6', sub: `Son 7 gün: +${stats.newPosts7d}` },
+    { label: 'İlan',               value: stats.totalListings, icon: ShoppingBag, color: '#f59e0b', sub: `Aktif: ${stats.activeListings}` },
+    { label: 'İşletme',            value: stats.totalBusinesses, icon: Store, color: '#ec4899', sub: `Doğrulu: ${stats.verifiedBusinesses}` },
+    { label: 'Etkinlik',           value: stats.totalEvents, icon: Calendar, color: '#06b6d4', sub: '' },
+    { label: 'Bağış',              value: stats.totalDonations, icon: Heart, color: '#ef4444', sub: `Yardım talebi: ${stats.totalHelpRequests}` },
+  ]
 
   return (
-    <div className="min-h-screen">
-      <div>
-        {/* Header Section */}
-        <div className="bg-surface rounded-lg shadow-sm border border-border overflow-hidden mb-6 p-6">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div className="p-8 max-w-7xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+          <BarChart3 className="text-primary" /> Raporlar ve Analiz
+        </h1>
+        <p className="text-gray-600">Anlık platform istatistikleri (canlı veri)</p>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        {cards.map((card, idx) => {
+          const Icon = card.icon
+          return (
+            <div key={idx} className="bg-surface p-6 rounded-lg border border-border">
+              <div className="flex items-start justify-between mb-3">
+                <div className="p-2 rounded-lg" style={{ backgroundColor: `${card.color}20` }}>
+                  <Icon size={20} style={{ color: card.color }} />
+                </div>
+              </div>
+              <p className="text-gray-600 text-sm">{card.label}</p>
+              <p className="text-3xl font-bold mt-1" style={{ color: card.color }}>{card.value.toLocaleString('tr-TR')}</p>
+              {card.sub && <p className="text-xs text-gray-500 mt-1">{card.sub}</p>}
+            </div>
+          )
+        })}
+      </div>
+
+      <div className="bg-surface p-6 rounded-lg border border-border">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Son 7 Gün Özeti</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex items-center justify-between p-4 bg-background rounded-lg">
             <div>
-              <h1 className="text-2xl font-bold text-text-primary">Raporlar ve Analizler</h1>
-              <p className="text-text-muted text-sm mt-1">Platform performansı ve kullanıcı aktiviteleri</p>
+              <p className="text-sm text-gray-600">Yeni Kullanıcı</p>
+              <p className="text-2xl font-bold text-primary mt-1">+{stats.newUsers7d}</p>
             </div>
-
-            {/* Time Range Selector and Actions */}
-            <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
-              <button
-                onClick={handleRefresh}
-                disabled={isRefreshing}
-                className="flex items-center gap-2 px-4 py-2.5 bg-background border border-border rounded-lg text-text-primary font-medium text-sm hover:bg-[#e0e0e0] disabled:opacity-50 transition-colors"
-                title="Verileri Yenile"
-              >
-                <RefreshCw className={cn('w-4 h-4', isRefreshing && 'animate-spin')} />
-                Yenile
-              </button>
-
-              <div className="relative">
-                <button
-                  onClick={() => setOpenDropdown(!openDropdown)}
-                  className="flex items-center gap-2 px-4 py-2.5 bg-background border border-border rounded-lg text-text-primary font-medium text-sm hover:bg-[#e0e0e0] transition-colors"
-                >
-                  {selectedLabel}
-                  <ChevronDown className={cn('w-4 h-4 transition-transform', openDropdown && 'rotate-180')} />
-                </button>
-
-                {openDropdown && (
-                  <div className="absolute right-0 top-full mt-2 bg-surface border border-border rounded-lg shadow-lg z-50 min-w-40">
-                    {timeRanges.map((range) => (
-                      <button
-                        key={range.id}
-                        onClick={() => {
-                          setSelectedRange(range.id);
-                          setOpenDropdown(false);
-                        }}
-                        className={cn(
-                          'w-full text-left px-4 py-3 text-sm transition-colors',
-                          selectedRange === range.id
-                            ? 'bg-primary text-white font-medium'
-                            : 'text-text-secondary hover:bg-background'
-                        )}
-                      >
-                        {range.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <button
-                onClick={handleExport}
-                disabled={isExporting}
-                className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-primary-hover disabled:opacity-50 transition-colors font-medium text-sm shadow-sm"
-              >
-                <Download className="w-4 h-4" />
-                {isExporting ? 'İndiriliyor...' : 'Rapor İndir'}
-              </button>
+            <Users className="text-primary opacity-30" size={32} />
+          </div>
+          <div className="flex items-center justify-between p-4 bg-background rounded-lg">
+            <div>
+              <p className="text-sm text-gray-600">Yeni Gönderi</p>
+              <p className="text-2xl font-bold text-purple-600 mt-1">+{stats.newPosts7d}</p>
             </div>
+            <MessageSquare className="text-purple-600 opacity-30" size={32} />
           </div>
         </div>
+      </div>
 
-        {/* Stats Cards Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          {STATS.map((stat) => {
-            const Icon = stat.icon;
-
-            return (
-              <div
-                key={stat.id}
-                className="bg-surface rounded-lg shadow-sm border border-border p-5 hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div
-                    className="p-2.5 rounded-lg"
-                    style={{ backgroundColor: stat.bgColor }}
-                  >
-                    <Icon size={20} style={{ color: stat.textColor }} />
-                  </div>
-                  <span className="text-sm font-semibold text-primary">{stat.change}</span>
-                </div>
-                <p className="text-text-muted text-sm mb-1">{stat.label}</p>
-                <p className="text-2xl font-bold text-text-primary">{stat.value}</p>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Growth Metrics and Content Breakdown */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          {/* Growth Chart */}
-          <div className="bg-surface rounded-lg shadow-sm border border-border p-6">
-            <div className="flex items-center gap-2 mb-6">
-              <BarChart3 size={20} className="text-primary" />
-              <div>
-                <h2 className="text-lg font-bold text-text-primary">Haftalık Büyüme</h2>
-                <p className="text-xs text-text-muted">Son 4 hafta eğilimi</p>
-              </div>
+      <div className="mt-6 bg-surface p-6 rounded-lg border border-border">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">İletişim</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex items-center justify-between p-4 bg-background rounded-lg">
+            <div>
+              <p className="text-sm text-gray-600">Toplam Mesaj</p>
+              <p className="text-2xl font-bold text-blue-600 mt-1">{stats.totalMessages.toLocaleString('tr-TR')}</p>
             </div>
-
-            <div className="space-y-4">
-              {GROWTH_DATA.map((data) => {
-                const maxValue = 2800;
-                const percentage = (data.users / maxValue) * 100;
-
-                return (
-                  <div key={data.week}>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium text-text-primary">{data.week}</span>
-                      <span className="text-xs text-text-muted font-medium">{data.users.toLocaleString('tr-TR')} kullanıcı</span>
-                    </div>
-                    <div className="w-full bg-[#e0e0e0] rounded-full h-2.5">
-                      <div
-                        className="bg-primary h-2.5 rounded-full transition-all"
-                        style={{ width: `${percentage}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <p className="text-xs text-text-muted mt-6 bg-background p-3 rounded">
-              <span className="font-medium">Ortalama:</span> {Math.round(GROWTH_DATA.reduce((a, b) => a + b.users, 0) / GROWTH_DATA.length).toLocaleString('tr-TR')} kullanıcı/hafta
-            </p>
+            <MessageSquare className="text-blue-600 opacity-30" size={32} />
           </div>
-
-          {/* Content Breakdown */}
-          <div className="bg-surface rounded-lg shadow-sm border border-border p-6">
-            <div className="flex items-center gap-2 mb-6">
-              <TrendingUp size={20} className="text-primary" />
-              <div>
-                <h2 className="text-lg font-bold text-text-primary">İçerik Dağılımı</h2>
-                <p className="text-xs text-text-muted">Toplam {CONTENT_BREAKDOWN.reduce((a, b) => a + b.count, 0).toLocaleString('tr-TR')} içerik</p>
-              </div>
+          <div className="flex items-center justify-between p-4 bg-background rounded-lg">
+            <div>
+              <p className="text-sm text-gray-600">Yardım Talepleri</p>
+              <p className="text-2xl font-bold text-red-600 mt-1">{stats.totalHelpRequests}</p>
             </div>
-
-            <div className="space-y-4">
-              {CONTENT_BREAKDOWN.map((item) => (
-                <div key={item.name}>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium text-text-primary">{item.name}</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-text-primary">{item.percentage}%</span>
-                      <span className="text-xs text-text-muted">({item.count.toLocaleString('tr-TR')})</span>
-                    </div>
-                  </div>
-                  <div className="w-full bg-[#e0e0e0] rounded-full h-2.5">
-                    <div
-                      className={`h-2.5 rounded-full transition-all ${item.color}`}
-                      style={{ width: `${item.percentage}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Legend */}
-            <div className="mt-6 pt-4 border-t border-border">
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                {CONTENT_BREAKDOWN.map((item) => (
-                  <div key={item.name} className="flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${item.color}`} />
-                    <span className="text-text-secondary">{item.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* User Activity Heatmap and Top Neighborhoods */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Activity Heatmap */}
-          <div className="bg-surface rounded-lg shadow-sm border border-border p-6">
-            <h2 className="text-lg font-bold text-text-primary mb-6">Saatlik Aktivite Haritası</h2>
-
-            <div className="space-y-3">
-              {HOURLY_ACTIVITY.map((data) => {
-                const maxActivity = 1200;
-                const percentage = (data.activity / maxActivity) * 100;
-
-                return (
-                  <div key={data.hour}>
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm font-medium text-text-primary w-12">{data.hour}</span>
-                      <div className="flex-1">
-                        <div className="w-full bg-[#e0e0e0] rounded-full h-2.5">
-                          <div
-                            className="bg-primary h-2.5 rounded-full transition-all"
-                            style={{ width: `${percentage}%` }}
-                          />
-                        </div>
-                      </div>
-                      <span className="text-xs text-text-muted font-medium w-16 text-right">{data.activity} etkinlik</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <p className="text-xs text-text-muted mt-6 bg-background p-3 rounded">
-              <span className="font-medium">En yüksek aktivite:</span> 16:00 ile 20:00 saatleri arasında
-            </p>
-          </div>
-
-          {/* Top Neighborhoods */}
-          <div className="bg-surface rounded-lg shadow-sm border border-border p-6">
-            <h2 className="text-lg font-bold text-text-primary mb-6">En Aktif Mahalleler</h2>
-
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-text-muted uppercase">Sıra</th>
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-text-muted uppercase">Mahalle</th>
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-text-muted uppercase">Kullanıcı</th>
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-text-muted uppercase">Gönderi</th>
-                    <th className="text-left px-3 py-2.5 text-xs font-semibold text-text-muted uppercase">Katılım</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {TOP_NEIGHBORHOODS.map((neighborhood) => (
-                    <tr
-                      key={neighborhood.rank}
-                      className="border-b border-border hover:bg-background transition-colors"
-                    >
-                      <td className="px-3 py-3 text-sm font-semibold text-primary w-8">
-                        {neighborhood.rank}
-                      </td>
-                      <td className="px-3 py-3 text-sm font-medium text-text-primary">
-                        {neighborhood.name}
-                      </td>
-                      <td className="px-3 py-3 text-sm text-text-secondary">
-                        {neighborhood.users.toLocaleString('tr-TR')}
-                      </td>
-                      <td className="px-3 py-3 text-sm text-text-secondary">
-                        {neighborhood.posts.toLocaleString('tr-TR')}
-                      </td>
-                      <td className="px-3 py-3">
-                        <div className="flex items-center gap-2">
-                          <div className="w-full bg-[#e0e0e0] rounded-full h-1.5">
-                            <div
-                              className="bg-primary h-1.5 rounded-full"
-                              style={{ width: `${neighborhood.engagement}%` }}
-                            />
-                          </div>
-                          <span className="text-xs font-semibold text-text-primary w-8 text-right">
-                            {neighborhood.engagement}%
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <Heart className="text-red-600 opacity-30" size={32} />
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

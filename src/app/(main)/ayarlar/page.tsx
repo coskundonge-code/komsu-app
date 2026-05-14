@@ -406,10 +406,13 @@ export default function AyarlarPage() {
             <button className="w-full py-3 px-4 bg-red-100 border border-red-300 text-red-700 font-semibold rounded-lg hover:bg-red-200 transition-colors">
               Hesabı Geçici Olarak Devre Dışı Bırak
             </button>
-            <button className="w-full py-3 px-4 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2">
+            <Link
+              href="/ayarlar/hesabi-sil"
+              className="w-full py-3 px-4 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
+            >
               <LogOut className="w-5 h-5" />
               Hesabı Kalıcı Olarak Sil
-            </button>
+            </Link>
           </div>
         </div>
 

@@ -124,9 +124,9 @@ export default function CreateListingPage() {
         setFormData(prev => ({ ...prev, location: locationParts.join(', ') }));
       }
 
-      // Also fetch from user_profiles for more detail
+      // Also fetch from profiles for more detail
       const { data: profile } = await supabase
-        .from('user_profiles')
+        .from('profiles')
         .select('location_province, location_district, location_address')
         .eq('id', user.id)
         .single();

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
+import { rateLimit, getClientIp, rateLimitResponse } from '@/lib/rate-limit'
 
 /**
  * PayTR Ödeme Token Oluşturma API
@@ -38,6 +39,11 @@ const PAYMENT_DESCRIPTIONS: Record<string, string> = {
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit: IP başına 10 ödeme isteği / dakika
+    const ip = getClientIp(request)
+    const rl = await rateLimit(`payment:${ip}`, { limit: 10, windowMs: 60_000 })
+    if (!rl.success) return rateLimitResponse(rl) as any
+
     const body: PaymentRequest = await request.json()
     const { paymentType, amount, userEmail, userName, userId, metadata } = body
 

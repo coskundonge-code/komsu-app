@@ -441,16 +441,16 @@ export default function KonumSecimi() {
         return
       }
 
-      // Update user_profiles
+      // Update profiles (extended fields: il/ilçe/mahalle)
       const { error: profileError } = await supabase
-        .from('user_profiles')
+        .from('profiles')
         .update({
-          il: formData.il.name,
-          ilce: formData.ilce.name,
-          mahalle: formData.mahalle,
+          location_province: formData.il.name,
+          location_district: formData.ilce.name,
+          location_neighborhood: formData.mahalle,
           updated_at: new Date().toISOString(),
         })
-        .eq('user_id', user.id)
+        .eq('id', user.id)
 
       if (profileError) throw profileError
 

@@ -151,7 +151,7 @@ export default function KesfetMap() {
 
       if (session?.user) {
         const { data: myProfile } = await supabase
-          .from('user_profiles')
+          .from('profiles')
           .select('location_lat, location_lng')
           .eq('id', session.user.id)
           .single()
@@ -183,7 +183,7 @@ export default function KesfetMap() {
 
       // Fetch all users with location
       const { data: users } = await supabase
-        .from('user_profiles')
+        .from('profiles')
         .select('id, full_name, location_lat, location_lng, gender, avatar_url')
         .not('location_lat', 'is', null)
         .not('location_lng', 'is', null)

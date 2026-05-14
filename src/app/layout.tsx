@@ -6,6 +6,7 @@ import { CookieBanner } from "@/components/shared/cookie-banner";
 import { PWAInstallPrompt } from "@/components/shared/pwa-install-prompt";
 import { BackToTop } from "@/components/shared/back-to-top";
 import { NativeAppInit } from "@/components/shared/native-app-init";
+import { Analytics } from "@vercel/analytics/react";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -124,6 +125,7 @@ export default function RootLayout({
           <PWAInstallPrompt />
           <CookieBanner />
           <BackToTop />
+          <Analytics />
         </Providers>
       </body>
     </html>

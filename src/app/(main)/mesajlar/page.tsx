@@ -35,43 +35,6 @@ interface Message {
   userId?: string;
 }
 
-const mockConversations: Conversation[] = [
-  {
-    id: "1",
-    name: "Ahmet Yılmaz",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ahmet",
-    lastMessage: "Temizlik malzemeleri hakkında bilgi alabilir miyim?",
-    time: "2 sa",
-    unread: 2,
-    online: true,
-    type: "personal",
-  },
-  {
-    id: "2",
-    name: "Fatma Şahin",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=fatma",
-    lastMessage: "Tükenmez kalem ve defter bölüştürebiliriz",
-    time: "5 sa",
-    unread: 1,
-    online: false,
-    type: "personal",
-  },
-];
-
-const mockMessages: Record<string, Array<Message>> = {
-  "1": [
-    { id: "1", text: "Merhaba! Halı temizleme hakkında bir sorum vardı.", time: "10:30", isOwn: true },
-    { id: "2", text: "Merhaba! Elbette, yardımcı olabilirim. Ne tür halı temizliği arıyorsunuz?", time: "10:35", isOwn: false },
-    { id: "3", text: "Oturma odasındaki halı için uygun bir yöntem önerebilir misiniz?", time: "10:40", isOwn: true },
-    { id: "4", text: "Taze lekeler için buz ve limonlu su denemekten başlayabilirsiniz.", time: "10:45", isOwn: false },
-  ],
-  "2": [
-    { id: "1", text: "Merhabalar, çocuklara kalem ve defter satın aldım ama çok fazla.", time: "08:20", isOwn: false },
-    { id: "2", text: "İlgilenirseniz bölüştürebiliriz.", time: "08:25", isOwn: false },
-    { id: "3", text: "Çok iyi! Kaç kalem ve defter var?", time: "09:00", isOwn: true },
-  ],
-};
-
 export default function MessagesPage() {
   const { user, profile, loading: authLoading } = useCurrentUser();
   const [selectedId, setSelectedId] = useState("");
@@ -103,9 +66,7 @@ export default function MessagesPage() {
       try {
         const supabase = createClient();
 
-        // Fetch conversations where user is involved
-        // Note: conversations table is for marketplace/system use - would need conversation_participants for user lookups
-        // For now, using mock data as conversations structure doesn't have direct user_id fields
+        // Fetch conversations where the current user is a participant
         const { data: dbConversations, error } = await supabase
           .from('conversations')
           .select(`
