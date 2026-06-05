@@ -7,14 +7,27 @@ import crypto from 'crypto'
  *
  * Hash algoritması (PayTR doc):
  *   hash = HMAC-SHA256(merchant_key, merchant_oid + merchant_salt + status + total_amount).base64
+ *
+ * NOT (güvenlik modeli): PayTR şeması alanları AYIRICISIZ birleştirir; bu spec
+ * gereği değiştirilemez (ayraç eklersek gerçek PayTR callback'inin hash'iyle
+ * eşleşmeyiz). Dolayısıyla güvenlik ayraçtan değil GİZLİ merchant_key'den gelir:
+ * saldırgan alanları kaydırsa bile (örn. status='' + amount='success100') doğru
+ * key olmadan geçerli hash üretemez ve route.ts:36 hash kontrolünü geçemez.
+ * Ek savunma (status'u {success,failed} allowlist'ine kısıtlamak) Faz 1'de
+ * route.ts'e eklenecek — bkz. TECH_DEBT.md → "PayTR callback hardening".
  */
 describe('PayTR callback hash', () => {
   const MERCHANT_KEY = 'test_merchant_key'
   const MERCHANT_SALT = 'test_salt'
 
-  function calcHash(merchantOid: string, status: string, totalAmount: string) {
+  function calcHash(
+    merchantOid: string,
+    status: string,
+    totalAmount: string,
+    key: string = MERCHANT_KEY,
+  ) {
     const hashStr = [merchantOid, MERCHANT_SALT, status, totalAmount].join('')
-    return crypto.createHmac('sha256', MERCHANT_KEY).update(hashStr).digest('base64')
+    return crypto.createHmac('sha256', key).update(hashStr).digest('base64')
   }
 
   it('aynı parametrelerle aynı hash üretir', () => {
@@ -29,9 +42,11 @@ describe('PayTR callback hash', () => {
     expect(h1).not.toBe(h2)
   })
 
-  it('boş status saldırısı: hash farklı olmalı', () => {
-    const h1 = calcHash('oid', 'success', '100')
-    const h2 = calcHash('oid', '', 'success100') // saldırgan parametreyi birleştirip kandırmaya çalışırsa
-    expect(h1).not.toBe(h2)
+  it('gizli key olmadan saldırgan geçerli hash üretemez', () => {
+    // Gerçek güvenlik = gizli merchant_key. Saldırgan alanları kaydırsa bile
+    // (status='' + amount='success100') doğru key olmadan legit hash'i tutturamaz.
+    const legit = calcHash('oid', 'success', '100')
+    const forged = calcHash('oid', '', 'success100', 'attacker_key')
+    expect(forged).not.toBe(legit)
   })
 })
