@@ -1,4 +1,3 @@
-// @ts-nocheck — K1 ödeme altyapısı (payments tablosu + profiles kolonları) tamamlanana kadar
 // Bkz. AUDIT_REPORT.md K1 maddesi
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'

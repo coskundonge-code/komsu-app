@@ -1,4 +1,4 @@
-// @ts-nocheck
+// @ts-nocheck — payments TABLOSU eklendi; ama bu servis 'type' kolonu yazarken callback 'payment_type' yaziyor (veri tutarsizligi) + refunded_at yok + PayTR token akisi yarim. Tutarlilik+akis tamamlaninca ac — TECH_DEBT #3.
 /**
  * Payment Service
  * Manages payment intents, processing, and revenue tracking

@@ -1,4 +1,3 @@
-// @ts-nocheck — canli semada OLMAYAN tablo(lar)a referans veriyor (eksik ozellik, payment gibi); tablo migration'i gerektirir — TECH_DEBT #8
 /**
  * Listing Quota Service
  * Manages user's free listing allowance (3 per year)
@@ -20,7 +19,7 @@ export interface UserQuota {
   freeUsed: number;
   freeLimit: number;
   canPostFree: boolean;
-  resetDate?: string;
+  resetDate?: string | null;
 }
 
 export interface QuotaCheckResult {

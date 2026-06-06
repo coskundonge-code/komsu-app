@@ -50,13 +50,11 @@
 - **Hâlâ informational:** `lint` (~253 kalan borç) + `npm audit` (3 prod-moderate).
 - **Ödeme planı:** lint borcu eriyince lint'i, üretim açığı kalmayınca audit'i de zorunlu yap.
 
-### 8. Şema kayması: types.ts ↔ canlı DB (KÖK NEDEN — ÇÖZÜLDÜ)
-- **types.ts canlı şemadan YENİDEN ÜRETİLDİ (2026-06-06).** Bayat tipler giderildi.
-  - konum-secimi (user_addresses) · guvenlik (audit_log) · isletme-ekle (businesses) → **3 `as any` KALDIRILDI**, gerçek tiplerle ✅
-  - Daha önce: user_addresses kolonları, listing_status 'removed'→'expired', businesses kolon migration'ı + category_id ✅ · address-verification + review-system tip-denetimine açıldı ✅
-- **Kalan `@ts-nocheck` = EKSİK ÖZELLİK (tip değil, ŞEMA eksiği):**
-  - `payment.ts` + `payment/callback` → `payments` tablosu yok (#3, ödeme yarım)
-  - `business-subscription.ts` → **`business_subscriptions` tablosu canlıda YOK** → eksik özellik, tablo migration'ı gerek
-  - `listing-quota.ts` → **`user_listing_quotas` tablosu canlıda YOK** → eksik özellik
-  - `content-moderation.ts` → `content_moderation` tablosu VAR ama kolon/tip uyumsuzlukları → DÜZELTİLEBİLİR (god-file bölme #6 ile birlikte)
-- **Ödeme planı:** Bu 4 servis "incomplete feature". Tablolar migration ile oluşturulursa (ürün kararı) servisler aktive olur; yoksa dormant. content-moderation kolon-fix'i #6 ile.
+### 8. Şema kayması ÇÖZÜLDÜ + eksik-özellik tabloları OLUŞTURULDU
+- **types.ts canlı şemadan yenilendi** → 3 `as any` + 5 servis `@ts-nocheck`'i kaldırıldı (audit_log/user_addresses/businesses tipli).
+- **2026-06-06 — 3 eksik tablo migration + RLS ile OLUŞTURULDU:** `user_listing_quotas`, `business_subscriptions`, `payments`. RLS: kullanıcı/işletme-sahibi sadece kendi kaydını görür. types.ts'e tipleri elle eklendi (regen bat'ı büyük dosyada kesiyor — bilinen sorun).
+  - **Aktive edildi (artık tip-denetimli):** listing-quota ✅ · business-subscription ✅ · payment/callback (PayTR webhook) ✅ · address-verification ✅ · review-system ✅
+- **Kalan `@ts-nocheck` (2 dosya):**
+  - `payment.ts` (intent servisi): tablo VAR ama servis `type`, callback `payment_type` yazıyor (**veri tutarsızlığı**) + `refunded_at` kolonu yok + PayTR token akışı yarım → tutarlılık + akış tamamlanınca aç (#3).
+  - `content-moderation.ts`: tablo VAR, kolon uyumsuzlukları → god-file bölme (#6) ile düzelt.
+- **Not:** Tablo + tip = servisler DERLENEBİLİR/tip-güvenli. Özelliklerin uçtan uca ÇALIŞMASI için UI bağlama + test ayrı bir adım (ürün işi).
