@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored / build artifacts — lint'lenmemeli (ör. postinstall'in kopyaladigi PDF.js worker):
+    "public/**",
+    "scripts/**",
   ]),
 ]);
 

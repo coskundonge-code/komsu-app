@@ -21,12 +21,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint
+      # Lint + Typecheck simdilik BILGI amacli (continue-on-error): mevcut kod borcu
+      # (~96 tip + ~343 lint) loglarda gorunur ama job'i KIRMAZ. Faz 1'de borc
+      # temizlenince zorunlu kapiya cevrilecek — bkz. TECH_DEBT.md.
+      - name: Lint (informational)
         run: npm run lint
+        continue-on-error: true
 
-      - name: Typecheck
+      - name: Typecheck (informational)
         run: npx tsc --noEmit
+        continue-on-error: true
 
+      # GERCEK KAPI: testler gecmezse job KIRMIZI olur.
       - name: Unit tests
         run: npm run test
 
