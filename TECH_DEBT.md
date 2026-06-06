@@ -50,11 +50,13 @@
 - **Hâlâ informational:** `lint` (~253 kalan borç) + `npm audit` (3 prod-moderate).
 - **Ödeme planı:** lint borcu eriyince lint'i, üretim açığı kalmayınca audit'i de zorunlu yap.
 
-### 8. Şema kayması: types.ts ↔ canlı DB (KÖK NEDEN — büyük kısmı çözüldü)
-- **Kanıt (canlı DB sorgulandı 2026-06-06):** Kaynak gerçek = CANLI şema; hem migration dosyaları hem types.ts kısmen bayat.
-  - `user_addresses` gerçek kolonlar: `address_line, city, district, neighborhood_id, lat, lng, is_primary, verified_at` → konum-secimi DÜZELTİLDİ ✅
-  - `listing_status` enum: `active|sold|reserved|expired` ('removed' YOK) → ilanlar 'removed'→'expired' DÜZELTİLDİ ✅
-  - `businesses`: `instagram/facebook/twitter/working_hours` yoktu + `category` yerine `category_id` → **migration ile kolonlar eklendi** (add_business_social_and_hours) + dropdown canlı `business_categories`'ten besleniyor → DÜZELTİLDİ ✅
-  - `profiles` location_* kolonları doğruymuş — bug yok ✅
-- **Kalan (düşük öncelik; runtime çalışıyor):** types.ts bayat olduğu için 3 yerde `as any`: konum-secimi (user_addresses), guvenlik (audit_log types.ts'te yok), isletme-ekle (businesses). Kod doğru kolonları yazıyor; yalnız tip güvenliği kapalı.
-- **Ödeme planı:** `supabase gen types typescript --project-id dogjnzcofvpsqbepdaek > src/lib/supabase/types.ts` → 3 `as any`'yi kaldır → tsc doğrula. **Hedef: Faz 1 sonu (opsiyonel temizlik).**
+### 8. Şema kayması: types.ts ↔ canlı DB (KÖK NEDEN — ÇÖZÜLDÜ)
+- **types.ts canlı şemadan YENİDEN ÜRETİLDİ (2026-06-06).** Bayat tipler giderildi.
+  - konum-secimi (user_addresses) · guvenlik (audit_log) · isletme-ekle (businesses) → **3 `as any` KALDIRILDI**, gerçek tiplerle ✅
+  - Daha önce: user_addresses kolonları, listing_status 'removed'→'expired', businesses kolon migration'ı + category_id ✅ · address-verification + review-system tip-denetimine açıldı ✅
+- **Kalan `@ts-nocheck` = EKSİK ÖZELLİK (tip değil, ŞEMA eksiği):**
+  - `payment.ts` + `payment/callback` → `payments` tablosu yok (#3, ödeme yarım)
+  - `business-subscription.ts` → **`business_subscriptions` tablosu canlıda YOK** → eksik özellik, tablo migration'ı gerek
+  - `listing-quota.ts` → **`user_listing_quotas` tablosu canlıda YOK** → eksik özellik
+  - `content-moderation.ts` → `content_moderation` tablosu VAR ama kolon/tip uyumsuzlukları → DÜZELTİLEBİLİR (god-file bölme #6 ile birlikte)
+- **Ödeme planı:** Bu 4 servis "incomplete feature". Tablolar migration ile oluşturulursa (ürün kararı) servisler aktive olur; yoksa dormant. content-moderation kolon-fix'i #6 ile.

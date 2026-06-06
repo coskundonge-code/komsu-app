@@ -1,4 +1,4 @@
-// @ts-nocheck — bayat types.ts (business_subscriptions vb. eksik); types.ts regen sonrasi kaldirilacak — TECH_DEBT #5/#8
+// @ts-nocheck — canli semada OLMAYAN tablo(lar)a referans veriyor (eksik ozellik, payment gibi); tablo migration'i gerektirir — TECH_DEBT #8
 /**
  * Listing Quota Service
  * Manages user's free listing allowance (3 per year)

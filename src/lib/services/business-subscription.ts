@@ -1,4 +1,4 @@
-// @ts-nocheck — bayat types.ts (business_subscriptions vb. eksik); types.ts regen sonrasi kaldirilacak — TECH_DEBT #5/#8
+// @ts-nocheck — canli semada OLMAYAN tablo(lar)a referans veriyor (eksik ozellik, payment gibi); tablo migration'i gerektirir — TECH_DEBT #8
 /**
  * İşletme Abonelik Sistemi
  * Tek plan: 1.900₺/ay veya 19.900₺/yıl (12 ay peşin)

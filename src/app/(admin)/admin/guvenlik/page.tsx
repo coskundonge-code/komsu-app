@@ -19,7 +19,7 @@ type AuditRow = {
 }
 
 async function fetchAuditLog(): Promise<AuditRow[]> {
-  const supabase = createClient() as any
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('audit_log')
     .select(`id, action, result, ip_address, user_agent, created_at,

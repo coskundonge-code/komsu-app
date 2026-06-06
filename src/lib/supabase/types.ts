@@ -334,6 +334,39 @@ export type Database = {
           },
         ]
       }
+      audit_log: {
+        Row: {
+          action: string
+          created_at: string | null
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          result: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          result?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          result?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       badges: {
         Row: {
           color: string
@@ -575,7 +608,9 @@ export type Database = {
           cover_url: string | null
           created_at: string | null
           description: string | null
+          facebook: string | null
           id: string
+          instagram: string | null
           is_verified: boolean | null
           lat: number | null
           lng: number | null
@@ -587,7 +622,9 @@ export type Database = {
           recommendation_count: number | null
           review_count: number | null
           slug: string
+          twitter: string | null
           website: string | null
+          working_hours: Json | null
         }
         Insert: {
           address?: string | null
@@ -595,7 +632,9 @@ export type Database = {
           cover_url?: string | null
           created_at?: string | null
           description?: string | null
+          facebook?: string | null
           id?: string
+          instagram?: string | null
           is_verified?: boolean | null
           lat?: number | null
           lng?: number | null
@@ -607,7 +646,9 @@ export type Database = {
           recommendation_count?: number | null
           review_count?: number | null
           slug: string
+          twitter?: string | null
           website?: string | null
+          working_hours?: Json | null
         }
         Update: {
           address?: string | null
@@ -615,7 +656,9 @@ export type Database = {
           cover_url?: string | null
           created_at?: string | null
           description?: string | null
+          facebook?: string | null
           id?: string
+          instagram?: string | null
           is_verified?: boolean | null
           lat?: number | null
           lng?: number | null
@@ -627,7 +670,9 @@ export type Database = {
           recommendation_count?: number | null
           review_count?: number | null
           slug?: string
+          twitter?: string | null
           website?: string | null
+          working_hours?: Json | null
         }
         Relationships: [
           {

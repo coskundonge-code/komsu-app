@@ -456,7 +456,7 @@ export default function KonumSecimi() {
 
       // Insert into user_addresses
       // Canli sema gercek kolonlari: address_line, city, district, lat, lng, is_primary
-      const { error: addressError } = await (supabase as any)
+      const { error: addressError } = await supabase
         .from('user_addresses')
         .insert({
           user_id: user.id,
