@@ -415,7 +415,7 @@ function AskidaBagisPageContent() {
         const { data } = await supabase
           .from('businesses')
           .select('*')
-          .eq('owner_id', user.id)
+          .eq('owner_id', user?.id)
           .single()
         setUserBusiness(data)
       } catch (e) {

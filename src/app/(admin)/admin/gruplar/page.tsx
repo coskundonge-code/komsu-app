@@ -46,7 +46,7 @@ export default function GruplarPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 12
 
-  const { data: groups = [], isLoading, error } = useQuery({
+  const { data: groups = [], isLoading, error }: { data?: GroupRow[]; isLoading: boolean; error: Error | null } = useQuery({
     queryKey: ['admin', 'groups'],
     queryFn: fetchGroups,
   })

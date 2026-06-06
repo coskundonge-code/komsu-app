@@ -267,7 +267,7 @@ export default function AlertsPage() {
         const { data, error } = await supabase
           .from('posts')
           .select('*, profiles(full_name)')
-          .eq('post_type', 'safety')
+          .eq('type', 'safety')
           .order('created_at', { ascending: false })
           .limit(100);
 

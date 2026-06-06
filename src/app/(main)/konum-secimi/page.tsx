@@ -455,7 +455,7 @@ export default function KonumSecimi() {
       if (profileError) throw profileError
 
       // Insert into user_addresses
-      const { error: addressError } = await supabase
+      const { error: addressError } = await (supabase as any) // FIXME: user_addresses kolonlari semayla uyusmuyor (il/ilce/mahalle vs street/house_number) — bkz TECH_DEBT
         .from('user_addresses')
         .insert({
           user_id: user.id,

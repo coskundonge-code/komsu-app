@@ -100,7 +100,7 @@ export default function ModerasyonPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 15
 
-  const { data: items = [], isLoading, error } = useQuery({
+  const { data: items = [], isLoading, error }: { data?: ModRow[]; isLoading: boolean; error: Error | null } = useQuery({
     queryKey: ['admin', 'moderation-queue'],
     queryFn: fetchModerationQueue,
   })
@@ -120,7 +120,7 @@ export default function ModerasyonPage() {
       queryClient.invalidateQueries({ queryKey: ['admin', 'moderation-queue'] })
       toast.success('İşlem tamamlandı')
     },
-    onError: (err) => toast.error('Hata: ' + (err as Error).message),
+    onError: (err: unknown) => toast.error('Hata: ' + (err as Error).message),
   })
 
   const filtered = useMemo(() => {

@@ -46,7 +46,7 @@ export default function KullanicilarPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 15
 
-  const { data: users = [], isLoading, error } = useQuery({
+  const { data: users = [], isLoading, error }: { data?: UserRow[]; isLoading: boolean; error: Error | null } = useQuery({
     queryKey: ['admin', 'users'],
     queryFn: fetchUsers,
   })

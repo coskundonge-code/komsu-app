@@ -51,7 +51,7 @@ export default function ReklamlarPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 15
 
-  const { data: campaigns = [], isLoading, error } = useQuery({
+  const { data: campaigns = [], isLoading, error }: { data?: CampaignRow[]; isLoading: boolean; error: Error | null } = useQuery({
     queryKey: ['admin', 'ad_campaigns'],
     queryFn: fetchCampaigns,
   })

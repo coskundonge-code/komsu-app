@@ -45,3 +45,12 @@
 ### 7. CI audit adımı henüz "bilgilendirme" modunda
 - **Ne:** `.github/workflows/ci.yml` → `npm audit` adımı `continue-on-error: true`.
 - **Ödeme planı:** Üretim açıkları temizlenince "high ve üzeri = kırmızı" zorunlu kapıya çevir. **Hedef: Faz 1.**
+
+### 8. Şema kayması: types.ts ↔ migrations uyuşmuyor (KÖK NEDEN)
+- **Ne:** `src/lib/supabase/types.ts` gerçek migration şemasıyla uyuşmuyor:
+  - `listings`: types.ts `status` (active|sold|reserved|expired); migration `listing_status` (active|sold|expired|**removed**). Kolon adı + değerler farklı.
+  - `audit_log`: types.ts'te yok/uyumsuz → guvenlik sayfasında `as any` ile geçildi.
+  - `user_addresses`: kod `il/ilce/mahalle/cadde/bina_no` kolonlarına yazıyor; migration `street/house_number/postal_code/...`. **Kod var olmayan kolonlara yazıyor = gerçek runtime bug: konum-secimi adres kaydı çalışmaz.** `as any` + `// FIXME` ile build açıldı, akış DÜZELTİLMELİ.
+- **Etki:** Yüksek (adres kaydı bozuk; tip güvenliği `as any` ile delindi).
+- **Neden ertelendi:** Build'i açmak için cast'lendi; şema reconciliation ayrı iş.
+- **Ödeme planı:** (1) `supabase gen types` ile types.ts'i yeniden üret. (2) konum-secimi insert'ini gerçek kolonlara map'le veya migration'a Türkçe kolonları ekle. (3) `as any`/FIXME'leri kaldır. **Hedef: Faz 1 (adres akışı kritik).**

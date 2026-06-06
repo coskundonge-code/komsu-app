@@ -52,7 +52,7 @@ export async function getPosts(options?: {
     query = query.eq('neighborhood_id', options.neighborhoodId)
   }
   if (options?.postType && options.postType !== 'general') {
-    query = query.eq('type', options.postType)
+    query = query.eq('type', options.postType as 'general' | 'safety' | 'recommendation' | 'lost_found' | 'classified' | 'event' | 'poll')
   }
   if (options?.limit) {
     query = query.limit(options.limit)

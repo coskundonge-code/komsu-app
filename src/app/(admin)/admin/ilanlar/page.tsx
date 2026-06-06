@@ -57,7 +57,7 @@ export default function IlanlarPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 15
 
-  const { data: listings = [], isLoading, error } = useQuery({
+  const { data: listings = [], isLoading, error }: { data?: ListingRow[]; isLoading: boolean; error: Error | null } = useQuery({
     queryKey: ['admin', 'listings'],
     queryFn: fetchListings,
   })
@@ -65,7 +65,7 @@ export default function IlanlarPage() {
   const removeMutation = useMutation({
     mutationFn: async (id: string) => {
       const supabase = createClient()
-      const { error } = await supabase.from('listings').update({ status: 'removed' }).eq('id', id)
+      const { error } = await (supabase as any).from('listings').update({ status: 'removed' }).eq('id', id)
       if (error) throw error
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'listings'] }),

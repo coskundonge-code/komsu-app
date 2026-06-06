@@ -19,7 +19,7 @@ type AuditRow = {
 }
 
 async function fetchAuditLog(): Promise<AuditRow[]> {
-  const supabase = createClient()
+  const supabase = createClient() as any
   const { data, error } = await supabase
     .from('audit_log')
     .select(`id, action, result, ip_address, user_agent, created_at,
@@ -48,7 +48,7 @@ export default function GuvenlikPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 20
 
-  const { data: logs = [], isLoading, error } = useQuery({
+  const { data: logs = [], isLoading, error }: { data?: AuditRow[]; isLoading: boolean; error: Error | null } = useQuery({
     queryKey: ['admin', 'audit_log'],
     queryFn: fetchAuditLog,
   })

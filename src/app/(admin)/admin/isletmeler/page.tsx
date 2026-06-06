@@ -49,7 +49,7 @@ export default function IsletmelerPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 12
 
-  const { data: businesses = [], isLoading, error } = useQuery({
+  const { data: businesses = [], isLoading, error }: { data?: BusinessRow[]; isLoading: boolean; error: Error | null } = useQuery({
     queryKey: ['admin', 'businesses'],
     queryFn: fetchBusinesses,
   })

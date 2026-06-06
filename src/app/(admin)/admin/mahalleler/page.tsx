@@ -34,7 +34,7 @@ export default function MahallelerPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 20
 
-  const { data: neighborhoods = [], isLoading, error } = useQuery({
+  const { data: neighborhoods = [], isLoading, error }: { data?: NeighborhoodRow[]; isLoading: boolean; error: Error | null } = useQuery({
     queryKey: ['admin', 'neighborhoods'],
     queryFn: fetchNeighborhoods,
   })

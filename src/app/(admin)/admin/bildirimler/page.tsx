@@ -43,7 +43,7 @@ export default function BildirimlerPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 15
 
-  const { data: notifications = [], isLoading, error } = useQuery({
+  const { data: notifications = [], isLoading, error }: { data?: NotificationRow[]; isLoading: boolean; error: Error | null } = useQuery({
     queryKey: ['admin', 'notifications'],
     queryFn: fetchNotifications,
   })

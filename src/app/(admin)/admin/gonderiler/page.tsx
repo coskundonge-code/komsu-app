@@ -51,7 +51,7 @@ export default function GonderilerPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 15
 
-  const { data: posts = [], isLoading, error } = useQuery({
+  const { data: posts = [], isLoading, error }: { data?: PostRow[]; isLoading: boolean; error: Error | null } = useQuery({
     queryKey: ['admin', 'posts'],
     queryFn: fetchPosts,
   })

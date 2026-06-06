@@ -65,7 +65,7 @@ export default function YorumlarPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 15
 
-  const { data: comments = [], isLoading, error } = useQuery({
+  const { data: comments = [], isLoading, error }: { data?: CommentRow[]; isLoading: boolean; error: Error | null } = useQuery({
     queryKey: ['admin', 'comments-and-reviews'],
     queryFn: fetchComments,
   })

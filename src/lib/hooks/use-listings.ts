@@ -49,7 +49,7 @@ export async function getListings(options?: {
   let query = supabase
     .from('listings')
     .select('*, profiles!listings_seller_id_fkey(full_name, avatar_url), listing_categories(name), neighborhoods(name)')
-    .eq('status', options?.status || 'active')
+    .eq('status', (options?.status || 'active') as 'active' | 'sold' | 'reserved' | 'expired')
 
   if (options?.neighborhoodId) query = query.eq('neighborhood_id', options.neighborhoodId)
   if (options?.categoryId) query = query.eq('category_id', options.categoryId)

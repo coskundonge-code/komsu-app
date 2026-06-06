@@ -242,7 +242,7 @@ export default function EventsPage() {
       if (!error && data && data.length > 0) {
         const mapped = data.map(mapDbEvent);
         setEvents(mapped);
-        setInterested(mapped.reduce((acc: Record<string, boolean>, e) => ({ ...acc, [e.id]: false }), {}));
+        setInterested(mapped.reduce((acc: Record<string, boolean>, e: { id: string }) => ({ ...acc, [e.id]: false }), {}));
       }
     }
     fetchEvents();
@@ -448,7 +448,7 @@ export default function EventsPage() {
 
                   {/* RSVP Button */}
                   <button
-                    onClick={(e) => handleRsvp(e, event.id)}
+                    onClick={(e) => { e.stopPropagation(); handleRsvp(event.id); }}
                     className={`w-full mt-4 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all ${
                       interested[event.id]
                         ? 'bg-primary text-white shadow-md hover:bg-primary-hover'

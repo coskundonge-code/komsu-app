@@ -226,7 +226,7 @@ export default function IsletmeEklePage() {
         .replace(/(^-|-$)/g, '');
 
       // İşletmeyi oluştur
-      const { data: business, error: bizError } = await supabase
+      const { data: business, error: bizError } = await (supabase as any)
         .from('businesses')
         .insert({
           owner_id: userId,

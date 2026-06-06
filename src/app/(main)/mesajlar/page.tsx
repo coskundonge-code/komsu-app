@@ -98,7 +98,7 @@ export default function MessagesPage() {
             .select('user_id')
             .eq('conversation_id', conv.id);
 
-          const otherUserId = (participants as any[])?.find((p: any) => p.user_id !== user.id)?.user_id || '';
+          const otherUserId = (participants as any[])?.find((p: any) => p.user_id !== user?.id)?.user_id || '';
 
           const { data: profileData } = await supabase
             .from('profiles')
@@ -194,7 +194,7 @@ export default function MessagesPage() {
           id: msg.id,
           text: msg.body,
           time: formatTimeForDisplay(msg.created_at),
-          isOwn: msg.sender_id === user.id,
+          isOwn: msg.sender_id === user?.id,
           userId: msg.sender_id,
         }));
 

@@ -71,7 +71,7 @@ export default function DogrulamaPage() {
 
   const itemsPerPage = 10
 
-  const { data: verifications = [], isLoading, error } = useQuery({
+  const { data: verifications = [], isLoading, error }: { data?: VerificationEntry[]; isLoading: boolean; error: Error | null } = useQuery({
     queryKey: ['admin', 'address_verifications'],
     queryFn: fetchVerifications,
   })
