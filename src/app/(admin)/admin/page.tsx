@@ -224,36 +224,6 @@ export default function AdminDashboard() {
   const [statsLoading, setStatsLoading] = useState(true);
   const [neighborhoodsData, setNeighborhoodsData] = useState(TOP_NEIGHBORHOODS);
 
-  // Check admin access
-  if (!authLoading && (!user || profile?.is_admin !== true)) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Yetkisiz Erişim</h1>
-          <p className="text-gray-600 mb-6">
-            Bu sayfaya erişim için admin yetkisi gereklidir.
-          </p>
-          <Link
-            href="/"
-            className="inline-block px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
-          >
-            Ana Sayfaya Dön
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  if (authLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <p className="text-gray-600">Yükleniyor...</p>
-        </div>
-      </div>
-    );
-  }
-
   useEffect(() => {
     async function fetchStats() {
       setStatsLoading(true);
@@ -331,6 +301,37 @@ export default function AdminDashboard() {
     fetchStats();
     fetchNeighborhoods();
   }, []);
+
+  // Check admin access
+  if (!authLoading && (!user || profile?.is_admin !== true)) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Yetkisiz Erişim</h1>
+          <p className="text-gray-600 mb-6">
+            Bu sayfaya erişim için admin yetkisi gereklidir.
+          </p>
+          <Link
+            href="/"
+            className="inline-block px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
+          >
+            Ana Sayfaya Dön
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-gray-600">Yükleniyor...</p>
+        </div>
+      </div>
+    );
+  }
+
 
   const handleSort = (key: string) => {
     const isAsc = sortKey === key;

@@ -191,6 +191,19 @@ export default function CategoryPage({ params }: PageProps) {
   const slug = params.slug.toLowerCase();
   const categoryInfo = categoryMap[slug];
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [selectedSort, setSelectedSort] = useState('newest');
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(8);
+
+  // Price range filter
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+
+  // Condition filter
+  const [selectedConditions, setSelectedConditions] = useState<Set<string>>(new Set());
+
   // Redirect or handle invalid category
   if (!categoryInfo) {
     return (
@@ -212,18 +225,6 @@ export default function CategoryPage({ params }: PageProps) {
   // Filter listings by category
   const categoryListings = mockListings.filter(l => l.category === slug);
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [selectedSort, setSelectedSort] = useState('newest');
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [visibleCount, setVisibleCount] = useState(8);
-
-  // Price range filter
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
-
-  // Condition filter
-  const [selectedConditions, setSelectedConditions] = useState<Set<string>>(new Set());
 
   const toggleCondition = (value: string) => {
     const next = new Set(selectedConditions);
