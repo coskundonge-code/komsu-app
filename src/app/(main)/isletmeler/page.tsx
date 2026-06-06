@@ -196,7 +196,7 @@ export default function IsletmelerPage() {
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
 
   const filteredAndSortedBusinesses = useMemo(() => {
-    let filtered = MOCK_BUSINESSES.filter((business) => {
+    const filtered = MOCK_BUSINESSES.filter((business) => {
       const matchesSearch =
         business.name.toLowerCase().includes(search.toLowerCase()) ||
         business.address.toLowerCase().includes(search.toLowerCase());

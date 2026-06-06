@@ -281,7 +281,7 @@ export default function MessagesPage() {
     }
   };
 
-  let filteredConversations = conversations.filter((c) => {
+  const filteredConversations = conversations.filter((c) => {
     if (searchQuery && !c.name.toLowerCase().includes(searchQuery.toLowerCase()) && !c.lastMessage.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false;
     }

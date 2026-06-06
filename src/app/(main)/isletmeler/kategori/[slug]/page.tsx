@@ -783,7 +783,7 @@ export default function BusinessCategoryPage({ params }: { params: { slug: strin
   const businesses = MOCK_BUSINESSES_BY_CATEGORY[params.slug] || []
 
   const filteredAndSortedBusinesses = useMemo(() => {
-    let filtered = businesses.filter((business) =>
+    const filtered = businesses.filter((business) =>
       business.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
 

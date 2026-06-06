@@ -1,4 +1,4 @@
-// @ts-nocheck
+// @ts-nocheck — bayat types.ts (business_subscriptions vb. eksik); types.ts regen sonrasi kaldirilacak — TECH_DEBT #5/#8
 // İçerik Moderasyon Sistemi - AI Filtresi + Admin Onay
 
 import { createClient } from '@/lib/supabase/client';

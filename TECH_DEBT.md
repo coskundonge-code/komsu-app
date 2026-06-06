@@ -44,9 +44,11 @@
 - **Ne:** `askida-bagis/page.tsx` (1994), `kayit/page.tsx` (1272), `pazar/ilan-ver/page.tsx` (1130) + 9 dosya 800–999.
 - **Ödeme planı:** Bileşen + hook'a böl; veri çekmeyi servis/hook katmanına taşı. **Hedef: Faz 1.**
 
-### 7. CI audit adımı henüz "bilgilendirme" modunda
-- **Ne:** `.github/workflows/ci.yml` → `npm audit` adımı `continue-on-error: true`.
-- **Ödeme planı:** Üretim açıkları temizlenince "high ve üzeri = kırmızı" zorunlu kapıya çevir. **Hedef: Faz 1.**
+### 7. CI kapıları (2026-06-06 sıkılaştırıldı)
+- **Yapıldı:** `typecheck (tsc --noEmit)` + `next build` + `test` artık ZORUNLU kapı (kırmızı = push'ta görünür/CI patlar). ✅
+- **@ts-nocheck servisleri:** address-verification + review-system temizlendi (tip denetimi açık) ✅. Hâlâ kapalı: payment, payment/callback, listing-quota, business-subscription, content-moderation — hepsi bayat types.ts yüzünden; **types.ts regen** ile açılacak (bkz. #8).
+- **Hâlâ informational:** `lint` (~253 kalan borç) + `npm audit` (3 prod-moderate).
+- **Ödeme planı:** lint borcu eriyince lint'i, üretim açığı kalmayınca audit'i de zorunlu yap.
 
 ### 8. Şema kayması: types.ts ↔ canlı DB (KÖK NEDEN — büyük kısmı çözüldü)
 - **Kanıt (canlı DB sorgulandı 2026-06-06):** Kaynak gerçek = CANLI şema; hem migration dosyaları hem types.ts kısmen bayat.

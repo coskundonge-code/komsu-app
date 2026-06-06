@@ -11,7 +11,7 @@ import {
 import { cn } from '@/lib/utils'
 import { useCurrentUser } from '@/lib/hooks/use-auth'
 
-interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
+type SidebarProps = React.HTMLAttributes<HTMLDivElement>
 
 const navItems = [
   { icon: Home, label: 'Ana Sayfa', href: '/' },

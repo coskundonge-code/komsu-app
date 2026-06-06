@@ -1,4 +1,3 @@
-// @ts-nocheck
 // Geliştirilmiş Yorum Sistemi - Sahte Yorum Koruma
 
 export type ReviewStatus = 'pending' | 'approved' | 'rejected' | 'flagged';

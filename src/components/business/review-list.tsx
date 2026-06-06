@@ -60,7 +60,7 @@ export default function ReviewList({
   const [filterDropdownOpen, setFilterDropdownOpen] = useState(false);
 
   // Filter reviews
-  let filteredReviews = reviews.filter((review) => {
+  const filteredReviews = reviews.filter((review) => {
     if (filterBy === 'verified' && !review.isVerifiedUser) return false;
     if (filterBy === 'photos' && (!review.imageUrls || review.imageUrls.length === 0))
       return false;

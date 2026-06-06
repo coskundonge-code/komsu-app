@@ -1,4 +1,3 @@
-// @ts-nocheck
 // e-Devlet Adres Doğrulama Servisi
 
 export type VerificationStatus =
