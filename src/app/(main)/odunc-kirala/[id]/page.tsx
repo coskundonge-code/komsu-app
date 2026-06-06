@@ -363,7 +363,7 @@ export default function ListingDetailPage({ params }: { params: { id: string } }
                 />
                 <div className="flex-1">
                   <p className="text-sm font-bold text-[#333]">{listing.ownerName}</p>
-                  <p className="text-xs text-[#8f8f8f]">{listing.ownerMemberSince}'den beri üye</p>
+                  <p className="text-xs text-[#8f8f8f]">{listing.ownerMemberSince}&apos;den beri üye</p>
 
                   <div className="flex items-center gap-1 mt-1">
                     <Star className="w-4 h-4 text-[#00833e] fill-[#00833e]" />

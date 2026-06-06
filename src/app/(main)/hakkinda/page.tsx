@@ -69,10 +69,10 @@ export default function AboutPage() {
             Hikayemiz
           </h2>
           <p className="text-text-secondary leading-relaxed text-lg mb-6">
-            Mahallemiz, Türkiye'deki mahalleler arasında gittikçe zayıflayan bağlantıları yeniden güçlendirmek amacıyla kuruldu. Modern teknolojinin hızlı dünyasında, komşularımızı tanımanın ve birbirimize yardım etmenin ne kadar zor hale geldiğini gördük.
+            Mahallemiz, Türkiye&apos;deki mahalleler arasında gittikçe zayıflayan bağlantıları yeniden güçlendirmek amacıyla kuruldu. Modern teknolojinin hızlı dünyasında, komşularımızı tanımanın ve birbirimize yardım etmenin ne kadar zor hale geldiğini gördük.
           </p>
           <p className="text-text-secondary leading-relaxed text-lg mb-6">
-            Bu sorunun çözümü için Mahallemiz'i tasarladık: mahalle sakinlerinin birbirleriyle bağlantı kurması, bilgi paylaşması, etkinlikler düzenlemesi ve güçlü topluluklar oluşturmasını sağlayan bir platform.
+            Bu sorunun çözümü için Mahallemiz&apos;i tasarladık: mahalle sakinlerinin birbirleriyle bağlantı kurması, bilgi paylaşması, etkinlikler düzenlemesi ve güçlü topluluklar oluşturmasını sağlayan bir platform.
           </p>
           <p className="text-text-secondary leading-relaxed text-lg">
             Bugün, 500+ mahallede 50.000+ kullanıcı Mahallemiz aracılığıyla bağlantıda, birbirlerine güveniyor ve birlikte gelişiyor. Amacımız, her mahallede bu güven ve dayanışma kültürünü yaygınlaştırmak.
@@ -139,7 +139,7 @@ export default function AboutPage() {
         <div className="bg-surface border border-border rounded-lg p-8 md:p-12 text-center mb-12">
           <h2 className="text-3xl font-bold text-text-primary mb-4">Mahallene Katıl</h2>
           <p className="text-text-secondary mb-8 max-w-2xl mx-auto leading-relaxed">
-            Mahallemiz'e katılarak mahallenizle bağlantı kurun, yeni arkadaşlar edinin ve güçlü bir topluluk oluşturun.
+            Mahallemiz&apos;e katılarak mahallenizle bağlantı kurun, yeni arkadaşlar edinin ve güçlü bir topluluk oluşturun.
           </p>
           <Link
             href="/kaydol"

@@ -990,7 +990,7 @@ export default function BusinessCategoryPage({ params }: { params: { slug: strin
           <div className="text-center py-12">
             <Search className="w-16 h-16 text-[#e0e0e0] mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-[#333] mb-2">Sonuç Bulunamadı</h3>
-            <p className="text-[#8f8f8f]">"{searchTerm}" ile ilişkili bir işletme bulunamadı.</p>
+            <p className="text-[#8f8f8f]">&quot;{searchTerm}&quot; ile ilişkili bir işletme bulunamadı.</p>
           </div>
         )}
       </div>

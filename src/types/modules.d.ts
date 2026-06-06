@@ -7,12 +7,3 @@ declare module 'pdfjs-dist' {
 declare module 'pdfjs-dist/build/pdf' {
   export * from 'pdfjs-dist'
 }
-
-declare module '@tanstack/react-query' {
-  export const QueryClient: any
-  export const QueryClientProvider: any
-  export function useQuery(options: any): any
-  export function useMutation(options: any): any
-  export function useQueryClient(): any
-  export function useInfiniteQuery(options: any): any
-}

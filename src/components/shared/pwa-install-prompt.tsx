@@ -79,7 +79,7 @@ export function PWAInstallPrompt() {
               <Download size={18} className="text-white" />
             </div>
             <p className="text-sm font-medium text-text-primary">
-              Mahallemiz'i ana ekranına ekle!
+              Mahallemiz&apos;i ana ekranına ekle!
             </p>
           </div>
 

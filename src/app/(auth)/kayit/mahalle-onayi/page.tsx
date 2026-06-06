@@ -258,7 +258,7 @@ export default function NeighborhoodConfirmationPage() {
               {/* Welcome Message */}
               <div className="mt-4 p-4 bg-primary-light rounded-lg border border-[#a7dbb8]">
                 <p className="text-sm text-primary font-medium">
-                  Hoş geldiniz! {selectedNeighborhood.name}'a katıldığınızda {selectedNeighborhood.memberCount.toLocaleString('tr-TR')} komşunuzla iletişim kurabileceğiniz bir ağa erişeceksiniz.
+                  Hoş geldiniz! {selectedNeighborhood.name}&apos;a katıldığınızda {selectedNeighborhood.memberCount.toLocaleString('tr-TR')} komşunuzla iletişim kurabileceğiniz bir ağa erişeceksiniz.
                 </p>
               </div>
             </div>
@@ -276,7 +276,7 @@ export default function NeighborhoodConfirmationPage() {
                 className="w-5 h-5 mt-0.5 rounded border-border text-primary focus:ring-primary cursor-pointer"
               />
               <label htmlFor="confirm" className="text-sm text-text-primary cursor-pointer flex-1">
-                Evet, {selectedNeighborhood.name}'da ikamet ediyorum ve mahalleye katılmak istiyorum
+                Evet, {selectedNeighborhood.name}&apos;da ikamet ediyorum ve mahalleye katılmak istiyorum
               </label>
             </div>
 

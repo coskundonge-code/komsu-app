@@ -151,7 +151,7 @@ export default function HowItWorksPage() {
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-text-primary mb-8 flex items-center gap-3">
             <span className="w-1 h-10 bg-primary rounded-full"></span>
-            Mahallemiz'in Özellikleri
+            Mahallemiz&apos;in Özellikleri
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, idx) => {
@@ -183,7 +183,7 @@ export default function HowItWorksPage() {
                     </span>
                   ))}
                 </div>
-                <p className="text-text-secondary italic mb-4">"{testimonial.quote}"</p>
+                <p className="text-text-secondary italic mb-4">&quot;{testimonial.quote}&quot;</p>
                 <div className="border-t border-border pt-4">
                   <p className="font-bold text-text-primary">{testimonial.name}</p>
                   <p className="text-sm text-text-muted">{testimonial.role}</p>

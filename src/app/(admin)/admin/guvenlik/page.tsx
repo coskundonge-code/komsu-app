@@ -129,7 +129,7 @@ export default function GuvenlikPage() {
       {!isLoading && !error && logs.length === 0 && (
         <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg text-blue-900">
           <p className="font-semibold mb-1">Henüz audit kaydı yok</p>
-          <p className="text-sm">Kullanıcı oturum açma/çıkma, profil güncelleme ve admin işlemleri burada listelenecek. Audit yazımı için sunucu tarafında <code className="bg-blue-100 px-1 rounded">audit_log</code> insert'i tetikleyin (service role ile).</p>
+          <p className="text-sm">Kullanıcı oturum açma/çıkma, profil güncelleme ve admin işlemleri burada listelenecek. Audit yazımı için sunucu tarafında <code className="bg-blue-100 px-1 rounded">audit_log</code> insert&apos;i tetikleyin (service role ile).</p>
         </div>
       )}
 

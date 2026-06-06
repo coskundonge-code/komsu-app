@@ -68,7 +68,7 @@ export default function TermsPage() {
                       Hizmet Tanımı
                     </h2>
                     <p>
-                      Mahallemiz ("Platform"), komşuların birbirleriyle bağlantı kurmasını, bilgi paylaşmasını, etkinlikler organize etmesini ve yerel toplulukları güçlendirmesini sağlayan bir sosyal ağ platformudur. Platform, Trendex Lojistik tarafından işletilir.
+                      Mahallemiz (&quot;Platform&quot;), komşuların birbirleriyle bağlantı kurmasını, bilgi paylaşmasını, etkinlikler organize etmesini ve yerel toplulukları güçlendirmesini sağlayan bir sosyal ağ platformudur. Platform, Trendex Lojistik tarafından işletilir.
                     </p>
                   </section>
 
@@ -137,7 +137,7 @@ export default function TermsPage() {
                       Fikri Mülkiyet
                     </h2>
                     <p>
-                      Mahallemiz platformu, tasarımı, logosu, yazılımı ve diğer tüm unsurları Trendex Lojistik'e aittir. Bu öğelerin hiçbir bölümünü izinsiz kullanamazsınız. İzinsiz kullanım yasal işlem başlatılmasına neden olabilir.
+                      Mahallemiz platformu, tasarımı, logosu, yazılımı ve diğer tüm unsurları Trendex Lojistik&apos;e aittir. Bu öğelerin hiçbir bölümünü izinsiz kullanamazsınız. İzinsiz kullanım yasal işlem başlatılmasına neden olabilir.
                     </p>
                   </section>
 
@@ -148,7 +148,7 @@ export default function TermsPage() {
                       Sorumluluk Sınırlaması
                     </h2>
                     <p>
-                      Platform "olduğu gibi" sunulmaktadır. Trendex Lojistik, platformun kesintisiz veya hatasız çalışacağını garanti etmemektedir. Platform üzerinde paylaşılan içeriklerden kaynaklanabilecek zararlardan sorumlu değildir.
+                      Platform &quot;olduğu gibi&quot; sunulmaktadır. Trendex Lojistik, platformun kesintisiz veya hatasız çalışacağını garanti etmemektedir. Platform üzerinde paylaşılan içeriklerden kaynaklanabilecek zararlardan sorumlu değildir.
                     </p>
                   </section>
 

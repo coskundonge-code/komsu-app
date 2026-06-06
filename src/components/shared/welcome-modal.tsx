@@ -152,7 +152,7 @@ export function WelcomeModal() {
               Keşfetmeye Hazır mısın?
             </h3>
             <p className="text-gray-600">
-              Mahallemiz'i keşfetmeye ve mahallenizdeki insanlar ve işletmelerle
+              Mahallemiz&apos;i keşfetmeye ve mahallenizdeki insanlar ve işletmelerle
               bağlantı kurmaya başla.
             </p>
           </div>

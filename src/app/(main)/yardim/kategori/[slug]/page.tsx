@@ -217,7 +217,7 @@ export default function CategoryPage() {
             href="/yardim"
             className="inline-block px-6 py-3 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-colors"
           >
-            Yardım Merkezi'ne Dön
+            Yardım Merkezi&apos;ne Dön
           </Link>
         </div>
       </div>

@@ -34,9 +34,11 @@
 - **Etki:** Yüksek — bu hatalar muhtemelen `next build`'i de kırıyor (`next.config.ts` → `ignoreBuildErrors:false`).
 - **Ödeme planı:** Tipleri düzelt; `any` sayısını düşür (~197). **Hedef: Faz 1 (öncelikli).**
 
-### 5. Lint borcu (343 error / 1710 warning)
-- **Ne:** `npm run lint` → react-hooks/react-compiler kuralları (effect içinde setState, render'da impure çağrı) + `no-explicit-any`.
-- **Ödeme planı:** Önce 343 error, sonra warning'ler. **Hedef: Faz 1.**
+### 5. Lint borcu (Faz 1'de 356 → 265 indirildi)
+- **Yapıldı (2026-06-06):** rules-of-hooks 17 (2 gerçek hook-sıralama bug'ı: pazar/kategori + admin) ✅ · no-unescaped-entities 65 (kozmetik) ✅ · **react-query ambient override kaldırıldı** — `src/types/modules.d.ts` içinde `useQuery(options:any):any` tüm react-query tiplerini `any`'ye eziyordu; implicit-any cascade'inin KÖK NEDENİ idi ✅
+- **Kalan (265):** 214 `no-explicit-any` (çoğu supabase join-select'lerinde load-bearing `(data as any[])` cast'leri, ~50 dosyaya yayılı) + 17 set-state-in-effect + ~34 misc (immutability, ban-ts-comment, prefer-const…).
+- **Not:** K2 kapısı "borç SIFIR" istemez; "görünür + planlı" ister (bu kayıt onu sağlar). Kalan `any`'yi sıfırlamak market-ready için ZORUNLU değil.
+- **Ödeme planı:** Bulk `any`'yi köken azaltmanın kaldıracı = types.ts'i canlı şemadan yeniden üret (supabase sonuçları tiplenince `as any[]` gereksizleşir) → kalan cast'leri kaldır. Dosya dosya da eritilebilir. CI lint bu süre informational. **Hedef: kademeli.**
 
 ### 6. Tanrı-dosyalar (>500 satır)
 - **Ne:** `askida-bagis/page.tsx` (1994), `kayit/page.tsx` (1272), `pazar/ilan-ver/page.tsx` (1130) + 9 dosya 800–999.

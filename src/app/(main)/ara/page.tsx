@@ -549,7 +549,7 @@ export default function SearchResultsPage() {
     <div className="bg-surface border border-border rounded-lg p-12 text-center">
       <SearchIcon className="w-12 h-12 text-[#e0e0e0] mx-auto mb-4" />
       <p className="text-text-muted font-medium">
-        "{query}" için {tabLabel.toLowerCase()} sonuç bulunamadı
+        &quot;{query}&quot; için {tabLabel.toLowerCase()} sonuç bulunamadı
       </p>
     </div>
   )
@@ -626,7 +626,7 @@ export default function SearchResultsPage() {
             <div className="bg-surface border border-border rounded-lg p-12 text-center">
               <SearchIcon className="w-12 h-12 text-[#e0e0e0] mx-auto mb-4" />
               <p className="text-text-muted font-medium">
-                "{query}" için hiçbir sonuç bulunamadı
+                &quot;{query}&quot; için hiçbir sonuç bulunamadı
               </p>
             </div>
           )
@@ -778,7 +778,7 @@ export default function SearchResultsPage() {
           <h1 className="text-3xl font-bold text-text-primary mb-2">Arama Sonuçları</h1>
           {query && (
             <p className="text-text-muted">
-              "{query}" için sonuçlar
+              &quot;{query}&quot; için sonuçlar
             </p>
           )}
         </div>

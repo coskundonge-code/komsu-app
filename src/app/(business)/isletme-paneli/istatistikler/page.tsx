@@ -460,7 +460,7 @@ export default function IstatistiklerPage() {
               <Table size={20} color="#00833e" />
               <p className="font-semibold text-text-primary">Excel Dosyası</p>
             </div>
-            <p className="text-sm text-text-muted">Tüm verileri Excel'de analiz et</p>
+            <p className="text-sm text-text-muted">Tüm verileri Excel&apos;de analiz et</p>
           </button>
           <button className="p-4 border-2 border-[#a7dbb8] rounded-lg bg-surface hover:border-primary hover:shadow-md transition-all text-left">
             <div className="flex items-center gap-3 mb-2">

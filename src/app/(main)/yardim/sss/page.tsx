@@ -304,7 +304,7 @@ export default function FAQPage() {
               href="/yardim"
               className="px-6 py-2 bg-surface border border-primary text-primary font-medium rounded-lg hover:bg-background transition-colors"
             >
-              Yardım Merkezi'ne Dön
+              Yardım Merkezi&apos;ne Dön
             </Link>
           </div>
         </div>

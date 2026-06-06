@@ -797,9 +797,9 @@ export default function KonumSecimi() {
                 <div className="p-4 bg-surface border-t border-border">
                   <p className="text-xs text-text-muted">
                     {confirmed ? (
-                      <span className="text-green-600 font-medium">✓ Adres doğrulandı ve harita'da konumlandırıldı</span>
+                      <span className="text-green-600 font-medium">✓ Adres doğrulandı ve harita&apos;da konumlandırıldı</span>
                     ) : (
-                      <span>Adresinizi doğruladıktan sonra harita'da otomatik konumlandırılacaktır</span>
+                      <span>Adresinizi doğruladıktan sonra harita&apos;da otomatik konumlandırılacaktır</span>
                     )}
                   </p>
                 </div>
@@ -844,9 +844,9 @@ export default function KonumSecimi() {
             <div className="p-4 bg-surface border-t border-border">
               <p className="text-xs text-text-muted">
                 {confirmed ? (
-                  <span className="text-green-600 font-medium">✓ Adres doğrulandı ve harita'da konumlandırıldı</span>
+                  <span className="text-green-600 font-medium">✓ Adres doğrulandı ve harita&apos;da konumlandırıldı</span>
                 ) : (
-                  <span>Adresinizi doğruladıktan sonra harita'da otomatik konumlandırılacaktır</span>
+                  <span>Adresinizi doğruladıktan sonra harita&apos;da otomatik konumlandırılacaktır</span>
                 )}
               </p>
             </div>

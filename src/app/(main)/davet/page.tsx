@@ -53,7 +53,7 @@ export default function ReferralPage() {
             ← Ana Sayfaya Dön
           </Link>
           <h1 className="text-3xl font-bold text-text-primary mb-2">Komşularını Davet Et</h1>
-          <p className="text-[#666]">Mahallende yaşayan arkadaşlarını Mahallemiz'e davet et ve birlikte komşu topluluğunu büyüt.</p>
+          <p className="text-[#666]">Mahallende yaşayan arkadaşlarını Mahallemiz&apos;e davet et ve birlikte komşu topluluğunu büyüt.</p>
         </div>
 
         {/* Info Box */}
@@ -99,7 +99,7 @@ export default function ReferralPage() {
               className="flex items-center justify-center gap-2 px-4 py-3 bg-[#25D366] text-white font-medium rounded-lg hover:bg-[#20BA61] transition-colors"
             >
               <MessageCircle className="w-4 h-4" />
-              WhatsApp'ta Paylaş
+              WhatsApp&apos;ta Paylaş
             </button>
             <button
               onClick={handleShareSMS}

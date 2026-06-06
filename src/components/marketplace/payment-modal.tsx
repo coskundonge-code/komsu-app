@@ -336,7 +336,7 @@ export function PaymentModal({
               <label className="flex items-start gap-2 text-xs text-gray-600">
                 <input type="checkbox" defaultChecked className="mt-1" />
                 <span>
-                  Ödeme şartlarını kabul ediyorum ve Mahallemiz'in{' '}
+                  Ödeme şartlarını kabul ediyorum ve Mahallemiz&apos;in{' '}
                   <a href="/gizlilik" className="text-primary hover:underline">
                     gizlilik politikasını
                   </a>{' '}

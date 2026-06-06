@@ -32,9 +32,9 @@ export default function KVKKPage() {
             {/* Giriş */}
             <section>
               <p className="text-text-secondary leading-relaxed">
-                Mahallemiz ("Uygulama"), kullanıcılarının kişisel verilerinin korunmasına büyük önem
+                Mahallemiz (&quot;Uygulama&quot;), kullanıcılarının kişisel verilerinin korunmasına büyük önem
                 vermektedir. Bu aydınlatma metni, uygulamayı kullanan tüm kişileri, Kişisel
-                Verilerin Korunması Kanunu ("KVKK") uyarınca, kişisel verilerinin nasıl
+                Verilerin Korunması Kanunu (&quot;KVKK&quot;) uyarınca, kişisel verilerinin nasıl
                 işlendiği, korunduğu ve kullanıldığı hakkında bilgilendirmektedir.
               </p>
             </section>
@@ -316,7 +316,7 @@ export default function KVKKPage() {
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-text-secondary">
                 <p className="leading-relaxed mb-3">
                   Kişisel verilerinizin işlenmesiyle ilgili şikayetleriniz için, haklarınızın ihlal
-                  edildiğini düşünüyorsanız Kişisel Verileri Koruma Kurulu'na başvuru yapabilirsiniz.
+                  edildiğini düşünüyorsanız Kişisel Verileri Koruma Kurulu&apos;na başvuru yapabilirsiniz.
                 </p>
                 <p className="text-sm">
                   <strong>KVKK Başvuru Portalı:</strong>{' '}

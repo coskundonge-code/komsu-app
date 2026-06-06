@@ -328,7 +328,7 @@ export default function ContactPage() {
                   </div>
 
                   <p className="text-xs text-text-muted text-center">
-                    * Zorunlu alanları doldurunuz. İşlenmiş verileriniz KVKK'ya uygun olarak güvence altında tutulacaktır.
+                    * Zorunlu alanları doldurunuz. İşlenmiş verileriniz KVKK&apos;ya uygun olarak güvence altında tutulacaktır.
                   </p>
                 </form>
               )}
