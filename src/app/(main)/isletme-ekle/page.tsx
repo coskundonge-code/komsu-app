@@ -79,6 +79,7 @@ export default function IsletmeEklePage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
   const logoInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
 
@@ -117,6 +118,16 @@ export default function IsletmeEklePage() {
       }
     };
     checkAuth();
+  }, []);
+
+  // Kategorileri canli business_categories tablosundan cek (dogru category_id icin)
+  useEffect(() => {
+    const loadCategories = async () => {
+      const supabase = createClient();
+      const { data } = await supabase.from('business_categories').select('id, name').order('sort_order');
+      setCategories((data ?? []) as { id: string; name: string }[]);
+    };
+    loadCategories();
   }, []);
 
   const handleInputChange = (
@@ -232,7 +243,7 @@ export default function IsletmeEklePage() {
           owner_id: userId,
           name: formData.name.trim(),
           slug: `${slug}-${Date.now().toString(36)}`,
-          category: formData.category,
+          category_id: formData.category,
           description: formData.description.trim(),
           address: formData.address.trim(),
           phone: formData.phone.replace(/\s/g, ''),
@@ -541,8 +552,8 @@ export default function IsletmeEklePage() {
                   className="w-full px-4 py-3 rounded-lg border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-[#d1fae5] transition-colors appearance-none bg-surface cursor-pointer"
                 >
                   <option value="">Kategori Seç</option>
-                  {CATEGORIES.map((cat) => (
-                    <option key={cat} value={cat}>{cat}</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
                 </select>
               </div>
@@ -733,7 +744,7 @@ export default function IsletmeEklePage() {
                     )}
                     <div className="flex-1 pt-1">
                       <h3 className="text-lg font-bold text-gray-900">{formData.name}</h3>
-                      <p className="text-sm text-text-muted">{formData.category}</p>
+                      <p className="text-sm text-text-muted">{categories.find((c) => c.id === formData.category)?.name || ''}</p>
                     </div>
                   </div>
                   <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">

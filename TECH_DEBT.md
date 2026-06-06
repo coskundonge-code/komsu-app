@@ -46,11 +46,11 @@
 - **Ne:** `.github/workflows/ci.yml` → `npm audit` adımı `continue-on-error: true`.
 - **Ödeme planı:** Üretim açıkları temizlenince "high ve üzeri = kırmızı" zorunlu kapıya çevir. **Hedef: Faz 1.**
 
-### 8. Şema kayması: types.ts ↔ migrations uyuşmuyor (KÖK NEDEN)
-- **Ne:** `src/lib/supabase/types.ts` gerçek migration şemasıyla uyuşmuyor:
-  - `listings`: types.ts `status` (active|sold|reserved|expired); migration `listing_status` (active|sold|expired|**removed**). Kolon adı + değerler farklı.
-  - `audit_log`: types.ts'te yok/uyumsuz → guvenlik sayfasında `as any` ile geçildi.
-  - `user_addresses`: kod `il/ilce/mahalle/cadde/bina_no` kolonlarına yazıyor; migration `street/house_number/postal_code/...`. **Kod var olmayan kolonlara yazıyor = gerçek runtime bug: konum-secimi adres kaydı çalışmaz.** `as any` + `// FIXME` ile build açıldı, akış DÜZELTİLMELİ.
-- **Etki:** Yüksek (adres kaydı bozuk; tip güvenliği `as any` ile delindi).
-- **Neden ertelendi:** Build'i açmak için cast'lendi; şema reconciliation ayrı iş.
-- **Ödeme planı:** (1) `supabase gen types` ile types.ts'i yeniden üret. (2) konum-secimi insert'ini gerçek kolonlara map'le veya migration'a Türkçe kolonları ekle. (3) `as any`/FIXME'leri kaldır. **Hedef: Faz 1 (adres akışı kritik).**
+### 8. Şema kayması: types.ts ↔ canlı DB (KÖK NEDEN — büyük kısmı çözüldü)
+- **Kanıt (canlı DB sorgulandı 2026-06-06):** Kaynak gerçek = CANLI şema; hem migration dosyaları hem types.ts kısmen bayat.
+  - `user_addresses` gerçek kolonlar: `address_line, city, district, neighborhood_id, lat, lng, is_primary, verified_at` → konum-secimi DÜZELTİLDİ ✅
+  - `listing_status` enum: `active|sold|reserved|expired` ('removed' YOK) → ilanlar 'removed'→'expired' DÜZELTİLDİ ✅
+  - `businesses`: `instagram/facebook/twitter/working_hours` yoktu + `category` yerine `category_id` → **migration ile kolonlar eklendi** (add_business_social_and_hours) + dropdown canlı `business_categories`'ten besleniyor → DÜZELTİLDİ ✅
+  - `profiles` location_* kolonları doğruymuş — bug yok ✅
+- **Kalan (düşük öncelik; runtime çalışıyor):** types.ts bayat olduğu için 3 yerde `as any`: konum-secimi (user_addresses), guvenlik (audit_log types.ts'te yok), isletme-ekle (businesses). Kod doğru kolonları yazıyor; yalnız tip güvenliği kapalı.
+- **Ödeme planı:** `supabase gen types typescript --project-id dogjnzcofvpsqbepdaek > src/lib/supabase/types.ts` → 3 `as any`'yi kaldır → tsc doğrula. **Hedef: Faz 1 sonu (opsiyonel temizlik).**

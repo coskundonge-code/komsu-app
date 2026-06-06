@@ -455,20 +455,18 @@ export default function KonumSecimi() {
       if (profileError) throw profileError
 
       // Insert into user_addresses
-      const { error: addressError } = await (supabase as any) // FIXME: user_addresses kolonlari semayla uyusmuyor (il/ilce/mahalle vs street/house_number) — bkz TECH_DEBT
+      // Canli sema gercek kolonlari: address_line, city, district, lat, lng, is_primary
+      const { error: addressError } = await (supabase as any)
         .from('user_addresses')
         .insert({
           user_id: user.id,
-          il: formData.il.name,
-          ilce: formData.ilce.name,
-          mahalle: formData.mahalle,
-          cadde: formData.cadde,
-          bina_no: formData.binaNo || null,
-          bina_adi: formData.binaAdi || null,
-          posta_kodu: formData.postaKodu || null,
-          latitude: pinLat,
-          longitude: pinLng,
-          created_at: new Date().toISOString(),
+          address_line: [formData.mahalle, formData.cadde, formData.binaNo ? 'No: ' + formData.binaNo : '', formData.binaAdi, formData.postaKodu]
+            .filter(Boolean).join(' ').trim(),
+          city: formData.il.name,
+          district: formData.ilce.name,
+          lat: pinLat,
+          lng: pinLng,
+          is_primary: true,
         })
 
       if (addressError) throw addressError

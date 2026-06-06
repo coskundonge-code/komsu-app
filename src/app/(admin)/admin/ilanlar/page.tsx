@@ -65,7 +65,7 @@ export default function IlanlarPage() {
   const removeMutation = useMutation({
     mutationFn: async (id: string) => {
       const supabase = createClient()
-      const { error } = await (supabase as any).from('listings').update({ status: 'removed' }).eq('id', id)
+      const { error } = await supabase.from('listings').update({ status: 'expired' }).eq('id', id)
       if (error) throw error
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'listings'] }),
