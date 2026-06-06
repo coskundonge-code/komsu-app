@@ -36,6 +36,17 @@ export async function POST(request: NextRequest) {
       return new NextResponse('PAYTR notification error: hash mismatch', { status: 400 })
     }
 
+    // Defense-in-depth: only accept the two statuses PayTR sends, and require a
+    // numeric total_amount before we trust it as money.
+    if (status !== 'success' && status !== 'failed') {
+      return new NextResponse('PAYTR notification error: invalid status', { status: 400 })
+    }
+    const amountKurus = parseInt(totalAmount, 10)
+    if (Number.isNaN(amountKurus)) {
+      return new NextResponse('PAYTR notification error: invalid total_amount', { status: 400 })
+    }
+    const amountTl = amountKurus / 100
+
     const parts = merchantOid.split('_')
     const paymentType = parts[0] + (parts[1] === 'card' || parts[1] === 'fee' || parts[1] === 'membership' ? '_' + parts[1] : '')
     const userId = parts.length >= 3 ? parts[parts.length - 2] : ''
@@ -48,7 +59,7 @@ export async function POST(request: NextRequest) {
           merchant_oid: merchantOid,
           user_id: userId || null,
           payment_type: paymentType,
-          amount: parseInt(totalAmount, 10) / 100,
+          amount: amountTl,
           status: 'completed',
           provider: 'paytr',
           completed_at: new Date().toISOString(),
@@ -74,7 +85,7 @@ export async function POST(request: NextRequest) {
           merchant_oid: merchantOid,
           user_id: userId || null,
           payment_type: paymentType,
-          amount: parseInt(totalAmount, 10) / 100,
+          amount: amountTl,
           status: 'failed',
           provider: 'paytr',
         })

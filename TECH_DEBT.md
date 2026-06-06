@@ -23,11 +23,9 @@
 ## Faz 1 — Yayın öncesi kapatılacak borçlar
 
 ### 3. PayTR callback hardening (güvenlik, derinlemesine savunma)
-- **Ne:** Callback hash'i PayTR spec'i gereği ayırıcısız birleştirme kullanıyor; güvenlik gizli `merchant_key`'e dayanıyor (yeterli). Ek savunma için `status` `{success,failed}` allowlist'i + `total_amount` sayısal doğrulaması eklenmeli.
-- **Nerede:** `src/app/api/payment/callback/route.ts` (ayrıca `// @ts-nocheck` var).
-- **Etki:** Orta (ödeme henüz canlı değil; canlıya almadan kapatılmalı).
-- **Neden ertelendi:** Ödeme altyapısı (payments tablosu) yarım; K1 tamamlanınca yapılacak.
-- **Ödeme planı:** payments tablosu + allowlist + `@ts-nocheck` kaldırma; `src/__tests__/paytr-hash.test.ts`'i gerçek route'a karşı genişlet. **Hedef: Faz 1.**
+- **Yapıldı (2026-06-06):** `status` `{success,failed}` allowlist'i + `total_amount` sayısal (`NaN`) doğrulaması eklendi → geçersiz değerler artık 400 döner ve DB'ye yazılmaz. Doğrulanmış tutar tek yerde hesaplanıp iki upsert'te paylaşılıyor. Callback zaten tip-denetimliydi (`@ts-nocheck` yok). ✅
+- **Nerede:** `src/app/api/payment/callback/route.ts`.
+- **Kalan:** `src/__tests__/paytr-hash.test.ts`'i gerçek route'a (status/amount red yolları) karşı genişlet. **Hedef: Faz 1.**
 
 ### 4. Tip güvenliği borcu (~96 `tsc` hatası)
 - **Ne:** `npx tsc --noEmit` → 96 hata (çoğu admin sayfalarında implicit `any` (TS7006), ayrıca `use-listings.ts`/`use-posts.ts`'te gerçek tip uyumsuzlukları).
@@ -54,7 +52,7 @@
 - **types.ts canlı şemadan yenilendi** → 3 `as any` + 5 servis `@ts-nocheck`'i kaldırıldı (audit_log/user_addresses/businesses tipli).
 - **2026-06-06 — 3 eksik tablo migration + RLS ile OLUŞTURULDU:** `user_listing_quotas`, `business_subscriptions`, `payments`. RLS: kullanıcı/işletme-sahibi sadece kendi kaydını görür. types.ts'e tipleri elle eklendi (regen bat'ı büyük dosyada kesiyor — bilinen sorun).
   - **Aktive edildi (artık tip-denetimli):** listing-quota ✅ · business-subscription ✅ · payment/callback (PayTR webhook) ✅ · address-verification ✅ · review-system ✅
-- **Kalan `@ts-nocheck` (2 dosya):**
-  - `payment.ts` (intent servisi): tablo VAR ama servis `type`, callback `payment_type` yazıyor (**veri tutarsızlığı**) + `refunded_at` kolonu yok + PayTR token akışı yarım → tutarlılık + akış tamamlanınca aç (#3).
+- **2026-06-06 — `payment.ts` (intent servisi) AKTİVE EDİLDİ:** Mükerrer `type`/`payment_type` kolonları tek konvansiyona (`payment_type`) indirildi, boş `type` kolonu migration ile düşürüldü; `refunded_at` kolonu eklendi (iade audit izi); `getRevenueReport` enum-dışı tür/durum/yöntem değerlerine (PayTR `mahalle_card` vb.) karşı null-guard'landı; nullable kolonlar mapping sınırında coalesce edildi → `@ts-nocheck` kaldırıldı, `tsc` 0 hata. ✅
+- **Kalan `@ts-nocheck` (1 dosya):**
   - `content-moderation.ts`: tablo VAR, kolon uyumsuzlukları → god-file bölme (#6) ile düzelt.
 - **Not:** Tablo + tip = servisler DERLENEBİLİR/tip-güvenli. Özelliklerin uçtan uca ÇALIŞMASI için UI bağlama + test ayrı bir adım (ürün işi).

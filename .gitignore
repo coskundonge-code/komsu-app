@@ -89,3 +89,8 @@ commit-push-coskun.log
 
 # Local run logs (commit-push-coskun.log vb.)
 *.log
+
+# regen artifacts
+src/lib/supabase/types.ts.bak
+regen-types-error.txt
+*.log

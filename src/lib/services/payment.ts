@@ -1,4 +1,3 @@
-// @ts-nocheck — payments TABLOSU eklendi; ama bu servis 'type' kolonu yazarken callback 'payment_type' yaziyor (veri tutarsizligi) + refunded_at yok + PayTR token akisi yarim. Tutarlilik+akis tamamlaninca ac — TECH_DEBT #3.
 /**
  * Payment Service
  * Manages payment intents, processing, and revenue tracking
@@ -132,7 +131,7 @@ export async function createPaymentIntent(
       .from('payments')
       .insert({
         user_id: userId,
-        type,
+        payment_type: type,
         amount,
         currency: CURRENCY,
         status: PaymentStatus.PENDING,
@@ -275,14 +274,14 @@ export async function getPaymentHistory(
 
     return data.map((row) => ({
       id: row.id,
-      userId: row.user_id,
-      type: row.type as PaymentType,
+      userId: row.user_id ?? '',
+      type: row.payment_type as PaymentType,
       amount: row.amount,
       status: row.status as PaymentStatus,
-      method: row.method as PaymentMethod,
-      description: row.description,
-      completedAt: row.completed_at,
-      listingId: row.listing_id,
+      method: (row.method ?? '') as PaymentMethod,
+      description: row.description ?? '',
+      completedAt: row.completed_at ?? '',
+      listingId: row.listing_id ?? undefined,
     }));
   } catch (error) {
     console.error('Error in getPaymentHistory:', error);
@@ -332,17 +331,29 @@ export async function getRevenueReport(
       report.byMethod[method] = { amount: 0, count: 0 };
     });
 
-    // Aggregate data
+    // Aggregate data. payment_type/method may hold values outside the local
+    // enums (e.g. PayTR webhook writes 'mahalle_card'), so guard each bucket.
     data.forEach((row) => {
-      if (row.status === PaymentStatus.COMPLETED) {
-        report.totalAmount += row.amount;
-        report.byType[row.type].amount += row.amount;
-        report.byType[row.type].count += 1;
-        report.byStatus[row.status].amount += row.amount;
-        report.byStatus[row.status].count += 1;
-        if (row.method) {
-          report.byMethod[row.method].amount += row.amount;
-          report.byMethod[row.method].count += 1;
+      if (row.status !== PaymentStatus.COMPLETED) return;
+      report.totalAmount += row.amount;
+
+      const typeBucket = report.byType[row.payment_type as PaymentType];
+      if (typeBucket) {
+        typeBucket.amount += row.amount;
+        typeBucket.count += 1;
+      }
+
+      const statusBucket = report.byStatus[row.status as PaymentStatus];
+      if (statusBucket) {
+        statusBucket.amount += row.amount;
+        statusBucket.count += 1;
+      }
+
+      if (row.method) {
+        const methodBucket = report.byMethod[row.method as PaymentMethod];
+        if (methodBucket) {
+          methodBucket.amount += row.amount;
+          methodBucket.count += 1;
         }
       }
     });
@@ -415,7 +426,7 @@ function mapPaymentRow(row: any): PaymentIntent | null {
   return {
     id: row.id,
     userId: row.user_id,
-    type: row.type as PaymentType,
+    type: row.payment_type as PaymentType,
     amount: row.amount,
     currency: row.currency,
     status: row.status as PaymentStatus,

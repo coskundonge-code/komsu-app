@@ -74,8 +74,8 @@ export type Database = {
           payment_reference: string | null
           payment_type: string | null
           provider: string | null
+          refunded_at: string | null
           status: string
-          type: string | null
           user_id: string | null
         }
         Insert: {
@@ -92,8 +92,8 @@ export type Database = {
           payment_reference?: string | null
           payment_type?: string | null
           provider?: string | null
+          refunded_at?: string | null
           status?: string
-          type?: string | null
           user_id?: string | null
         }
         Update: {
@@ -110,8 +110,8 @@ export type Database = {
           payment_reference?: string | null
           payment_type?: string | null
           provider?: string | null
+          refunded_at?: string | null
           status?: string
-          type?: string | null
           user_id?: string | null
         }
         Relationships: []
