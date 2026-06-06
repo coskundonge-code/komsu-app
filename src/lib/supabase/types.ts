@@ -957,47 +957,71 @@ export type Database = {
       content_moderation: {
         Row: {
           admin_notes: string | null
+          ai_categories: string[] | null
+          ai_reviewed_at: string | null
           ai_score: number | null
           assigned_to: string | null
+          author_id: string | null
+          auto_approved: boolean | null
           content_id: string
+          content_snapshot: string | null
           content_type: string
           created_at: string
           id: string
+          image_urls_snapshot: string[] | null
+          priority: string | null
           reason: string | null
           reported_by: string | null
           resolved_at: string | null
           resolved_by: string | null
           status: string
+          title_snapshot: string | null
           updated_at: string
         }
         Insert: {
           admin_notes?: string | null
+          ai_categories?: string[] | null
+          ai_reviewed_at?: string | null
           ai_score?: number | null
           assigned_to?: string | null
+          author_id?: string | null
+          auto_approved?: boolean | null
           content_id: string
+          content_snapshot?: string | null
           content_type: string
           created_at?: string
           id?: string
+          image_urls_snapshot?: string[] | null
+          priority?: string | null
           reason?: string | null
           reported_by?: string | null
           resolved_at?: string | null
           resolved_by?: string | null
           status?: string
+          title_snapshot?: string | null
           updated_at?: string
         }
         Update: {
           admin_notes?: string | null
+          ai_categories?: string[] | null
+          ai_reviewed_at?: string | null
           ai_score?: number | null
           assigned_to?: string | null
+          author_id?: string | null
+          auto_approved?: boolean | null
           content_id?: string
+          content_snapshot?: string | null
           content_type?: string
           created_at?: string
           id?: string
+          image_urls_snapshot?: string[] | null
+          priority?: string | null
           reason?: string | null
           reported_by?: string | null
           resolved_at?: string | null
           resolved_by?: string | null
           status?: string
+          title_snapshot?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -1011,6 +1035,20 @@ export type Database = {
           {
             foreignKeyName: "content_moderation_assigned_to_fkey"
             columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_moderation_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_moderation_author_id_fkey"
+            columns: ["author_id"]
             isOneToOne: false
             referencedRelation: "user_profiles"
             referencedColumns: ["id"]

@@ -2,6 +2,23 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Otonomi (kullanıcı izni: "Tam serbest", 2026-06-06)
+
+Sahip kod bilmiyor ve her adımda onay sorulmasından rahatsız. **Onay sorma, işi yap, sonucu sade Türkçe anlat.** Bu, kalıcı bir izindir.
+
+Onaysız yapılabilecekler (varsayılan):
+- Kod düzenleme, dosya oluşturma/silme, refactor.
+- Supabase migration / `execute_sql` (önce canlı şemayı `execute_sql` ile doğrula — bu kural kalkmadı).
+- `npm run build/test/lint`, `tsc`, `graphify` vb. komutlar.
+- `git add` + `commit` + **`coskun` rafına** `push`.
+
+Hâlâ geçerli istisnalar (bunlarda DUR / önce sor veya bayrakla):
+- **`main` dalına push / deploy yalnızca kullanıcı açıkça "deploy et" derse.** `coskun` = geliştirme rafı.
+- Geri dönüşü olmayan / yıkıcı işlemler (veri silme, tablo drop, `git reset --hard`, `push --force`, prod ödeme/anahtar değişimi): yapma, önce kısaca bilgi ver.
+- `.claude/settings.local.json` commit'lenmez.
+
+Geri almak için: kullanıcı "onay iste / tam serbesti kapat" derse `.claude/settings.local.json` içindeki `"defaultMode": "bypassPermissions"` satırını kaldır ve bu bölümü güncelle.
+
 ## Commands
 
 ```bash

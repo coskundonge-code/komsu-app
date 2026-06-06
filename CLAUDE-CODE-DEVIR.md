@@ -46,12 +46,12 @@ Mahallemiz (komşu-app), `ai-architecture-rules` 13-kapı denetiminden geçirild
 - `npx tsc --noEmit` → **0 hata.** CI (#12) **yeşil** (build dahil).
 - 13 kapı: **0 🔴, 1 🟢 (K1), 12 🟡.** Sert stop-ship yok; "tam market-ready" değil (hepsi 🟢 değil).
 - Test: 6 unit (`src/__tests__/`) + 1 e2e (`e2e/auth-flow.spec.ts`, Playwright).
-- Lint: ~254 error (informational). `@ts-nocheck`: **1 dosya** (content-moderation.ts) — payment.ts 2026-06-06'da temizlendi.
+- Lint: ~254 error (informational). `@ts-nocheck`: **0 dosya** — content-moderation.ts 2026-06-06'da temizlendi (sonuncuydu). Tüm servisler tip-denetimli.
 - **Bekleyen commit:** `types.ts.bak` + `regen-types-error.txt` silindi + `.gitignore`'a eklendi — bir sonraki push'la repo'dan kalkacak.
 
 ## 5. KALAN İŞLER (öncelik sırası + NASIL)
 1. ~~**`payment.ts` — `@ts-nocheck`'i kaldır.**~~ ✅ **TAMAMLANDI (2026-06-06).** `payment_type` konvansiyonuna indirildi, boş `type` kolonu migration ile düşürüldü, `refunded_at` eklendi, `getRevenueReport` enum-dışı değerlere null-guard'landı, `@ts-nocheck` kaldırıldı (tsc 0). Ek olarak PayTR callback'ine status allowlist + total_amount NaN-guard eklendi (TECH_DEBT #3 büyük ölçüde kapandı). **Kalan:** PayTR token (ödeme başlatma) akışı hâlâ yarım — uçtan uca çalışması ayrı ürün işi; ve `paytr-hash.test.ts`'i red yollarına genişlet.
-2. **`content-moderation.ts` — `@ts-nocheck`'i kaldır.** `content_moderation` tablosu CANLIDA VAR ama servis kolonları uyumsuz. YAP: `execute_sql` ile gerçek kolonları çek, servisi hizala. Bu dosya aynı zamanda 771 satır (god-file) → bölmeyle birlikte ele al.
+2. ~~**`content-moderation.ts` — `@ts-nocheck`'i kaldır.**~~ ✅ **TAMAMLANDI (2026-06-06).** Eksik kolonlar additive migration ile eklendi (`author_id`+FK, `ai_categories`, `ai_reviewed_at`, snapshot'lar, `priority`, `auto_approved`); `ai_reasoning→reason`, `admin_id→resolved_by`, `admin_note→admin_notes`, `admin_reviewed_at→resolved_at`. RLS düzeltildi (AI insert + admin görünürlüğü). types.ts hizalandı, `@ts-nocheck` kaldırıldı (tsc 0). **Kalan:** dosya hâlâ 771 satır (god-file #6) — bölme ayrı iş.
 3. **God-file bölme (K2/#6):** `askida-bagis/page.tsx` (1994), `kayit/page.tsx` (1272), `pazar/ilan-ver/page.tsx` (1130) + 9 dosya 800–999. Bileşen/hook'a böl, veri çekmeyi servise taşı. **Riskli — her bölünen sayfayı dev server'da smoke-test et** (tsc/build davranış regresyonunu yakalamaz).
 4. **Akış testleri (K3 derinleştir):** ödeme callback, ilan oluşturma, mesajlaşma için entegrasyon/e2e. DB-mock veya Playwright kurulumu gerek.
 5. **Lint tail (~254):** çoğu load-bearing supabase `(data as any[])` cast'i. Kademeli erit; bittiğinde CI'da `lint`'i de zorunlu kapıya çevir (ci.yml'de `continue-on-error: true` kaldır). **Market-ready için zorunlu DEĞİL** (K2 "görünür+planlı" ister, sıfır değil).
