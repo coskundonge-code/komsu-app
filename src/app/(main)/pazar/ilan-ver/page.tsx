@@ -16,6 +16,17 @@ import { createClient } from '@/lib/supabase/client';
 import { uploadMultipleMedia } from '@/lib/upload';
 import { checkCanPost, consumeFreeQuota, LISTING_FEE, FREE_LISTING_LIMIT } from '@/lib/services/listing-quota';
 import { moderateMediaFiles, analyzeContent, submitForModeration } from '@/lib/services/content-moderation';
+import {
+  LISTING_TYPES,
+  CATEGORIES,
+  CONDITIONS,
+  CATEGORY_ID_MAP,
+  needsQuota,
+  validateListingForm,
+  canSubmitListing,
+  selectListingMedia,
+  type ListingType,
+} from '@/lib/services/listing-form';
 
 interface MediaItem {
   id: string;
@@ -26,8 +37,6 @@ interface MediaItem {
 
 // Keep Photo alias for backward compat
 type Photo = MediaItem;
-
-type ListingType = 'sale' | 'free' | 'rental' | 'lend';
 
 interface ListingFormData {
   listingType: ListingType;
@@ -44,44 +53,6 @@ interface ListingFormData {
     shipping: boolean;
   };
 }
-
-const LISTING_TYPES: { value: ListingType; label: string; icon: string; desc: string }[] = [
-  { value: 'sale', label: 'Satılık', icon: '🏷️', desc: 'Ürünü sat' },
-  { value: 'free', label: 'Ücretsiz', icon: '🎁', desc: 'Ücretsiz ver' },
-  { value: 'rental', label: 'Kiralık', icon: '🔑', desc: 'Kiraya ver' },
-  { value: 'lend', label: 'Ödünç Ver', icon: '🤝', desc: 'Ödünç ver' },
-];
-
-const CATEGORIES = [
-  'Elektronik',
-  'Mobilya',
-  'Giyim',
-  'Ev & Bahçe',
-  'Spor & Hobi',
-  'Kitap & Kırtasiye',
-  'Bebek & Çocuk',
-  'Araç',
-  'Diğer',
-];
-
-const CONDITIONS = [
-  { value: 'new', label: 'Sıfır' },
-  { value: 'like_new', label: 'Az Kullanılmış' },
-  { value: 'good', label: 'İyi' },
-  { value: 'fair', label: 'Orta' },
-];
-
-const CATEGORY_ID_MAP: Record<string, string> = {
-  'Elektronik': 'fcea98f1-d3e8-4b84-82b2-ae36994f809d',
-  'Mobilya': '836be50c-4d0d-4186-8808-df634fe8da56',
-  'Giyim': '90e53ece-6792-4d12-82d4-6c2c27fb2ce9',
-  'Ev & Bahçe': '418789ca-ca21-49f5-a473-2c8cea7f72be',
-  'Spor & Hobi': '65848553-fb70-4ba4-b20a-4514a0262843',
-  'Kitap & Kırtasiye': '24865efd-a9f5-4e4e-964b-68d681c1be56',
-  'Bebek & Çocuk': '648771ed-800e-4688-84c2-1baceba31741',
-  'Araç': 'd8fc0ab3-cac4-4f2f-a622-75efa1f59435',
-  'Diğer': 'cfbe68e2-dcee-4524-a1c6-7586fe3059bc',
-};
 
 export default function CreateListingPage() {
   const router = useRouter();
@@ -179,8 +150,7 @@ export default function CreateListingPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const needsQuota = formData.listingType === 'sale' || formData.listingType === 'rental';
-      if (!needsQuota) {
+      if (!needsQuota(formData.listingType)) {
         // Ücretsiz ve Ödünç Ver ilanları her zaman serbest
         setQuotaBlocked(false);
         return;
@@ -195,44 +165,23 @@ export default function CreateListingPage() {
     recheckQuota();
   }, [formData.listingType]);
 
-  const needsPrice = () => formData.listingType === 'sale';
+  // Doğrulama girdisini güncel form durumundan kur (hem gönder-kapısı hem submit doğrulaması kullanır).
+  const validationInput = () => ({
+    listingType: formData.listingType,
+    title: formData.title,
+    category: formData.category,
+    condition: formData.condition,
+    price: formData.price,
+    description: formData.description,
+    deliveryOptions: formData.deliveryOptions,
+  });
 
-  // Check if form can be submitted (no side effects - safe to call during render)
-  const canSubmit = () => {
-    // Quota exhausted for sale/rental - BLOCK submission entirely
-    if (quotaBlocked && (formData.listingType === 'sale' || formData.listingType === 'rental')) return false;
-    if (!formData.title.trim()) return false;
-    if (!formData.category) return false;
-    if (!formData.condition) return false;
-    if (needsPrice() && !formData.price.trim()) return false;
-    if (!formData.description.trim()) return false;
-    if (!formData.deliveryOptions.pickup && !formData.deliveryOptions.shipping) return false;
-    return true;
-  };
+  // Gönder kapısı (yan etkisiz - render sırasında güvenli).
+  const canSubmit = () => canSubmitListing(validationInput(), quotaBlocked);
 
-  // Validation with error setting (only call on submit)
+  // Hata haritasını set eden doğrulama (yalnız submit'te çağrılır).
   const isFormValid = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.title.trim()) {
-      newErrors.title = 'İlan başlığı gereklidir';
-    }
-    if (!formData.category) {
-      newErrors.category = 'Kategori seçilmelidir';
-    }
-    if (!formData.condition) {
-      newErrors.condition = 'Durum seçilmelidir';
-    }
-    if (needsPrice() && !formData.price.trim()) {
-      newErrors.price = 'Fiyat belirtilmelidir';
-    }
-    if (!formData.description.trim()) {
-      newErrors.description = 'Açıklama gereklidir';
-    }
-    if (!formData.deliveryOptions.pickup && !formData.deliveryOptions.shipping) {
-      newErrors.delivery = 'En az bir teslimat yöntemi seçin';
-    }
-
+    const newErrors = validateListingForm(validationInput());
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -265,37 +214,16 @@ export default function CreateListingPage() {
   };
 
   const addPhotos = async (files: File[]) => {
-    const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/quicktime', 'video/webm'];
-    const MAX_VIDEO_SIZE = 100 * 1024 * 1024; // 100MB
-
-    const mediaFiles = files.filter((file) => {
-      if (file.type.startsWith('image/')) return true;
-      if (ALLOWED_VIDEO_TYPES.includes(file.type)) {
-        if (file.size > MAX_VIDEO_SIZE) {
-          toast.error('Video dosyası çok büyük. Maksimum 100MB olmalı.');
-          return false;
-        }
-        return true;
-      }
-      return false;
-    });
-
-    // Max 2 videos allowed
     const currentVideoCount = formData.photos.filter(p => p.type === 'video').length;
-    const availableSlots = 10 - formData.photos.length;
+    const { accepted: filesToAdd, errors: mediaErrors } = selectListingMedia(
+      files,
+      formData.photos.length,
+      currentVideoCount
+    );
 
-    const filesToAdd: File[] = [];
-    let videoAddCount = 0;
-    for (const file of mediaFiles) {
-      if (filesToAdd.length >= availableSlots) break;
-      if (file.type.startsWith('video/')) {
-        if (currentVideoCount + videoAddCount >= 2) {
-          toast.error('En fazla 2 video yükleyebilirsiniz.');
-          continue;
-        }
-        videoAddCount++;
-      }
-      filesToAdd.push(file);
+    // Medya kuralı ihlallerini kullanıcıya bildir (tür/boyut/slot/video adedi).
+    for (const message of mediaErrors) {
+      toast.error(message);
     }
 
     // AI Moderation - check all files before adding
@@ -455,8 +383,7 @@ export default function CreateListingPage() {
       }
 
       // Check quota for sale/rental listings - HARD BLOCK
-      const needsQuota = formData.listingType === 'sale' || formData.listingType === 'rental';
-      if (needsQuota) {
+      if (needsQuota(formData.listingType)) {
         const quota = await checkCanPost(user.id, formData.listingType);
         if (quota && !quota.canPostFree) {
           // User is BLOCKED - cannot post without payment
@@ -487,7 +414,7 @@ export default function CreateListingPage() {
         console.error('Create listing error:', error);
       } else {
         // Consume free quota for sale/rental listings
-        if (needsQuota) {
+        if (needsQuota(formData.listingType)) {
           await consumeFreeQuota(user.id);
         }
 
