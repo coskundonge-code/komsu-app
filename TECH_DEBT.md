@@ -2,7 +2,7 @@
 
 > Kural (AI Architecture Rules / K2+K12): Borç sıfır olmak zorunda değil; **görünür ve
 > planlı** olmalı. Her madde: ne · nerede · etki · neden ertelendi · ödeme planı + tarih.
-> Son güncelleme: 2026-06-07
+> Son güncelleme: 2026-06-08
 
 ## Kabul edilen riskler (Faz 0'da bilinçli bırakıldı)
 
@@ -29,10 +29,11 @@
 - **Yapıldı (2026-06-07) — route handler entegrasyon testi:** Callback POST'unun kendisi uçtan uca test edildi (`src/__tests__/payment-callback.test.ts`, 9 test): mocklu `@supabase/supabase-js` + sahte `formData` ile (a) **güvenlik kapıları** — eksik parametre / hash uyuşmazlığı / imzalı-tutar-değişimi / bilinmeyen durum / sayısal-olmayan tutar hepsi **400 döner ve DB'ye dokunmaz** (`fromMock` çağrılmaz); (b) **yan etkiler** — mahalle_card & business_membership success → `payments` completed (kuruş→TL) + DOĞRU kullanıcıya profil aktivasyonu (`update().eq('id', userId)`), listing_fee success → aktivasyon YOK, failed (mahalle_card olsa bile) → aktivasyon YOK. Sahte bir POST ile bedava kart/üyelik veya yanlış-kullanıcı aktivasyonu artık testle kilitli. `next build` 0, test 171/171. ✅ **#3 kapandı.**
 - **Yapıldı (2026-06-07) — test-dosyası tip kapısı sıkılaştırıldı (`payment-callback.test.ts` yanlış-yeşili yakalandı):** Taze `npx tsc --noEmit --incremental false`, bir önceki turda eklenen `payment-callback.test.ts`'te 2 gizli tip hatası açığa çıkardı (satır 153/168: `updateMock = vi.fn(() => …)` **sıfır-argüman** imzası çıkarsadığı için `.mock.calls[0][0]` boş-tuple TS2493/TS2352 hatası veriyordu). **Neden gizlenmişti:** test dosyaları `next build` grafiğinde DEĞİL (build onları tip-denetlemez) + `tsconfig` `incremental:true` olduğundan bayat `.tsbuildinfo` ile standalone `tsc` **yanlış-yeşil** verdi. CI'ın ZORUNLU `Typecheck` adımı (`npx tsc --noEmit`) taze checkout'ta (TS cache yok) bunu yakalardı → **bir sonraki `coskun` push'unda CI kırmızı olurdu.** Düzeltme: mock imzasına gerçek argüman verildi (`vi.fn((_data?: Record<string,unknown>) => …)`) — üretimdeki `update({...})` çağrısıyla birebir, davranış değişmedi. **Ders (line ~115 keskinleştirildi): üretim kodu için yetkili gate `next build`; ama TEST dosyaları build grafiği dışında olduğundan onlar için yetkili yerel gate `tsc --noEmit --incremental false` (CI'ın taze `tsc`'siyle eşdeğer).** tsc 0, test 179/179. ✅
 
-### 4. Tip güvenliği borcu (~96 `tsc` hatası)
-- **Ne:** `npx tsc --noEmit` → 96 hata (çoğu admin sayfalarında implicit `any` (TS7006), ayrıca `use-listings.ts`/`use-posts.ts`'te gerçek tip uyumsuzlukları).
-- **Etki:** Yüksek — bu hatalar muhtemelen `next build`'i de kırıyor (`next.config.ts` → `ignoreBuildErrors:false`).
-- **Ödeme planı:** Tipleri düzelt; `any` sayısını düşür (~197). **Hedef: Faz 1 (öncelikli).**
+### 4. Tip güvenliği borcu — ÇÖZÜLDÜ (2026-06-08 doğrulandı)
+- **Geçmiş:** `npx tsc --noEmit` bir zamanlar ~96 hata veriyordu (çoğu admin sayfalarında implicit `any` (TS7006), ayrıca `use-listings.ts`/`use-posts.ts`'te gerçek tip uyumsuzlukları).
+- **Çözüldü:** #5 (react-query ambient `any` override kaldırıldı — implicit-any cascade'inin KÖK NEDENİ) + #8 (types.ts canlı şemadan yenilendi → tüm `@ts-nocheck`'ler kalktı) + #7 (zorunlu `tsc --noEmit` + `next build` CI kapısı) bu borcu fiilen kapattı.
+- **2026-06-08 doğrulaması:** taze `npx tsc --noEmit --incremental false` (bayat `.tsbuildinfo` cache'i devre dışı — #3/#13'teki "yanlış-yeşil" tuzağından kaçınır, CI'ın taze checkout'uyla eşdeğer) → **0 hata, EXIT 0**. `next.config.ts` → `ignoreBuildErrors:false` ve `next build` zorunlu CI kapısı geçiyor → üretim kodu da tip-temiz. ✅
+- **Not (tip HATASI ≠ lint uyarısı):** Bu madde "derleme tip-güvenli, tip hatası 0" demektir. Bununla KARIŞTIRILMAMASI gereken ayrı iş = `no-explicit-any` **lint uyarıları** (~214, bilinçli load-bearing cast'ler) → bkz. #5; o informational borç, derlemeyi kırmaz.
 
 ### 5. Lint borcu (Faz 1'de 356 → 265 indirildi)
 - **Yapıldı (2026-06-06):** rules-of-hooks 17 (2 gerçek hook-sıralama bug'ı: pazar/kategori + admin) ✅ · no-unescaped-entities 65 (kozmetik) ✅ · **react-query ambient override kaldırıldı** — `src/types/modules.d.ts` içinde `useQuery(options:any):any` tüm react-query tiplerini `any`'ye eziyordu; implicit-any cascade'inin KÖK NEDENİ idi ✅
@@ -42,7 +43,10 @@
 
 ### 6. Tanrı-dosyalar (>500 satır)
 - **Ne:** `askida-bagis/page.tsx` (1994 — **artık "yakında" ile kapatıldı**, bkz. #9), `kayit/page.tsx` (1272), `pazar/ilan-ver/page.tsx` (1130) + 9 dosya 800–999.
-- **Ödeme planı:** Bileşen + hook'a böl; veri çekmeyi servis/hook katmanına taşı. `kayit` (kayıt hunisi/eDevlet) en riskli — runtime testi gerektirir, sahip başındayken yapılmalı. **Hedef: Faz 1.**
+- **Yapıldı (2026-06-07) — `pazar/ilan-ver` saf mantığı çıkarıldı + test edildi (commit `8971ccf`):** Formun en hataya-açık parçaları — tür kuralları (`needsPrice`/`needsQuota`), alan doğrulaması (`validateListingForm`), gönder kapısı (`canSubmitListing`), medya seçim kuralları (`selectListingMedia`: tür/boyut/adet sınırları) ve sabitler (`LISTING_TYPES`/`CATEGORIES`/`CONDITIONS`/`CATEGORY_ID_MAP`/`MAX_*`) — **sıfır-import saf modüle** taşındı: `src/lib/services/listing-form.ts` (171 satır, K1: `paytr-oid`/`edevlet-match` kalıbı). 37 yeni test (`src/__tests__/listing-form.test.ts`) eşikleri kilitliyor (doğrulama gevşerse eksik ilan yayınlanır; medya kuralı gevşerse depolama/moderasyon yükü artar). Sayfa bu saf fonksiyonları çağırıyor, davranış birebir.
+- **Yapıldı (2026-06-07) — `kayit` adım doğrulaması saf fonksiyona + yasal modal bileşene (commit `16039c5`):** İki-aşamalı kayıt formunun doğrulaması route'tan saf modüle taşındı: `validateRegisterStep1` (kimlik/ad/e-posta) + `validateRegisterStep2` (tam form, şifre/telefon) → `src/lib/validations/auth.ts` (K1). Adım 1'in telefon/şifreyi ETKİLEMEME sözleşmesi + adım 2'nin tam şema davranışı 10 yeni testle kilitlendi (`validations.test.ts`). Ayrıca 116 satırlık satıriçi yasal (Koşullar/Gizlilik) modal blok salt-sunum `RegisterLegalModal` bileşenine çıkarıldı (`src/components/auth/register-legal-modal.tsx`). Sayfa 1273→1049 satır.
+- **Önemli (dürüstlük notu):** Bu çıkarmalar **riskli/test-edilemez iş mantığını** saf + test-edilir modüllere kilitledi; ama iki sayfa hâlâ uzun (`kayit` 1049, `ilan-ver` 1057) — kalan uzunluk büyük ölçüde **JSX/sunum**. `kayit`'in `handleSignUp`/`handleGoogleSignUp` (auth/eDevlet runtime yolu) **bilinçli olarak ELLENMEDİ**: sahip uyurken UI runtime testi yapılamaz ve JSX'i alt-bileşenlere bölmek görünmez className/markup hatası riski taşır (tsc/build bunu yakalamaz). Bu yüzden JSX dekompozisyonu sahip başındayken yapılmalı.
+- **Ödeme planı:** Kalan iş = uzun JSX'i (form alanları, medya yükleyici) alt-bileşenlere bölmek — **sahip başındayken** (runtime doğrulanabilir). Diğer 9 dosya (800–999) aynı kalıpla "önce saf mantık" çıkarılır. **Hedef: Faz 1 (riskli mantık ✅ bitti; JSX bölme sahip başındayken).**
 
 ### 7. CI kapıları (2026-06-06 sıkılaştırıldı)
 - **Yapıldı:** `typecheck (tsc --noEmit)` + `next build` + `test` artık ZORUNLU kapı (kırmızı = push'ta görünür/CI patlar). ✅

@@ -3,7 +3,7 @@
 > Bu dosya, uygulamanın canlıya/mağazaya çıkması için **kalan tüm işlerin** sade
 > listesidir. "Kim yapacak" ve "ne zaman" ölçütüne göre üçe ayrıldı.
 > Teknik ayrıntılar: `TECH_DEBT.md` · Operasyon: `RUNBOOK.md`
-> Son güncelleme: 2026-06-07
+> Son güncelleme: 2026-06-08
 
 İşaretler: ⬜ yapılacak · ✅ yapıldı · 🔴 yayın engeli (bu olmadan canlıya çıkılmaz)
 
@@ -39,10 +39,14 @@
   Google Vision SafeSearch ile yazıldı, eşikleri test edildi (13 test). **Kalan tek adım
   sahipte** (A bölümüne taşındı): Vision API anahtarını girmek. Anahtar girilene kadar
   moderasyon dürüstçe "kapalı" — yükleme engellenmez, insan şikâyet hattı yedek.
-- ⬜ **Tanrı-dosyaları böl** (`TECH_DEBT #6`, görev #12): `kayit` (~1272 satır) ve
-  `pazar/ilan-ver` (~1130). Kayıt/eDevlet hunisi en riskli — **sahip başındayken**
-  çalışma-zamanı testi gerektirir.
-- ⬜ **Tip güvenliği borcu** (`TECH_DEBT #4`): kalan tip uyarılarını erit.
+- ⬜ **Tanrı-dosyaları böl** (`TECH_DEBT #6`): Riskli iş mantığı ✅ çıkarıldı + test edildi
+  — `kayit` doğrulaması → `validations/auth.ts` (commit `16039c5`), `pazar/ilan-ver`
+  form/medya/kota mantığı → `services/listing-form.ts` (commit `8971ccf`); +47 test eşikleri
+  kilitledi. **Kalan:** iki sayfa hâlâ uzun (1049/1057 satır, çoğu JSX) — uzun JSX'i
+  alt-bileşenlere bölme + `kayit` auth/eDevlet runtime yolu **sahip başındayken** yapılır.
+- ✅ **Tip güvenliği** (`TECH_DEBT #4`): tip HATASI borcu kapandı — taze
+  `tsc --noEmit --incremental false` 0 hata + `next build` (`ignoreBuildErrors:false`)
+  geçiyor. Kalan `any` **lint** uyarıları ayrı + informational (aşağıda, `TECH_DEBT #5`).
 - ⬜ **Kalan mock/sahte veri kalıntıları** (`TECH_DEBT #12`): büyük kısmı temizlendi —
   işletme paneli istatistik/performans/QR-tara sayfaları da bu turda dürüst "yakında"ya
   çevrildi; geriye yalnızca birkaç düşük-riskli son-kullanıcı fallback'i kaldı.
@@ -69,6 +73,9 @@
 - ✅ İşletim Kılavuzu `RUNBOOK.md` oluşturuldu.
 - ✅ Sahte/mock veri yüzeylerinin büyük kısmı gerçeğe bağlandı; işletme paneli
   istatistik/performans/QR-tara sayfaları dürüst "yakında"ya çevrildi (`TECH_DEBT #12`).
+- ✅ İki canlı tanrı-dosyasının **riskli iş mantığı** saf + test-edilir modüllere çıkarıldı:
+  `pazar/ilan-ver` form/medya/kota → `services/listing-form.ts` (+37 test); `kayit`
+  doğrulaması → `validations/auth.ts` + yasal modal bileşene (+10 test) (`TECH_DEBT #6`).
 - ✅ İçerik şikâyet akışı gerçeğe bağlandı (`TECH_DEBT #13`).
 - ✅ Hesap silme FK zinciri düzeltildi (`TECH_DEBT #14`).
 - ✅ Kritik akışlara testler eklendi (194 test), CI kapıları sıkılaştırıldı (`#7`).
