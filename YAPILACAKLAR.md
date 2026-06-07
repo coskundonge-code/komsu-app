@@ -25,6 +25,9 @@
 - ⬜ **Blog içerik kararı:** Liste sayfasında 12 başlık var ama yalnızca 3'ünün
   gerçek yazısı yazılı. Kalan 9'u yazılacak mı, yoksa liste 3'e mi indirilecek?
 - ⬜ **"deploy et" kararı:** `main`'e geçiş = canlıya çıkış. Yalnızca siz deyince.
+- ⬜ **Google Vision API anahtarı** (AI görsel moderasyonunu açmak için — şiddetle önerilir):
+  Google Cloud Console'da Vision API'yi etkinleştir → API key oluştur → `GOOGLE_CLOUD_VISION_API_KEY`
+  olarak ENV'e gir (lokal `.env.local` + Vercel). Uç hazır; anahtar girilince otomatik devreye girer.
 - ⬜ **Sentry DSN** (hata izlemeyi aktif etmek için — opsiyonel ama şiddetle önerilir).
 - ⬜ **Supabase yedek planı:** Pro plan + PITR (anlık geri yükleme) açık mı doğrula.
 
@@ -32,9 +35,10 @@
 
 ## B) TEKNİK — YAYIN ÖNCESİ (ben/teknik yaparım, Faz 1)
 
-- ⬜ **AI görsel moderasyonu** (`TECH_DEBT #11`): `/api/moderate-media` ucu yok →
-  şu an görseller AI ön-filtresinden geçmeden onaylanıyor (insan şikâyet hattı var).
-  Bir AI vision sağlayıcısıyla (sağlayıcı + anahtar **sahip kararı**) inşa edilecek.
+- ✅ **AI görsel moderasyonu — uç inşa edildi** (`TECH_DEBT #11`): `/api/moderate-media`
+  Google Vision SafeSearch ile yazıldı, eşikleri test edildi (13 test). **Kalan tek adım
+  sahipte** (A bölümüne taşındı): Vision API anahtarını girmek. Anahtar girilene kadar
+  moderasyon dürüstçe "kapalı" — yükleme engellenmez, insan şikâyet hattı yedek.
 - ⬜ **Tanrı-dosyaları böl** (`TECH_DEBT #6`, görev #12): `kayit` (~1272 satır) ve
   `pazar/ilan-ver` (~1130). Kayıt/eDevlet hunisi en riskli — **sahip başındayken**
   çalışma-zamanı testi gerektirir.
