@@ -50,6 +50,9 @@
 - ⬜ **Kalan mock/sahte veri kalıntıları** (`TECH_DEBT #12`): büyük kısmı temizlendi —
   işletme paneli istatistik/performans/QR-tara sayfaları da bu turda dürüst "yakında"ya
   çevrildi; geriye yalnızca birkaç düşük-riskli son-kullanıcı fallback'i kaldı.
+- ⬜ **Ödünç/kiralık ilan formu fotoğraf + mahalle bug'ı** (`TECH_DEBT #16`): `odunc-kirala/ilan-ver`
+  fotoğrafları gerçekten yüklemiyor (kaydedince kırılıyor) + tüm ilanları sabit bir mahalleye
+  yazıyor. Düzeltme **sahip başındayken** (tarayıcıda fotoğraf yükleme testi gerekir).
 - ⬜ **Lint borcu** (`TECH_DEBT #5`): kalan `any` kullanımı kademeli azaltılacak.
 
 ---
