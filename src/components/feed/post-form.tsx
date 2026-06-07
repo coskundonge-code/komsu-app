@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { X, Image, MapPin, Lock, Globe, Send } from 'lucide-react';
+import { X, Image as ImageIcon, Lock, Globe, Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export type PostType = 'genel' | 'guvenlik' | 'oneri' | 'kayipbuluntu' | 'satilik';
@@ -154,7 +154,7 @@ export function PostForm({
             Medya
           </label>
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-primary transition-colors cursor-pointer">
-            <Image size={24} className="mx-auto text-gray-400 mb-2" />
+            <ImageIcon size={24} className="mx-auto text-gray-400 mb-2" />
             <p className="text-sm text-gray-600">
               Fotoğraf veya video eklemek için tıklayın
             </p>

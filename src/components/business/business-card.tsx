@@ -15,7 +15,6 @@ interface BusinessCardProps {
 }
 
 export function BusinessCard({
-  id,
   name,
   category,
   rating,
@@ -58,33 +57,41 @@ export function BusinessCard({
         {/* Category */}
         <p className="text-sm text-primary font-medium mb-2">{category}</p>
 
-        {/* Rating */}
+        {/* Rating — yalnızca gerçek yorum varsa yıldız göster; yoksa dürüst etiket */}
         <div className="flex items-center gap-2 mb-3">
-          <div className="flex items-center">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                size={16}
-                className={
-                  i < Math.floor(rating)
-                    ? 'fill-yellow-400 text-yellow-400'
-                    : i < rating
-                    ? 'fill-yellow-400 text-yellow-400 opacity-50'
-                    : 'text-gray-300'
-                }
-              />
-            ))}
-          </div>
-          <span className="text-sm font-medium text-gray-700">
-            {rating.toFixed(1)} ({reviewCount})
-          </span>
+          {reviewCount > 0 ? (
+            <>
+              <div className="flex items-center">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    size={16}
+                    className={
+                      i < Math.floor(rating)
+                        ? 'fill-yellow-400 text-yellow-400'
+                        : i < rating
+                        ? 'fill-yellow-400 text-yellow-400 opacity-50'
+                        : 'text-gray-300'
+                    }
+                  />
+                ))}
+              </div>
+              <span className="text-sm font-medium text-gray-700">
+                {rating.toFixed(1)} ({reviewCount})
+              </span>
+            </>
+          ) : (
+            <span className="text-sm text-gray-500">Henüz değerlendirilmemiş</span>
+          )}
         </div>
 
-        {/* Address */}
-        <div className="flex gap-2 text-xs text-gray-600 mb-3 line-clamp-2">
-          <MapPin size={14} className="text-primary flex-shrink-0 mt-0.5" />
-          <span>{address}</span>
-        </div>
+        {/* Address — yalnızca gerçek adres varsa göster */}
+        {address && (
+          <div className="flex gap-2 text-xs text-gray-600 mb-3 line-clamp-2">
+            <MapPin size={14} className="text-primary flex-shrink-0 mt-0.5" />
+            <span>{address}</span>
+          </div>
+        )}
 
         {/* Contact Info */}
         {(phone || website) && (

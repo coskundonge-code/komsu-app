@@ -1,8 +1,7 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { User, Store, Heart, Settings, HelpCircle, LogOut, Shield, UserPlus, MessageCircle, CreditCard } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useCurrentUser } from '@/lib/hooks/use-auth'
@@ -13,7 +12,6 @@ interface UserDropdownProps {
 }
 
 export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
-  const router = useRouter()
   const dropdownRef = useRef<HTMLDivElement>(null)
   const { profile, neighborhood } = useCurrentUser()
 
@@ -21,7 +19,7 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
     try {
       const supabase = createClient()
       await supabase.auth.signOut()
-    } catch (e) {
+    } catch {
       // Ignore client-side errors
     }
     const form = document.createElement('form')

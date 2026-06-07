@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { X, Loader2, Check, AlertCircle, CreditCard, Building2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 export type PaymentModalState = 'form' | 'processing' | 'success' | 'error';
 export type PaymentMethodChoice = 'card' | 'transfer';

@@ -31,15 +31,18 @@ export async function markAllNotificationsAsRead(userId: string) {
   return { error }
 }
 
-export async function getAlerts(neighborhoodId: string, options?: { limit?: number; severity?: string }) {
+// NOT (2026-06-07): Gerçek kolon adları author_id ve severity'dir (eskiden
+// hatalı `alerts_created_by_fkey` / `alert_severity` kullanılıyordu). neighborhoodId
+// opsiyonel: verilmezse tüm uyarılar döner.
+export async function getAlerts(neighborhoodId?: string, options?: { limit?: number; severity?: string }) {
   const supabase = createClient()
   let query = supabase
     .from('alerts')
-    .select('*, profiles!alerts_created_by_fkey(full_name)')
-    .eq('neighborhood_id', neighborhoodId)
+    .select('*, profiles!alerts_author_id_fkey(full_name)')
     .order('created_at', { ascending: false })
 
-  if (options?.severity) query = query.eq('alert_severity', options.severity)
+  if (neighborhoodId) query = query.eq('neighborhood_id', neighborhoodId)
+  if (options?.severity) query = query.eq('severity', options.severity)
   if (options?.limit) query = query.limit(options.limit)
 
   const { data, error } = await query

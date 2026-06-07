@@ -1,451 +1,222 @@
-"use client";
+'use client'
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react'
 import {
   Search,
-  MapPin,
-  Newspaper,
   Store,
-  Home,
-  Building2,
-  AlertTriangle,
+  Calendar,
+  Package,
   AlertCircle,
+  AlertTriangle,
   Wind,
   Zap,
   Star,
   Clock,
-  Navigation,
-  Flame,
-  TrendingUp,
-  Users,
-  Calendar,
-  HeartHandshake,
-} from "lucide-react";
-import Link from "next/link";
-import dynamic from "next/dynamic";
-import { createClient } from "@/lib/supabase/client";
+  MapPin,
+  Tag,
+  Loader2,
+  ChevronRight,
+  Compass,
+} from 'lucide-react'
+import Link from 'next/link'
+import dynamic from 'next/dynamic'
+import { getEvents } from '@/lib/hooks/use-events'
+import { getListings } from '@/lib/hooks/use-listings'
+import { getAlerts } from '@/lib/hooks/use-notifications'
+import { getBusinesses } from '@/lib/hooks/use-groups-businesses'
 
-const KesfetMap = dynamic(() => import("./kesfet-map"), { ssr: false });
+const KesfetMap = dynamic(() => import('./kesfet-map'), { ssr: false })
 
-interface ActivityItem {
-  id: string;
-  title: string;
-  description: string;
-  distance: string;
-  category: string;
-  categoryId: string;
-  type: string;
-  time: string;
-  icon: string;
+// NOT (2026-06-07): Bu sayfa eskiden BAŞTAN AŞAĞI uyduruktu — 12 sahte "etkinlik"
+// (nearbyActivities), 4 sahte işletme (nearbyBusinesses, sabit mesafe/adres),
+// 3 sabit güvenlik uyarısı (safetyAlerts), 5 sahte trend konu, 5 sahte "son
+// aktivite" ve sabit istatistik bandı (1.247 komşu / 34 paylaşım / 8 etkinlik).
+// Gerçek veri yalnızca kısmen üstüne yazılıyor, eksikler sahteyle dolduruluyordu.
+// Artık her şey GERÇEK: akış gerçek etkinlik + ilanlardan, kenar çubuğu gerçek
+// işletme ve uyarılardan beslenir; her kart kendi gerçek detay sayfasına gider.
+// Veri yoksa dürüst boş durum gösterilir. Bkz. TECH_DEBT #12.
+
+type FeedKind = 'event' | 'listing'
+
+interface FeedItem {
+  id: string
+  kind: FeedKind
+  title: string
+  description: string
+  meta: string
+  timestamp: number
+  timeLabel: string
+  href: string
+  categoryLabel: string
 }
 
 interface BusinessItem {
-  id: string;
-  name: string;
-  category: string;
-  rating: number;
-  reviews: number;
-  distance: string;
-  address: string;
+  id: string
+  name: string
+  slug: string
+  category: string
+  rating: number | null
+  reviews: number
+  address: string | null
 }
 
-interface SafetyAlert {
-  id: string;
-  type: string;
-  title: string;
-  description: string;
-  time: string;
-  severity: "low" | "medium" | "high";
+interface AlertItem {
+  id: string
+  type: string
+  title: string
+  description: string
+  timeLabel: string
+  severity: 'low' | 'medium' | 'high' | 'critical'
 }
 
-const nearbyActivities: ActivityItem[] = [
-  {
-    id: "1",
-    title: "Mahallede Yeni Kahvehane Açılıyor",
-    description: "Lokantanın yerine yeni bir kahvehane işletmesi açılıyor. Açılış 15 Mart'ta yapılacak.",
-    distance: "250m",
-    category: "İşletmeler",
-    categoryId: "business",
-    type: "business",
-    time: "2 saat önce",
-    icon: "store",
-  },
-  {
-    id: "2",
-    title: "Park Yenileme Projesi Tamamlandı",
-    description: "Yazlık park yenileme projesi başarıyla tamamlanmıştır. Yeni oyun alanları ve banklar eklendi.",
-    distance: "500m",
-    category: "Etkinlikler",
-    categoryId: "events",
-    type: "event",
-    time: "4 saat önce",
-    icon: "event",
-  },
-  {
-    id: "3",
-    title: "Güvenlik: Sokak Aydınlatması Arızalandı",
-    description: "Açı Sokak'taki aydınlatma arızası bildirilmiştir. Tamir çalışmaları başlamıştır.",
-    distance: "180m",
-    category: "Uyarılar",
-    categoryId: "alerts",
-    type: "alert",
-    time: "1 saat önce",
-    icon: "security",
-  },
-  {
-    id: "4",
-    title: "Satılık: Eviniz için Doğru Fiyat",
-    description: "Mahallede gayrimenkul fiyatları hızla artıyor. Tavsiyelerimizi okuyun.",
-    distance: "600m",
-    category: "Satılık",
-    categoryId: "forsale",
-    type: "forsale",
-    time: "6 saat önce",
-    icon: "home",
-  },
-  {
-    id: "5",
-    title: "Komşu Mahallesi Spor Etkinliği",
-    description: "Cumartesi günü merkez parkında futbol turnuvası yapılacaktır. Katılımcılar arıyor.",
-    distance: "800m",
-    category: "Etkinlikler",
-    categoryId: "events",
-    type: "event",
-    time: "8 saat önce",
-    icon: "event",
-  },
-  {
-    id: "6",
-    title: "Yerel Elektrikçi Hizmetlerinizi Anlatıyor",
-    description: "Mahalle halkına yoğun ilgi gören elektrik ustası Serkan, hizmetleri hakkında konuşuyor.",
-    distance: "320m",
-    category: "İşletmeler",
-    categoryId: "business",
-    type: "business",
-    time: "1 gün önce",
-    icon: "store",
-  },
-  {
-    id: "7",
-    title: "Güvenlik: Trafik Kontrolü Yapılacak",
-    description: "Pazar günü saat 10:00-14:00 arasında bölgede trafik kontrolü yapılacaktır.",
-    distance: "450m",
-    category: "Uyarılar",
-    categoryId: "alerts",
-    type: "alert",
-    time: "3 saat önce",
-    icon: "security",
-  },
-  {
-    id: "8",
-    title: "Yeni Fitness Merkezi Açılış Özel İndirimi",
-    description: "Yeni açılan fitness merkezinde ilk 3 ay %30 indirim yapılmaktadır.",
-    distance: "750m",
-    category: "İşletmeler",
-    categoryId: "business",
-    type: "business",
-    time: "5 saat önce",
-    icon: "store",
-  },
-  {
-    id: "9",
-    title: "Satılık: Apartman Dairesi - 3+1",
-    description: "Merkez lokasyonda, güneşli, yeni binada 3+1 daire satılmaktadır.",
-    distance: "900m",
-    category: "Satılık",
-    categoryId: "forsale",
-    type: "forsale",
-    time: "2 saat önce",
-    icon: "home",
-  },
-  {
-    id: "10",
-    title: "Etkinlik: Mahalle Temizlik Günü",
-    description: "Çevre temizliği için gönüllü aranıyor. Cuma günü saat 14:00'te toplanacağız.",
-    distance: "400m",
-    category: "Etkinlikler",
-    categoryId: "events",
-    type: "event",
-    time: "7 saat önce",
-    icon: "event",
-  },
-  {
-    id: "11",
-    title: "Kayıp: Siyah Beyaz Kedi",
-    description: "Merkez mahallede kaybolan sevimli kedimiz. İçinde çip bulunmaktadır.",
-    distance: "350m",
-    category: "Kayıp/Buluntu",
-    categoryId: "lost",
-    type: "lost",
-    time: "4 saat önce",
-    icon: "home",
-  },
-  {
-    id: "12",
-    title: "Uyarı: Elektrik Kesintisi",
-    description: "Ağ bakım çalışmaları nedeniyle Çarşamba 09:00-17:00 arasında kesinti olabilir.",
-    distance: "200m",
-    category: "Uyarılar",
-    categoryId: "alerts",
-    type: "alert",
-    time: "6 saat önce",
-    icon: "security",
-  },
-];
+function formatRelativeTime(iso: string | null): string {
+  if (!iso) return ''
+  const date = new Date(iso)
+  const diff = Date.now() - date.getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 1) return 'az önce'
+  if (mins < 60) return `${mins} dk önce`
+  const hours = Math.floor(mins / 60)
+  if (hours < 24) return `${hours} saat önce`
+  const days = Math.floor(hours / 24)
+  if (days < 7) return `${days} gün önce`
+  return date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })
+}
 
-const nearbyBusinesses: BusinessItem[] = [
-  {
-    id: 'b1',
-    name: 'Kahvehane Express',
-    category: 'Kahvehane',
-    rating: 4.8,
-    reviews: 124,
-    distance: '250m',
-    address: 'Merkez Cad. No: 45',
-  },
-  {
-    id: 'b2',
-    name: 'Berber Hasan',
-    category: 'Berberlik',
-    rating: 4.6,
-    reviews: 89,
-    distance: '180m',
-    address: 'Açı Sokak No: 12',
-  },
-  {
-    id: 'b3',
-    name: 'Eczacı Plus Eczanesi',
-    category: 'Eczane',
-    rating: 4.9,
-    reviews: 156,
-    distance: '320m',
-    address: 'İş Merkezi Kat: 2',
-  },
-  {
-    id: 'b4',
-    name: 'Fitness Plus Spor Salonu',
-    category: 'Spor Salonu',
-    rating: 4.7,
-    reviews: 203,
-    distance: '750m',
-    address: 'Park Cad. No: 78',
-  },
-];
+function formatEventDate(iso: string | null): string {
+  if (!iso) return ''
+  return new Date(iso).toLocaleDateString('tr-TR', {
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
 
-const safetyAlerts: SafetyAlert[] = [
-  {
-    id: "sa1",
-    type: "weather",
-    title: "Hava Durumu Uyarısı",
-    description: "Cuma günü kuvvetli rüzgar beklenmektedir.",
-    time: "2 saat önce",
-    severity: "low",
-  },
-  {
-    id: "sa2",
-    type: "traffic",
-    title: "Trafik Uyarısı",
-    description: "Ana Caddede saat 17:00-19:00 arasında yoğunluk beklenmektedir.",
-    time: "3 saat önce",
-    severity: "medium",
-  },
-  {
-    id: "sa3",
-    type: "outage",
-    title: "Elektrik Kesintisi",
-    description: "Çarşamba 09:00-17:00 arası ağ bakım nedeniyle kesinti olabilir.",
-    time: "6 saat önce",
-    severity: "high",
-  },
-];
+function formatPrice(price: number | null, currency: string | null): string {
+  if (price == null) return 'Fiyat belirtilmemiş'
+  return `${Number(price).toLocaleString('tr-TR')} ${currency || '₺'}`
+}
 
-const trendingTopics = [
-  { id: "1", title: "Mahalle Temizliği", count: 234 },
-  { id: "2", title: "Yeni Bahçe Projesi", count: 189 },
-  { id: "3", title: "Güvenlik Kameraları", count: 156 },
-  { id: "4", title: "Spor Alanı Renovasyonu", count: 142 },
-  { id: "5", title: "Komşu Ağı Etkinliği", count: 128 },
-];
+const filterCategories: { id: 'all' | FeedKind; label: string }[] = [
+  { id: 'all', label: 'Tümü' },
+  { id: 'event', label: 'Etkinlikler' },
+  { id: 'listing', label: 'Pazar' },
+]
 
-const recentActivityFeed = [
-  { id: "1", user: "Ayşe K.", action: "yeni etkinlik oluşturdu", time: "5 dakika önce" },
-  { id: "2", user: "Mehmet Y.", action: "Satılık: 2+1 Daire", time: "15 dakika önce" },
-  { id: "3", user: "Fatih D.", action: "İşletmeler kategorisinde paylaştı", time: "23 dakika önce" },
-  { id: "4", user: "Zeynep S.", action: "Güvenlik uyarısı gönderdi", time: "1 saat önce" },
-  { id: "5", user: "Emre T.", action: "Etkinliğe katıldı", time: "2 saat önce" },
-];
-
-const categoryIcons: Record<string, React.ReactNode> = {
-  business: <Store size={16} />,
-  events: <Building2 size={16} />,
-  alerts: <AlertTriangle size={16} />,
-  forsale: <Home size={16} />,
-  lost: <HeartHandshake size={16} />,
-};
-
-const getCategoryColor = (categoryId: string) => {
-  switch (categoryId) {
-    case "business":
-      return "bg-blue-100 text-blue-700 border-blue-200";
-    case "events":
-      return "bg-purple-100 text-purple-700 border-purple-200";
-    case "alerts":
-      return "bg-red-100 text-red-700 border-red-200";
-    case "forsale":
-      return "bg-yellow-100 text-yellow-700 border-yellow-200";
-    case "lost":
-      return "bg-pink-100 text-pink-700 border-pink-200";
-    default:
-      return "bg-gray-100 text-gray-700 border-gray-200";
-  }
-};
+const kindStyles: Record<FeedKind, { color: string; icon: React.ReactNode }> = {
+  event: { color: 'bg-purple-100 text-purple-700 border-purple-200', icon: <Calendar size={18} /> },
+  listing: { color: 'bg-yellow-100 text-yellow-700 border-yellow-200', icon: <Package size={18} /> },
+}
 
 export default function KesfetPage() {
-  const [searchQuery, setSearchQuery] = React.useState("");
-  const [activeTab, setActiveTab] = React.useState("all");
-  const [distanceFilter, setDistanceFilter] = React.useState("all");
-  const [dbActivities, setDbActivities] = useState<ActivityItem[]>(nearbyActivities);
-  const [dbBusinesses, setDbBusinesses] = useState<BusinessItem[]>(nearbyBusinesses);
+  const [searchQuery, setSearchQuery] = useState('')
+  const [activeTab, setActiveTab] = useState<'all' | FeedKind>('all')
+  const [feed, setFeed] = useState<FeedItem[]>([])
+  const [businesses, setBusinesses] = useState<BusinessItem[]>([])
+  const [alerts, setAlerts] = useState<AlertItem[]>([])
+  const [loading, setLoading] = useState(true)
 
-  // Fetch trending content from Supabase on mount
   useEffect(() => {
-    const fetchTrendingContent = async () => {
-      try {
-        const supabase = createClient();
+    let cancelled = false
 
-        // Fetch popular posts
-        const { data: posts } = await supabase
-          .from("posts")
-          .select("id, title, body, created_at, profiles(full_name)")
-          .order("reaction_count", { ascending: false })
-          .limit(5)
+    const load = async () => {
+      setLoading(true)
+      const [eventsRes, listingsRes, businessesRes, alertsRes] = await Promise.all([
+        getEvents({ upcoming: true, limit: 30 }),
+        getListings({ status: 'active', limit: 30, sortBy: 'newest' }),
+        getBusinesses({ limit: 6 }),
+        getAlerts(undefined, { limit: 6 }),
+      ])
 
-        // Fetch nearby businesses
-        const { data: businesses } = await supabase
-          .from("businesses")
-          .select("id, name, category, rating_avg, reviews:business_reviews(count)")
-          .limit(5)
+      if (cancelled) return
 
-        if (businesses) {
-          setDbBusinesses(
-            businesses.map((b: any) => ({
-              id: b.id,
-              name: b.name,
-              category: b.category,
-              rating: b.rating_avg || 4.5,
-              reviews: b.reviews?.[0]?.count || 0,
-              distance: "0.5 km",
-              address: "Address TBD",
-            }))
-          );
-        }
+      const eventItems: FeedItem[] = (eventsRes.data || []).map((e: any) => ({
+        id: e.id,
+        kind: 'event' as const,
+        title: e.title,
+        description: e.description || '',
+        meta: [formatEventDate(e.start_date), e.location].filter(Boolean).join(' · '),
+        timestamp: new Date(e.created_at || e.start_date || 0).getTime(),
+        timeLabel: formatRelativeTime(e.created_at),
+        href: `/etkinlikler/${e.id}`,
+        categoryLabel: e.category || 'Etkinlik',
+      }))
 
-        if (posts) {
-          const activities: ActivityItem[] = posts.map((p: any) => ({
-            id: p.id,
-            title: p.title,
-            description: p.body?.substring(0, 100) || "",
-            distance: "250m",
-            category: "Posts",
-            categoryId: "posts",
-            type: "post",
-            time: new Date(p.created_at).toLocaleDateString("tr-TR"),
-            icon: "store",
-          }));
-          setDbActivities([...activities, ...nearbyActivities.slice(activities.length)]);
-        }
-      } catch (error) {
-        console.error("Error fetching trending content:", error);
-      }
-    };
+      const listingItems: FeedItem[] = (listingsRes.data || []).map((l: any) => ({
+        id: l.id,
+        kind: 'listing' as const,
+        title: l.title,
+        description: l.description || '',
+        meta: formatPrice(l.price, l.currency),
+        timestamp: new Date(l.created_at || 0).getTime(),
+        timeLabel: formatRelativeTime(l.created_at),
+        href: `/pazar/ilan/${l.id}`,
+        categoryLabel: l.listing_categories?.name || 'Pazar',
+      }))
 
-    fetchTrendingContent();
-  }, []);
+      const merged = [...eventItems, ...listingItems].sort((a, b) => b.timestamp - a.timestamp)
+      setFeed(merged)
 
-  const filterCategories = [
-    { id: "all", label: "Tümü" },
-    { id: "events", label: "Etkinlikler" },
-    { id: "business", label: "İşletmeler" },
-    { id: "alerts", label: "Uyarılar" },
-    { id: "forsale", label: "Satılık" },
-    { id: "lost", label: "Kayıp/Buluntu" },
-  ];
+      setBusinesses(
+        (businessesRes.data || []).map((b: any) => ({
+          id: b.id,
+          name: b.name,
+          slug: b.slug,
+          category: b.business_categories?.name || 'İşletme',
+          rating: b.rating_avg ?? null,
+          reviews: b.review_count || 0,
+          address: b.address || null,
+        }))
+      )
 
-  const distanceOptions = [
-    { value: "all", label: "Tüm mesafeler" },
-    { value: "500m", label: "500m" },
-    { value: "1km", label: "1km" },
-    { value: "2km", label: "2km" },
-    { value: "5km", label: "5km" },
-  ];
+      setAlerts(
+        (alertsRes.data || []).map((a: any) => ({
+          id: a.id,
+          type: a.type || 'general',
+          title: a.title,
+          description: a.body || '',
+          timeLabel: formatRelativeTime(a.created_at),
+          severity: (a.severity || 'low') as AlertItem['severity'],
+        }))
+      )
 
-  const parseDistance = (distStr: string): number => {
-    const num = parseInt(distStr);
-    return distStr.includes("km") ? num * 1000 : num;
-  };
+      setLoading(false)
+    }
 
-  const isWithinDistance = (distance: string, filter: string): boolean => {
-    if (filter === "all") return true;
-    const filterDist = parseDistance(filter);
-    const itemDist = parseDistance(distance);
-    return itemDist <= filterDist;
-  };
+    load().catch(() => {
+      if (!cancelled) setLoading(false)
+    })
 
-  const filteredActivities = dbActivities.filter((item) => {
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const filteredFeed = feed.filter((item) => {
+    const q = searchQuery.trim().toLowerCase()
     const matchesSearch =
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesTab = activeTab === "all" || item.categoryId === activeTab;
-    const matchesDistance = isWithinDistance(item.distance, distanceFilter);
-    return matchesSearch && matchesTab && matchesDistance;
-  });
+      !q || item.title.toLowerCase().includes(q) || item.description.toLowerCase().includes(q)
+    const matchesTab = activeTab === 'all' || item.kind === activeTab
+    return matchesSearch && matchesTab
+  })
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header Section */}
       <div className="bg-surface border-b border-border sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 sm:py-4">
-          {/* Search Bar */}
           <div className="relative mb-4">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
             <input
               type="text"
-              placeholder="Mahallende etkinlik ve işletmeler ara..."
+              placeholder="Mahallende etkinlik ve ilan ara..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-full text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </div>
-
-          {/* Title */}
           <h1 className="text-2xl font-bold text-text-primary">Çevredekileri Keşfet</h1>
-        </div>
-      </div>
-
-      {/* Stats Banner */}
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 sm:py-4">
-        <div className="grid grid-cols-3 gap-3 bg-surface rounded-lg border border-border p-4">
-          <div className="text-center">
-            <div className="flex items-center justify-center mb-2">
-              <Users size={20} className="text-primary" />
-            </div>
-            <p className="text-2xl font-bold text-text-primary">1,247</p>
-            <p className="text-xs text-text-muted">Aktif Komşu</p>
-          </div>
-          <div className="text-center">
-            <div className="flex items-center justify-center mb-2">
-              <Newspaper size={20} className="text-primary" />
-            </div>
-            <p className="text-2xl font-bold text-text-primary">34</p>
-            <p className="text-xs text-text-muted">Bugünkü Paylaşımlar</p>
-          </div>
-          <div className="text-center">
-            <div className="flex items-center justify-center mb-2">
-              <Calendar size={20} className="text-primary" />
-            </div>
-            <p className="text-2xl font-bold text-text-primary">8</p>
-            <p className="text-xs text-text-muted">Bu Haftaki Etkinlik</p>
-          </div>
         </div>
       </div>
 
@@ -471,8 +242,8 @@ export default function KesfetPage() {
                     onClick={() => setActiveTab(chip.id)}
                     className={`px-4 py-1.5 font-medium whitespace-nowrap rounded-full transition-all duration-200 border text-sm ${
                       activeTab === chip.id
-                        ? "bg-primary text-white border-primary"
-                        : "bg-surface text-text-primary border-border hover:border-primary"
+                        ? 'bg-primary text-white border-primary'
+                        : 'bg-surface text-text-primary border-border hover:border-primary'
                     }`}
                   >
                     {chip.label}
@@ -481,75 +252,65 @@ export default function KesfetPage() {
               </div>
             </div>
 
-            {/* Distance Filter */}
-            <div className="bg-surface rounded-lg border border-border p-4">
-              <p className="text-sm font-semibold text-text-primary mb-3">Mesafe Filtresi</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {distanceOptions.map((option) => (
-                  <button
-                    key={option.value}
-                    onClick={() => setDistanceFilter(option.value)}
-                    className={`px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 border ${
-                      distanceFilter === option.value
-                        ? "bg-primary text-white border-primary"
-                        : "bg-surface text-text-primary border-border hover:border-primary"
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
             {/* Activity Feed */}
-            {filteredActivities.length === 0 ? (
+            {loading ? (
               <div className="bg-surface rounded-lg border border-border p-12 text-center">
-                <Newspaper size={48} className="mx-auto text-text-muted mb-3" />
-                <p className="text-text-primary font-medium">Etkinlik bulunamadı</p>
-                <p className="text-text-muted text-sm mt-1">Arama kriterlerinize eşleşen etkinlik yok</p>
+                <Loader2 size={32} className="mx-auto text-primary animate-spin mb-3" />
+                <p className="text-text-muted text-sm">Çevrendekiler yükleniyor...</p>
+              </div>
+            ) : filteredFeed.length === 0 ? (
+              <div className="bg-surface rounded-lg border border-border p-12 text-center">
+                <Compass size={48} className="mx-auto text-text-muted mb-3" />
+                <p className="text-text-primary font-medium">
+                  {feed.length === 0 ? 'Henüz çevrende paylaşım yok' : 'Sonuç bulunamadı'}
+                </p>
+                <p className="text-text-muted text-sm mt-1">
+                  {feed.length === 0
+                    ? 'Mahallende yeni etkinlik ve ilanlar burada görünecek.'
+                    : 'Arama veya filtre kriterlerine uyan içerik yok.'}
+                </p>
               </div>
             ) : (
               <div className="space-y-3">
-                {filteredActivities.map((item) => (
+                {filteredFeed.map((item) => (
                   <Link
-                    key={item.id}
-                    href={`/kesfet/${item.id}`}
+                    key={`${item.kind}-${item.id}`}
+                    href={item.href}
                     className="block bg-surface border border-border rounded-lg p-4 transition-all duration-200 hover:shadow-lg hover:border-primary cursor-pointer"
                   >
                     <div className="flex gap-4">
-                      {/* Icon */}
                       <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-background flex items-center justify-center text-primary">
-                        {categoryIcons[item.categoryId] || <MapPin size={16} />}
+                        {kindStyles[item.kind].icon}
                       </div>
-
-                      {/* Content */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2 mb-1">
                           <h3 className="font-semibold text-text-primary line-clamp-2">{item.title}</h3>
-                          <span className={`flex-shrink-0 text-xs font-medium px-2.5 py-1 rounded-full border whitespace-nowrap ${getCategoryColor(item.categoryId)}`}>
-                            {item.category}
+                          <span
+                            className={`flex-shrink-0 text-xs font-medium px-2.5 py-1 rounded-full border whitespace-nowrap ${kindStyles[item.kind].color}`}
+                          >
+                            {item.categoryLabel}
                           </span>
                         </div>
-
-                        <p className="text-sm text-text-secondary line-clamp-1 mb-2">{item.description}</p>
-
+                        {item.description && (
+                          <p className="text-sm text-text-secondary line-clamp-1 mb-2">{item.description}</p>
+                        )}
                         <div className="flex items-center gap-4 text-xs text-text-muted">
-                          <div className="flex items-center gap-1">
-                            <Navigation size={14} />
-                            <span>{item.distance}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Clock size={14} />
-                            <span>{item.time}</span>
-                          </div>
+                          {item.meta && (
+                            <div className="flex items-center gap-1">
+                              {item.kind === 'event' ? <MapPin size={14} /> : <Tag size={14} />}
+                              <span className="line-clamp-1">{item.meta}</span>
+                            </div>
+                          )}
+                          {item.timeLabel && (
+                            <div className="flex items-center gap-1 flex-shrink-0">
+                              <Clock size={14} />
+                              <span>{item.timeLabel}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
-
-                      {/* Arrow */}
                       <div className="flex-shrink-0 flex items-center text-text-muted">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
+                        <ChevronRight size={20} />
                       </div>
                     </div>
                   </Link>
@@ -560,79 +321,60 @@ export default function KesfetPage() {
 
           {/* Sidebar - Right Side */}
           <div className="space-y-6">
-            {/* Activity Feed Sidebar */}
-            <div className="bg-surface rounded-lg border border-border p-4">
-              <div className="flex items-center gap-2 mb-4">
-                <Flame size={20} className="text-primary" />
-                <h2 className="font-bold text-text-primary">Son Aktiviteler</h2>
-              </div>
-
-              <div className="space-y-2">
-                {recentActivityFeed.map((activity) => (
-                  <div key={activity.id} className="pb-2 border-b border-border last:border-0 cursor-pointer hover:bg-surface-hover p-2 -mx-2 rounded transition-colors">
-                    <p className="text-xs text-text-primary">
-                      <span className="font-semibold">{activity.user}</span>{" "}
-                      <span className="text-text-muted">{activity.action}</span>
-                    </p>
-                    <p className="text-xs text-text-muted mt-1">{activity.time}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Trending Topics */}
-            <div className="bg-surface rounded-lg border border-border p-4">
-              <div className="flex items-center gap-2 mb-4">
-                <TrendingUp size={20} className="text-primary" />
-                <h2 className="font-bold text-text-primary">Trend Konular</h2>
-              </div>
-
-              <div className="space-y-2">
-                {trendingTopics.map((topic, index) => (
-                  <div key={topic.id} className="cursor-pointer hover:bg-surface-hover p-2 -mx-2 rounded transition-colors">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-primary min-w-6">{index + 1}</span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-text-primary truncate">{topic.title}</p>
-                        <p className="text-xs text-text-muted">{topic.count} konu</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
             {/* Nearby Businesses Section */}
             <div className="bg-surface rounded-lg border border-border p-4">
               <div className="flex items-center gap-2 mb-4">
                 <Store size={20} className="text-primary" />
-                <h2 className="font-bold text-text-primary">Yakında İşletmeler</h2>
+                <h2 className="font-bold text-text-primary">Mahallenin İşletmeleri</h2>
               </div>
 
-              <div className="space-y-3">
-                {dbBusinesses.map((business) => (
-                  <div key={business.id} className="p-3 bg-background rounded-lg hover:bg-surface-active transition-colors cursor-pointer">
-                    <div className="flex justify-between items-start gap-2 mb-1">
-                      <h3 className="font-semibold text-sm text-text-primary line-clamp-1">{business.name}</h3>
-                      <span className="flex-shrink-0 text-xs font-medium text-text-muted">{business.distance}</span>
-                    </div>
-                    <p className="text-xs text-text-muted mb-2">{business.category}</p>
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-0.5">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            size={12}
-                            className={i < Math.floor(business.rating) ? "fill-yellow-400 text-yellow-400" : "text-[#ccc]"}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-xs text-text-muted">{business.rating}</span>
-                      <span className="text-xs text-text-muted">({business.reviews})</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              {loading ? (
+                <div className="py-6 flex justify-center">
+                  <Loader2 size={20} className="text-primary animate-spin" />
+                </div>
+              ) : businesses.length === 0 ? (
+                <p className="text-sm text-text-muted py-2">Henüz kayıtlı işletme yok.</p>
+              ) : (
+                <div className="space-y-3">
+                  {businesses.map((business) => (
+                    <Link
+                      key={business.id}
+                      href={`/isletmeler/${business.slug}`}
+                      className="block p-3 bg-background rounded-lg hover:bg-surface-active transition-colors"
+                    >
+                      <h3 className="font-semibold text-sm text-text-primary line-clamp-1 mb-1">{business.name}</h3>
+                      <p className="text-xs text-text-muted mb-2">{business.category}</p>
+                      {business.address && (
+                        <p className="text-xs text-text-muted flex items-center gap-1 mb-2 line-clamp-1">
+                          <MapPin size={11} />
+                          {business.address}
+                        </p>
+                      )}
+                      {business.rating != null && business.rating > 0 ? (
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-0.5">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                size={12}
+                                className={
+                                  i < Math.floor(business.rating as number)
+                                    ? 'fill-yellow-400 text-yellow-400'
+                                    : 'text-[#ccc]'
+                                }
+                              />
+                            ))}
+                          </div>
+                          <span className="text-xs text-text-muted">{Number(business.rating).toFixed(1)}</span>
+                          <span className="text-xs text-text-muted">({business.reviews})</span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-text-muted">Henüz değerlendirme yok</span>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Safety Alerts Section */}
@@ -642,45 +384,58 @@ export default function KesfetPage() {
                 <h2 className="font-bold text-text-primary">Mahallenin Durumu</h2>
               </div>
 
-              <div className="space-y-2 mb-4 p-3 bg-background rounded-lg">
-                <p className="text-xs font-semibold text-text-primary">Güvenlik Durumu</p>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary rounded-full" />
-                  <span className="text-sm text-text-primary font-medium">Güvenli</span>
+              {loading ? (
+                <div className="py-6 flex justify-center">
+                  <Loader2 size={20} className="text-primary animate-spin" />
                 </div>
-              </div>
-
-              <div className="space-y-2">
-                {safetyAlerts.map((alert) => (
-                  <div
-                    key={alert.id}
-                    className={`p-3 rounded-lg border ${
-                      alert.severity === "high"
-                        ? "bg-red-50 border-red-200"
-                        : alert.severity === "medium"
-                          ? "bg-yellow-50 border-yellow-200"
-                          : "bg-blue-50 border-blue-200"
-                    }`}
-                  >
-                    <div className="flex items-start gap-2">
-                      <div className="flex-shrink-0 mt-0.5">
-                        {alert.type === "weather" && <Wind size={14} className="text-blue-600" />}
-                        {alert.type === "traffic" && <AlertTriangle size={14} className="text-yellow-600" />}
-                        {alert.type === "outage" && <Zap size={14} className="text-red-600" />}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-text-primary">{alert.title}</p>
-                        <p className="text-xs text-text-secondary mt-1">{alert.description}</p>
-                        <p className="text-xs text-text-muted mt-1">{alert.time}</p>
-                      </div>
-                    </div>
+              ) : alerts.length === 0 ? (
+                <div className="space-y-2 p-3 bg-background rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-primary rounded-full" />
+                    <span className="text-sm text-text-primary font-medium">Aktif uyarı yok</span>
                   </div>
-                ))}
-              </div>
+                  <p className="text-xs text-text-muted">Mahallende bildirilmiş güvenlik uyarısı bulunmuyor.</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {alerts.map((alert) => (
+                    <Link
+                      key={alert.id}
+                      href="/uyarilar"
+                      className={`block p-3 rounded-lg border transition-colors ${
+                        alert.severity === 'critical' || alert.severity === 'high'
+                          ? 'bg-red-50 border-red-200 hover:bg-red-100'
+                          : alert.severity === 'medium'
+                            ? 'bg-yellow-50 border-yellow-200 hover:bg-yellow-100'
+                            : 'bg-blue-50 border-blue-200 hover:bg-blue-100'
+                      }`}
+                    >
+                      <div className="flex items-start gap-2">
+                        <div className="flex-shrink-0 mt-0.5">
+                          {alert.severity === 'critical' || alert.severity === 'high' ? (
+                            <Zap size={14} className="text-red-600" />
+                          ) : alert.severity === 'medium' ? (
+                            <AlertTriangle size={14} className="text-yellow-600" />
+                          ) : (
+                            <Wind size={14} className="text-blue-600" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-text-primary">{alert.title}</p>
+                          {alert.description && (
+                            <p className="text-xs text-text-secondary mt-1 line-clamp-2">{alert.description}</p>
+                          )}
+                          {alert.timeLabel && <p className="text-xs text-text-muted mt-1">{alert.timeLabel}</p>}
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

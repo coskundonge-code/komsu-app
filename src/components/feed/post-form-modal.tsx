@@ -222,24 +222,16 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
         resetForm();
         onClose();
       } else {
-        // Fallback to mock data on error
-        const fallbackPost = {
-          id: Date.now().toString(),
-          type: postType,
-          title: title.trim() || undefined,
-          body: body.trim(),
-          visibility,
-          images: mediaUrls || images,
-          location,
-          author: { name: profile?.full_name || 'Siz', initial: profile?.full_name?.[0]?.toUpperCase() || 'S', neighborhood: neighborhoodName, profileId: user.id },
-          timeAgo: 'Az önce',
-          reactions: 0,
-          comments: 0,
-        };
-        onSubmit(fallbackPost);
-        resetForm();
-        onClose();
+        // NOT (2026-06-07): Eskiden kayıt BAŞARISIZ olduğunda kullanıcının girdisinden
+        // SAHTE bir "başarılı gönderi" üretip (id: Date.now()) akışa basıyordu —
+        // kullanıcı gönderisi yayınlandı sanıyor ama veritabanına hiç yazılmıyordu.
+        // Artık dürüst hata gösterilir, modal açık kalır ki tekrar denenebilsin.
+        console.error('Gönderi oluşturulamadı:', error);
+        toast.error('Gönderi paylaşılamadı. Lütfen tekrar deneyin.');
       }
+    } catch (err) {
+      console.error('Gönderi gönderilirken beklenmeyen hata:', err);
+      toast.error('Bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setIsSubmitting(false);
     }

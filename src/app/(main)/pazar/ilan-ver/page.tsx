@@ -365,7 +365,7 @@ export default function CreateListingPage() {
     }
   };
 
-  const handleFreeToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const _handleFreeToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
       ...prev,
       isFree: e.target.checked,

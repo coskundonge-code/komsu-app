@@ -7,7 +7,6 @@ import dynamic from "next/dynamic";
 const GoogleMap = dynamic(() => import("@/components/map/google-map"), { ssr: false });
 import {
   MapPin,
-  Map,
   ChevronLeft,
   Filter,
   Check,

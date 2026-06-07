@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { startFreeTrial, MONTHLY_PRICE, YEARLY_PRICE, FREE_TRIAL_MONTHS } from '@/lib/services/business-subscription';
 import {
@@ -25,7 +24,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 
-const CATEGORIES = [
+const _CATEGORIES = [
   'Restoran',
   'Kafe',
   'Market',
@@ -73,7 +72,6 @@ interface FormData {
 }
 
 export default function IsletmeEklePage() {
-  const router = useRouter();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);

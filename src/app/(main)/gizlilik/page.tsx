@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, Lock, Eye, Share2, Shield, Check, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Lock, Eye, Shield, Check } from 'lucide-react';
 
 const sections = [
   { id: 'toplanan', title: '1. Toplanan Bilgiler' },
@@ -261,7 +261,7 @@ export default function PrivacyPage() {
                     </p>
                     <div className="mt-4 p-4 bg-background rounded-lg">
                       <p className="text-sm text-text-secondary"><span className="font-semibold">Email:</span> gizlilik@mahallem.com</p>
-                      <p className="text-sm text-text-secondary mt-2"><span className="font-semibold">Adres:</span> Trendex Lojistik, İstanbul, Türkiye</p>
+                      <p className="text-sm text-text-secondary mt-2"><span className="font-semibold">Adres:</span> Consulting Partners, İstanbul, Türkiye</p>
                     </div>
                   </section>
 

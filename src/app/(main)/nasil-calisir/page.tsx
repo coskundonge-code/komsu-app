@@ -256,7 +256,7 @@ export default function HowItWorksPage() {
 
         {/* Footer */}
         <div className="border-t border-border bg-background py-8 px-8 rounded-lg text-center">
-          <p className="text-sm text-text-muted mb-4">© 2026 Mahallemiz — Trendex Lojistik tarafından geliştirilmiştir.</p>
+          <p className="text-sm text-text-muted mb-4">© 2026 Mahallemiz — Consulting Partners tarafından geliştirilmiştir.</p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <Link href="/gizlilik" className="text-sm text-primary hover:text-primary-hover font-medium transition-colors">
               Gizlilik Politikası

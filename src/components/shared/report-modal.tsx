@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { X, Check } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
+import { useCurrentUser } from '@/lib/hooks/use-auth';
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -10,39 +12,76 @@ interface ReportModalProps {
   targetId: string;
 }
 
+const REASONS = [
+  { id: 'spam', label: 'Spam' },
+  { id: 'harassment', label: 'Taciz/Nefret Söylemi' },
+  { id: 'misinformation', label: 'Yanlış Bilgi' },
+  { id: 'obscene', label: 'Müstehcen İçerik' },
+  { id: 'fake_account', label: 'Sahte Hesap' },
+  { id: 'fraud', label: 'Dolandırıcılık' },
+  { id: 'other', label: 'Diğer' },
+];
+
 export function ReportModal({ isOpen, onClose, type, targetId }: ReportModalProps) {
+  const { user } = useCurrentUser();
   const [selectedReason, setSelectedReason] = useState<string>('');
   const [details, setDetails] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string>('');
 
-  const reasons = [
-    { id: 'spam', label: 'Spam' },
-    { id: 'harassment', label: 'Taciz/Nefret Söylemi' },
-    { id: 'misinformation', label: 'Yanlış Bilgi' },
-    { id: 'obscene', label: 'Müstehcen İçerik' },
-    { id: 'fake_account', label: 'Sahte Hesap' },
-    { id: 'fraud', label: 'Dolandırıcılık' },
-    { id: 'other', label: 'Diğer' },
-  ];
+  const resetAndClose = () => {
+    onClose();
+    setSelectedReason('');
+    setDetails('');
+    setIsSuccess(false);
+    setErrorMsg('');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedReason) return;
+    if (!user) {
+      setErrorMsg('Bildirim göndermek için giriş yapmalısınız.');
+      return;
+    }
 
     setIsLoading(true);
+    setErrorMsg('');
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const reasonLabel = REASONS.find((r) => r.id === selectedReason)?.label || selectedReason;
+      const supabase = createClient();
+
+      let error;
+      if (type === 'listing') {
+        // İlan şikâyetleri content_moderation kuyruğuna düşer (reports tablosunda listing kolonu yok)
+        ({ error } = await supabase.from('content_moderation').insert({
+          content_type: 'listing',
+          content_id: targetId,
+          reported_by: user.id,
+          status: 'pending_admin',
+          reason: details.trim() ? `${reasonLabel} — ${details.trim()}` : reasonLabel,
+          priority: 'medium',
+        }));
+      } else {
+        // post / comment / user → reports tablosu
+        ({ error } = await supabase.from('reports').insert({
+          reporter_id: user.id,
+          reason: reasonLabel,
+          description: details.trim() || null,
+          post_id: type === 'post' ? targetId : null,
+          comment_id: type === 'comment' ? targetId : null,
+          reported_user_id: type === 'user' ? targetId : null,
+        }));
+      }
+
+      if (error) throw error;
+
       setIsSuccess(true);
-      setTimeout(() => {
-        onClose();
-        setSelectedReason('');
-        setDetails('');
-        setIsSuccess(false);
-      }, 2000);
-    } catch (error) {
-      console.error('Report submission error:', error);
+      setTimeout(resetAndClose, 2000);
+    } catch (err) {
+      console.error('Report submission error:', err);
+      setErrorMsg('Bildirim gönderilemedi. Lütfen tekrar deneyin.');
     } finally {
       setIsLoading(false);
     }
@@ -57,7 +96,7 @@ export function ReportModal({ isOpen, onClose, type, targetId }: ReportModalProp
         <div className="flex items-center justify-between p-6 border-b border-border">
           <h2 className="text-lg font-semibold text-text-primary">İçeriği Bildir</h2>
           <button
-            onClick={onClose}
+            onClick={resetAndClose}
             className="text-text-muted hover:text-text-primary transition-colors"
           >
             <X size={24} />
@@ -84,7 +123,7 @@ export function ReportModal({ isOpen, onClose, type, targetId }: ReportModalProp
                   Bildirme nedeniniz
                 </label>
                 <div className="space-y-3">
-                  {reasons.map((reason) => (
+                  {REASONS.map((reason) => (
                     <label
                       key={reason.id}
                       className="flex items-center p-3 border border-border rounded-lg cursor-pointer hover:bg-background transition-colors"
@@ -117,6 +156,10 @@ export function ReportModal({ isOpen, onClose, type, targetId }: ReportModalProp
                 />
               </div>
 
+              {errorMsg && (
+                <p className="mb-4 text-sm text-red-600" role="alert">{errorMsg}</p>
+              )}
+
               {/* Submit Button */}
               <button
                 type="submit"
@@ -129,7 +172,7 @@ export function ReportModal({ isOpen, onClose, type, targetId }: ReportModalProp
               {/* Cancel Button */}
               <button
                 type="button"
-                onClick={onClose}
+                onClick={resetAndClose}
                 className="w-full mt-2 py-2.5 bg-background hover:bg-[#e0e0e0] text-text-primary font-medium rounded-lg transition-colors"
               >
                 İptal

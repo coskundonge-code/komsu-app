@@ -4,7 +4,6 @@ import { Clock, MapPin, Plus, Heart, Users, Calendar } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useMemo, useEffect } from 'react';
-import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 import { getEvents, rsvpEvent } from '@/lib/hooks/use-events';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
 
@@ -14,7 +13,7 @@ type Category = 'all' | 'social' | 'sports' | 'education' | 'culture' | 'music' 
 type TimeFilter = 'all' | 'thisWeek' | 'thisMonth';
 type SortOption = 'date' | 'popularity';
 
-const CATEGORY_LABELS: Record<Exclude<Category, 'all'>, string> = {
+const _CATEGORY_LABELS: Record<Exclude<Category, 'all'>, string> = {
   social: 'Sosyal',
   sports: 'Spor',
   education: 'Eğitim',
@@ -47,137 +46,15 @@ interface Event {
   isOnline?: boolean;
 }
 
-const mockEvents: Event[] = [
-  {
-    id: '1',
-    title: "Mahalle Temizlik Günü",
-    date: '2026-03-12',
-    day: 12,
-    month: 2,
-    time: '09:00',
-    location: 'Mahalle Parkı',
-    coverImage: getFeedImageUrl(100, 500, 350),
-    isInterested: false,
-    category: 'social',
-    interestedCount: 31,
-    attendees: 28,
-    organizerName: 'Ayşe Demir',
-    organizerImage: getFeedImageUrl(1, 40, 40),
-  },
-  {
-    id: '2',
-    title: 'Sabah Yoga Dersi',
-    date: '2026-03-15',
-    day: 15,
-    month: 2,
-    time: '07:00',
-    location: 'Mahalle Spor Salonu',
-    coverImage: getFeedImageUrl(101, 500, 350),
-    isInterested: true,
-    category: 'sports',
-    interestedCount: 42,
-    attendees: 38,
-    organizerName: 'Zeynep Yıldız',
-    organizerImage: getFeedImageUrl(2, 40, 40),
-  },
-  {
-    id: '3',
-    title: "Online Kitap Kulübü - 'Sabahat Kudret Boyacıoğlu'",
-    date: '2026-03-18',
-    day: 18,
-    month: 2,
-    time: '19:30',
-    location: 'Çevrimiçi',
-    coverImage: getFeedImageUrl(102, 500, 350),
-    isInterested: false,
-    category: 'culture',
-    interestedCount: 18,
-    attendees: 15,
-    organizerName: 'Murat Kaya',
-    organizerImage: getFeedImageUrl(3, 40, 40),
-    isOnline: true,
-  },
-  {
-    id: '4',
-    title: 'Çocuklar için İlkbahar Festivali',
-    date: '2026-03-22',
-    day: 22,
-    month: 2,
-    time: '14:00',
-    location: 'Moda Parkı',
-    coverImage: getFeedImageUrl(103, 500, 350),
-    isInterested: false,
-    category: 'social',
-    interestedCount: 45,
-    attendees: 42,
-    organizerName: 'Fatma Erdoğan',
-    organizerImage: getFeedImageUrl(4, 40, 40),
-  },
-  {
-    id: '5',
-    title: 'Bahçe Tasarımı ve Peyzaj Atölyesi',
-    date: '2026-03-25',
-    day: 25,
-    month: 2,
-    time: '15:00',
-    location: 'Toplantı Salonu',
-    coverImage: getFeedImageUrl(104, 500, 350),
-    isInterested: true,
-    category: 'education',
-    interestedCount: 28,
-    attendees: 24,
-    organizerName: 'Hasan Güzel',
-    organizerImage: getFeedImageUrl(5, 40, 40),
-  },
-  {
-    id: '6',
-    title: 'Mahalle Futsal Turnuvası',
-    date: '2026-04-05',
-    day: 5,
-    month: 3,
-    time: '18:00',
-    location: 'Spor Alanı',
-    coverImage: getFeedImageUrl(105, 500, 350),
-    isInterested: false,
-    category: 'sports',
-    interestedCount: 56,
-    attendees: 50,
-    organizerName: 'Ali Çetin',
-    organizerImage: getFeedImageUrl(6, 40, 40),
-  },
-  {
-    id: '7',
-    title: 'Mahalle Konser Gecesi - Türk Müziği',
-    date: '2026-04-10',
-    day: 10,
-    month: 3,
-    time: '20:00',
-    location: 'Toplum Merkezi',
-    coverImage: getFeedImageUrl(106, 500, 350),
-    isInterested: false,
-    category: 'music',
-    interestedCount: 67,
-    attendees: 60,
-    organizerName: 'Selin Korkmaz',
-    organizerImage: getFeedImageUrl(7, 40, 40),
-  },
-  {
-    id: '8',
-    title: 'Komşu Kahvaltısı ve Sosyal Ağ Kurma',
-    date: '2026-04-12',
-    day: 12,
-    month: 3,
-    time: '10:00',
-    location: 'Mahalle Kültür Merkezi',
-    coverImage: getFeedImageUrl(107, 500, 350),
-    isInterested: false,
-    category: 'social',
-    interestedCount: 32,
-    attendees: 30,
-    organizerName: 'Gül Şahin',
-    organizerImage: getFeedImageUrl(8, 40, 40),
-  },
-];
+function getInitials(name: string | null | undefined): string {
+  if (!name) return '?';
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase() ?? '')
+    .join('');
+}
 
 function getWeekStart(date: Date): Date {
   const d = new Date(date);
@@ -188,20 +65,22 @@ function getWeekStart(date: Date): Date {
 
 function isThisWeek(dateStr: string): boolean {
   const eventDate = new Date(dateStr);
-  const today = new Date('2026-03-10');
+  const today = new Date();
   const weekStart = getWeekStart(today);
+  weekStart.setHours(0, 0, 0, 0);
   const weekEnd = new Date(weekStart);
   weekEnd.setDate(weekEnd.getDate() + 6);
+  weekEnd.setHours(23, 59, 59, 999);
   return eventDate >= weekStart && eventDate <= weekEnd;
 }
 
 function isThisMonth(dateStr: string): boolean {
   const eventDate = new Date(dateStr);
-  const today = new Date('2026-03-10');
+  const today = new Date();
   return eventDate.getMonth() === today.getMonth() && eventDate.getFullYear() === today.getFullYear();
 }
 
-function mapDbEvent(e: any, i: number): Event {
+function mapDbEvent(e: any): Event {
   const d = new Date(e.start_date || e.created_at);
   const categoryMap: Record<string, Exclude<Category, 'all'>> = {
     social: 'social', sports: 'sports', education: 'education',
@@ -214,38 +93,44 @@ function mapDbEvent(e: any, i: number): Event {
     day: d.getDate(),
     month: d.getMonth(),
     time: d.toTimeString().slice(0, 5),
-    location: e.location || 'Mahalle',
-    coverImage: e.cover_image || getFeedImageUrl(100 + i, 500, 350),
+    location: e.location || (e.is_online ? 'Çevrimiçi' : 'Mahalle'),
+    coverImage: e.cover_image || '',
     isInterested: false,
     category: categoryMap[e.category] || 'social',
     interestedCount: e.attendee_count || 0,
     attendees: e.attendee_count || 0,
     organizerName: e.profiles?.full_name || 'Organizatör',
-    organizerImage: getFeedImageUrl(i, 40, 40),
+    organizerImage: e.profiles?.avatar_url || '',
     isOnline: e.is_online || false,
   };
 }
 
 export default function EventsPage() {
   const { user } = useCurrentUser();
-  const [events, setEvents] = useState<Event[]>(mockEvents);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery] = useState('');
   const [selectedTimeFilter, setSelectedTimeFilter] = useState<TimeFilter>('all');
   const [sortBy, setSortBy] = useState<SortOption>('date');
-  const [interested, setInterested] = useState<Record<string, boolean>>(
-    mockEvents.reduce((acc, e) => ({ ...acc, [e.id]: e.isInterested }), {})
-  );
+  const [interested, setInterested] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
+    let cancelled = false;
     async function fetchEvents() {
+      setLoading(true);
       const { data, error } = await getEvents({ upcoming: true, limit: 20 });
-      if (!error && data && data.length > 0) {
+      if (cancelled) return;
+      if (!error && Array.isArray(data)) {
         const mapped = data.map(mapDbEvent);
         setEvents(mapped);
         setInterested(mapped.reduce((acc: Record<string, boolean>, e: { id: string }) => ({ ...acc, [e.id]: false }), {}));
       }
+      setLoading(false);
     }
     fetchEvents();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   async function handleRsvp(eventId: string) {
@@ -278,11 +163,6 @@ export default function EventsPage() {
     thisWeek: events.filter(e => isThisWeek(e.date)).length,
     thisMonth: events.filter(e => isThisMonth(e.date)).length,
   }), [events]);
-
-  const handleInterested = (ev: React.MouseEvent, eventId: string) => {
-    ev.preventDefault();
-    handleRsvp(eventId);
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -358,11 +238,31 @@ export default function EventsPage() {
         </div>
 
         {/* Events Grid */}
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin mb-3" />
+            <p className="text-text-muted text-sm">Etkinlikler yükleniyor…</p>
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="text-center py-16">
             <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600 font-medium mb-1">Etkinlik bulunamadı</p>
-            <p className="text-gray-400 text-sm">Arama kriterlerinizi değiştirerek tekrar deneyin.</p>
+            <p className="text-gray-600 font-medium mb-1">
+              {events.length === 0 ? 'Henüz etkinlik yok' : 'Etkinlik bulunamadı'}
+            </p>
+            <p className="text-gray-400 text-sm mb-6">
+              {events.length === 0
+                ? 'Mahallendeki ilk etkinliği sen oluştur!'
+                : 'Arama kriterlerinizi değiştirerek tekrar deneyin.'}
+            </p>
+            {events.length === 0 && (
+              <Link
+                href="/etkinlikler/olustur"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors font-bold text-sm"
+              >
+                <Plus className="w-5 h-5" />
+                Etkinlik Oluştur
+              </Link>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -374,14 +274,20 @@ export default function EventsPage() {
               >
                 {/* Cover Image */}
                 <div className="relative overflow-hidden h-48 bg-gray-200 flex-shrink-0">
-                  <Image
-                    src={event.coverImage}
-                    alt={event.title}
-                    width={500}
-                    height={350}
-                    unoptimized
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                  />
+                  {event.coverImage ? (
+                    <Image
+                      src={event.coverImage}
+                      alt={event.title}
+                      width={500}
+                      height={350}
+                      unoptimized
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-primary/15 to-gray-200 flex items-center justify-center">
+                      <Calendar className="w-10 h-10 text-primary/40" />
+                    </div>
+                  )}
 
                   {/* Date Badge */}
                   <div className="absolute bottom-3 left-3 bg-surface rounded-lg px-3 py-2 shadow-lg">
@@ -426,14 +332,20 @@ export default function EventsPage() {
                   <div className="border-t border-border pt-3 mb-4">
                     <p className="text-xs text-text-muted mb-2">Organize eden</p>
                     <div className="flex items-center gap-2">
-                      <Image
-                        src={event.organizerImage}
-                        alt={event.organizerName}
-                        width={28}
-                        height={28}
-                        unoptimized
-                        className="w-7 h-7 rounded-full"
-                      />
+                      {event.organizerImage ? (
+                        <Image
+                          src={event.organizerImage}
+                          alt={event.organizerName}
+                          width={28}
+                          height={28}
+                          unoptimized
+                          className="w-7 h-7 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-7 h-7 rounded-full bg-primary/15 text-primary flex items-center justify-center text-[10px] font-bold">
+                          {getInitials(event.organizerName)}
+                        </div>
+                      )}
                       <span className="text-sm font-medium text-text-secondary">{event.organizerName}</span>
                     </div>
                   </div>
@@ -448,7 +360,7 @@ export default function EventsPage() {
 
                   {/* RSVP Button */}
                   <button
-                    onClick={(e) => { e.stopPropagation(); handleRsvp(event.id); }}
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleRsvp(event.id); }}
                     className={`w-full mt-4 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all ${
                       interested[event.id]
                         ? 'bg-primary text-white shadow-md hover:bg-primary-hover'

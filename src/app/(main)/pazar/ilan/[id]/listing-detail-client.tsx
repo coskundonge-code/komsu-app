@@ -9,7 +9,6 @@ import {
   Share2,
   ChevronLeft,
   ChevronRight,
-  Star,
   AlertCircle,
   Check,
   Shield,
@@ -18,141 +17,23 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { getFeedImageUrl } from '@/lib/demo-images';
-import { getListingById } from '@/lib/hooks/use-listings';
+import { getListingById, getListings } from '@/lib/hooks/use-listings';
 import { VerifiedMessageButton } from '@/components/ui/verified-message-button';
+import { ReportModal } from '@/components/shared/report-modal';
 
-// Mock listings database - fallback for IDs not in the real DB
-const mockListingsDB: Record<string, any> = {
-  '1': {
-    id: '1',
-    title: 'Laptop Lenovo IdeaPad 5 - 15.6 inç Full HD',
-    price: 8500,
-    condition: 'Az Kullanılmış',
-    conditionBadgeColor: 'bg-green-100 text-green-800',
-    category: 'Elektronik',
-    categoryColor: 'bg-blue-100 text-blue-800',
-    neighborhood: 'Moda',
-    location: 'Moda, Kadıköy',
-    timeAgo: '2 saat önce',
-    views: 324,
-    favorites: 45,
-    description:
-      'Lenovo IdeaPad 5 15.6" Full HD IPS ekran, Intel Core i5-1135G7, 8GB DDR4 RAM, 512GB SSD. Çok az kullanılmıştır. Orijinal kutusu ve tüm aksesuarları mevcuttur. Garantisi 1 yıl kalmıştır.',
-    images: [
-      getFeedImageUrl(1, 800, 600),
-      getFeedImageUrl(2, 800, 600),
-      getFeedImageUrl(3, 800, 600),
-      getFeedImageUrl(4, 800, 600),
-    ],
-    seller: {
-      id: 'seller1',
-      name: 'Mehmet Yılmaz',
-      avatar: getFeedImageUrl(5, 200, 200),
-      rating: 4.8,
-      reviewCount: 23,
-      responseTime: '< 1 saat',
-      joinDate: '2 yıl önce',
-      listings: 45,
-      verified: true,
-      soldCount: 42,
-    },
-    specs: [
-      { label: 'İşlemci', value: 'Intel Core i5-1135G7' },
-      { label: 'RAM', value: '8GB DDR4' },
-      { label: 'Depolama', value: '512GB SSD' },
-      { label: 'Ekran', value: '15.6" Full HD IPS' },
-      { label: 'Batarya', value: '10 saat' },
-      { label: 'Ağırlık', value: '1.6 kg' },
-    ],
-  },
-  '2': {
-    id: '2',
-    title: 'IKEA Kanepe - Açık Gri Renk, Çok İyi Durumda',
-    price: 2200,
-    condition: 'İyi Durumda',
-    conditionBadgeColor: 'bg-green-100 text-green-800',
-    category: 'Mobilya',
-    categoryColor: 'bg-purple-100 text-purple-800',
-    neighborhood: 'Moda',
-    location: 'Moda, Kadıköy',
-    timeAgo: '4 saat önce',
-    views: 156,
-    favorites: 28,
-    description:
-      'IKEA Ektorp serisi 3 kişilik kanepe. Açık gri renk, harika durumda. Temiz, hiç hasarı yok. Kılıfı çıkarılabilir ve yıkanabilir.',
-    images: [
-      getFeedImageUrl(6, 800, 600),
-      getFeedImageUrl(7, 800, 600),
-      getFeedImageUrl(8, 800, 600),
-    ],
-    seller: {
-      id: 'seller2',
-      name: 'Ayşe Kaya',
-      avatar: getFeedImageUrl(9, 200, 200),
-      rating: 4.9,
-      reviewCount: 18,
-      responseTime: '< 30 dakika',
-      joinDate: '1 yıl önce',
-      listings: 32,
-      verified: true,
-      soldCount: 30,
-    },
-    specs: [
-      { label: 'Genişlik', value: '242 cm' },
-      { label: 'Derinlik', value: '88 cm' },
-      { label: 'Yükseklik', value: '88 cm' },
-      { label: 'Renk', value: 'Açık Gri' },
-      { label: 'Model', value: 'Ektorp Serisi' },
-      { label: 'Kılıf', value: 'Çıkarılabilir' },
-    ],
-  },
-  '3': {
-    id: '3',
-    title: 'PlayStation 5 - Orjinal Kutu ile Satılıyor',
-    price: 6500,
-    condition: 'Sıfır',
-    conditionBadgeColor: 'bg-green-100 text-green-800',
-    category: 'Elektronik',
-    categoryColor: 'bg-blue-100 text-blue-800',
-    neighborhood: 'Fenerbahçe',
-    location: 'Fenerbahçe, Kadıköy',
-    timeAgo: '1 gün önce',
-    views: 892,
-    favorites: 156,
-    description:
-      'PlayStation 5, orjinal kutusunda, hiç kullanılmamış. Satış belgesi ve 2 yılık garantisi mevcuttur.',
-    images: [
-      getFeedImageUrl(10, 800, 600),
-      getFeedImageUrl(11, 800, 600),
-      getFeedImageUrl(12, 800, 600),
-    ],
-    seller: {
-      id: 'seller3',
-      name: 'Mert Demir',
-      avatar: getFeedImageUrl(13, 200, 200),
-      rating: 4.7,
-      reviewCount: 12,
-      responseTime: '< 2 saat',
-      joinDate: '6 ay önce',
-      listings: 8,
-      verified: false,
-      soldCount: 7,
-    },
-    specs: [
-      { label: 'Model', value: 'PS5 Standard Edition' },
-      { label: 'Durum', value: 'Sıfır - Açılmamış' },
-      { label: 'Garantisi', value: '2 yıl kalan' },
-      { label: 'Satış Belgesi', value: 'Mevcuttur' },
-    ],
-  },
-};
+// NOT (2026-06-07): Bu sayfa eskiden gerçek ilan bulunamadığında sahte
+// "Laptop / IKEA Kanepe / PS5" (mockListingsDB) gösteriyor; gerçek satıcılara
+// uydurma puan/yorum/satış sayısı (4.8 puan, 23 yorum, 42 satış) atfediyor ve
+// "Benzer İlanlar"ı tamamen sabit-sahte dolduruyordu. Artık yalnızca gerçek
+// veri: ilan yoksa "İlan Bulunamadı"; satıcıda yalnızca gerçek alanlar (ad,
+// avatar); benzer ilanlar gerçek kategoriden çekilir. Bkz. TECH_DEBT #12.
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffHours = Math.floor(diffMs / 3600000);
   const diffDays = Math.floor(diffMs / 86400000);
+  if (diffHours < 1) return 'Az önce';
   if (diffHours < 24) return `${diffHours} saat önce`;
   if (diffDays < 30) return `${diffDays} gün önce`;
   return `${Math.floor(diffDays / 30)} ay önce`;
@@ -166,99 +47,153 @@ const conditionMap: Record<string, string> = {
   poor: 'Kötü',
 };
 
+function getInitials(name: string | null | undefined): string {
+  if (!name) return '?';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+}
+
+interface SellerInfo {
+  id: string | null;
+  name: string;
+  avatar: string | null;
+}
+
+interface DetailListing {
+  id: string;
+  title: string;
+  price: number;
+  condition: string;
+  category: string;
+  neighborhood: string;
+  timeAgo: string;
+  views: number;
+  description: string;
+  images: string[];
+  seller: SellerInfo;
+  specs: { label: string; value: string }[];
+}
+
+interface SimilarListing {
+  id: string;
+  title: string;
+  price: number;
+  image: string | null;
+  location: string;
+  timeAgo: string;
+}
+
 export default function ListingDetailClient({ id }: { id: string }) {
-  const [listing, setListing] = useState<any>(null);
+  const [listing, setListing] = useState<DetailListing | null>(null);
+  const [similar, setSimilar] = useState<SimilarListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
+
     const fetchListing = async () => {
       try {
         setLoading(true);
         setNotFound(false);
         const { data, error } = await getListingById(id);
 
-        if (error || !data) {
-          const mockData = mockListingsDB[id];
-          if (mockData) {
-            setListing(mockData);
-          } else {
-            setNotFound(true);
-          }
-        } else {
-          const d = data as any;
-          const mediaUrls: string[] = d.media_urls?.length > 0
-            ? d.media_urls
-            : [getFeedImageUrl(1, 800, 600)];
+        if (cancelled) return;
 
-          setListing({
-            id: d.id,
-            title: d.title,
-            price: d.price || 0,
-            condition: conditionMap[d.condition] || d.condition || 'İyi Durumda',
-            conditionBadgeColor: 'bg-green-100 text-green-800',
-            category: d.listing_categories?.name || 'Diğer',
-            categoryColor: 'bg-blue-100 text-blue-800',
-            neighborhood: d.neighborhoods?.name || 'Bilinmiyor',
-            location: d.neighborhoods?.name || 'Bilinmiyor',
-            timeAgo: d.created_at ? formatTimeAgo(new Date(d.created_at)) : '1 saat önce',
-            views: d.view_count || 0,
-            favorites: d.favorite_count || 0,
-            description: d.description || '',
-            images: mediaUrls,
-            seller: {
-              id: d.seller_id || 'seller1',
-              name: d.profiles?.full_name || 'Bilinmiyor',
-              avatar: d.profiles?.avatar_url || getFeedImageUrl(5, 200, 200),
-              rating: 4.8,
-              reviewCount: 23,
-              responseTime: '< 1 saat',
-              joinDate: '2 yıl önce',
-              listings: 45,
-              verified: true,
-              soldCount: 42,
+        if (error || !data) {
+          // Sahte fallback yok: gerçek ilan yoksa "bulunamadı".
+          setNotFound(true);
+          return;
+        }
+
+        const d = data as any;
+        const images: string[] = Array.isArray(d.media_urls)
+          ? d.media_urls.filter(Boolean)
+          : [];
+
+        setListing({
+          id: d.id,
+          title: d.title,
+          price: Number(d.price) || 0,
+          condition: conditionMap[d.condition] || d.condition || 'Belirtilmemiş',
+          category: d.listing_categories?.name || 'Diğer',
+          neighborhood: d.neighborhoods?.name || 'Bilinmiyor',
+          timeAgo: d.created_at ? formatTimeAgo(new Date(d.created_at)) : 'Bilinmiyor',
+          views: d.view_count || 0,
+          description: d.description || '',
+          images,
+          seller: {
+            id: d.seller_id || null,
+            name: d.profiles?.full_name || 'Komşu',
+            avatar: d.profiles?.avatar_url || null,
+          },
+          specs: [
+            { label: 'Kategori', value: d.listing_categories?.name || 'Diğer' },
+            {
+              label: 'Durum',
+              value: conditionMap[d.condition] || d.condition || 'Belirtilmemiş',
             },
-            specs: [
-              { label: 'Kategori', value: d.listing_categories?.name || 'Diğer' },
-              { label: 'Durum', value: conditionMap[d.condition] || d.condition || 'İyi Durumda' },
-            ],
-          });
+          ],
+        });
+
+        // Gerçek "benzer ilanlar": aynı kategori, kendisi hariç.
+        if (d.category_id) {
+          try {
+            const { data: sim } = await getListings({
+              categoryId: d.category_id,
+              status: 'active',
+              limit: 6,
+            });
+            if (!cancelled && Array.isArray(sim)) {
+              const mapped: SimilarListing[] = (sim as any[])
+                .filter((s) => s.id !== d.id)
+                .slice(0, 4)
+                .map((s) => ({
+                  id: s.id,
+                  title: s.title,
+                  price: Number(s.price) || 0,
+                  image: Array.isArray(s.media_urls) ? s.media_urls[0] || null : null,
+                  location: s.neighborhoods?.name || 'Bilinmiyor',
+                  timeAgo: s.created_at
+                    ? formatTimeAgo(new Date(s.created_at))
+                    : '',
+                }));
+              setSimilar(mapped);
+            }
+          } catch {
+            if (!cancelled) setSimilar([]);
+          }
         }
       } catch (err) {
         console.error('Error fetching listing:', err);
-        const mockData = mockListingsDB[id];
-        if (mockData) {
-          setListing(mockData);
-        } else {
-          setNotFound(true);
-        }
+        if (!cancelled) setNotFound(true);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     fetchListing();
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   const prevImage = () => {
+    if (!listing) return;
     setCurrentImageIndex(
       (prev) => (prev - 1 + listing.images.length) % listing.images.length
     );
   };
 
   const nextImage = () => {
+    if (!listing) return;
     setCurrentImageIndex((prev) => (prev + 1) % listing.images.length);
   };
-
-  const similarListings = [
-    { id: '4', title: 'Dell Inspiron 15 - Yeni Model', price: 7200, image: getFeedImageUrl(14, 500, 500), location: 'Şişli', timeAgo: '3 saat' },
-    { id: '5', title: 'HP Pavilion - 13 inç Ultrabook', price: 6800, image: getFeedImageUrl(15, 500, 500), location: 'Taksim', timeAgo: '5 saat' },
-    { id: '6', title: 'Asus VivoBook 15 - İyi Fiyat', price: 5900, image: getFeedImageUrl(16, 500, 500), location: 'Beşiktaş', timeAgo: '6 saat' },
-    { id: '7', title: 'MacBook Air M1 - 2023', price: 12500, image: getFeedImageUrl(17, 500, 500), location: 'Nişantaşı', timeAgo: '1 gün' },
-  ];
 
   if (loading) {
     return (
@@ -285,6 +220,8 @@ export default function ListingDetailClient({ id }: { id: string }) {
       </div>
     );
   }
+
+  const hasImages = listing.images.length > 0;
 
   return (
     <div className="min-h-screen bg-[#f0f2f5]">
@@ -343,16 +280,25 @@ export default function ListingDetailClient({ id }: { id: string }) {
           {/* Image Gallery */}
           <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden">
             <div className="relative bg-[#f0f2f5] aspect-square overflow-hidden group">
-              <Image
-                src={listing.images[currentImageIndex]}
-                alt={listing.title}
-                fill
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                unoptimized
-              />
-              <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-2 rounded-lg text-sm font-medium">
-                {currentImageIndex + 1} / {listing.images.length}
-              </div>
+              {hasImages ? (
+                <Image
+                  src={listing.images[currentImageIndex]}
+                  alt={listing.title}
+                  fill
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  unoptimized
+                />
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-center text-[#8f8f8f] gap-2">
+                  <Package size={48} />
+                  <span className="text-sm">Görsel eklenmemiş</span>
+                </div>
+              )}
+              {hasImages && (
+                <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-2 rounded-lg text-sm font-medium">
+                  {currentImageIndex + 1} / {listing.images.length}
+                </div>
+              )}
               {listing.images.length > 1 && (
                 <>
                   <button
@@ -410,10 +356,10 @@ export default function ListingDetailClient({ id }: { id: string }) {
               <div className="flex-1">
                 <h1 className="text-2xl sm:text-3xl font-bold text-[#333] mb-3">{listing.title}</h1>
                 <div className="flex flex-wrap gap-2 mb-4">
-                  <span className={cn('px-3 py-1 rounded-full text-xs font-semibold', listing.conditionBadgeColor)}>
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
                     {listing.condition}
                   </span>
-                  <span className={cn('px-3 py-1 rounded-full text-xs font-semibold', listing.categoryColor)}>
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
                     {listing.category}
                   </span>
                 </div>
@@ -443,10 +389,12 @@ export default function ListingDetailClient({ id }: { id: string }) {
           </div>
 
           {/* Description */}
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
-            <h2 className="text-xl font-bold text-[#333] mb-4">Açıklama</h2>
-            <p className="text-[#404040] leading-relaxed whitespace-pre-wrap">{listing.description}</p>
-          </div>
+          {listing.description && (
+            <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
+              <h2 className="text-xl font-bold text-[#333] mb-4">Açıklama</h2>
+              <p className="text-[#404040] leading-relaxed whitespace-pre-wrap">{listing.description}</p>
+            </div>
+          )}
 
           {/* Specifications */}
           {listing.specs?.length > 0 && (
@@ -486,138 +434,104 @@ export default function ListingDetailClient({ id }: { id: string }) {
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
-            <h2 className="text-lg font-bold text-[#333] mb-4">İlan İstatistikleri</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-[#f0f2f5] rounded-lg p-4">
-                <p className="text-xs text-[#8f8f8f] mb-1">Görüntüleme</p>
-                <p className="text-2xl font-bold text-[#333]">{listing.views}</p>
-              </div>
-              <div className="bg-[#f0f2f5] rounded-lg p-4">
-                <p className="text-xs text-[#8f8f8f] mb-1">Kaydedilme</p>
-                <p className="text-2xl font-bold text-[#00833e]">{listing.favorites}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Similar Listings */}
-          <div>
-            <h2 className="text-lg font-bold text-[#333] mb-4">Benzer İlanlar</h2>
-            <div className="overflow-x-auto pb-2">
-              <div className="flex gap-4">
-                {similarListings.map((item) => (
-                  <Link
-                    key={item.id}
-                    href={`/pazar/ilan/${item.id}`}
-                    className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-lg transition-shadow flex-shrink-0 w-48 group"
-                  >
-                    <div className="relative aspect-square overflow-hidden bg-[#f0f2f5]">
-                      <Image
-                        src={item.image}
-                        alt={item.title}
-                        fill
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                        unoptimized
-                      />
-                      <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs font-medium px-2 py-1 rounded">
-                        {item.timeAgo}
+          {/* Similar Listings (gerçek) */}
+          {similar.length > 0 && (
+            <div>
+              <h2 className="text-lg font-bold text-[#333] mb-4">Benzer İlanlar</h2>
+              <div className="overflow-x-auto pb-2">
+                <div className="flex gap-4">
+                  {similar.map((item) => (
+                    <Link
+                      key={item.id}
+                      href={`/pazar/ilan/${item.id}`}
+                      className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-lg transition-shadow flex-shrink-0 w-48 group"
+                    >
+                      <div className="relative aspect-square overflow-hidden bg-[#f0f2f5] flex items-center justify-center">
+                        {item.image ? (
+                          <Image
+                            src={item.image}
+                            alt={item.title}
+                            fill
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                            unoptimized
+                          />
+                        ) : (
+                          <Package size={32} className="text-[#8f8f8f]" />
+                        )}
+                        {item.timeAgo && (
+                          <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs font-medium px-2 py-1 rounded">
+                            {item.timeAgo}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                    <div className="p-3">
-                      <p className="text-lg font-bold text-[#333] mb-1">
-                        ₺{item.price.toLocaleString('tr-TR')}
-                      </p>
-                      <p className="text-xs text-[#404040] line-clamp-2 mb-2">{item.title}</p>
-                      <p className="text-xs text-[#8f8f8f]">{item.location}</p>
-                    </div>
-                  </Link>
-                ))}
+                      <div className="p-3">
+                        <p className="text-lg font-bold text-[#333] mb-1">
+                          ₺{item.price.toLocaleString('tr-TR')}
+                        </p>
+                        <p className="text-xs text-[#404040] line-clamp-2 mb-2">{item.title}</p>
+                        <p className="text-xs text-[#8f8f8f]">{item.location}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Sidebar */}
         <div className="lg:col-span-1">
           <div className="sticky top-24 space-y-6">
-            {/* Seller Info */}
+            {/* Seller Info — yalnızca gerçek alanlar */}
             <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
               <h3 className="text-lg font-bold text-[#333] mb-4">Satıcı Bilgisi</h3>
-              <div className="flex items-start gap-3 mb-5 pb-5 border-b border-[#e0e0e0]">
-                <Image
-                  src={listing.seller.avatar}
-                  alt={listing.seller.name}
-                  width={56}
-                  height={56}
-                  className="w-14 h-14 rounded-full object-cover flex-shrink-0"
-                  unoptimized
-                />
-                <div className="flex-1">
-                  <div className="flex items-center gap-1.5">
-                    <p className="font-bold text-[#333]">{listing.seller.name}</p>
-                    {listing.seller.verified && <Check size={16} className="text-[#00833e]" />}
+              <div className="flex items-center gap-3 mb-5 pb-5 border-b border-[#e0e0e0]">
+                {listing.seller.avatar ? (
+                  <Image
+                    src={listing.seller.avatar}
+                    alt={listing.seller.name}
+                    width={56}
+                    height={56}
+                    className="w-14 h-14 rounded-full object-cover flex-shrink-0"
+                    unoptimized
+                  />
+                ) : (
+                  <div className="w-14 h-14 rounded-full bg-[#00833e] text-white flex items-center justify-center font-bold flex-shrink-0">
+                    {getInitials(listing.seller.name)}
                   </div>
-                  <p className="text-xs text-[#8f8f8f]">{listing.seller.joinDate} katıldı</p>
-                </div>
-              </div>
-
-              <div className="space-y-3 mb-5 pb-5 border-b border-[#e0e0e0]">
-                <div>
-                  <p className="text-xs text-[#8f8f8f] mb-1">Puan</p>
-                  <div className="flex items-center gap-1.5">
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          size={14}
-                          className={cn(
-                            i < Math.floor(listing.seller.rating)
-                              ? 'fill-yellow-400 text-yellow-400'
-                              : i < listing.seller.rating
-                              ? 'fill-yellow-400 text-yellow-400 opacity-50'
-                              : 'text-[#e0e0e0]'
-                          )}
-                        />
-                      ))}
-                    </div>
-                    <p className="font-semibold text-[#333]">{listing.seller.rating}</p>
-                    <p className="text-xs text-[#8f8f8f]">({listing.seller.reviewCount} yorum)</p>
-                  </div>
-                </div>
-                <div>
-                  <p className="text-xs text-[#8f8f8f] mb-1">Tepki Süresi</p>
-                  <p className="font-semibold text-[#333]">{listing.seller.responseTime}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-[#8f8f8f] mb-1">İlan Sayısı</p>
-                  <p className="font-semibold text-[#333]">{listing.seller.listings} aktif ilan</p>
-                </div>
-                <div>
-                  <p className="text-xs text-[#8f8f8f] mb-1">Satılan Ürün</p>
-                  <p className="font-semibold text-[#333]">{listing.seller.soldCount} başarılı satış</p>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-[#333] truncate">{listing.seller.name}</p>
+                  <p className="text-xs text-[#8f8f8f]">Mahallemiz üyesi</p>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <VerifiedMessageButton
-                  recipientId={listing.seller.id}
-                  recipientName={listing.seller.name}
-                  listingTitle={listing.title}
-                  listingId={listing.id}
-                />
-                <Link
-                  href={`/profil/${listing.seller.id}`}
-                  className="w-full px-4 py-3 border-2 border-[#00833e] text-[#00833e] rounded-lg font-semibold hover:bg-green-50 transition-colors text-center block"
-                >
-                  Profili Gör
-                </Link>
+                {listing.seller.id && (
+                  <VerifiedMessageButton
+                    recipientId={listing.seller.id}
+                    recipientName={listing.seller.name}
+                    listingTitle={listing.title}
+                    listingId={listing.id}
+                  />
+                )}
+                {listing.seller.id && (
+                  <Link
+                    href={`/profil/${listing.seller.id}`}
+                    className="w-full px-4 py-3 border-2 border-[#00833e] text-[#00833e] rounded-lg font-semibold hover:bg-green-50 transition-colors text-center block"
+                  >
+                    Profili Gör
+                  </Link>
+                )}
               </div>
             </div>
 
             {/* Report */}
             <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-4">
-              <button className="w-full flex items-center gap-2 text-[#8f8f8f] hover:text-red-500 transition-colors text-sm font-medium">
+              <button
+                onClick={() => setReportOpen(true)}
+                className="w-full flex items-center gap-2 text-[#8f8f8f] hover:text-red-500 transition-colors text-sm font-medium"
+              >
                 <AlertCircle size={18} />
                 Bu ilanı bildir
               </button>
@@ -625,6 +539,13 @@ export default function ListingDetailClient({ id }: { id: string }) {
           </div>
         </div>
       </div>
+
+      <ReportModal
+        isOpen={reportOpen}
+        onClose={() => setReportOpen(false)}
+        type="listing"
+        targetId={listing.id}
+      />
     </div>
   );
 }

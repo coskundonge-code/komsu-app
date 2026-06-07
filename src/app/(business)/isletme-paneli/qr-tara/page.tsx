@@ -28,7 +28,7 @@ export default function QRTaraPage() {
   const [scanResult, setScanResult] = useState<ScanResult | null>(null)
   const [discountApplied, setDiscountApplied] = useState(false)
 
-  const handleScan = (data: string) => {
+  const handleScan = (_data: string) => {
     setScanResult({ userId: 'user_123', userName: 'Ahmet Kaya', cardNumber: 'MK-2026-0847', isValid: true, memberSince: '2026-01-15', totalVisits: 12 })
     setScannerOpen(false)
   }

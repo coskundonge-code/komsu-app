@@ -1,9 +1,8 @@
 'use client';
 
-import { Search, ChevronDown, MessageCircle, FileText, Shield, Users, Settings, HelpCircle, Lightbulb, AlertCircle, Lock, Home, Book } from 'lucide-react';
+import { Search, MessageCircle, FileText, Users, HelpCircle, Lightbulb, AlertCircle, Lock, Home, Book } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { cn } from '@/lib/utils';
 
 const categories = [
   { icon: Users, title: "Hesap ve Profil", slug: "hesap-profil", count: 12 },
@@ -62,9 +61,6 @@ const faqs = {
 
 export default function HelpPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
-
-  const filteredFaqs = expandedCategory ? faqs[expandedCategory as keyof typeof faqs] || [] : [];
   const searchResults = searchQuery.length > 2
     ? Object.entries(faqs).flatMap(([cat, items]) =>
         items.filter(item =>

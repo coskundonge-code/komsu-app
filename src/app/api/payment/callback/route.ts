@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { createClient } from '@supabase/supabase-js'
+import { parseMerchantOid } from '@/lib/services/paytr-oid'
 
 /**
  * PayTR Callback (Bildirim) API
@@ -47,9 +48,7 @@ export async function POST(request: NextRequest) {
     }
     const amountTl = amountKurus / 100
 
-    const parts = merchantOid.split('_')
-    const paymentType = parts[0] + (parts[1] === 'card' || parts[1] === 'fee' || parts[1] === 'membership' ? '_' + parts[1] : '')
-    const userId = parts.length >= 3 ? parts[parts.length - 2] : ''
+    const { paymentType, userId } = parseMerchantOid(merchantOid)
 
     if (SUPABASE_URL && SUPABASE_SERVICE_KEY) {
       const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)

@@ -1,230 +1,119 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { Search, MapPin, ChevronRight, Map, List, Clock, Star, Zap, Phone } from 'lucide-react';
+import { Search, Map, List, Zap, ChevronRight, Loader2, Store } from 'lucide-react';
 import { BusinessCard } from '@/components/business/business-card';
-import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
+import { getBusinesses } from '@/lib/hooks';
+
+// NOT (2026-06-07): Bu sayfa eskiden 10 sahte işletme (MOCK_BUSINESSES) +
+// uydurma puan/mesafe/öne-çıkan/açık-kapalı verisi gösteriyordu ve DB'ye hiç
+// sormuyordu. Artık yalnızca gerçek `businesses` kayıtlarına bağlı. Veride
+// bulunmayan alanlar (mesafe, öne çıkan, açık/kapalı) sahte doldurulmaz.
+// Kartlar slug ile detay sayfasına gider. Bkz. TECH_DEBT #12.
 
 const LeafletMap = dynamic(() => import('@/components/map/google-map'), { ssr: false });
 
-interface Business {
+interface BusinessRow {
   id: string;
   name: string;
-  category: string;
-  rating: number;
-  reviewCount: number;
-  address: string;
-  distance: number;
-  logo: string;
-  phone: string;
-  website?: string;
-  isOpen: boolean;
-  isFeatured?: boolean;
-  lat: number;
-  lng: number;
+  slug: string;
+  address: string | null;
+  phone: string | null;
+  website: string | null;
+  logo_url: string | null;
+  lat: number | null;
+  lng: number | null;
+  rating_avg: number | null;
+  review_count: number | null;
+  category_id: string | null;
+  created_at: string;
+  business_categories?: { name: string | null; slug: string | null } | null;
 }
 
-const MOCK_BUSINESSES: Business[] = [
-  {
-    id: '1',
-    name: "Kahvehane Keyif",
-    category: 'Kafe',
-    rating: 4.8,
-    reviewCount: 145,
-    address: 'Mah. Cad. No: 25, Beşiktaş/İstanbul',
-    distance: 0.3,
-    logo: getFeedImageUrl(100, 200, 200),
-    phone: '+90 212 123 4567',
-    website: 'kahvehane-keyif.com',
-    isOpen: true,
-    isFeatured: true,
-    lat: 41.0422, lng: 29.0050,
-  },
-  {
-    id: '2',
-    name: "Tatlı Dünyası",
-    category: 'Restoran',
-    rating: 4.6,
-    reviewCount: 89,
-    address: 'Altı Sok. No: 12, Kadıköy/İstanbul',
-    distance: 0.5,
-    logo: getFeedImageUrl(101, 200, 200),
-    phone: '+90 216 456 7890',
-    isOpen: true,
-    isFeatured: false,
-    lat: 40.9903, lng: 29.0280,
-  },
-  {
-    id: '3',
-    name: 'Usta Berber',
-    category: 'Kuaför',
-    rating: 4.9,
-    reviewCount: 234,
-    address: 'İmam Cad. No: 8, Cihangir/İstanbul',
-    distance: 0.8,
-    logo: getFeedImageUrl(102, 200, 200),
-    phone: '+90 212 234 5678',
-    isOpen: false,
-    isFeatured: true,
-    lat: 41.0322, lng: 28.9836,
-  },
-  {
-    id: '4',
-    name: 'Güzellik Merkezi Ayşe',
-    category: 'Spor',
-    rating: 4.5,
-    reviewCount: 67,
-    address: 'Fatih Cad. No: 45, Beyoğlu/İstanbul',
-    distance: 1.2,
-    logo: getFeedImageUrl(103, 200, 200),
-    phone: '+90 212 567 8901',
-    website: 'guzellik-ayse.com',
-    isOpen: true,
-    isFeatured: false,
-    lat: 41.0371, lng: 28.9770,
-  },
-  {
-    id: '5',
-    name: 'Elektrik Ustası Serkan',
-    category: 'Terzi',
-    rating: 4.7,
-    reviewCount: 156,
-    address: 'Kültür Sok. No: 33, Şişli/İstanbul',
-    distance: 1.5,
-    logo: getFeedImageUrl(104, 200, 200),
-    phone: '+90 212 345 6789',
-    isOpen: true,
-    isFeatured: false,
-    lat: 41.0602, lng: 28.9877,
-  },
-  {
-    id: '6',
-    name: 'Aşk Dolu Kuru Temizleme',
-    category: 'Market',
-    rating: 4.4,
-    reviewCount: 102,
-    address: 'Nispetiye Cad. No: 18, Levent/İstanbul',
-    distance: 0.6,
-    logo: getFeedImageUrl(105, 200, 200),
-    phone: '+90 212 678 9012',
-    isOpen: false,
-    isFeatured: false,
-    lat: 41.0800, lng: 29.0122,
-  },
-  {
-    id: '7',
-    name: 'Sağlık & Eczane Demi',
-    category: 'Eczane',
-    rating: 4.8,
-    reviewCount: 178,
-    address: 'Meşrutiyet Cad. No: 55, Tepebaşı/İstanbul',
-    distance: 0.4,
-    logo: getFeedImageUrl(106, 200, 200),
-    phone: '+90 212 789 0123',
-    website: 'sağlık-eczane.com',
-    isOpen: true,
-    isFeatured: true,
-    lat: 41.0312, lng: 28.9740,
-  },
-  {
-    id: '8',
-    name: 'Pet Bakım & Veteriner',
-    category: 'Veteriner',
-    rating: 4.6,
-    reviewCount: 94,
-    address: 'Abdülhak Hamid Cad. No: 22, Fatih/İstanbul',
-    distance: 2.1,
-    logo: getFeedImageUrl(107, 200, 200),
-    phone: '+90 212 901 2345',
-    website: 'pet-bakım.com',
-    isOpen: true,
-    isFeatured: false,
-    lat: 41.0190, lng: 28.9400,
-  },
-  {
-    id: '9',
-    name: 'Oto Yıkama Express',
-    category: 'Oto Yıkama',
-    rating: 4.3,
-    reviewCount: 56,
-    address: 'Gümrük Cad. No: 7, Galata/İstanbul',
-    distance: 1.1,
-    logo: getFeedImageUrl(108, 200, 200),
-    phone: '+90 212 555 1111',
-    isOpen: true,
-    isFeatured: false,
-    lat: 41.0255, lng: 28.9741,
-  },
-  {
-    id: '10',
-    name: 'Sağlık Klinigi Plus',
-    category: 'Restoran',
-    rating: 4.7,
-    reviewCount: 120,
-    address: 'Taksim Cad. No: 33, Taksim/İstanbul',
-    distance: 0.9,
-    logo: getFeedImageUrl(109, 200, 200),
-    phone: '+90 212 222 3333',
-    lat: 41.0370, lng: 28.9850,
-    website: 'saglik-klinik.com',
-    isOpen: true,
-    isFeatured: false,
-  },
-];
-
-type SortOption = 'recommended' | 'nearest' | 'rating' | 'newest';
-
-const CATEGORIES = [
-  'Tümü',
-  'Restoran',
-  'Market',
-  'Terzi',
-  'Kuaför',
-  'Eczane',
-  'Kafe',
-  'Spor',
-  'Oto Yıkama',
-  'Veteriner',
-];
+type SortOption = 'recommended' | 'rating' | 'reviews' | 'newest';
 
 export default function IsletmelerPage() {
+  const [businesses, setBusinesses] = useState<BusinessRow[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Tümü');
   const [sortBy, setSortBy] = useState<SortOption>('recommended');
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
 
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      const { data } = await getBusinesses();
+      if (cancelled) return;
+      setBusinesses((data as BusinessRow[]) || []);
+      setLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Kategori çipleri yalnızca gerçekten veride bulunan kategorilerden türetilir.
+  const categories = useMemo(() => {
+    const names = new Set<string>();
+    businesses.forEach((b) => {
+      const n = b.business_categories?.name;
+      if (n) names.add(n);
+    });
+    return ['Tümü', ...Array.from(names).sort((a, b) => a.localeCompare(b, 'tr'))];
+  }, [businesses]);
+
   const filteredAndSortedBusinesses = useMemo(() => {
-    const filtered = MOCK_BUSINESSES.filter((business) => {
+    const term = search.toLowerCase();
+    const filtered = businesses.filter((business) => {
       const matchesSearch =
-        business.name.toLowerCase().includes(search.toLowerCase()) ||
-        business.address.toLowerCase().includes(search.toLowerCase());
+        business.name.toLowerCase().includes(term) ||
+        (business.address || '').toLowerCase().includes(term);
       const matchesCategory =
-        selectedCategory === 'Tümü' || business.category === selectedCategory;
+        selectedCategory === 'Tümü' ||
+        business.business_categories?.name === selectedCategory;
       return matchesSearch && matchesCategory;
     });
 
-    // Apply sorting
     const sorted = [...filtered].sort((a, b) => {
       switch (sortBy) {
         case 'rating':
-          return b.rating - a.rating;
+          return Number(b.rating_avg || 0) - Number(a.rating_avg || 0);
+        case 'reviews':
+          return Number(b.review_count || 0) - Number(a.review_count || 0);
         case 'newest':
-          return b.reviewCount - a.reviewCount;
-        case 'nearest':
-          return a.distance - b.distance;
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
         case 'recommended':
         default:
-          // Featured first, then by rating
-          if (a.isFeatured && !b.isFeatured) return -1;
-          if (!a.isFeatured && b.isFeatured) return 1;
-          return b.rating - a.rating;
+          // getBusinesses zaten puan→tarih sırasıyla döndürür; sırayı koru.
+          return 0;
       }
     });
 
     return sorted;
-  }, [search, selectedCategory, sortBy]);
+  }, [businesses, search, selectedCategory, sortBy]);
+
+  const mapMarkers = useMemo(
+    () =>
+      filteredAndSortedBusinesses
+        .filter((b) => b.lat != null && b.lng != null)
+        .map((b) => ({
+          lat: b.lat as number,
+          lng: b.lng as number,
+          title: b.name,
+          description: b.address || '',
+          color: 'green' as const,
+          popup: `<strong>${b.name}</strong>${
+            b.business_categories?.name
+              ? `<br/><span style="color:#666">${b.business_categories.name}</span>`
+              : ''
+          }${b.address ? `<br/><span style="color:#888;font-size:11px">${b.address}</span>` : ''}`,
+        })),
+    [filteredAndSortedBusinesses]
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -251,137 +140,147 @@ export default function IsletmelerPage() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Category Filter - Horizontal Scrollable Chips */}
-        <div className="mb-8 overflow-x-auto pb-3 -mx-4 px-4 scrollbar-hide">
-          <div className="flex gap-2 whitespace-nowrap">
-            {CATEGORIES.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full font-medium transition-all flex-shrink-0 ${
-                  selectedCategory === category
-                    ? 'bg-primary text-white shadow-md'
-                    : 'bg-surface text-text-primary border border-border hover:border-primary'
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Results Header and Controls */}
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <p className="text-text-primary font-bold text-lg">
-              {filteredAndSortedBusinesses.length} işletme bulundu
-            </p>
-          </div>
-
-          {/* Sort and View Options */}
-          <div className="flex gap-3 items-center flex-wrap">
-            {/* Sort Dropdown */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as SortOption)}
-              className="px-4 py-2 rounded-lg border-2 border-border bg-surface text-text-primary font-medium text-sm focus:border-primary focus:outline-none hover:border-primary transition-colors cursor-pointer"
-            >
-              <option value="recommended">Önerilen</option>
-              <option value="nearest">En Yakın</option>
-              <option value="rating">En İyi Puan</option>
-              <option value="newest">En Yeni</option>
-            </select>
-
-            {/* View Mode Toggle */}
-            <div className="flex gap-1 border-2 border-border rounded-lg p-1 bg-surface">
-              <button
-                onClick={() => setViewMode('list')}
-                className={`p-2 rounded transition-colors ${
-                  viewMode === 'list'
-                    ? 'bg-primary text-white'
-                    : 'text-text-muted hover:text-primary'
-                }`}
-                title="Liste Görünümü"
-              >
-                <List size={18} />
-              </button>
-              <button
-                onClick={() => setViewMode('map')}
-                className={`p-2 rounded transition-colors ${
-                  viewMode === 'map'
-                    ? 'bg-primary text-white'
-                    : 'text-text-muted hover:text-primary'
-                }`}
-                title="Harita Görünümü"
-              >
-                <Map size={18} />
-              </button>
+        {/* Category Filter - yalnızca veride var olan kategoriler */}
+        {categories.length > 1 && (
+          <div className="mb-8 overflow-x-auto pb-3 -mx-4 px-4 scrollbar-hide">
+            <div className="flex gap-2 whitespace-nowrap">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 py-2 rounded-full font-medium transition-all flex-shrink-0 ${
+                    selectedCategory === category
+                      ? 'bg-primary text-white shadow-md'
+                      : 'bg-surface text-text-primary border border-border hover:border-primary'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Business Grid or Map View */}
-        {filteredAndSortedBusinesses.length > 0 ? (
+        {/* Results Header and Controls */}
+        {!loading && businesses.length > 0 && (
+          <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <p className="text-text-primary font-bold text-lg">
+                {filteredAndSortedBusinesses.length} işletme bulundu
+              </p>
+            </div>
+
+            {/* Sort and View Options */}
+            <div className="flex gap-3 items-center flex-wrap">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as SortOption)}
+                className="px-4 py-2 rounded-lg border-2 border-border bg-surface text-text-primary font-medium text-sm focus:border-primary focus:outline-none hover:border-primary transition-colors cursor-pointer"
+              >
+                <option value="recommended">Önerilen</option>
+                <option value="rating">En İyi Puan</option>
+                <option value="reviews">En Çok Yorum</option>
+                <option value="newest">En Yeni</option>
+              </select>
+
+              {/* View Mode Toggle */}
+              <div className="flex gap-1 border-2 border-border rounded-lg p-1 bg-surface">
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-2 rounded transition-colors ${
+                    viewMode === 'list'
+                      ? 'bg-primary text-white'
+                      : 'text-text-muted hover:text-primary'
+                  }`}
+                  title="Liste Görünümü"
+                >
+                  <List size={18} />
+                </button>
+                <button
+                  onClick={() => setViewMode('map')}
+                  className={`p-2 rounded transition-colors ${
+                    viewMode === 'map'
+                      ? 'bg-primary text-white'
+                      : 'text-text-muted hover:text-primary'
+                  }`}
+                  title="Harita Görünümü"
+                >
+                  <Map size={18} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* İçerik */}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-20 gap-3">
+            <Loader2 size={36} className="text-primary animate-spin" />
+            <p className="text-text-muted text-sm">İşletmeler yükleniyor…</p>
+          </div>
+        ) : businesses.length === 0 ? (
+          // Hiç işletme yok — dürüst boş durum + ekleme çağrısı
+          <div className="text-center py-16 bg-surface rounded-lg border-2 border-border mb-8">
+            <div className="w-16 h-16 rounded-full bg-[#e6f4ec] flex items-center justify-center mx-auto mb-4">
+              <Store size={32} className="text-primary" />
+            </div>
+            <h3 className="text-xl font-bold text-text-primary mb-2">
+              Henüz işletme eklenmemiş
+            </h3>
+            <p className="text-text-muted mb-6 max-w-md mx-auto">
+              Mahallenizdeki ilk işletmeyi siz ekleyin; komşularınız keşfetsin.
+            </p>
+            <Link
+              href="/isletme-ekle"
+              className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-bold py-3 px-8 rounded-lg transition-all hover:shadow-lg"
+            >
+              <Zap size={20} />
+              İşletme Ekle
+              <ChevronRight size={20} />
+            </Link>
+          </div>
+        ) : filteredAndSortedBusinesses.length > 0 ? (
           viewMode === 'list' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
               {filteredAndSortedBusinesses.map((business) => (
                 <Link
                   key={business.id}
-                  href={`/isletmeler/${business.id}`}
+                  href={`/isletmeler/${business.slug}`}
                   className="hover:no-underline group"
                 >
-                  <div className="relative h-full">
-                    <BusinessCard {...business} />
-
-                    {/* Featured Badge */}
-                    {business.isFeatured && (
-                      <div className="absolute top-4 right-4 bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg">
-                        <Star size={14} className="fill-current" />
-                        Öne Çıkan
-                      </div>
-                    )}
-
-                    {/* Distance Badge */}
-                    <div className="absolute bottom-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
-                      <MapPin size={14} />
-                      {business.distance} km
-                    </div>
-
-                    {/* Phone Quick Action */}
-                    <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          window.location.href = `tel:${business.phone}`;
-                        }}
-                        className="bg-primary hover:bg-primary-hover text-white p-2 rounded-full shadow-lg transition-colors"
-                        title="Ara"
-                      >
-                        <Phone size={18} />
-                      </button>
-                    </div>
-                  </div>
+                  <BusinessCard
+                    id={business.id}
+                    name={business.name}
+                    category={business.business_categories?.name || 'İşletme'}
+                    rating={Number(business.rating_avg || 0)}
+                    reviewCount={business.review_count || 0}
+                    address={business.address || ''}
+                    logo={business.logo_url || undefined}
+                    phone={business.phone || undefined}
+                    website={business.website || undefined}
+                  />
                 </Link>
               ))}
             </div>
-          ) : (
+          ) : mapMarkers.length > 0 ? (
             <div className="mb-12 bg-surface rounded-lg border-2 border-border overflow-hidden">
               <LeafletMap
                 center={[41.0370, 28.9850]}
                 zoom={13}
                 className="w-full h-96"
-                markers={filteredAndSortedBusinesses.map(b => ({
-                  lat: b.lat,
-                  lng: b.lng,
-                  title: b.name,
-                  description: b.address,
-                  color: b.isOpen ? 'green' as const : 'red' as const,
-                  popup: `<strong>${b.name}</strong><br/><span style="color:#666">${b.category} · ${b.isOpen ? '✅ Açık' : '❌ Kapalı'}</span><br/><span style="color:#888;font-size:11px">${b.address}</span>`,
-                }))}
+                markers={mapMarkers}
               />
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-surface rounded-lg border-2 border-border mb-12">
+              <Map size={40} className="text-text-muted mx-auto mb-3" />
+              <p className="text-text-muted">
+                Bu işletmeler için henüz konum bilgisi girilmemiş.
+              </p>
             </div>
           )
         ) : (
+          // İşletme var ama filtre eşleşmedi
           <div className="text-center py-12 bg-surface rounded-lg border-2 border-border">
             <div className="text-6xl mb-4">🔍</div>
             <h3 className="text-xl font-bold text-text-primary mb-2">
@@ -393,23 +292,25 @@ export default function IsletmelerPage() {
           </div>
         )}
 
-        {/* Add Business CTA */}
-        <div className="bg-gradient-to-r from-[#e6f4ec] to-[#f0f2f5] rounded-lg border-2 border-primary p-8 text-center mb-8">
-          <h3 className="text-2xl font-bold text-text-primary mb-2">
-            Kendi İşletmenizi Ekleyin
-          </h3>
-          <p className="text-text-muted mb-6 max-w-2xl mx-auto">
-            Mahallenizdeki müşterilerinize ulaşın, işletmenizi tanıtın ve büyütün
-          </p>
-          <Link
-            href="/isletme-ekle"
-            className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-bold py-3 px-8 rounded-lg transition-all hover:shadow-lg"
-          >
-            <Zap size={20} />
-            İşletme Ekle
-            <ChevronRight size={20} />
-          </Link>
-        </div>
+        {/* Add Business CTA — yalnızca liste doluyken (boş durumda zaten üstte var) */}
+        {!loading && businesses.length > 0 && (
+          <div className="bg-gradient-to-r from-[#e6f4ec] to-[#f0f2f5] rounded-lg border-2 border-primary p-8 text-center mb-8">
+            <h3 className="text-2xl font-bold text-text-primary mb-2">
+              Kendi İşletmenizi Ekleyin
+            </h3>
+            <p className="text-text-muted mb-6 max-w-2xl mx-auto">
+              Mahallenizdeki müşterilerinize ulaşın, işletmenizi tanıtın ve büyütün
+            </p>
+            <Link
+              href="/isletme-ekle"
+              className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-bold py-3 px-8 rounded-lg transition-all hover:shadow-lg"
+            >
+              <Zap size={20} />
+              İşletme Ekle
+              <ChevronRight size={20} />
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

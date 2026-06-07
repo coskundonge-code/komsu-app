@@ -41,15 +41,21 @@ export async function createEvent(event: Database['public']['Tables']['events'][
 
 export async function rsvpEvent(eventId: string, userId: string, status: 'attending' | 'interested' | 'not_attending') {
   const supabase = createClient()
+  // event_attendees birincil anahtarı (event_id, user_id) bileşiğidir; ayrı bir `id`
+  // kolonu YOK. Var olan kaydı bu ikili ile bul, yine bu ikili ile güncelle.
   const { data: existing } = await supabase
     .from('event_attendees')
-    .select('id')
+    .select('event_id')
     .eq('event_id', eventId)
     .eq('user_id', userId)
-    .single()
+    .maybeSingle()
 
   if (existing) {
-    const { error } = await supabase.from('event_attendees').update({ status } as any).eq('id', existing.id)
+    const { error } = await supabase
+      .from('event_attendees')
+      .update({ status } as any)
+      .eq('event_id', eventId)
+      .eq('user_id', userId)
     return { error }
   } else {
     const { error } = await supabase.from('event_attendees').insert({ event_id: eventId, user_id: userId, status } as any)

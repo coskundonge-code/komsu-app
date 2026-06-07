@@ -1,11 +1,15 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { ChevronRight, Building2, MapPin, Users } from 'lucide-react'
-import { getFeedImageUrl } from '@/lib/demo-images'
+import { ChevronRight, Building2, MapPin } from 'lucide-react'
 import { useCurrentUser } from '@/lib/hooks/use-auth'
+
+// NOT (2026-06-07): Bu sağ kenar çubuğu eskiden gerçek kullanıcılara uydurma "1.247 üye"
+// sayısı ve sahte bir "Sponsorlu" işletme (demo görselli "Moda Kafe & Bistro", var olmayan
+// /isletmeler/moda-kafe bağlantısı) gösteriyordu. Doğrulanamayan üye sayısı ve sahte reklam
+// kaldırıldı; gerçek reklam sunumu (ad_campaigns/ads) devreye girince sponsorlu alan yeniden
+// eklenebilir. Bkz. TECH_DEBT #12.
 
 // Pages where the right sidebar should be completely hidden (full-width content)
 const hiddenOnRoutes = ['/pazar', '/odunc-kirala']
@@ -36,10 +40,7 @@ export function RightSidebar() {
             </div>
             <div>
               <p className="text-[15px] font-bold text-text-primary">{locationText}</p>
-              <p className="text-xs text-text-muted flex items-center gap-1 mt-0.5">
-                <Users className="w-3.5 h-3.5" />
-                1.247 üye
-              </p>
+              <p className="text-xs text-text-muted mt-0.5">Mahalleniz</p>
             </div>
           </div>
         </div>
@@ -71,31 +72,6 @@ export function RightSidebar() {
           <span className="text-sm font-semibold text-primary">Sayfa oluştur</span>
           <ChevronRight className="w-4 h-4 text-primary" />
         </Link>
-      </div>
-
-      {/* 3. Sponsorlu Alan */}
-      <div className="bg-surface rounded-xl overflow-hidden border border-border hover:shadow-md transition-shadow">
-        <div className="relative h-32 bg-gradient-to-br from-primary to-primary-hover overflow-hidden">
-          <Image
-            src={getFeedImageUrl(1, 320, 128)}
-            alt="Moda Kafe & Bistro"
-            fill
-            unoptimized
-            className="object-cover opacity-40"
-          />
-        </div>
-        <div className="p-4">
-          <p className="text-[10px] text-text-muted font-semibold uppercase tracking-widest">Sponsorlu</p>
-          <p className="text-[15px] font-bold text-text-primary mt-1.5">Moda Kafe & Bistro</p>
-          <p className="text-[13px] text-text-secondary mt-0.5">Kahvaltı ve brunch menüsü</p>
-          <Link
-            href="/isletmeler/moda-kafe"
-            className="mt-3 text-sm font-semibold text-primary hover:text-primary-hover flex items-center gap-1 transition-colors"
-          >
-            Sayfayı ziyaret et
-            <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
       </div>
     </div>
   )

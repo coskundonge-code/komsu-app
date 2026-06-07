@@ -6,7 +6,6 @@ import type { Database } from '@/lib/supabase/types'
 
 const createClient = () => createTypedClient()
 
-type Post = Database['public']['Tables']['posts']['Row']
 type PostInsert = Database['public']['Tables']['posts']['Insert']
 
 // --- React Query hooks (use these in components) ---
@@ -69,7 +68,7 @@ export async function getPostById(id: string) {
   const supabase = createClient()
   const { data, error } = await supabase
     .from('posts')
-    .select('*, profiles!posts_author_id_fkey(full_name, avatar_url), comments(*, profiles!comments_author_id_fkey(full_name, avatar_url))')
+    .select('*, profiles!posts_author_id_fkey(full_name, avatar_url), neighborhoods(name, district), comments(*, profiles!comments_author_id_fkey(full_name, avatar_url))')
     .eq('id', id)
     .single()
   return { data, error }

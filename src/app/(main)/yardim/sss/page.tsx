@@ -211,7 +211,7 @@ export default function FAQPage() {
         {/* FAQ List */}
         <div className="space-y-3 mb-8">
           {filteredFAQs.length > 0 ? (
-            filteredFAQs.map((faq, idx) => {
+            filteredFAQs.map((faq) => {
               const globalIdx = faqData.indexOf(faq);
               const isExpanded = expandedItems.includes(globalIdx);
 

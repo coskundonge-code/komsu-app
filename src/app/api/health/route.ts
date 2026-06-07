@@ -44,7 +44,7 @@ export async function GET() {
         ...(error && { error: error.message }),
         ...(latency > 2000 && { details: { warning: 'High latency detected' } }),
       }
-    } catch (err) {
+    } catch {
       checks.database = {
         status: 'unhealthy',
         latency: Date.now() - dbStart,

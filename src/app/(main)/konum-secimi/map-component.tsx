@@ -86,7 +86,7 @@ export default function MapComponent({ center, zoom, mapType, pinLat, pinLng, on
           // Container hidden - just setView without animation
           mapRef.current.setView(center, safeZoom, { animate: false })
         }
-      } catch (e) {
+      } catch {
         // Fallback: silently set view without animation
         try {
           mapRef.current.setView(center, safeZoom, { animate: false })

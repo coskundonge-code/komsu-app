@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createClient } from '@/lib/supabase/client';
-import { Search, ChevronLeft, ChevronRight, MessageSquare, Trash2, Pin, AlertCircle, Eye } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight, MessageSquare, Trash2, Pin, AlertCircle } from 'lucide-react';
 
 // AUDIT_REPORT.md K3 — gerçek posts tablosuna bağlı
 

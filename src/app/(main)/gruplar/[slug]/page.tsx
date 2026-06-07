@@ -1,218 +1,229 @@
 'use client';
 
 import {
-  Heart,
-  MessageCircle,
-  Share2,
   ArrowLeft,
-  MoreVertical,
   Clock,
-  MapPin,
-  AlertCircle,
-  Trash2,
-  Flag,
+  Tag,
   Users,
-  Settings,
   UserPlus,
   LogOut,
   Lock,
   Globe,
-  Calendar,
+  Loader2,
+  MessageSquare,
 } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
-import { getAvatarUrl, getFeedImageUrl } from '@/lib/demo-images';
+import { use, useEffect, useState } from 'react';
+import {
+  getGroupBySlug,
+  getGroupMembers,
+  getGroupPosts,
+  getUserGroupIds,
+  joinGroup,
+  leaveGroup,
+} from '@/lib/hooks/use-groups-businesses';
+import { useCurrentUser } from '@/lib/hooks/use-auth';
 
-interface Post {
-  id: string;
-  author: string;
-  authorId: string;
-  avatar: string;
-  content: string;
-  timestamp: Date;
-  likes: number;
-  comments: number;
-  liked: boolean;
-  image?: string;
-}
+// NOT (2026-06-07): Bu sayfa eskiden 857 satırlık tamamen sahte mockGroupDetail
+// (uydurma üye/gönderi/etkinlik/medya/kural) gösteriyordu, DB'ye hiç sormuyordu
+// ve params.slug'ı use() olmadan okuyordu. Artık gerçek `groups` + `group_members`
+// (→profiles) + `group_posts` (→posts→profiles) verisine bağlı. group_posts'ta
+// INSERT politikası olmadığı için istemci tarafı gönderi yazma KALDIRILDI (sahte
+// kompozisyon kutusu yok); gönderiler salt-okunur ve dürüst boş durumlu. Medya/
+// Etkinlik/Kural sekmeleri (backing tablo yok) kaldırıldı. Bkz. TECH_DEBT #12.
 
-interface Member {
+interface GroupRow {
   id: string;
   name: string;
-  avatar: string;
-  role: 'Admin' | 'Moderatör' | 'Üye';
-  joinedDate: Date;
+  slug: string;
+  description: string | null;
+  cover_image: string | null;
+  is_private: boolean | null;
+  member_count: number | null;
+  category: string | null;
+  created_at: string | null;
+  created_by: string | null;
 }
 
-const mockGroupDetail = {
-  id: 'komsu-kahvaltilari',
-  name: 'Kadıköy Spor Kulübü',
-  slug: 'kadikoy-spor-kulubu',
-  coverImage: getFeedImageUrl(39, 1200, 600),
-  icon: getAvatarUrl('Spor Kulübü', 0),
-  category: 'Spor & Fitness',
-  privacy: 'public',
-  description: 'Kadıköy mahallesi sakinleri için futbol, voleybol, tenis ve genel fitness etkinlikleri.',
-  fullDescription: 'Kadıköy Spor Kulübü, mahallede yaşayan spor meraklılarını bir araya getirerek aktif bir yaşam kültürü oluşturmayı amaçlayan bir topluluğudur. Futbol, voleybol, tenis, yüzme ve fitness gibi çeşitli spor branşlarında haftalık etkinlikler düzenleriz. Amacımız sadece spor yapmak değil, aynı zamanda komşularımızla tanışma, sağlıklı bir yaşam tarzı geliştirme ve arkadaşlık kurma fırsatı sağlamaktır.',
-  memberCount: 128,
-  postCount: 342,
-  createdDate: new Date('2022-03-15'),
-  isJoined: true,
-  isAdmin: true,
-  isModerator: false,
-  members: [
-    { id: '1', name: 'Mehmet Demirel', avatar: getAvatarUrl('Member1', 0), role: 'Admin', joinedDate: new Date('2022-03-15') },
-    { id: '2', name: 'Ayşe Kılıç', avatar: getAvatarUrl('Member2', 1), role: 'Moderatör', joinedDate: new Date('2022-04-20') },
-    { id: '3', name: 'Fatih Özdemir', avatar: getAvatarUrl('Member3', 2), role: 'Moderatör', joinedDate: new Date('2022-05-10') },
-    { id: '4', name: 'Zeynep Yavuz', avatar: getAvatarUrl('Member4', 3), role: 'Üye', joinedDate: new Date('2023-01-22') },
-    { id: '5', name: 'Hakan Şahin', avatar: getAvatarUrl('Member5', 4), role: 'Üye', joinedDate: new Date('2023-02-14') },
-    { id: '6', name: 'Meral Coşkun', avatar: getAvatarUrl('Member6', 5), role: 'Üye', joinedDate: new Date('2023-06-08') },
-    { id: '7', name: 'Emre Kardeş', avatar: getAvatarUrl('Member7', 6), role: 'Üye', joinedDate: new Date('2024-01-11') },
-    { id: '8', name: 'Serap Ersoy', avatar: getAvatarUrl('Member8', 7), role: 'Üye', joinedDate: new Date('2024-05-03') },
-  ] as Member[],
-  posts: [
-    {
-      id: '1',
-      author: 'Fatih Özdemir',
-      authorId: '3',
-      avatar: getAvatarUrl('Member3', 2),
-      content: '⚽ Cumartesi 15:00 parkta futbol maçı var! Herkesi bekliyoruz. Forma veya sadece spor giyim yeterli. Katılmak için cevaplayın 👇',
-      timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000),
-      likes: 23,
-      comments: 8,
-      liked: false,
-      image: getFeedImageUrl(40, 400, 300),
-    },
-    {
-      id: '2',
-      author: 'Ayşe Kılıç',
-      authorId: '2',
-      avatar: getAvatarUrl('Member2', 1),
-      content: 'Yeni yüzme antrenmanları başlıyor! Pazartesi ve perşembe akşamları 18:30-19:30 arasında. Herkesin seviyesine uygun. İlgilenenler bize yazabilir.',
-      timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000),
-      likes: 31,
-      comments: 12,
-      liked: true,
-      image: undefined,
-    },
-    {
-      id: '3',
-      author: 'Mehmet Demirel',
-      authorId: '1',
-      avatar: getAvatarUrl('Member1', 0),
-      content: '🏆 Geçtiğimiz cumartesinin futbol turnuvasında harika bir gün geçirdik! Tüm katılımcılara teşekkür ederim. Resimler albümde. Gelecek ay yine yapacağız!',
-      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      likes: 52,
-      comments: 18,
-      liked: false,
-      image: undefined,
-    },
-    {
-      id: '4',
-      author: 'Zeynep Yavuz',
-      authorId: '4',
-      avatar: getAvatarUrl('Member4', 3),
-      content: 'Yoga sınıfı için aydınlık bir mekan arıyoruz. Pazardaki etkinlik çok sıcak oldu. Bir çatı bahçesi veya kapalı mekan bilen var mı?',
-      timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-      likes: 14,
-      comments: 5,
-      liked: false,
-      image: undefined,
-    },
-    {
-      id: '5',
-      author: 'Hakan Şahin',
-      authorId: '5',
-      avatar: getAvatarUrl('Member5', 4),
-      content: 'Tenis turnuvası için kaydolmak isteyen varsa lütfen haber versin. 20 kişi sayımız tamamlanırsa başlayabiliriz. Hepinizi bekliyoruz!',
-      timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-      likes: 18,
-      comments: 7,
-      liked: false,
-      image: undefined,
-    },
-  ] as Post[],
-};
+interface ProfileLite {
+  id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+}
 
-export default function GroupDetailPage({ params }: { params: { slug: string } }) {
-  const [activeTab, setActiveTab] = useState<'posts' | 'members' | 'about' | 'media' | 'events'>('posts');
-  const [posts, setPosts] = useState(mockGroupDetail.posts);
-  const [likedPosts, setLikedPosts] = useState<string[]>(
-    mockGroupDetail.posts.filter(p => p.liked).map(p => p.id)
+interface MemberRow {
+  user_id: string;
+  role: string | null;
+  joined_at: string | null;
+  profiles: ProfileLite | null;
+}
+
+interface PostRow {
+  id: string;
+  title: string | null;
+  body: string;
+  media_urls: string[] | null;
+  created_at: string | null;
+  comment_count: number | null;
+  reaction_count: number | null;
+  profiles: ProfileLite | null;
+}
+
+type TabType = 'posts' | 'members' | 'about';
+
+function formatDate(value: string | null) {
+  if (!value) return '';
+  return new Intl.DateTimeFormat('tr-TR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(new Date(value));
+}
+
+function formatTimeAgo(value: string | null) {
+  if (!value) return '';
+  const now = Date.now();
+  const then = new Date(value).getTime();
+  const diffMins = Math.floor((now - then) / 60000);
+  const diffHours = Math.floor((now - then) / 3600000);
+  const diffDays = Math.floor((now - then) / 86400000);
+  if (diffMins < 1) return 'Şimdi';
+  if (diffMins < 60) return `${diffMins} dakika önce`;
+  if (diffHours < 24) return `${diffHours} saat önce`;
+  if (diffDays < 7) return `${diffDays} gün önce`;
+  return formatDate(value);
+}
+
+function Avatar({ profile, size = 40 }: { profile: ProfileLite | null; size?: number }) {
+  const name = profile?.full_name || 'Üye';
+  if (profile?.avatar_url) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return (
+      <img
+        src={profile.avatar_url}
+        alt={name}
+        width={size}
+        height={size}
+        className="rounded-full object-cover border border-[#e0e0e0] flex-shrink-0"
+        style={{ width: size, height: size }}
+      />
+    );
+  }
+  return (
+    <div
+      className="rounded-full bg-primary text-white flex items-center justify-center font-bold flex-shrink-0"
+      style={{ width: size, height: size, fontSize: size * 0.4 }}
+    >
+      {name.charAt(0).toUpperCase()}
+    </div>
   );
-  const [newPostContent, setNewPostContent] = useState('');
-  const [showPostMenu, setShowPostMenu] = useState<string | null>(null);
-  const [showMemberFilter, setShowMemberFilter] = useState<'all' | 'admin' | 'moderator'>('all');
-  const [isJoined, setIsJoined] = useState(mockGroupDetail.isJoined);
-  const [showAdminMenu, setShowAdminMenu] = useState(false);
+}
 
-  const handleLike = (postId: string) => {
-    if (likedPosts.includes(postId)) {
-      setLikedPosts(likedPosts.filter(id => id !== postId));
-    } else {
-      setLikedPosts([...likedPosts, postId]);
-    }
-  };
+export default function GroupDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
+  const { user } = useCurrentUser();
 
-  const handlePostSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newPostContent.trim()) return;
+  const [group, setGroup] = useState<GroupRow | null>(null);
+  const [members, setMembers] = useState<MemberRow[]>([]);
+  const [posts, setPosts] = useState<PostRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<TabType>('posts');
+  const [isJoined, setIsJoined] = useState(false);
+  const [joinLoading, setJoinLoading] = useState(false);
 
-    const newPost: Post = {
-      id: String(posts.length + 1),
-      author: 'Siz',
-      authorId: 'current-user',
-      avatar: getAvatarUrl('Siz', 0),
-      content: newPostContent,
-      timestamp: new Date(),
-      likes: 0,
-      comments: 0,
-      liked: false,
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      const { data: g } = await getGroupBySlug(slug);
+      if (cancelled) return;
+      if (!g) {
+        setGroup(null);
+        setLoading(false);
+        return;
+      }
+      setGroup(g as GroupRow);
+      const [{ data: m }, { data: p }] = await Promise.all([
+        getGroupMembers((g as GroupRow).id),
+        getGroupPosts((g as GroupRow).id),
+      ]);
+      if (cancelled) return;
+      setMembers((m as MemberRow[]) || []);
+      const postRows = ((p as any[]) || [])
+        .map((r) => r.posts as PostRow)
+        .filter(Boolean)
+        .sort(
+          (a, b) =>
+            new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+        );
+      setPosts(postRows);
+      setLoading(false);
+    })();
+    return () => {
+      cancelled = true;
     };
+  }, [slug]);
 
-    setPosts([newPost, ...posts]);
-    setNewPostContent('');
-  };
-
-  const getRoleColor = (role: string) => {
-    switch (role) {
-      case 'Admin':
-        return 'bg-red-100 text-red-700';
-      case 'Moderatör':
-        return 'bg-blue-100 text-blue-700';
-      default:
-        return 'bg-green-100 text-green-700';
+  // Gerçek üyelik durumu.
+  useEffect(() => {
+    if (!user || !group) {
+      setIsJoined(false);
+      return;
     }
-  };
+    let cancelled = false;
+    (async () => {
+      const { data } = await getUserGroupIds(user.id);
+      if (cancelled) return;
+      const ids = ((data as { group_id: string }[]) || []).map((x) => x.group_id);
+      setIsJoined(ids.includes(group.id));
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user, group]);
 
-  const filteredMembers = mockGroupDetail.members.filter(member => {
-    if (showMemberFilter === 'admin') return member.role === 'Admin';
-    if (showMemberFilter === 'moderator') return member.role === 'Moderatör';
-    return true;
-  });
+  async function handleJoinLeave() {
+    if (!user || !group) return;
+    setJoinLoading(true);
+    if (isJoined) {
+      await leaveGroup(group.id, user.id);
+      setIsJoined(false);
+      setMembers((prev) => prev.filter((m) => m.user_id !== user.id));
+    } else {
+      await joinGroup(group.id, user.id);
+      setIsJoined(true);
+      const { data: m } = await getGroupMembers(group.id);
+      setMembers((m as MemberRow[]) || []);
+    }
+    setJoinLoading(false);
+  }
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('tr-TR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }).format(date);
-  };
+  // ----- Yükleniyor -----
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#f0f2f5] flex flex-col items-center justify-center gap-3">
+        <Loader2 size={36} className="text-primary animate-spin" />
+        <p className="text-[#8f8f8f] text-sm">Grup yükleniyor…</p>
+      </div>
+    );
+  }
 
-  const formatTimeAgo = (date: Date) => {
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
+  // ----- Grup bulunamadı -----
+  if (!group) {
+    return (
+      <div className="min-h-screen bg-[#f0f2f5] flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-[#333] mb-4">Grup Bulunamadı</h1>
+          <Link href="/gruplar" className="text-primary hover:text-primary-hover font-semibold">
+            ← Gruplara Dön
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
-    if (diffMins < 1) return 'Şimdi';
-    if (diffMins < 60) return `${diffMins} dakika önce`;
-    if (diffHours < 24) return `${diffHours} saat önce`;
-    if (diffDays < 7) return `${diffDays} gün önce`;
-    return formatDate(date);
-  };
+  const memberCount = members.length;
+  const isOwner = !!user && group.created_by === user.id;
 
   return (
     <div className="min-h-screen bg-[#f0f2f5]">
@@ -221,7 +232,7 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <Link
             href="/gruplar"
-            className="inline-flex items-center gap-2 text-[#00833e] hover:text-[#006b32] font-semibold transition-colors"
+            className="inline-flex items-center gap-2 text-primary hover:text-primary-hover font-semibold transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
             Gruplara Geri Dön
@@ -229,140 +240,110 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
         </div>
       </div>
 
-      {/* Group Header with Cover and Info */}
+      {/* Group Header */}
       <div className="relative bg-white border-b border-[#e0e0e0]">
-        {/* Cover Photo */}
-        <div className="relative h-48 sm:h-64 bg-gradient-to-r from-[#00833e] to-[#006b32] overflow-hidden">
-          <Image
-            src={mockGroupDetail.coverImage}
-            alt={mockGroupDetail.name}
-            fill
-            className="object-cover"
-            unoptimized
-            priority
-          />
-          <div className="absolute inset-0 bg-black/10"></div>
+        {/* Cover — gerçek kapak varsa görsel, yoksa degrade */}
+        <div className="relative h-48 sm:h-64 bg-gradient-to-r from-primary to-primary-hover overflow-hidden">
+          {group.cover_image && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={group.cover_image}
+              alt={group.name}
+              className="w-full h-full object-cover"
+            />
+          )}
+          <div className="absolute inset-0 bg-black/10" />
         </div>
 
-        {/* Group Info Card */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 -mt-16 sm:-mt-24 relative z-10 mb-6">
-            {/* Avatar */}
+            {/* İkon — baş harf (avatar kolonu yok) */}
             <div className="flex-shrink-0">
-              <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-2xl border-4 border-white shadow-lg overflow-hidden bg-white">
-                <Image
-                  src={mockGroupDetail.icon}
-                  alt={mockGroupDetail.name}
-                  width={128}
-                  height={128}
-                  className="w-full h-full object-cover"
-                  unoptimized
-                />
+              <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-2xl border-4 border-white shadow-lg bg-primary text-white flex items-center justify-center text-4xl sm:text-5xl font-bold">
+                {group.name.charAt(0).toUpperCase()}
               </div>
             </div>
 
-            {/* Group Details */}
             <div className="flex-1 pt-2">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex-1">
-                  <h1 className="text-2xl sm:text-3xl font-bold text-[#333] mb-2">
-                    {mockGroupDetail.name}
-                  </h1>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-[#333] mb-2">{group.name}</h1>
                   <div className="flex items-center gap-3 flex-wrap">
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#d1fae5] text-[#00833e] rounded-full text-sm font-semibold">
-                      {mockGroupDetail.privacy === 'public' ? (
-                        <>
-                          <Globe className="w-4 h-4" />
-                          Herkese Açık
-                        </>
-                      ) : (
+                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#d1fae5] text-primary rounded-full text-sm font-semibold">
+                      {group.is_private ? (
                         <>
                           <Lock className="w-4 h-4" />
                           Özel
                         </>
+                      ) : (
+                        <>
+                          <Globe className="w-4 h-4" />
+                          Herkese Açık
+                        </>
                       )}
                     </span>
-                    <span className="text-sm text-[#8f8f8f]">
-                      {mockGroupDetail.memberCount} üye
-                    </span>
-                    <span className="text-sm text-[#8f8f8f]">
-                      {mockGroupDetail.postCount} gönderi
-                    </span>
+                    {group.category && (
+                      <span className="inline-flex items-center gap-1 text-sm text-[#8f8f8f]">
+                        <Tag className="w-4 h-4" />
+                        {group.category}
+                      </span>
+                    )}
+                    <span className="text-sm text-[#8f8f8f]">{memberCount} üye</span>
                   </div>
                 </div>
-
-                {/* Admin Actions */}
-                {mockGroupDetail.isAdmin && (
-                  <div className="relative">
-                    <button
-                      onClick={() => setShowAdminMenu(!showAdminMenu)}
-                      className="p-2 hover:bg-[#f0f2f5] rounded-lg transition-colors"
-                    >
-                      <MoreVertical className="w-5 h-5 text-[#404040]" />
-                    </button>
-                    {showAdminMenu && (
-                      <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-[#e0e0e0] z-20">
-                        <button className="w-full text-left px-4 py-3 hover:bg-[#f0f2f5] flex items-center gap-2 text-[#404040] transition-colors border-b border-[#e0e0e0]">
-                          <Settings className="w-4 h-4" />
-                          Grup Ayarları
-                        </button>
-                        <button className="w-full text-left px-4 py-3 hover:bg-[#f0f2f5] flex items-center gap-2 text-[#404040] transition-colors border-b border-[#e0e0e0]">
-                          <Users className="w-4 h-4" />
-                          Üyeleri Yönet
-                        </button>
-                        <button className="w-full text-left px-4 py-3 hover:bg-[#f0f2f5] flex items-center gap-2 text-[#404040] transition-colors">
-                          <UserPlus className="w-4 h-4" />
-                          Davet Et
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
             </div>
           </div>
 
-          {/* Join/Leave Button */}
-          <div className="flex gap-3">
-            <button
-              onClick={() => setIsJoined(!isJoined)}
-              className={`px-6 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2 ${
-                isJoined
-                  ? 'bg-[#e0e0e0] text-[#404040] hover:bg-[#d0d0d0]'
-                  : 'bg-[#00833e] text-white hover:bg-[#006b32]'
-              }`}
-            >
-              {isJoined ? (
-                <>
-                  <LogOut className="w-4 h-4" />
-                  Ayrıl
-                </>
-              ) : (
-                <>
-                  <UserPlus className="w-4 h-4" />
-                  Gruba Katıl
-                </>
-              )}
-            </button>
-          </div>
+          {/* Join/Leave — yalnızca giriş yapan ve kurucu olmayan kullanıcıya */}
+          {user && !isOwner && (
+            <div className="flex gap-3">
+              <button
+                onClick={handleJoinLeave}
+                disabled={joinLoading}
+                className={`px-6 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2 disabled:opacity-50 ${
+                  isJoined
+                    ? 'bg-[#e0e0e0] text-[#404040] hover:bg-[#d0d0d0]'
+                    : 'bg-primary text-white hover:bg-primary-hover'
+                }`}
+              >
+                {joinLoading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : isJoined ? (
+                  <>
+                    <LogOut className="w-4 h-4" />
+                    Ayrıl
+                  </>
+                ) : (
+                  <>
+                    <UserPlus className="w-4 h-4" />
+                    Gruba Katıl
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+          {isOwner && (
+            <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#fff7e6] text-[#8a5a00] rounded-full text-sm font-semibold">
+              Bu grubun kurucususunuz
+            </span>
+          )}
 
           {/* Tabs */}
           <div className="flex gap-1 mt-6 border-b border-[#e0e0e0] overflow-x-auto">
-            {(['posts', 'about', 'members', 'media', 'events'] as const).map((tab) => (
+            {(['posts', 'members', 'about'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`px-4 py-3 font-semibold transition-colors border-b-2 whitespace-nowrap ${
                   activeTab === tab
-                    ? 'text-[#00833e] border-[#00833e]'
+                    ? 'text-primary border-primary'
                     : 'text-[#8f8f8f] border-transparent hover:text-[#404040]'
                 }`}
               >
                 {tab === 'posts' && 'Gönderiler'}
+                {tab === 'members' && `Üyeler (${memberCount})`}
                 {tab === 'about' && 'Hakkında'}
-                {tab === 'members' && 'Üyeler'}
-                {tab === 'media' && 'Medya'}
-                {tab === 'events' && 'Etkinlikler'}
               </button>
             ))}
           </div>
@@ -372,428 +353,151 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* Main Content Area */}
           <div className="lg:col-span-2 space-y-6">
             {/* Posts Tab */}
             {activeTab === 'posts' && (
               <div className="space-y-6">
-                {/* Create Post Card */}
-                {mockGroupDetail.isJoined && (
-                  <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
-                    <form onSubmit={handlePostSubmit} className="space-y-4">
-                      <div className="flex gap-4">
-                        <Image
-                          src={getAvatarUrl('Siz', 0)}
-                          alt="Sizin Avatarınız"
-                          width={40}
-                          height={40}
-                          className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-[#e0e0e0]"
-                          unoptimized
-                        />
-                        <div className="flex-1">
-                          <textarea
-                            value={newPostContent}
-                            onChange={(e) => setNewPostContent(e.target.value)}
-                            placeholder="Gruba bir şeyler paylaş..."
-                            className="w-full p-3 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00833e] focus:border-transparent resize-none text-[#333]"
-                            rows={3}
-                          />
-                          <div className="flex justify-end gap-2 mt-3">
-                            <button
-                              type="button"
-                              className="px-4 py-2 text-[#404040] hover:bg-[#f0f2f5] rounded-lg transition-colors font-medium"
-                            >
-                              İptal
-                            </button>
-                            <button
-                              type="submit"
-                              disabled={!newPostContent.trim()}
-                              className="px-6 py-2 bg-[#00833e] hover:bg-[#006b32] disabled:bg-gray-300 text-white rounded-lg font-semibold transition-colors"
-                            >
-                              Gönder
-                            </button>
+                {posts.length > 0 ? (
+                  posts.map((post) => (
+                    <div
+                      key={post.id}
+                      className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden"
+                    >
+                      <div className="p-6">
+                        <div className="flex gap-3 mb-4">
+                          <Avatar profile={post.profiles} size={40} />
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-bold text-[#333]">
+                              {post.profiles?.full_name || 'Üye'}
+                            </h4>
+                            <p className="text-sm text-[#8f8f8f]">
+                              {formatTimeAgo(post.created_at)}
+                            </p>
                           </div>
                         </div>
+
+                        {post.title && (
+                          <h3 className="font-bold text-lg text-[#333] mb-2">{post.title}</h3>
+                        )}
+                        <p className="text-[#404040] mb-4 leading-relaxed whitespace-pre-wrap">
+                          {post.body}
+                        </p>
+
+                        {post.media_urls && post.media_urls.length > 0 && (
+                          <div className="grid grid-cols-2 gap-2 mb-4">
+                            {post.media_urls.map((url, i) => (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                key={i}
+                                src={url}
+                                alt="Gönderi görseli"
+                                className="w-full h-48 object-cover rounded-lg border border-[#e0e0e0]"
+                              />
+                            ))}
+                          </div>
+                        )}
+
+                        <div className="flex gap-6 pt-4 border-t border-[#e0e0e0] text-sm text-[#8f8f8f]">
+                          <span>{post.reaction_count || 0} beğeni</span>
+                          <span>{post.comment_count || 0} yorum</span>
+                        </div>
                       </div>
-                    </form>
+                    </div>
+                  ))
+                ) : (
+                  <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-12 text-center">
+                    <MessageSquare className="w-12 h-12 text-[#8f8f8f] mx-auto mb-3" />
+                    <p className="text-[#8f8f8f]">Bu grupta henüz gönderi yok.</p>
                   </div>
                 )}
-
-                {/* Posts Feed */}
-                <div className="space-y-6">
-                  {posts.length > 0 ? (
-                    posts.map((post) => (
-                      <div key={post.id} className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-md transition-shadow">
-                        {/* Post Header */}
-                        <div className="p-6">
-                          <div className="flex items-start justify-between gap-4 mb-4">
-                            <div className="flex gap-3 flex-1">
-                              <Image
-                                src={post.avatar}
-                                alt={post.author}
-                                width={40}
-                                height={40}
-                                className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-[#e0e0e0]"
-                                unoptimized
-                              />
-                              <div className="flex-1 min-w-0">
-                                <h4 className="font-bold text-[#333]">{post.author}</h4>
-                                <p className="text-sm text-[#8f8f8f]">
-                                  {formatTimeAgo(post.timestamp)}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="relative">
-                              <button
-                                onClick={() => setShowPostMenu(showPostMenu === post.id ? null : post.id)}
-                                className="p-2 hover:bg-[#f0f2f5] rounded-full transition-colors text-[#8f8f8f]"
-                              >
-                                <MoreVertical className="w-5 h-5" />
-                              </button>
-
-                              {/* Post Menu */}
-                              {showPostMenu === post.id && (
-                                <div className="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-[#e0e0e0] z-10">
-                                  <button className="w-full text-left px-4 py-3 hover:bg-[#f0f2f5] flex items-center gap-2 text-[#404040] transition-colors border-b border-[#e0e0e0]">
-                                    <Share2 className="w-4 h-4" />
-                                    Paylaş
-                                  </button>
-                                  {mockGroupDetail.isAdmin && (
-                                    <>
-                                      <button className="w-full text-left px-4 py-3 hover:bg-[#f0f2f5] flex items-center gap-2 text-[#404040] transition-colors border-b border-[#e0e0e0]">
-                                        <Trash2 className="w-4 h-4" />
-                                        Sil
-                                      </button>
-                                    </>
-                                  )}
-                                  <button className="w-full text-left px-4 py-3 hover:bg-[#f0f2f5] flex items-center gap-2 text-red-600 transition-colors">
-                                    <Flag className="w-4 h-4" />
-                                    Bildir
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Post Content */}
-                          <p className="text-[#404040] mb-4 leading-relaxed whitespace-pre-wrap">
-                            {post.content}
-                          </p>
-
-                          {/* Post Image */}
-                          {post.image && (
-                            <div className="relative h-96 bg-gray-200 rounded-lg overflow-hidden mb-4">
-                              <Image
-                                src={post.image}
-                                alt="Gönderi resmi"
-                                fill
-                                className="object-cover"
-                                unoptimized
-                              />
-                            </div>
-                          )}
-
-                          {/* Post Actions */}
-                          <div className="flex gap-6 pt-4 border-t border-[#e0e0e0]">
-                            <button
-                              onClick={() => handleLike(post.id)}
-                              className="flex items-center gap-2 text-[#8f8f8f] hover:text-[#00833e] transition-colors group"
-                            >
-                              <Heart
-                                className="w-5 h-5 group-hover:scale-110 transition-transform"
-                                fill={likedPosts.includes(post.id) ? 'currentColor' : 'none'}
-                                color={likedPosts.includes(post.id) ? '#00833e' : 'currentColor'}
-                              />
-                              <span className={`text-sm font-medium ${likedPosts.includes(post.id) ? 'text-[#00833e]' : ''}`}>
-                                {likedPosts.includes(post.id) ? post.likes + 1 : post.likes}
-                              </span>
-                            </button>
-                            <button className="flex items-center gap-2 text-[#8f8f8f] hover:text-[#00833e] transition-colors group">
-                              <MessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                              <span className="text-sm font-medium">{post.comments}</span>
-                            </button>
-                            <button className="flex items-center gap-2 text-[#8f8f8f] hover:text-[#00833e] transition-colors group">
-                              <Share2 className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                              <span className="text-sm font-medium">Paylaş</span>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-12 text-center">
-                      <AlertCircle className="w-12 h-12 text-[#8f8f8f] mx-auto mb-3" />
-                      <p className="text-[#8f8f8f]">Bu grupta henüz gönderi yok. İlk gönderiyi siz paylaşabilirsiniz!</p>
-                    </div>
-                  )}
-                </div>
               </div>
             )}
 
             {/* Members Tab */}
             {activeTab === 'members' && (
               <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-[#333]">
-                    Grup Üyeleri ({filteredMembers.length})
-                  </h2>
-                  {mockGroupDetail.isAdmin && (
-                    <div className="flex gap-2">
-                      {['all', 'admin', 'moderator'].map((filter) => (
-                        <button
-                          key={filter}
-                          onClick={() => setShowMemberFilter(filter as any)}
-                          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                            showMemberFilter === filter
-                              ? 'bg-[#00833e] text-white'
-                              : 'bg-[#f0f2f5] text-[#404040] hover:bg-[#e0e0e0]'
-                          }`}
-                        >
-                          {filter === 'all' && 'Hepsi'}
-                          {filter === 'admin' && 'Yönetici'}
-                          {filter === 'moderator' && 'Moderatör'}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {filteredMembers.map((member) => (
-                    <Link key={member.id} href={`/profil/${member.id}`}>
-                      <div className="p-4 rounded-lg hover:bg-[#f0f2f5] transition-colors cursor-pointer border border-transparent hover:border-[#e0e0e0]">
-                        <div className="flex flex-col items-center">
-                          <Image
-                            src={member.avatar}
-                            alt={member.name}
-                            width={80}
-                            height={80}
-                            className="w-20 h-20 rounded-full object-cover mb-3 border-2 border-[#e0e0e0]"
-                            unoptimized
-                          />
-                          <p className="font-semibold text-[#333] text-center text-sm">{member.name}</p>
-                          <div className={`mt-2 px-3 py-1 rounded-full text-xs font-semibold ${getRoleColor(member.role)}`}>
-                            {member.role}
+                <h2 className="text-2xl font-bold text-[#333] mb-6">Grup Üyeleri ({memberCount})</h2>
+                {members.length > 0 ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {members.map((member) => {
+                      const owner = member.user_id === group.created_by;
+                      const roleLabel = owner
+                        ? 'Kurucu'
+                        : member.role === 'admin'
+                        ? 'Yönetici'
+                        : 'Üye';
+                      return (
+                        <Link key={member.user_id} href={`/profil/${member.user_id}`}>
+                          <div className="p-4 rounded-lg hover:bg-[#f0f2f5] transition-colors cursor-pointer border border-transparent hover:border-[#e0e0e0]">
+                            <div className="flex flex-col items-center">
+                              <Avatar profile={member.profiles} size={80} />
+                              <p className="font-semibold text-[#333] text-center text-sm mt-3">
+                                {member.profiles?.full_name || 'Üye'}
+                              </p>
+                              <div
+                                className={`mt-2 px-3 py-1 rounded-full text-xs font-semibold ${
+                                  owner
+                                    ? 'bg-[#fff7e6] text-[#8a5a00]'
+                                    : member.role === 'admin'
+                                    ? 'bg-blue-100 text-blue-700'
+                                    : 'bg-green-100 text-green-700'
+                                }`}
+                              >
+                                {roleLabel}
+                              </div>
+                            </div>
                           </div>
-                          <p className="text-xs text-[#8f8f8f] mt-2">
-                            {member.joinedDate.toLocaleDateString('tr-TR', { month: 'short', year: '2-digit' })}
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Media Tab */}
-            {activeTab === 'media' && (
-              <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
-                <h2 className="text-2xl font-bold text-[#333] mb-6">Medya</h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                    <div key={i} className="relative h-32 bg-[#e0e0e0] rounded-lg overflow-hidden hover:opacity-80 transition-opacity cursor-pointer">
-                      <Image
-                        src={getFeedImageUrl(i + 100, 200, 200)}
-                        alt={`Medya ${i}`}
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Events Tab */}
-            {activeTab === 'events' && (
-              <div className="space-y-4">
-                <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-md transition-shadow">
-                  <div className="flex gap-4 p-4 sm:p-6">
-                    <div className="relative h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0 rounded-lg overflow-hidden bg-[#e0e0e0]">
-                      <Image
-                        src={getFeedImageUrl(50, 300, 200)}
-                        alt="Etkinlik"
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-[#333] text-sm sm:text-base mb-2">Futbol Maçı</h3>
-                      <div className="space-y-1 text-xs sm:text-sm text-[#8f8f8f]">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 flex-shrink-0" />
-                          <span>15 Mart 2026, 15:00</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4 flex-shrink-0" />
-                          <span className="truncate">Mahalle Spor Alanı</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4 flex-shrink-0" />
-                          <span>24 katılımcı</span>
-                        </div>
-                      </div>
-                    </div>
+                        </Link>
+                      );
+                    })}
                   </div>
-                </div>
-
-                <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-md transition-shadow">
-                  <div className="flex gap-4 p-4 sm:p-6">
-                    <div className="relative h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0 rounded-lg overflow-hidden bg-[#e0e0e0]">
-                      <Image
-                        src={getFeedImageUrl(51, 300, 200)}
-                        alt="Etkinlik"
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-[#333] text-sm sm:text-base mb-2">Yoga Dersi</h3>
-                      <div className="space-y-1 text-xs sm:text-sm text-[#8f8f8f]">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 flex-shrink-0" />
-                          <span>22 Mart 2026, 09:00</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4 flex-shrink-0" />
-                          <span className="truncate">Mahalle Parkı</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4 flex-shrink-0" />
-                          <span>18 katılımcı</span>
-                        </div>
-                      </div>
-                    </div>
+                ) : (
+                  <div className="text-center py-10">
+                    <Users className="w-12 h-12 text-[#8f8f8f] mx-auto mb-3" />
+                    <p className="text-[#8f8f8f]">Bu grupta henüz üye yok.</p>
                   </div>
-                </div>
-
-                <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] overflow-hidden hover:shadow-md transition-shadow">
-                  <div className="flex gap-4 p-4 sm:p-6">
-                    <div className="relative h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0 rounded-lg overflow-hidden bg-[#e0e0e0]">
-                      <Image
-                        src={getFeedImageUrl(52, 300, 200)}
-                        alt="Etkinlik"
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-[#333] text-sm sm:text-base mb-2">Tenis Turnuvası</h3>
-                      <div className="space-y-1 text-xs sm:text-sm text-[#8f8f8f]">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 flex-shrink-0" />
-                          <span>29 Mart 2026, 14:00</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4 flex-shrink-0" />
-                          <span className="truncate">Tenis Kortları</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4 flex-shrink-0" />
-                          <span>32 katılımcı</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                )}
               </div>
             )}
 
             {/* About Tab */}
             {activeTab === 'about' && (
               <div className="space-y-6">
-                {/* Description */}
                 <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
                   <h2 className="text-2xl font-bold text-[#333] mb-4">Grup Hakkında</h2>
                   <p className="text-[#404040] leading-relaxed">
-                    {mockGroupDetail.fullDescription}
+                    {group.description || 'Bu grup için henüz bir açıklama eklenmemiş.'}
                   </p>
                 </div>
 
-                {/* Group Details */}
                 <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
                   <h3 className="text-xl font-bold text-[#333] mb-6">Grup Bilgileri</h3>
                   <div className="space-y-4">
                     <div className="flex items-center gap-4 pb-4 border-b border-[#e0e0e0]">
-                      <Users className="w-5 h-5 text-[#00833e] flex-shrink-0" />
+                      <Users className="w-5 h-5 text-primary flex-shrink-0" />
                       <div>
                         <p className="text-sm text-[#8f8f8f]">Üye Sayısı</p>
-                        <p className="font-bold text-[#333]">{mockGroupDetail.memberCount} kişi</p>
+                        <p className="font-bold text-[#333]">{memberCount} kişi</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4 pb-4 border-b border-[#e0e0e0]">
-                      <MapPin className="w-5 h-5 text-[#00833e] flex-shrink-0" />
-                      <div>
-                        <p className="text-sm text-[#8f8f8f]">Kategori</p>
-                        <p className="font-bold text-[#333]">{mockGroupDetail.category}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <Clock className="w-5 h-5 text-[#00833e] flex-shrink-0" />
-                      <div>
-                        <p className="text-sm text-[#8f8f8f]">Kurulma Tarihi</p>
-                        <p className="font-bold text-[#333]">{formatDate(mockGroupDetail.createdDate)}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Rules */}
-                <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
-                  <h3 className="text-xl font-bold text-[#333] mb-6">Grup Kuralları</h3>
-                  <ul className="space-y-4">
-                    <li className="flex gap-3">
-                      <span className="text-[#00833e] font-bold text-lg flex-shrink-0">•</span>
-                      <span className="text-[#404040]">Saygılı ve nazik bir dil kullanın. Diğer üyelere karşı saygısız yorum ve sözlere izin verilmez.</span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="text-[#00833e] font-bold text-lg flex-shrink-0">•</span>
-                      <span className="text-[#404040]">Spam, ticari reklam ve direkt pazarlama içeriği paylaşmayın.</span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="text-[#00833e] font-bold text-lg flex-shrink-0">•</span>
-                      <span className="text-[#404040]">Başkalarının mahremiyetine ve kişisel verilerine saygı gösterin.</span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="text-[#00833e] font-bold text-lg flex-shrink-0">•</span>
-                      <span className="text-[#404040]">Mobbing, taciz, hayaletçilik ve tehdit yasaktır.</span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="text-[#00833e] font-bold text-lg flex-shrink-0">•</span>
-                      <span className="text-[#404040]">Kin, nefret ve ayrımcılık içeren içerik paylaşmayın.</span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="text-[#00833e] font-bold text-lg flex-shrink-0">•</span>
-                      <span className="text-[#404040]">Sahte bilgi ve dezenformasyon yayınlamayın.</span>
-                    </li>
-                  </ul>
-                </div>
-
-                {/* Admins */}
-                <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
-                  <h3 className="text-xl font-bold text-[#333] mb-6">Yöneticiler</h3>
-                  <div className="space-y-4">
-                    {mockGroupDetail.members.filter(m => m.role === 'Admin' || m.role === 'Moderatör').map(admin => (
-                      <div key={admin.id} className="flex items-center gap-4 pb-4 border-b border-[#e0e0e0] last:border-b-0 last:pb-0">
-                        <Image
-                          src={admin.avatar}
-                          alt={admin.name}
-                          width={48}
-                          height={48}
-                          className="w-12 h-12 rounded-full object-cover border border-[#e0e0e0]"
-                          unoptimized
-                        />
-                        <div className="flex-1">
-                          <p className="font-bold text-[#333]">{admin.name}</p>
-                          <p className="text-sm text-[#8f8f8f]">{admin.role}</p>
+                    {group.category && (
+                      <div className="flex items-center gap-4 pb-4 border-b border-[#e0e0e0]">
+                        <Tag className="w-5 h-5 text-primary flex-shrink-0" />
+                        <div>
+                          <p className="text-sm text-[#8f8f8f]">Kategori</p>
+                          <p className="font-bold text-[#333]">{group.category}</p>
                         </div>
                       </div>
-                    ))}
+                    )}
+                    {group.created_at && (
+                      <div className="flex items-center gap-4">
+                        <Clock className="w-5 h-5 text-primary flex-shrink-0" />
+                        <div>
+                          <p className="text-sm text-[#8f8f8f]">Kurulma Tarihi</p>
+                          <p className="font-bold text-[#333]">{formatDate(group.created_at)}</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -802,52 +506,35 @@ export default function GroupDetailPage({ params }: { params: { slug: string } }
 
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
-            {/* Group Stats Card */}
             <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
               <h3 className="font-bold text-[#333] mb-6 flex items-center gap-2">
-                <Users className="w-5 h-5 text-[#00833e]" />
+                <Users className="w-5 h-5 text-primary" />
                 Grup Bilgileri
               </h3>
               <div className="space-y-5">
                 <div className="pb-5 border-b border-[#e0e0e0]">
                   <p className="text-sm text-[#8f8f8f] mb-2">Üye Sayısı</p>
-                  <p className="text-3xl font-bold text-[#00833e]">{mockGroupDetail.memberCount}</p>
+                  <p className="text-3xl font-bold text-primary">{memberCount}</p>
                 </div>
                 <div className="pb-5 border-b border-[#e0e0e0]">
-                  <p className="text-sm text-[#8f8f8f] mb-2">Toplam Gönderi</p>
-                  <p className="text-3xl font-bold text-[#00833e]">{mockGroupDetail.postCount}</p>
+                  <p className="text-sm text-[#8f8f8f] mb-2">Gönderi</p>
+                  <p className="text-3xl font-bold text-primary">{posts.length}</p>
                 </div>
-                <div>
-                  <p className="text-sm text-[#8f8f8f] mb-2">Kategori</p>
-                  <p className="font-semibold text-[#333]">{mockGroupDetail.category}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Links */}
-            <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
-              <h3 className="font-bold text-[#333] mb-4">Hızlı İşlemler</h3>
-              <div className="space-y-3">
-                <button className="w-full px-4 py-3 bg-[#f0f2f5] hover:bg-[#e0e0e0] text-[#00833e] font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">
-                  <Share2 className="w-4 h-4" />
-                  Grubu Paylaş
-                </button>
-                {mockGroupDetail.isAdmin && (
-                  <button className="w-full px-4 py-3 bg-[#f0f2f5] hover:bg-[#e0e0e0] text-[#333] font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">
-                    <AlertCircle className="w-4 h-4" />
-                    Bildirim Gönder
-                  </button>
+                {group.category && (
+                  <div>
+                    <p className="text-sm text-[#8f8f8f] mb-2">Kategori</p>
+                    <p className="font-semibold text-[#333]">{group.category}</p>
+                  </div>
                 )}
               </div>
             </div>
 
-            {/* Group Description Sidebar */}
-            <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
-              <h3 className="font-bold text-[#333] mb-4">Grup Açıklaması</h3>
-              <p className="text-sm text-[#404040] leading-relaxed">
-                {mockGroupDetail.description}
-              </p>
-            </div>
+            {group.description && (
+              <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-6">
+                <h3 className="font-bold text-[#333] mb-4">Grup Açıklaması</h3>
+                <p className="text-sm text-[#404040] leading-relaxed">{group.description}</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

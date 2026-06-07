@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
+import { getFeedImageUrl } from '@/lib/demo-images'
 import {
   ArrowLeft,
   Calendar,
@@ -367,7 +367,7 @@ export default function BlogPage() {
         {/* Footer */}
         <div className="border-t border-border bg-surface rounded-t-lg py-8 px-8 text-center">
           <p className="text-sm text-text-muted mb-6">
-            © 2026 Mahallemiz — Trendex Lojistik tarafından geliştirilmiştir.
+            © 2026 Mahallemiz — Consulting Partners tarafından geliştirilmiştir.
           </p>
           <div className="flex items-center justify-center gap-6 flex-wrap">
             <Link

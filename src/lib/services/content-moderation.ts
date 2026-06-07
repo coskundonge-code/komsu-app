@@ -98,13 +98,6 @@ const SPAM_PATTERNS = [
   /₺\d+.*₺\d+.*₺\d+/g,          // Çoklu fiyat spam
 ];
 
-const PERSONAL_INFO_PATTERNS = [
-  /\b\d{11}\b/g,                  // TC Kimlik No (11 haneli)
-  /\b\d{16}\b/g,                  // Kredi kartı numarası
-  /\bTR\d{24}\b/gi,              // IBAN
-  /\b[A-Z]\d{2}[A-Z]{3}\d{4}\b/g, // Pasaport
-];
-
 // ============ AI CONTENT FILTER ============
 
 /**
@@ -115,7 +108,7 @@ export function analyzeContent(
   text: string,
   title?: string,
   contentType?: ContentType,
-  imageUrls?: string[]
+  _imageUrls?: string[]
 ): ModerationResult {
   const fullText = [title, text].filter(Boolean).join(' ').toLowerCase();
   const categories: AICategory[] = [];

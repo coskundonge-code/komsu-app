@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { AlertCircle, RefreshCw, Home } from 'lucide-react';
+import { reportClientError } from '@/lib/utils/report-client-error';
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -11,7 +12,7 @@ interface ErrorProps {
 
 export default function AdminError({ error, reset }: ErrorProps) {
   useEffect(() => {
-    console.error('Admin route error:', error);
+    reportClientError(error, { boundary: 'admin-error' });
   }, [error]);
 
   return (

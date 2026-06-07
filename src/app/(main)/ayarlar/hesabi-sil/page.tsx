@@ -29,7 +29,7 @@ export default function HesabiSilPage() {
       }
       // Başarılı: ana sayfaya yönlendir (signed out durumda)
       window.location.href = '/giris?deleted=1'
-    } catch (err) {
+    } catch {
       setError('Beklenmeyen bir hata oluştu.')
     } finally {
       setIsDeleting(false)

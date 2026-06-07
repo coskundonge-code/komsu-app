@@ -17,7 +17,6 @@ interface GroupCardProps {
 }
 
 export function GroupCard({
-  id,
   slug,
   name,
   description,

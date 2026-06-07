@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { ChevronLeft, Search, Send, Image as ImageIcon, Smile, MessageCirclePlus, Phone, Video, MessageSquare, ShoppingBag, Bell } from "lucide-react";
+import { ChevronLeft, Search, Send, Image as ImageIcon, Smile, MessageCirclePlus, Phone, Video, MessageSquare, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useCurrentUser } from "@/lib/hooks/use-auth";
@@ -10,8 +10,6 @@ import type { Database } from "@/lib/supabase/types";
 
 const createClient = () => createTypedClient()
 
-type ConversationRow = Database['public']['Tables']['conversations']['Row']
-type MessageRow = Database['public']['Tables']['messages']['Row']
 type ProfileRow = Database['public']['Tables']['profiles']['Row']
 
 interface Conversation {
@@ -36,7 +34,7 @@ interface Message {
 }
 
 export default function MessagesPage() {
-  const { user, profile, loading: authLoading } = useCurrentUser();
+  const { user, loading: authLoading } = useCurrentUser();
   const [selectedId, setSelectedId] = useState("");
   const [isMobile, setIsMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -45,8 +43,8 @@ export default function MessagesPage() {
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [loadingConversations, setLoadingConversations] = useState(true);
-  const [loadingMessages, setLoadingMessages] = useState(false);
+  const [, setLoadingConversations] = useState(true);
+  const [, setLoadingMessages] = useState(false);
 
   const selected = conversations.find((c) => c.id === selectedId);
 
@@ -243,7 +241,7 @@ export default function MessagesPage() {
     try {
       const supabase = createClient();
 
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('messages')
         .insert({
           conversation_id: selectedId,

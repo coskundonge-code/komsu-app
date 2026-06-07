@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Users, Shield, Heart, MapPin, Zap, Award, TrendingUp } from "lucide-react";
+import { ArrowLeft, Users, Shield, Heart, MapPin, Award, TrendingUp } from "lucide-react";
 
 export default function AboutPage() {
   const stats = [
@@ -21,7 +21,7 @@ export default function AboutPage() {
   const teamMembers = [
     { name: "Coşkun Dönge", role: "Yazılım Geliştirici", initial: "C" },
     { name: "Onur Pekel", role: "Ürün Tasarımcısı", initial: "O" },
-    { name: "Trendex Lojistik", role: "Sponsorluk & Destek", initial: "T" },
+    { name: "Consulting Partners", role: "Sponsorluk & Destek", initial: "C" },
   ];
 
   return (
@@ -112,7 +112,7 @@ export default function AboutPage() {
             Ekibimiz
           </h2>
           <p className="text-text-secondary leading-relaxed mb-8">
-            Mahallemiz, yazılım geliştirme, ürün tasarımı ve topluluk yönetiminde uzman bir ekip tarafından geliştirilir. Trendex Lojistik tarafından desteklenen projemiz, her gün mahalle sakinlerinin yaşamını daha iyi hale getirmek için çalışmaktadır.
+            Mahallemiz, yazılım geliştirme, ürün tasarımı ve topluluk yönetiminde uzman bir ekip tarafından geliştirilir. Consulting Partners tarafından desteklenen projemiz, her gün mahalle sakinlerinin yaşamını daha iyi hale getirmek için çalışmaktadır.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -151,7 +151,7 @@ export default function AboutPage() {
 
         {/* Footer */}
         <div className="border-t border-border bg-background py-8 px-8 rounded-lg text-center">
-          <p className="text-sm text-text-muted mb-4">© 2026 Mahallemiz — Trendex Lojistik tarafından geliştirilmiştir.</p>
+          <p className="text-sm text-text-muted mb-4">© 2026 Mahallemiz — Consulting Partners tarafından geliştirilmiştir.</p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <Link href="/gizlilik" className="text-sm text-primary hover:text-primary-hover font-medium transition-colors">
               Gizlilik Politikası

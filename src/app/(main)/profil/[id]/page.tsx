@@ -10,114 +10,43 @@ import {
   Edit,
   CheckCircle,
   Shield,
-  UserPlus,
-  MessageSquare,
-  Calendar as CalendarIcon,
-  Lightbulb,
+  ShoppingBag,
   Award,
-  ThumbsUp,
-  Star,
   Zap,
   TrendingUp,
+  Tag,
   Loader2,
+  Flag,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect, use, useRef } from 'react';
 import { cn } from '@/lib/utils';
-import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 import { AddressVerificationStatus } from '@/components/verification/address-verification-status';
+import { ReportModal } from '@/components/shared/report-modal';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
 import { getFullProfile } from '@/lib/hooks/use-profile';
+import { getUserGroups } from '@/lib/hooks/use-groups-businesses';
 
-// Badge icon/color mapping
-const badgeStyles: Record<string, { icon: typeof Award; color: string; bgFrom: string; bgTo: string; borderColor: string }> = {
-  helper: { icon: Award, color: '#ffd700', bgFrom: '#ffd700', bgTo: '#ffed4e', borderColor: '#ffd700' },
-  active: { icon: Zap, color: '#00833e', bgFrom: '#00833e', bgTo: '#006b32', borderColor: '#00833e' },
-  trusted: { icon: Shield, color: '#e74c3c', bgFrom: '#e74c3c', bgTo: '#c0392b', borderColor: '#e74c3c' },
-  verified: { icon: CheckCircle, color: '#00833e', bgFrom: '#00833e', bgTo: '#006b32', borderColor: '#00833e' },
-  leader: { icon: TrendingUp, color: '#3498db', bgFrom: '#3498db', bgTo: '#2980b9', borderColor: '#3498db' },
+// NOT (2026-06-07): Bu sayfa eskiden çok sayıda uydurma veri gösteriyordu:
+// mockRecentPosts (gerçek gönderi yoksa sahte "Coşkun Dönge" gönderileri),
+// mockRecommendations (hep basılan 3 sahte işletme önerisi), mockNeighbors
+// (6 sahte komşu), sahte istatistikler (45 gönderi / 128 yardım / 89 komşu /
+// 4.9 puan), demo kapak görseli (getFeedImageUrl) ve "Mahalle Nüfusu 2.500+ /
+// Ayda 8-10 etkinlik" gibi uydurma kutular. Takip (follows) tablosu olmadığı
+// için "Komşu Ekle" butonu da işlevsizdi. Artık yalnızca gerçek veriye bağlı:
+// gönderiler, pazar ilanları, grup üyelikleri, rozetler ve gerçek istatistikler.
+// Backing'i olmayan her şey kaldırıldı. Bkz. TECH_DEBT #12.
+
+const badgeStyles: Record<string, { icon: typeof Award; color: string }> = {
+  helper: { icon: Award, color: '#ffd700' },
+  active: { icon: Zap, color: '#00833e' },
+  trusted: { icon: Shield, color: '#e74c3c' },
+  verified: { icon: CheckCircle, color: '#00833e' },
+  leader: { icon: TrendingUp, color: '#3498db' },
 };
-
-// Fallback mock data for things not yet in DB
-const mockRecentPosts = [
-  {
-    id: '1',
-    author: 'Coşkun Dönge',
-    text: 'Gelecek cumartesi yine mahalle kahvaltısı yapacağız! Herkes katılmaya davetli 🎉',
-    likes: 45,
-    comments: 12,
-    time: '2 gün',
-  },
-  {
-    id: '2',
-    author: 'Coşkun Dönge',
-    text: 'Mahallede yeni bir spor kulübü kuruyoruz. Futbol ve voleybol turnuvaları düzenlenecek!',
-    likes: 67,
-    comments: 23,
-    time: '5 gün',
-  },
-  {
-    id: '3',
-    author: 'Coşkun Dönge',
-    text: 'Kütüphanede edebiyat klasikleri tartışması yapacağız. "Araba Sevdası" hakkında konuşacağız.',
-    likes: 34,
-    comments: 15,
-    time: '8 gün',
-  },
-  {
-    id: '4',
-    author: 'Coşkun Dönge',
-    text: 'Yeni kitap önerileriniz var mı? Şu sıralar yazımda yoğunlaşmaya başladığım dönemler hakkında okuyacağımız müzakere var.',
-    likes: 28,
-    comments: 8,
-    time: '12 gün',
-  },
-  {
-    id: '5',
-    author: 'Coşkun Dönge',
-    text: 'Mahalle pikniği çok güzel geçti! Katılan herkese teşekkürler. Önümüzdeki ay yine buluşalım.',
-    likes: 56,
-    comments: 19,
-    time: '15 gün',
-  },
-];
-
-const mockRecommendations = [
-  {
-    id: '1',
-    business: 'Moda Kahvesi',
-    category: 'Kahvehane',
-    description: 'Harika kahvesi ve sıcak ortamı ile mahallenin en güzel kahvesi. Sahipleri çok misafirperver.',
-    rating: 5,
-  },
-  {
-    id: '2',
-    business: 'Elif Pazarlaması',
-    category: 'Market',
-    description: 'Çok taze ve kaliteli ürünleri var. Fiyatları makul ve kasa hattı hızlı.',
-    rating: 4.5,
-  },
-  {
-    id: '3',
-    business: 'Spor Merkezi Kadıköy',
-    category: 'Spor Tesisi',
-    description: 'Modern ekipmanları ve deneyimli antrenörleriyle tavsiye ediyorum. Üyelik fiyatları ise çok uygun.',
-    rating: 4.8,
-  },
-];
-
-const mockNeighbors = [
-  { id: '1', name: 'Ayşe Yılmaz', initials: 'AY' },
-  { id: '2', name: 'Mehmet Kara', initials: 'MK' },
-  { id: '3', name: 'Zeynep Çelik', initials: 'ZÇ' },
-  { id: '4', name: 'Ali Demir', initials: 'AD' },
-  { id: '5', name: 'Fatma Şahin', initials: 'FŞ' },
-  { id: '6', name: 'Can Özer', initials: 'CÖ' },
-];
 
 const tabs = [
   { id: 'posts', label: 'Gönderiler' },
-  { id: 'recommendations', label: 'Öneriler' },
   { id: 'marketplace', label: 'Pazar Yeri İlanları' },
   { id: 'groups', label: 'Gruplar' },
 ];
@@ -126,7 +55,8 @@ function getInitials(name: string): string {
   return name
     .split(' ')
     .map((n) => n.charAt(0).toUpperCase())
-    .join('');
+    .join('')
+    .slice(0, 2);
 }
 
 function formatJoinDate(dateStr: string): string {
@@ -138,18 +68,25 @@ function formatJoinDate(dateStr: string): string {
   return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
 }
 
+function formatShortDate(dateStr: string | null): string {
+  if (!dateStr) return '';
+  return new Date(dateStr).toLocaleDateString('tr-TR');
+}
+
 export default function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [activeTab, setActiveTab] = useState('posts');
   const { user, loading: authLoading } = useCurrentUser();
   const fetchedRef = useRef<string | null>(null);
 
-  // Profile data from Supabase
   const [profileData, setProfileData] = useState<any>(null);
   const [addressData, setAddressData] = useState<any>(null);
   const [badgesData, setBadgesData] = useState<any[]>([]);
   const [postsData, setPostsData] = useState<any[]>([]);
+  const [listingsData, setListingsData] = useState<any[]>([]);
+  const [groupsData, setGroupsData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [reportOpen, setReportOpen] = useState(false);
 
   const isOwnProfile = id === 'me' || (user && id === user.id);
   const targetUserId = id === 'me' ? user?.id : id;
@@ -160,11 +97,19 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
       fetchedRef.current = targetUserId;
       setLoading(true);
       try {
-        const result = await getFullProfile(targetUserId);
+        const [result, groupsRes] = await Promise.all([
+          getFullProfile(targetUserId),
+          getUserGroups(targetUserId),
+        ]);
         if (result.profile) setProfileData(result.profile);
         if (result.address) setAddressData(result.address);
         if (result.badges) setBadgesData(result.badges);
         if (result.posts) setPostsData(result.posts);
+        if (result.listings) setListingsData(result.listings);
+        const groups = ((groupsRes.data as any[]) || [])
+          .map((row: any) => row.groups)
+          .filter(Boolean);
+        setGroupsData(groups);
       } catch (err) {
         console.error('Error fetching profile:', err);
       }
@@ -175,48 +120,42 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
     }
   }, [targetUserId, authLoading]);
 
-  // Derived display values (real data with fallbacks)
+  // Türetilmiş görüntü değerleri — yalnızca gerçek veri.
   const displayName = profileData?.full_name || 'Kullanıcı';
   const displayInitials = getInitials(displayName);
   const displayBio = profileData?.bio || '';
-  const displayNeighborhood = addressData
-    ? `${addressData.district}, ${addressData.city}`
-    : profileData?.user_addresses?.[0]
-      ? `${profileData.user_addresses[0].district}, ${profileData.user_addresses[0].city}`
+  const displayNeighborhood = addressData?.neighborhoods
+    ? `${addressData.neighborhoods.district}, ${addressData.neighborhoods.city}`
+    : profileData?.location_district && profileData?.location_province
+      ? `${profileData.location_district}, ${profileData.location_province}`
       : '';
-  const displayJoinDate = profileData?.created_at
-    ? formatJoinDate(profileData.created_at)
-    : '';
-  const displayAvatar = profileData?.avatar_url || getFeedImageUrl(78, 200, 200);
+  const displayJoinDate = profileData?.created_at ? formatJoinDate(profileData.created_at) : '';
 
-  // Badges from DB
+  // Rozetler — DB'den.
   const displayBadges = badgesData.map((ub: any) => ({
     id: ub.badges?.id || ub.badge_id,
-    label: ub.badges?.label || '',
+    label: ub.badges?.label || ub.badges?.name || '',
     description: ub.badges?.description || '',
     icon: ub.badges?.icon || 'helper',
-    color: ub.badges?.color || '#00833e',
-    earnedAt: ub.earned_at,
   }));
 
-  // Stats - from real data where possible, mock for rest
-  const displayStats = {
-    posts: postsData.length || 45,
-    helps: 128,
-    neighbors: 89,
-  };
+  // Gerçek istatistikler — uydurma yok.
+  const displayStats = [
+    { label: 'Gönderi', value: postsData.length },
+    { label: 'İlan', value: listingsData.length },
+    { label: 'Grup', value: groupsData.length },
+    { label: 'Rozet', value: displayBadges.length },
+  ];
 
-  // Posts for display (real DB posts or fallback to mock)
-  const displayPosts = postsData.length > 0
-    ? postsData.map((p: any) => ({
-        id: p.id,
-        author: displayName,
-        text: p.body || p.title || '',
-        likes: 0,
-        comments: 0,
-        time: new Date(p.created_at).toLocaleDateString('tr-TR'),
-      }))
-    : mockRecentPosts;
+  // Gerçek adres/e-Devlet doğrulama durumu (uydurma "27 gün" yerine).
+  const verifyStatus: 'verified' | 'locked' | 'unverified' = profileData?.edevlet_verified_at
+    ? 'verified'
+    : profileData?.account_locked
+      ? 'locked'
+      : 'unverified';
+  const verifyDaysRemaining = profileData?.edevlet_verification_deadline
+    ? Math.max(0, Math.ceil((new Date(profileData.edevlet_verification_deadline).getTime() - Date.now()) / 86400000))
+    : 0;
 
   if (loading || authLoading) {
     return (
@@ -228,36 +167,26 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
 
   return (
     <div className="min-h-screen bg-[#f0f2f5]">
-      {/* Cover Image with Enhanced Gradient Overlay */}
-      <div className="relative h-56 bg-gradient-to-b from-[#00833e] to-[#006b32] overflow-hidden">
-        <img
-          src={getFeedImageUrl(78, 1200, 400)}
-          alt="Profil Kapağı"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent" />
+      {/* Kapak — degrade (kullanıcı kapağı yükleme altyapısı yok) */}
+      <div className="relative h-40 bg-gradient-to-b from-[#00833e] to-[#006b32] overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20" />
       </div>
 
-      {/* Main Content Container */}
-      <div className="max-w-7xl mx-auto px-4 -mt-28 relative z-10 mb-8">
-        {/* Two Column Layout */}
+      <div className="max-w-7xl mx-auto px-4 -mt-20 relative z-10 mb-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Content - Left/Full */}
+          {/* Sol/Ana sütun */}
           <div className="lg:col-span-2">
-            {/* Header Card with Badges */}
-            <div className="bg-white rounded-xl shadow-lg border border-[#e0e0e0] p-6 mb-6 card-hover">
+            {/* Başlık kartı */}
+            <div className="bg-white rounded-xl shadow-lg border border-[#e0e0e0] p-6 mb-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 mb-6">
-                {/* Avatar */}
                 <div className="w-28 h-28 sm:w-32 sm:h-32 bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-xl flex items-center justify-center text-white text-4xl sm:text-5xl font-bold border-4 border-white shadow-xl flex-shrink-0">
                   {displayInitials}
                 </div>
 
-                {/* Profile Info and Badges */}
                 <div className="flex-1">
                   <div className="mb-3">
                     <h1 className="text-2xl sm:text-3xl font-bold text-[#333] mb-2">{displayName}</h1>
-                    {/* Badges from DB */}
+
                     {displayBadges.length > 0 && (
                       <div className="flex flex-wrap gap-2 mb-4">
                         {displayBadges.map((badge) => {
@@ -276,26 +205,31 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
                       </div>
                     )}
 
-                    {/* Action Buttons */}
-                    <div className="flex flex-row gap-2">
-                      {isOwnProfile ? (
+                    {/* Yalnızca kendi profilinde düzenleme butonu. "Komşu Ekle"
+                        takip altyapısı (follows tablosu) olmadığı için kaldırıldı. */}
+                    {isOwnProfile ? (
+                      <div className="flex flex-row gap-2">
                         <Link
                           href="/ayarlar"
-                          className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-all card-hover"
+                          className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-all"
                         >
                           <Edit size={16} />
                           Profili Düzenle
                         </Link>
-                      ) : (
-                        <button className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-[#00833e] text-[#00833e] hover:bg-[#00833e]/5 font-medium rounded-lg transition-all card-hover text-sm">
-                          <UserPlus size={16} />
-                          Komşu Ekle
+                      </div>
+                    ) : (
+                      <div className="flex flex-row gap-2">
+                        <button
+                          onClick={() => setReportOpen(true)}
+                          className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-[#e0e0e0] text-[#8f8f8f] hover:text-red-500 hover:border-red-300 font-medium rounded-lg transition-all"
+                        >
+                          <Flag size={16} />
+                          Şikâyet Et
                         </button>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Location and Join Date */}
                   <div className="space-y-1">
                     {displayNeighborhood && (
                       <div className="flex items-center gap-2 text-[#8f8f8f]">
@@ -313,7 +247,6 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
                 </div>
               </div>
 
-              {/* Bio Section */}
               {displayBio && (
                 <div className="border-t border-[#e0e0e0] pt-4">
                   <p className="text-[#404040] text-sm leading-relaxed">{displayBio}</p>
@@ -321,39 +254,25 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
               )}
             </div>
 
-            {/* Address Verification Status */}
+            {/* Adres doğrulama durumu — gerçek e-Devlet alanlarından */}
             {isOwnProfile && (
               <div className="mb-6">
-                <AddressVerificationStatus
-                  status={addressData?.verified_at ? 'verified' : 'unverified'}
-                  daysRemaining={27}
-                />
+                <AddressVerificationStatus status={verifyStatus} daysRemaining={verifyDaysRemaining} />
               </div>
             )}
 
-            {/* Stats Row */}
+            {/* İstatistikler — gerçek sayılar */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-              <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 text-center card-hover">
-                <p className="text-2xl font-bold text-[#00833e]">{displayStats.posts}</p>
-                <p className="text-xs text-[#8f8f8f] mt-1 font-medium">Gönderi</p>
-              </div>
-              <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 text-center card-hover">
-                <p className="text-2xl font-bold text-[#00833e]">{displayStats.helps}</p>
-                <p className="text-xs text-[#8f8f8f] mt-1 font-medium">Yardım</p>
-              </div>
-              <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 text-center card-hover">
-                <p className="text-2xl font-bold text-[#00833e]">{displayStats.neighbors}</p>
-                <p className="text-xs text-[#8f8f8f] mt-1 font-medium">Komşu</p>
-              </div>
-              <div className="bg-white rounded-lg border border-[#e0e0e0] p-4 text-center card-hover">
-                <p className="text-2xl font-bold text-[#f39c12]">4.9</p>
-                <p className="text-xs text-[#8f8f8f] mt-1 font-medium">Puan</p>
-              </div>
+              {displayStats.map((stat) => (
+                <div key={stat.label} className="bg-white rounded-lg border border-[#e0e0e0] p-4 text-center">
+                  <p className="text-2xl font-bold text-[#00833e]">{stat.value}</p>
+                  <p className="text-xs text-[#8f8f8f] mt-1 font-medium">{stat.label}</p>
+                </div>
+              ))}
             </div>
 
-            {/* Tabs Container */}
+            {/* Sekmeler */}
             <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden shadow-sm">
-              {/* Tab Navigation */}
               <div className="flex border-b border-[#e0e0e0] overflow-x-auto">
                 {tabs.map((tab) => (
                   <button
@@ -371,138 +290,124 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
                 ))}
               </div>
 
-              {/* Tab Content */}
               <div className="p-0">
-                {/* Posts Tab */}
+                {/* Gönderiler */}
                 {activeTab === 'posts' && (
                   <div className="divide-y divide-[#e0e0e0]">
-                    {displayPosts.length === 0 ? (
+                    {postsData.length === 0 ? (
                       <div className="p-8 text-center">
+                        <MessageCircle size={32} className="mx-auto text-[#e0e0e0] mb-2" />
                         <p className="text-[#8f8f8f]">Henüz gönderi yok</p>
                       </div>
                     ) : (
-                      displayPosts.map((post) => (
-                        <div key={post.id} className="p-5 hover:bg-[#f0f2f5] transition-colors card-hover border-l-4 border-transparent hover:border-[#00833e]">
+                      postsData.map((post: any) => (
+                        <Link
+                          key={post.id}
+                          href={`/gonderi/${post.id}`}
+                          className="block p-5 hover:bg-[#f0f2f5] transition-colors border-l-4 border-transparent hover:border-[#00833e]"
+                        >
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex-1">
-                              <p className="text-[#333] text-sm font-medium leading-relaxed">{post.text}</p>
+                              {post.title && <p className="text-[#333] text-sm font-semibold mb-1">{post.title}</p>}
+                              <p className="text-[#404040] text-sm leading-relaxed line-clamp-3">{post.body}</p>
                             </div>
-                            <span className="text-xs text-[#8f8f8f] font-medium whitespace-nowrap ml-2">{post.time}</span>
+                            <span className="text-xs text-[#8f8f8f] font-medium whitespace-nowrap ml-2">{formatShortDate(post.created_at)}</span>
                           </div>
-
-                          {/* Post Actions */}
                           <div className="flex items-center gap-6 text-xs text-[#8f8f8f] pt-3 border-t border-[#e0e0e0]">
-                            <button className="flex items-center gap-1.5 hover:text-[#00833e] transition-colors">
+                            <span className="flex items-center gap-1.5">
                               <Heart size={16} className="text-[#e74c3c]" />
-                              <span className="font-medium">{post.likes}</span>
-                            </button>
-                            <button className="flex items-center gap-1.5 hover:text-[#00833e] transition-colors">
+                              <span className="font-medium">{post.reaction_count || 0}</span>
+                            </span>
+                            <span className="flex items-center gap-1.5">
                               <MessageCircle size={16} />
-                              <span className="font-medium">{post.comments}</span>
-                            </button>
-                            <button className="flex items-center gap-1.5 hover:text-[#00833e] transition-colors">
+                              <span className="font-medium">{post.comment_count || 0}</span>
+                            </span>
+                            <span className="flex items-center gap-1.5">
                               <Share2 size={16} />
-                            </button>
+                            </span>
                           </div>
-                        </div>
+                        </Link>
                       ))
                     )}
                   </div>
                 )}
 
-                {/* Marketplace Tab */}
+                {/* Pazar Yeri İlanları — gerçek listings */}
                 {activeTab === 'marketplace' && (
                   <div className="divide-y divide-[#e0e0e0]">
-                    <div className="p-8 text-center">
-                      <MessageSquare size={32} className="mx-auto text-[#e0e0e0] mb-2" />
-                      <p className="text-[#8f8f8f]">Henüz pazar yeri ilanı yok</p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Groups Tab */}
-                {activeTab === 'groups' && (
-                  <div className="divide-y divide-[#e0e0e0]">
-                    <div className="p-8 text-center">
-                      <Users size={32} className="mx-auto text-[#e0e0e0] mb-2" />
-                      <p className="text-[#8f8f8f]">Henüz grup üyeliği yok</p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Recommendations Tab */}
-                {activeTab === 'recommendations' && (
-                  <div className="p-4 space-y-3">
-                    {mockRecommendations.length === 0 ? (
+                    {listingsData.length === 0 ? (
                       <div className="p-8 text-center">
-                        <Star size={32} className="mx-auto text-[#e0e0e0] mb-2" />
-                        <p className="text-[#8f8f8f]">Henüz öneri yok</p>
+                        <ShoppingBag size={32} className="mx-auto text-[#e0e0e0] mb-2" />
+                        <p className="text-[#8f8f8f]">Henüz pazar yeri ilanı yok</p>
                       </div>
                     ) : (
-                      mockRecommendations.map((rec) => (
-                        <div key={rec.id} className="p-4 border border-[#e0e0e0] rounded-lg card-hover hover:border-[#00833e] hover:shadow-sm">
-                          <div className="flex items-start gap-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-lg flex items-center justify-center text-white flex-shrink-0">
-                              <Star size={18} />
-                            </div>
-                            <div className="flex-1">
-                              <div className="flex items-start justify-between mb-1">
-                                <div>
-                                  <h4 className="font-medium text-[#333] text-sm">{rec.business}</h4>
-                                  <p className="text-xs text-[#8f8f8f] mt-0.5">{rec.category}</p>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  {[...Array(5)].map((_, i) => (
-                                    <Star
-                                      key={i}
-                                      size={12}
-                                      className={i < Math.floor(rec.rating) ? 'fill-[#f39c12] text-[#f39c12]' : 'text-[#e0e0e0]'}
-                                    />
-                                  ))}
-                                </div>
-                              </div>
-                              <p className="text-xs text-[#404040] mt-2 leading-relaxed">{rec.description}</p>
-                            </div>
+                      listingsData.map((listing: any) => (
+                        <Link
+                          key={listing.id}
+                          href={`/pazar/ilan/${listing.id}`}
+                          className="flex items-center gap-3 p-4 hover:bg-[#f0f2f5] transition-colors"
+                        >
+                          <div className="w-16 h-16 rounded-lg bg-[#e6f4ec] flex items-center justify-center overflow-hidden flex-shrink-0">
+                            {listing.media_urls?.[0] ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={listing.media_urls[0]} alt={listing.title} className="w-full h-full object-cover" />
+                            ) : (
+                              <ShoppingBag size={22} className="text-[#00833e]" />
+                            )}
                           </div>
-                        </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-[#333] truncate">{listing.title}</p>
+                            {listing.listing_categories?.name && (
+                              <p className="text-xs text-[#8f8f8f] mt-0.5">{listing.listing_categories.name}</p>
+                            )}
+                          </div>
+                          <div className="text-sm font-bold text-[#00833e] whitespace-nowrap">
+                            {listing.price != null ? `${Number(listing.price).toLocaleString('tr-TR')} ${listing.currency || '₺'}` : ''}
+                          </div>
+                        </Link>
                       ))
                     )}
                   </div>
                 )}
 
+                {/* Gruplar — gerçek üyelikler */}
+                {activeTab === 'groups' && (
+                  <div className="divide-y divide-[#e0e0e0]">
+                    {groupsData.length === 0 ? (
+                      <div className="p-8 text-center">
+                        <Users size={32} className="mx-auto text-[#e0e0e0] mb-2" />
+                        <p className="text-[#8f8f8f]">Henüz grup üyeliği yok</p>
+                      </div>
+                    ) : (
+                      groupsData.map((group: any) => (
+                        <Link
+                          key={group.id}
+                          href={`/gruplar/${group.slug || group.id}`}
+                          className="flex items-center gap-3 p-4 hover:bg-[#f0f2f5] transition-colors"
+                        >
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#00833e] to-[#006b32] flex items-center justify-center text-white font-bold flex-shrink-0">
+                            {(group.name || 'G').charAt(0).toUpperCase()}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-[#333] truncate">{group.name}</p>
+                            <p className="text-xs text-[#8f8f8f] mt-0.5 flex items-center gap-2">
+                              {group.category && <span className="flex items-center gap-1"><Tag size={12} />{group.category}</span>}
+                              <span className="flex items-center gap-1"><Users size={12} />{group.member_count || 0}</span>
+                            </p>
+                          </div>
+                        </Link>
+                      ))
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
-          {/* Sidebar - Right */}
+          {/* Sağ kenar çubuğu */}
           <div className="lg:col-span-1 space-y-6">
-            {/* Neighbors Card */}
-            <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden shadow-sm card-hover">
-              <div className="px-4 py-4 border-b border-[#e0e0e0]">
-                <h3 className="text-sm font-bold text-[#333] flex items-center gap-2">
-                  <Users size={16} className="text-[#00833e]" />
-                  Komşular
-                </h3>
-              </div>
-              <div className="p-4 space-y-3">
-                {mockNeighbors.map((neighbor) => (
-                  <div key={neighbor.id} className="flex items-center gap-3 hover:bg-[#f0f2f5] p-2 rounded transition-colors">
-                    <div className="w-10 h-10 bg-gradient-to-br from-[#00833e] to-[#006b32] rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                      {neighbor.initials}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-[#333] truncate">{neighbor.name}</p>
-                    </div>
-                  </div>
-                ))}
-                <button className="w-full mt-3 py-2 text-sm font-medium text-[#00833e] border border-[#00833e] rounded hover:bg-[#00833e]/5 transition-colors">
-                  Tümünü Gör
-                </button>
-              </div>
-            </div>
-
-            {/* Badges Card - from DB */}
-            <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden shadow-sm card-hover">
+            {/* Rozetler — DB'den */}
+            <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden shadow-sm">
               <div className="px-4 py-4 border-b border-[#e0e0e0]">
                 <h3 className="text-sm font-bold text-[#333] flex items-center gap-2">
                   <Award size={16} className="text-[#00833e]" />
@@ -522,17 +427,13 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
                     return (
                       <div
                         key={badge.id}
-                        className={`p-3 bg-gradient-to-r from-[${style.bgFrom}]/10 to-[${style.bgTo}]/10 rounded-lg border border-[${style.borderColor}]/20 hover:border-[${style.borderColor}]/40 transition-colors`}
-                        style={{
-                          background: `linear-gradient(to right, ${style.bgFrom}1a, ${style.bgTo}1a)`,
-                          borderColor: `${style.borderColor}33`,
-                        }}
+                        className="p-3 rounded-lg border border-[#e0e0e0]"
                       >
                         <div className="flex items-start gap-3">
                           <IconComponent size={20} style={{ color: style.color }} className="flex-shrink-0" />
                           <div>
                             <p className="text-xs font-bold text-[#333]">{badge.label}</p>
-                            <p className="text-xs text-[#8f8f8f] mt-1">{badge.description}</p>
+                            {badge.description && <p className="text-xs text-[#8f8f8f] mt-1">{badge.description}</p>}
                           </div>
                         </div>
                       </div>
@@ -542,35 +443,31 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
               </div>
             </div>
 
-            {/* Neighborhood Info Card - from DB */}
-            <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden shadow-sm card-hover">
+            {/* Mahalle bilgisi — yalnızca gerçek bölge */}
+            <div className="bg-white rounded-lg border border-[#e0e0e0] overflow-hidden shadow-sm">
               <div className="px-4 py-4 border-b border-[#e0e0e0]">
                 <h3 className="text-sm font-bold text-[#333] flex items-center gap-2">
                   <MapPin size={16} className="text-[#00833e]" />
                   Mahalle Bilgisi
                 </h3>
               </div>
-              <div className="p-4 space-y-3">
-                <div>
-                  <p className="text-xs font-medium text-[#8f8f8f] mb-1">Bölge</p>
-                  <p className="text-sm font-medium text-[#333]">{displayNeighborhood || 'Belirtilmemiş'}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-[#8f8f8f] mb-1">Mahalle Nüfusu</p>
-                  <p className="text-sm font-medium text-[#333]">2.500+ komşu</p>
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-[#8f8f8f] mb-1">Etkinlikler</p>
-                  <p className="text-sm font-medium text-[#333]">Ayda 8-10 etkinlik</p>
-                </div>
-                <button className="w-full mt-2 py-2 text-sm font-medium text-[#00833e] border border-[#00833e] rounded hover:bg-[#00833e]/5 transition-colors">
-                  Mahalle Sayfası
-                </button>
+              <div className="p-4">
+                <p className="text-xs font-medium text-[#8f8f8f] mb-1">Bölge</p>
+                <p className="text-sm font-medium text-[#333]">{displayNeighborhood || 'Belirtilmemiş'}</p>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {!isOwnProfile && targetUserId && (
+        <ReportModal
+          isOpen={reportOpen}
+          onClose={() => setReportOpen(false)}
+          type="user"
+          targetId={targetUserId}
+        />
+      )}
     </div>
   );
 }

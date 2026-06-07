@@ -1,13 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import {
   AlertCircle,
   AlertTriangle,
-  Cloud,
-  Zap,
-  AlertOctagon,
   MapPin,
   Clock,
   X,
@@ -17,16 +14,22 @@ import {
   Shield,
   Construction,
   Flame,
-  Volume2,
-  PawPrint,
-  Map,
   Eye,
   EyeOff,
   Bell,
+  Loader2,
 } from 'lucide-react';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
+import { getAlerts, createAlert } from '@/lib/hooks/use-notifications';
+import { toast } from '@/lib/utils/show-toast';
+
+// NOT (2026-06-07): Bu sayfa eskiden 9 sahte uyarı (mockAlerts: fırtına/yangın/
+// şüpheli araç…) ve haritada 4 uydurma işaretçi gösteriyordu; useEffect gerçek
+// veri çekiyor ama atıp mock'a düşüyordu. "Uyarı Paylaş" formu da hiçbir şey
+// kaydetmiyordu. Artık yalnızca gerçek `alerts` tablosuna bağlı: harita yalnızca
+// gerçek koordinatlı uyarılar varsa görünür ve form gerçekten kayıt oluşturur
+// (RLS: author_id = auth.uid()). Bkz. TECH_DEBT #12.
 
 const LeafletMap = dynamic(() => import('@/components/map/leaflet-map'), { ssr: false });
 
@@ -35,12 +38,13 @@ interface Alert {
   title: string;
   description: string;
   location: string;
+  lat?: number;
+  lng?: number;
   time: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
   category: 'weather' | 'traffic' | 'security' | 'infrastructure' | 'disaster' | 'other';
   source: string;
   active: boolean;
-  icon: React.ReactNode;
 }
 
 const getCategoryIcon = (category: string) => {
@@ -61,116 +65,46 @@ const getCategoryIcon = (category: string) => {
   }
 };
 
-const mockAlerts: Alert[] = [
-  {
-    id: '1',
-    title: 'Fırtına Uyarısı - Kritik',
-    description: 'Güçlü rüzgarlar ve şiddetli yağış beklenmektedir. Açık hava faaliyetlerini iptal ediniz.',
-    location: 'Tüm Mahalle',
-    time: '5 dakika önce',
-    severity: 'critical',
-    category: 'weather',
-    source: 'Meteoroloji Dairesi',
-    active: true,
-    icon: <CloudRain size={20} />,
-  },
-  {
-    id: '2',
-    title: 'Yangın Uyarısı - Merkez Binası',
-    description: 'Merkez bölgedeki bir binada küçük yangın çıkması durumu. İtfaiye ekibi gönderilmiştir.',
-    location: 'Merkez Binaları, 3. Cadde',
-    time: '12 dakika önce',
-    severity: 'critical',
-    category: 'disaster',
-    source: 'İtfaiye',
-    active: true,
-    icon: <Flame size={20} />,
-  },
-  {
-    id: '3',
-    title: 'Şüpheli Araç Bildirimi',
-    description: 'Plakası belirsiz gri renk bir araç mahalleden geçmekte. Lütfen dikkatli olunuz.',
-    location: 'Ana Cadde, Park Yakınları',
-    time: '28 dakika önce',
-    severity: 'high',
-    category: 'security',
-    source: 'Mahalle Sakinleri',
-    active: true,
-    icon: <Shield size={20} />,
-  },
-  {
-    id: '4',
-    title: 'Su Kesintisi Bildirimi',
-    description: 'Boru kırılması nedeniyle yarın 08:00-16:00 saatleri arasında su kesintisi yapılacaktır.',
-    location: '1. ve 2. Sokaklar',
-    time: '45 dakika önce',
-    severity: 'medium',
-    category: 'infrastructure',
-    source: 'Su İdaresi',
-    active: true,
-    icon: <Zap size={20} />,
-  },
-  {
-    id: '5',
-    title: 'Elektrik Kesintisi',
-    description: 'Bakım çalışmaları nedeniyle elektrik kesintisi gerçekleşecektir. Saatler belirlenmektedir.',
-    location: 'Merkez Mahalle',
-    time: '1 saat önce',
-    severity: 'medium',
-    category: 'infrastructure',
-    source: 'Elektrik Şirketi',
-    active: true,
-    icon: <Zap size={20} />,
-  },
-  {
-    id: '6',
-    title: 'Yol Çalışması - Ana Cadde',
-    description: 'Bu hafta yapılacak yol onarımları nedeniyle trafik düzenlemesi uygulanacaktır.',
-    location: 'Ana Cadde',
-    time: '2 saat önce',
-    severity: 'low',
-    category: 'traffic',
-    source: 'Belediye',
-    active: true,
-    icon: <Construction size={20} />,
-  },
-  {
-    id: '7',
-    title: 'Kayıp Evcil Hayvan - Köpek',
-    description: 'Kahverengi labrador köpek kayıp. İsmi "Max", yaklaşık 3 yaşında. Bilgi için iletişime geçiniz.',
-    location: '5. Sokak',
-    time: '3 saat önce',
-    severity: 'low',
-    category: 'other',
-    source: 'Mahalle Sakinleri',
-    active: true,
-    icon: <PawPrint size={20} />,
-  },
-  {
-    id: '8',
-    title: 'Gürültü Şikayeti - Gece Saatları',
-    description: 'Geç saatlerde müzik ve gürültü şikayeti alınmıştır. Lütfen dikkatli olunuz.',
-    location: 'Merkez Apartmanları',
-    time: '4 saat önce',
-    severity: 'low',
-    category: 'other',
-    source: 'Mahalle Sakinleri',
-    active: false,
-    icon: <Volume2 size={20} />,
-  },
-  {
-    id: '9',
-    title: 'Trafik Kazası - Çarpışma',
-    description: 'İki araç arasında hafif çarpışma meydana gelmiştir. Yaralı bildirilmemiştir.',
-    location: 'Dönüş Noktası',
-    time: '5 saat önce',
-    severity: 'high',
-    category: 'traffic',
-    source: 'Polis',
-    active: false,
-    icon: <Car size={20} />,
-  },
-];
+// Serbest metin olan DB `type` değerini bilinen kategoriye eşler.
+function normalizeCategory(raw: string): Alert['category'] {
+  const t = (raw || '').toLowerCase();
+  if (t.includes('weather') || t.includes('hava') || t.includes('storm') || t.includes('fırtına') || t.includes('yağ')) return 'weather';
+  if (t.includes('traffic') || t.includes('trafik') || t.includes('yol') || t.includes('kaza')) return 'traffic';
+  if (t.includes('secur') || t.includes('güven') || t.includes('safety') || t.includes('hırsız') || t.includes('şüpheli')) return 'security';
+  if (t.includes('infra') || t.includes('altyapı') || t.includes('elektrik') || t.includes('kesinti')) return 'infrastructure';
+  if (t.includes('disaster') || t.includes('afet') || t.includes('yangın') || t.includes('fire') || t.includes('deprem')) return 'disaster';
+  return 'other';
+}
+
+function formatRelativeTime(iso: string | null): string {
+  if (!iso) return '';
+  const diffSec = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 1000));
+  if (diffSec < 60) return 'az önce';
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `${diffMin} dakika önce`;
+  const diffHour = Math.floor(diffMin / 60);
+  if (diffHour < 24) return `${diffHour} saat önce`;
+  const diffDay = Math.floor(diffHour / 24);
+  if (diffDay === 1) return 'dün';
+  if (diffDay < 7) return `${diffDay} gün önce`;
+  return new Date(iso).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' });
+}
+
+function mapAlertRow(a: any): Alert {
+  return {
+    id: a.id,
+    title: a.title || 'Uyarı',
+    description: a.body || '',
+    location: '',
+    lat: typeof a.lat === 'number' ? a.lat : undefined,
+    lng: typeof a.lng === 'number' ? a.lng : undefined,
+    time: formatRelativeTime(a.created_at || null),
+    severity: (a.severity as Alert['severity']) || 'low',
+    category: normalizeCategory(a.type),
+    source: a.source || a.profiles?.full_name || 'Mahalle',
+    active: !a.expires_at || new Date(a.expires_at).getTime() > Date.now(),
+  };
+}
 
 const filterCategories = [
   { id: 'all', label: 'Tümü', icon: null },
@@ -241,14 +175,29 @@ const getSeverityIconColor = (severity: string) => {
   }
 };
 
+const severityMarkerColor = (severity: string): 'green' | 'red' | 'blue' | 'orange' => {
+  switch (severity) {
+    case 'critical':
+      return 'red';
+    case 'high':
+      return 'orange';
+    case 'medium':
+      return 'orange';
+    default:
+      return 'blue';
+  }
+};
+
 export default function AlertsPage() {
-  const { profile } = useCurrentUser();
-  const [alerts, setAlerts] = React.useState(mockAlerts);
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const { user, profile, neighborhood } = useCurrentUser();
+  const [alerts, setAlerts] = React.useState<Alert[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [searchQuery] = React.useState('');
   const [activeFilter, setActiveFilter] = React.useState('all');
   const [showActive, setShowActive] = React.useState(true);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
+  const [submitting, setSubmitting] = React.useState(false);
   const [formData, setFormData] = React.useState({
     title: '',
     description: '',
@@ -257,30 +206,23 @@ export default function AlertsPage() {
     severity: 'medium',
   });
 
-  // Fetch alerts from Supabase
+  // Fetch real alerts (mahalle varsa ona göre, yoksa tümü)
   useEffect(() => {
+    let cancelled = false;
     async function fetchAlerts() {
-      const supabase = createClient();
-      try {
-        // For now, we'll use mock data with fallback to Supabase
-        // In production, fetch from alerts table or posts with post_type='safety'
-        const { data, error } = await supabase
-          .from('posts')
-          .select('*, profiles(full_name)')
-          .eq('type', 'safety')
-          .order('created_at', { ascending: false })
-          .limit(100);
-
-        if (!error && data) {
-          // Map post data to alert structure - keep mock as fallback
-        }
-      } catch (err) {
-        console.error('Failed to fetch alerts:', err);
-        // Use mock data as fallback
+      setLoading(true);
+      const { data, error } = await getAlerts(neighborhood?.id, { limit: 100 });
+      if (cancelled) return;
+      if (data && !error) {
+        setAlerts((data as any[]).map(mapAlertRow));
       }
+      setLoading(false);
     }
     fetchAlerts();
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [neighborhood?.id]);
 
   const filteredAlerts = alerts.filter((alert) => {
     const matchesSearch = alert.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -290,46 +232,71 @@ export default function AlertsPage() {
     return matchesSearch && matchesCategory && matchesStatus;
   });
 
-  const handleCreateAlert = (e: React.FormEvent) => {
+  const handleCreateAlert = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Reset form
-    setFormData({
-      title: '',
-      description: '',
-      location: '',
-      category: 'security',
-      severity: 'medium',
-    });
-    setIsModalOpen(false);
+    if (!user) {
+      toast.error('Uyarı paylaşmak için giriş yapmanız gerekir');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const body = formData.location
+        ? `${formData.description}\n\nKonum: ${formData.location}`
+        : formData.description;
+      const { data, error } = await createAlert({
+        title: formData.title,
+        body,
+        type: formData.category,
+        severity: formData.severity as any,
+        author_id: user.id,
+        neighborhood_id: neighborhood?.id ?? null,
+        source: profile?.full_name ?? null,
+      } as any);
+
+      if (!error && data) {
+        setAlerts((prev) => [mapAlertRow({ ...data, profiles: { full_name: profile?.full_name } }), ...prev]);
+        setFormData({ title: '', description: '', location: '', category: 'security', severity: 'medium' });
+        setIsModalOpen(false);
+        setShowActive(true);
+        toast.success('Uyarı paylaşıldı');
+      } else {
+        toast.error('Uyarı paylaşılırken bir hata oluştu');
+      }
+    } catch {
+      toast.error('Uyarı paylaşılırken bir hata oluştu');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const activeAlertCount = alerts.filter(a => a.active).length;
   const resolvedAlertCount = alerts.filter(a => !a.active).length;
 
+  const mapMarkers = alerts
+    .filter((a) => typeof a.lat === 'number' && typeof a.lng === 'number')
+    .map((a) => ({ lat: a.lat as number, lng: a.lng as number, title: a.title, color: severityMarkerColor(a.severity) }));
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Map - Prominent at Top */}
-      <div className="bg-background border-b border-border">
-        <div className="max-w-4xl mx-auto px-4 py-4 sm:py-6">
-          <div className="bg-surface rounded-lg border border-border overflow-hidden">
-            <LeafletMap
-              center={[41.0370, 28.9850]}
-              zoom={13}
-              className="w-full h-[300px] sm:h-[400px]"
-              markers={[
-                { lat: 41.0422, lng: 29.0050, title: 'Su Kesintisi', color: 'blue' },
-                { lat: 41.0350, lng: 28.9900, title: 'Yol Çalışması', color: 'orange' },
-                { lat: 41.0300, lng: 28.9780, title: 'Güvenlik Uyarısı', color: 'red' },
-                { lat: 41.0450, lng: 28.9750, title: 'Gürültü Şikayeti', color: 'orange' },
-              ]}
-              interactive={false}
-            />
-            <div className="p-3">
-              <p className="text-xs text-text-muted text-center">Uyarı konumları haritada gösterilmektedir</p>
+      {/* Map - yalnızca gerçek koordinatlı uyarılar varsa */}
+      {mapMarkers.length > 0 && (
+        <div className="bg-background border-b border-border">
+          <div className="max-w-4xl mx-auto px-4 py-4 sm:py-6">
+            <div className="bg-surface rounded-lg border border-border overflow-hidden">
+              <LeafletMap
+                center={[mapMarkers[0].lat, mapMarkers[0].lng]}
+                zoom={13}
+                className="w-full h-[300px] sm:h-[400px]"
+                markers={mapMarkers}
+                interactive={false}
+              />
+              <div className="p-3">
+                <p className="text-xs text-text-muted text-center">Uyarı konumları haritada gösterilmektedir</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Header Section */}
       <div className="bg-surface border-b border-border sticky top-0 z-10">
@@ -415,7 +382,12 @@ export default function AlertsPage() {
       <div className="max-w-4xl mx-auto px-2 sm:px-4 py-4 sm:py-6">
         {/* Alerts List */}
         <div className="space-y-4">
-          {filteredAlerts.length === 0 ? (
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-24 gap-3">
+              <Loader2 className="w-9 h-9 text-primary animate-spin" />
+              <p className="text-text-muted text-sm">Uyarılar yükleniyor…</p>
+            </div>
+          ) : filteredAlerts.length === 0 ? (
             <div className="bg-surface rounded-lg border border-border p-12 text-center">
               <AlertCircle size={48} className="mx-auto text-text-muted mb-3" />
               <p className="text-text-primary font-medium">Uyarı bulunamadı</p>
@@ -436,7 +408,7 @@ export default function AlertsPage() {
                   <div className="flex items-start gap-4">
                     {/* Large Severity Icon */}
                     <div className={`flex-shrink-0 p-2 rounded-lg ${getSeverityIconColor(alert.severity)} bg-surface/50`}>
-                      {alert.icon}
+                      {getCategoryIcon(alert.category)}
                     </div>
 
                     {/* Content */}
@@ -453,15 +425,21 @@ export default function AlertsPage() {
                       </div>
 
                       {/* Description */}
-                      <p className="text-sm text-text-secondary mb-4 leading-relaxed">{alert.description}</p>
+                      {alert.description && (
+                        <p className="text-sm text-text-secondary mb-4 leading-relaxed whitespace-pre-line">{alert.description}</p>
+                      )}
 
                       {/* Footer: Location and Time */}
                       <div className="flex items-center gap-4 text-xs text-text-muted flex-wrap pt-3 border-t border-white/30">
-                        <div className="flex items-center gap-2 font-medium">
-                          <MapPin size={16} className="text-primary" />
-                          <span>{alert.location}</span>
-                        </div>
-                        <span className="hidden sm:inline">•</span>
+                        {alert.location && (
+                          <>
+                            <div className="flex items-center gap-2 font-medium">
+                              <MapPin size={16} className="text-primary" />
+                              <span>{alert.location}</span>
+                            </div>
+                            <span className="hidden sm:inline">•</span>
+                          </>
+                        )}
                         <div className="flex items-center gap-2 font-medium">
                           <Clock size={16} className="text-primary" />
                           <span>{alert.time}</span>
@@ -528,7 +506,6 @@ export default function AlertsPage() {
                   onChange={(e) => setFormData({...formData, location: e.target.value})}
                   placeholder="Uyarı konumunu yazınız"
                   className="w-full px-3 py-2 border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
-                  required
                 />
               </div>
 
@@ -575,9 +552,10 @@ export default function AlertsPage() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-primary hover:bg-primary-hover text-white font-medium rounded-lg transition-colors"
+                  disabled={submitting}
+                  className="flex-1 px-4 py-2 bg-primary hover:bg-primary-hover text-white font-medium rounded-lg transition-colors disabled:opacity-60"
                 >
-                  Uyarı Paylaş
+                  {submitting ? 'Paylaşılıyor...' : 'Uyarı Paylaş'}
                 </button>
               </div>
             </form>

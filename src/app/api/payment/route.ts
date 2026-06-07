@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     if (!rl.success) return rateLimitResponse(rl) as any
 
     const body: PaymentRequest = await request.json()
-    const { paymentType, amount, userEmail, userName, userId, metadata } = body
+    const { paymentType, amount, userEmail, userName, userId } = body
 
   const ALLOWED_PAYMENT_TYPES: string[] = ['mahalle_card', 'listing_fee', 'business_membership']
   if (!ALLOWED_PAYMENT_TYPES.includes(paymentType)) {

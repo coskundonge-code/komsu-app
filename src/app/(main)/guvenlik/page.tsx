@@ -16,7 +16,6 @@ import {
   CheckCircle2,
   MapPin,
   ChevronDown,
-  Heart,
   Lightbulb,
   BarChart3,
 } from "lucide-react";
@@ -499,7 +498,7 @@ export default function SecurityPage() {
           {/* Footer */}
           <div className="border-t border-border bg-background py-8 px-8 text-center">
             <p className="text-sm text-text-muted mb-6">
-              © 2026 Mahallemiz — Trendex Lojistik tarafından geliştirilmiştir.
+              © 2026 Mahallemiz — Consulting Partners tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-6 flex-wrap">
               <Link

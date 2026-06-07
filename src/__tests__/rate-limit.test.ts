@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { rateLimit, getClientIp } from '@/lib/rate-limit'
 
 describe('rate-limit (in-memory fallback)', () => {

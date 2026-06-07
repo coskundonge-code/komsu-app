@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Check, Gift, CreditCard, Shield, Sparkles, Clock } from 'lucide-react';
+import { Check, Gift, Shield, Sparkles, Clock } from 'lucide-react';
 import {
   BillingPeriod,
   MONTHLY_PRICE,

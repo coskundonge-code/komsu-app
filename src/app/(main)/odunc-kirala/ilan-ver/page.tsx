@@ -9,12 +9,10 @@ import {
   X,
   Check,
   AlertCircle,
-  Image as ImageIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
-import { createListing } from '@/lib/hooks/use-listings';
 import { createClient } from '@/lib/supabase/client';
 
 type Step = 1 | 2 | 3;
@@ -151,7 +149,7 @@ export default function NewListingPage() {
       }
 
       // Create lending item
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('lending_items')
         .insert({
           title: formData.title,

@@ -47,7 +47,7 @@ export default function KVKKPage() {
               </h2>
               <div className="bg-background p-6 rounded-lg border border-border space-y-2 text-text-secondary">
                 <p>
-                  <strong>Şirket Adı:</strong> Trendex Lojistik ve Teknoloji A.Ş.
+                  <strong>Şirket Adı:</strong> Consulting Partners Yönetim Danışmanlığı A.Ş.
                 </p>
                 <p>
                   <strong>Adres:</strong> İstanbul, Türkiye
@@ -335,7 +335,7 @@ export default function KVKKPage() {
             {/* Son Not */}
             <section className="border-t border-border pt-8">
               <p className="text-text-muted text-sm leading-relaxed">
-                Bu KVKK Aydınlatma Metni, Trendex Lojistik tarafından hazırlanmış ve gerektiğinde
+                Bu KVKK Aydınlatma Metni, Consulting Partners tarafından hazırlanmış ve gerektiğinde
                 güncellenebilir. Değişiklikler, bu sayfada yayınlandığı tarihten itibaren
                 geçerlidir. Sizin tarafınızdan uygulamaya erişim devam ettirilmesi, güncellenmiş
                 metni kabul ettiğiniz anlamına gelmektedir.
@@ -346,7 +346,7 @@ export default function KVKKPage() {
           {/* Footer */}
           <div className="border-t border-border bg-background py-6 px-8 text-center">
             <p className="text-sm text-text-muted mb-4">
-              © 2026 Mahallemiz — Trendex Lojistik tarafından geliştirilmiştir.
+              © 2026 Mahallemiz — Consulting Partners tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link

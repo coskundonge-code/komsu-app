@@ -21,7 +21,6 @@ export interface PollCardProps {
 }
 
 export function PollCard({
-  id,
   question,
   options,
   totalVotes,

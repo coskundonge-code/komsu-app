@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createClient } from '@/lib/supabase/client';
-import { Search, ChevronLeft, ChevronRight, Megaphone, Pause, Play, BarChart3 } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight, Megaphone, Pause, Play } from 'lucide-react';
 
 // AUDIT_REPORT.md K3 — gerçek ad_campaigns tablosuna bağlı
 

@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { X, Upload } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 export type Condition = 'excellent' | 'good' | 'fair' | 'used';
 export type Category = 'electronics' | 'furniture' | 'clothing' | 'books' | 'sports' | 'toys' | 'other';
@@ -59,7 +58,7 @@ export function ListingForm({ onSubmit, onCancel }: ListingFormProps) {
     setImageUrls(imageUrls.filter((_, i) => i !== index));
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const _handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       const file = e.target.files[0];
       const reader = new FileReader();

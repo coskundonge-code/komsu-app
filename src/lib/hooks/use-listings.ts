@@ -6,7 +6,6 @@ import type { Database } from '@/lib/supabase/types'
 
 const createClient = () => createTypedClient()
 
-type Listing = Database['public']['Tables']['listings']['Row']
 type ListingInsert = Database['public']['Tables']['listings']['Insert']
 
 // --- React Query hooks (use these in components) ---

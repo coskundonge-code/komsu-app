@@ -16,7 +16,6 @@ export interface FeaturedListingModalProps {
 
 export function FeaturedListingModal({
   isOpen,
-  listingId,
   listingTitle,
   onClose,
   onSelectPlan,

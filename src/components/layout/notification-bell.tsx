@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Bell, X, MessageCircle, FileText, AlertTriangle, Heart } from 'lucide-react'
+import { Bell, MessageCircle, FileText, AlertTriangle, Heart } from 'lucide-react'
 import { useRealtimeNotifications } from '@/lib/hooks/use-realtime'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'

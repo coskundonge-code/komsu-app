@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Briefcase, MapPin, Clock, Users, Heart, Award, GraduationCap, Utensils, Navigation, BarChart3, Send, Code2, Palette, MessageSquare, TrendingUp } from "lucide-react";
+import { ArrowLeft, Briefcase, MapPin, Clock, Users, Heart, Award, GraduationCap, Utensils, BarChart3, Send, Code2, Palette, MessageSquare, TrendingUp } from "lucide-react";
 import { useState } from "react";
 
 const positions = [
@@ -345,7 +345,7 @@ export default function CareersPage() {
           {/* Footer */}
           <div className="border-t border-border bg-background py-6 px-8 text-center">
             <p className="text-sm text-text-muted mb-4">
-              © 2026 Mahallemiz — Trendex Lojistik tarafından geliştirilmiştir.
+              © 2026 Mahallemiz — Consulting Partners tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   Users,
@@ -14,15 +13,11 @@ import {
   CheckCircle,
   AlertCircle,
   BarChart3,
-  PieChart as PieChartIcon,
   UserCheck,
   Shield,
   AlertTriangle,
   FileText,
-  Clock,
   Zap,
-  ArrowUp,
-  TrendingDown,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
@@ -216,13 +211,12 @@ const SYSTEM_STATUS = [
 ];
 
 export default function AdminDashboard() {
-  const router = useRouter();
   const { user, profile, loading: authLoading } = useCurrentUser();
   const [stats, setStats] = useState(DEFAULT_STATS);
   const [sortedNeighborhoods, setSortedNeighborhoods] = React.useState(TOP_NEIGHBORHOODS);
   const [sortKey, setSortKey] = React.useState('score');
   const [statsLoading, setStatsLoading] = useState(true);
-  const [neighborhoodsData, setNeighborhoodsData] = useState(TOP_NEIGHBORHOODS);
+  const [, setNeighborhoodsData] = useState(TOP_NEIGHBORHOODS);
 
   useEffect(() => {
     async function fetchStats() {

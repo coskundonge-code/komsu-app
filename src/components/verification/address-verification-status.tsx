@@ -2,7 +2,6 @@
 
 import { AlertTriangle, CheckCircle2, Clock, Lock } from 'lucide-react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
 
 export interface AddressVerificationStatusProps {
   status: 'verified' | 'pending' | 'unverified' | 'locked' | 'referral';

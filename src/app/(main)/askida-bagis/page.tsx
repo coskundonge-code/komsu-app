@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import {
   Heart,
   Gift,
@@ -44,7 +45,6 @@ import { createClient } from '@/lib/supabase/client'
 import { useCurrentUser } from '@/lib/hooks/use-auth'
 import { getDonations, createDonation, claimDonation } from '@/lib/hooks/use-donations'
 import {
-  getDonationProducts,
   getBusinessProducts,
   createDonationProduct,
   updateDonationProduct,
@@ -331,7 +331,7 @@ function AskidaBagisPageContent() {
       const { data, error } = await getDonations({ status: 'available', limit: 50 })
       if (!error && data && data.length > 0) {
         setAvailableDonations(data)
-        const mapped: DonationItem[] = data.map((d: any, i: number) => ({
+        const mapped: DonationItem[] = data.map((d: any) => ({
           id: d.id,
           donor: d.profiles?.full_name || 'Anonim',
           items: d.title,
@@ -418,7 +418,7 @@ function AskidaBagisPageContent() {
           .eq('owner_id', user?.id)
           .single()
         setUserBusiness(data)
-      } catch (e) {
+      } catch {
         // User may not have a business
       }
     }
@@ -660,7 +660,7 @@ function AskidaBagisPageContent() {
     if (!user) return
     setClaimingId(donationId)
     try {
-      const { data, error } = await claimDonation(donationId, user.id)
+      const { error } = await claimDonation(donationId, user.id)
       if (!error) {
         setAvailableDonations(prev => prev.filter(d => d.id !== donationId))
         setDonationStats(prev => ({ ...prev, items: Math.max(0, prev.items - 1) }))
@@ -686,7 +686,7 @@ function AskidaBagisPageContent() {
       isSaving: false,
     })
 
-    const { data, error } = await getBusinessProducts(businessId)
+    const { data } = await getBusinessProducts(businessId)
     setProductManageModal(prev => ({
       ...prev,
       products: data || [],
@@ -2006,13 +2006,13 @@ export default function AskidaBagisPage() {
         Mahalle esnafıyla dayanışma özelliğimizi güvenli ödeme altyapısıyla
         birlikte hazırlıyoruz. Çok yakında burada olacak.
       </p>
-      <a
+      <Link
         href="/"
         className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 font-medium text-white transition hover:opacity-90"
       >
         <ArrowRight className="h-4 w-4" />
         Ana sayfaya dön
-      </a>
+      </Link>
     </div>
   )
 }

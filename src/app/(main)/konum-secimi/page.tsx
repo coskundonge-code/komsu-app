@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 import { createClient } from '@/lib/supabase/client'
 import { provinces, type Province, type District } from '@/data/turkey-locations'
 import {
-  MapPin, Check, AlertCircle, Loader2, Search, ChevronDown, Navigation, MousePointerClick
+  MapPin, Check, AlertCircle, Loader2, ChevronDown, Navigation, MousePointerClick
 } from 'lucide-react'
 
 // Dynamic import for Leaflet map (no SSR)
@@ -95,7 +95,7 @@ async function geocodeAddress(address: string, components?: { il?: string; ilce?
   const queries: string[] = [address]
 
   if (components) {
-    const { il, ilce, mahalle, cadde, binaNo } = components
+    const { il, ilce, mahalle, cadde } = components
     // Strategy 2: Without building number
     if (cadde && mahalle && ilce && il) {
       queries.push(`${cadde}, ${mahalle}, ${ilce}, ${il}, Türkiye`)

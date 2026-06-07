@@ -13,7 +13,6 @@ import {
   MessageSquare,
   Heart,
   AlertCircle,
-  MapPin,
   Store,
   Smartphone,
   Check,

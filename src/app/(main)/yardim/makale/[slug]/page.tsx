@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useState, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
+import { getFeedImageUrl } from '@/lib/demo-images';
 
 interface ArticleStep {
   title: string;

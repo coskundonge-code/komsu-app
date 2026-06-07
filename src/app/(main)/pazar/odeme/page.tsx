@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, redirect } from 'next/navigation';
 import {
   ArrowLeft,
   CheckCircle2,
@@ -10,15 +10,6 @@ import {
 } from 'lucide-react';
 import { PaymentModal } from '@/components/marketplace/payment-modal';
 import { PaymentType } from '@/lib/services/payment';
-
-interface PaymentPageContentProps {
-  searchParams: {
-    type?: string;
-    amount?: string;
-    listingId?: string;
-    title?: string;
-  };
-}
 
 function PaymentPageContent() {
   const router = useRouter();
@@ -75,7 +66,7 @@ function PaymentPageContent() {
     }
   };
 
-  const handlePaymentSubmit = async (method: string) => {
+  const handlePaymentSubmit = async (_method: string) => {
     setPaymentState('processing');
     try {
       // Simulate payment processing (in real app, call payment API)
@@ -292,7 +283,23 @@ function PaymentPageContent() {
   );
 }
 
+// NOT (2026-06-07 / pazara-hazırlık denetimi): Bu sayfa SAHTE bir ödeme akışıydı.
+// Sorunlar:
+//  - `@/components/marketplace/payment-modal` GERÇEK kart numarası/CVV TOPLUYOR
+//    ama hiçbir yere göndermiyordu (PCI mayını; askida-bagis ile aynı sınıf),
+//  - `handlePaymentSubmit` 2 sn bekleyip "başarılı" diyordu (gerçek tahsilat yok),
+//  - "256-bit SSL" ve "7 gün iade garantisi" gibi YANLIŞ güvenceler veriyordu,
+//  - kullandığı PaymentType (featured_*) gerçek PaymentModal'ın union'ıyla uyumsuz.
+// Sayfaya hiçbir yerden link yoktu (orphan). Gerçek ilan/öne-çıkarma ödemesi
+// PayTR'a (components/payment/payment-modal → /api/payment) bağlanana kadar
+// ziyaretçiyi pazara yönlendiriyoruz. Eski prototip kodu _PaymentPageLegacy'de
+// referans için korundu.
 export default function PaymentPage() {
+  redirect('/pazar');
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- eski sahte prototip; referans için korunuyor
+function _PaymentPageLegacy() {
   return (
     <Suspense fallback={<div>Yükleniyor...</div>}>
       <PaymentPageContent />
