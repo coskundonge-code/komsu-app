@@ -2079,7 +2079,7 @@ export type Database = {
           action: string
           created_at: string | null
           id: string
-          moderator_id: string
+          moderator_id: string | null
           reason: string | null
           report_id: string | null
         }
@@ -2087,7 +2087,7 @@ export type Database = {
           action: string
           created_at?: string | null
           id?: string
-          moderator_id: string
+          moderator_id?: string | null
           reason?: string | null
           report_id?: string | null
         }
@@ -2095,7 +2095,7 @@ export type Database = {
           action?: string
           created_at?: string | null
           id?: string
-          moderator_id?: string
+          moderator_id?: string | null
           reason?: string | null
           report_id?: string | null
         }
@@ -2704,7 +2704,7 @@ export type Database = {
           post_id: string | null
           reason: string
           reported_user_id: string | null
-          reporter_id: string
+          reporter_id: string | null
           status: string | null
         }
         Insert: {
@@ -2715,7 +2715,7 @@ export type Database = {
           post_id?: string | null
           reason: string
           reported_user_id?: string | null
-          reporter_id: string
+          reporter_id?: string | null
           status?: string | null
         }
         Update: {
@@ -2726,7 +2726,7 @@ export type Database = {
           post_id?: string | null
           reason?: string
           reported_user_id?: string | null
-          reporter_id?: string
+          reporter_id?: string | null
           status?: string | null
         }
         Relationships: [

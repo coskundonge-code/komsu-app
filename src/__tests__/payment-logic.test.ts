@@ -92,7 +92,7 @@ describe('FEATURED_PRICING — öne çıkarma fiyat/süre eşlemesi', () => {
       PaymentType.FEATURED_3DAYS,
       PaymentType.FEATURED_7DAYS,
       PaymentType.FEATURED_30DAYS,
-    ]) {
+    ] as const) {
       expect(FEATURED_PRICING[key].amount).toBeGreaterThan(0)
     }
   })
