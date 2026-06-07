@@ -65,7 +65,10 @@
 - ⬜ **Grup altyapısı** (`TECH_DEBT #12`): `groups.rules` kolonu, `group-images`
   depolama alanı, `group_posts` yazma politikası → grup gönderisi/kapak yükleme.
 - ⬜ **SEO:** pazar kategori sayfalarını sunucu-render'a taşı (şu an istemci-fetch).
-- ⬜ **Ölü kod temizliği:** kullanılmayan sahte `marketplace/payment-modal` dosyasını sil.
+- ⬜ **Ölü kod temizliği:** `feed/post-form.tsx` + `feed/comment-section.tsx` ✅ silindi
+  (2026-06-08 — ölü bileşenler, hiçbir yerden çağrılmıyordu). **Kalan:** sahte
+  `marketplace/payment-modal` — `pazar/odeme` redirect-stub'ının `_PaymentPageLegacy`
+  referansından import ediliyor; silmek ödeme alanı + legacy-referans kararı (düşük öncelik).
 
 ---
 
@@ -79,6 +82,8 @@
 - ✅ İki canlı tanrı-dosyasının **riskli iş mantığı** saf + test-edilir modüllere çıkarıldı:
   `pazar/ilan-ver` form/medya/kota → `services/listing-form.ts` (+37 test); `kayit`
   doğrulaması → `validations/auth.ts` + yasal modal bileşene (+10 test) (`TECH_DEBT #6`).
+- ✅ İki ölü `feed/` bileşeni (`post-form.tsx`, `comment-section.tsx`) silindi —
+  hiçbir yerden tüketilmiyordu; SADELİK temizliği, 254 test geçer (`TECH_DEBT #12`).
 - ✅ İçerik şikâyet akışı gerçeğe bağlandı (`TECH_DEBT #13`).
 - ✅ Hesap silme FK zinciri düzeltildi (`TECH_DEBT #14`).
 - ✅ Kritik akışlara testler eklendi (194 test), CI kapıları sıkılaştırıldı (`#7`).
