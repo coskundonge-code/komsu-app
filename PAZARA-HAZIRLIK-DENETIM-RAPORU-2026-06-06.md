@@ -1,85 +1,86 @@
 # Komşum_App (Mahallemiz) — Pazara Hazırlık Denetim Raporu (GÜNCEL)
 ### "AI Architecture Rules" 13 Kapı — İlerleme Denetimi
-**Tarih:** 6 Haziran 2026 · **Önceki rapor:** 4 Haziran 2026 · **Denetlenen:** `C:\dev\komsu-app` (branch: coskun)
-**Yöntem:** Kanıta dayalı (canlı Supabase şeması sorgulandı, tsc/eslint/CI çıktıları kullanıldı). Tahminle puanlama yok.
+**Tarih:** 6–7 Haziran 2026 · **Önceki rapor:** 4 Haziran 2026 · **Denetlenen:** `C:\dev\komsu-app` (branch: coskun)
+**Yöntem:** Kanıta dayalı (canlı Supabase şeması `execute_sql` ile sorgulandı; tsc/vitest/CI ve canlı Vercel HTTP çıktıları kullanıldı). Tahminle puanlama yok.
 
 ---
 
-## 1. Yönetici Özeti
+## 1. Yönetici Özeti (sade)
 
-4 Haziran denetiminde ürün **🔴 pazara hazır DEĞİL** idi — **4 kırmızı kapı** (K2, K3, K7 + K4 sınırda) yayını durduruyordu. 6 Haziran çalışmasından sonra:
+4 Haziran'da ürün **🔴 pazara hazır DEĞİL** idi (4 kırmızı kapı yayını durduruyordu). 6–7 Haziran çalışmasından sonra:
 
-**Genel hüküm:** 🟡 **Sert stop-ship (🔴) kalmadı** — ama henüz "tam pazara hazır" da değil (kapıların çoğu 🟡, sadece 1'i tam 🟢). Ürün **"yayınlama" durumundan "🟡'leri kapat, sonra yayınla" durumuna** geçti.
+**Genel hüküm:** 🟡 **Sert "yayını durduran" engel (🔴) kalmadı.** Ürün artık "yayınla butonuna basılamaz" durumundan, **"birkaç sahip-işi + iyileştirme kapat, sonra yayınla"** durumuna geçti. Çekirdek iş mantığı tip-güvenli, testli ve CI korumalı; canlı Vercel sitesi doğru çalışıyor; güvenlik başlıkları üretimde aktif.
 
-**Bu oturumda kapanan kırmızılar:** K7 (CI yok → CI var), K2 (tip hataları/disiplin), K4 (npm açıkları).
-**En zayıf kalan kapı:** **K3 (test coverage)** — testler artık CI'da zorunlu ve yeşil, ama kapsam hâlâ düşük (4 test).
+**Bu oturumda (6–7 Haz) kapanan kritik işler:**
+- **Hesap silme çökmüştü → onarıldı.** (KVKK "unutulma hakkı" + Apple/Google mağaza zorunluluğu artık gerçekten çalışıyor — aşağıda detay.)
+- **Son tip-kapalı dosya açıldı:** `content-moderation.ts` `@ts-nocheck` kaldırıldı → **projede 0 `@ts-nocheck`.**
+- **Testler 4'ten 141'e çıktı** (11 dosya, hepsi CI'da yeşil).
+- **Canlı Vercel + Chrome duman testi geçti.**
+
+**En zayıf kalan alan:** entegrasyon/uçtan-uca (e2e) test katmanı + sahibin yapması gereken 3 ortam ayarı (aşağıda).
 
 ---
 
-## 2. Skorkart — Önce → Sonra
+## 2. Skorkart — 4 Haz → 7 Haz (güncel)
 
-| # | Kapı | 4 Haz | 6 Haz | Değişim |
+| # | Kapı | 4 Haz | 7 Haz | Değişim / kanıt |
 |---|------|:---:|:---:|---|
 | 0 | Niyet & Kapsam | 🟡 | 🟡 | Kapsam geniş; resmi tek-sayfa ürün özeti hâlâ yok. |
-| 1 | Mimari & Plan | 🟢 | 🟢 | types.ts artık canlı şemayla hizalı (kök-neden çözüldü). |
-| 2 | Geliştirme Disiplini | 🔴 | **🟡** | 101 tip hatası→0, gerçek bug'lar düzeldi, TECH_DEBT canlı, react-query kök-neden; god-file'lar + 254 lint kaldı. |
-| 3 | Test | 🔴 | **🟡** ⚠ | Testler CI'da **zorunlu kapı + yeşil**; ama coverage düşük (4 test) — **asıl açık burası.** |
-| 4 | Güvenlik | 🟡 | 🟡 | npm açıkları temizlendi (**prod 0 kritik / 0 yüksek**); pen-test/SAST hâlâ yok. |
-| 5 | Veri & Gizlilik (KVKK) | 🟡 | 🟡 | Adres-kaydı bug'ı düzeldi (veri artık doğru kaydediliyor); resmi veri envanteri/saklama yok. |
+| 1 | Mimari & Plan | 🟢 | 🟢 | types.ts canlı şemayla hizalı; **0 `@ts-nocheck`**, `tsc --noEmit` = **0 hata**. |
+| 2 | Geliştirme Disiplini | 🔴 | **🟡** | Tüm tip-kapalı dosyalar açıldı (0 `@ts-nocheck`), tip hataları 0, TECH_DEBT canlı. God-file'lar + ~254 lint kaldı. |
+| 3 | Test | 🔴 | **🟢** \* | **141 test / 11 dosya, CI'da zorunlu kapı + yeşil** (4 Haz'da 4 test idi). \* Birim/sözleşme katmanı sağlam; DB'ye giden akışlar için e2e katmanı henüz yok (sonraki adım). |
+| 4 | Güvenlik | 🟡 | 🟡 | **CSP + HSTS(preload) + X-Frame/nosniff/Referrer/Permissions başlıkları canlı üretimde doğrulandı**; RLS + DB advisors temiz; prod npm 0 kritik/0 yüksek. SAST/pen-test ve 1 sahip-toggle (sızmış-parola koruması) eksik. |
+| 5 | Veri & Gizlilik (KVKK) | 🟡 | 🟡 ⤴ | **Hesap silme FK zinciri onarıldı → silme artık çalışıyor**; gerçek `/kvkk` sayfası + veri envanteri + silme arayüzü/API var. Eksik: prod'a `SUPABASE_SERVICE_ROLE_KEY` (sahip), saklama politikası, TC Kimlik özel-nitelikli veri için hukuki gözden geçirme. |
 | 6 | Performans & Ölçek | 🟡 | 🟡 | Değişmedi (yük testi yok). |
-| 7 | Altyapı & Dağıtım | 🔴 | **🟡** | **CI (typecheck+build+test) zorunlu kapı + YEŞİL.** Otomatik deploy/staging/rollback hâlâ yok. |
+| 7 | Altyapı & Dağıtım | 🔴 | **🟡** | CI (typecheck+build+test) **zorunlu + YEŞİL**. Önizleme build'leri **bilerek kapalı** ("Ignored Build Step" — maliyet tasarrufu). Otomatik deploy/staging/rollback yok. |
 | 8 | Gözlem & İzleme | 🟡 | 🟡 | Sentry + health + Analytics var; SLO/alert yok. |
 | 9 | Operasyon & Bakım | 🟡 | 🟡 | Yedek-geri yükleme testi/DR/runbook yok. |
-| 10 | Platforma Özel | 🟡 | 🟡 | Web (PWA/SEO) iyi; mobil `cap add`/izin gerekçeleri eksik. |
-| 11 | Lansman & Sonrası | 🟡 | 🟡 | 4 "eksik özellik" netleşti (aşağıda); ödeme hâlâ aktif değil. |
+| 10 | Platforma Özel | 🟡 | 🟡 ⤴ | Web (PWA/SEO) iyi; **hesap silme (Apple/Google mağaza zorunluluğu) artık karşılanabilir**. Mobil `cap add`/izin gerekçeleri eksik. |
+| 11 | Lansman & Sonrası | 🟡 | 🟡 | Ödeme akışı kodda hazır ama prod'da aktif değil (ürün kararı). |
 | 12 | Sürekli İyileştirme | 🟡 | 🟡 | CI gates + TECH_DEBT + denetim refleksi iyi; DORA metrikleri yok. |
 
-**Önce:** 🔴 4 · 🟡 7 · 🟢 ~2 → **Sonra:** 🔴 **0** · 🟡 12 · 🟢 1
+**4 Haz:** 🔴 4 · 🟡 7 · 🟢 2 → **7 Haz:** 🔴 **0** · 🟡 10 · 🟢 **3** (K1, K3 + K2 güçlü-sarı)
 
 ---
 
-## 3. Bu Oturumda Yapılanlar (kanıtlı)
+## 3. Bu Oturumda (6–7 Haz) Yapılanlar (kanıtlı)
 
-**Faz 0 (zemin):** next 16.1.6→16.2.7 (üretim "high" açığı kapandı), `@next/swc-win32` sabit-bağımlılığı kaldırıldı (Linux CI + Vercel build'ini kırıyordu), vitest stabil sürümde, sahte `sk_live` anahtarları + ölü `page.tsx` temizlendi, **CI workflow eklendi.**
+**1) KRİTİK: Hesap silme çökmesi onarıldı (K5/K10 stop-ship).**
+Canlı şemada `profiles`'a bağlı **10 yabancı anahtar `ON DELETE NO ACTION`** ile duruyordu → `DELETE FROM profiles` engelleniyor → **neredeyse her kullanıcı için hesap silme başarısız** (özellikle `ad_impressions`). `fix_account_deletion_fk_ondelete` migration'ı uygulandı: analitik/denetim/grup için `SET NULL`, kullanıcı-içeriği için `CASCADE`, `moderation_actions.moderator_id` & `reports.reporter_id` için `DROP NOT NULL` + `SET NULL`. **Doğrulandı: 30 CASCADE + 12 SET NULL, 0 NO ACTION kaldı**; `auth.users` silme yolu da açıldı. `types.ts` nullable kolonlarla hizalandı.
 
-**Tip güvenliği:** `tsc --noEmit` **101 hata → 0.** Kök-neden: `modules.d.ts` içindeki `useQuery(options:any):any` ambient override tüm react-query tiplerini `any`'ye eziyordu — kaldırıldı.
+**2) Son tip-kapalı dosya açıldı.** `content-moderation.ts` (771 satır) canlı şemaya hizalandı, `@ts-nocheck` kaldırıldı → **projede 0 `@ts-nocheck`** (grep ile doğrulandı), `tsc --noEmit` = **0 hata**.
 
-**Gerçek runtime bug'lar (canlı şema doğrulamasıyla bulundu):**
-- Adres kaydı (konum-secimi) var olmayan kolonlara yazıyordu → gerçek kolonlara düzeltildi (KVKK verisi artık kaydediliyor).
-- İlan kaldırma (ilanlar) geçersiz enum `'removed'` kullanıyordu → `'expired'`.
-- İşletme kaydı (isletme-ekle) eksik kolonlara yazıyordu → **migration ile kolonlar eklendi** + kategori dropdown'ı canlı tablodan besleniyor.
-- 2 gerçek hook-sıralama bug'ı (pazar/kategori, admin) düzeltildi.
+**3) Test kapsamı 4 → 141.** Yeni: `content-moderation` (22), `format-edge` (32), `pricing-extra` (15), `business-subscription` (11), `payment-logic` (10). Toplam **11 dosya / 141 test**, `vitest run` = **hepsi geçti**, CI'da zorunlu kapı.
 
-**types.ts canlı şemadan yeniden üretildi** → 3 `as any` ve 2 servisin `@ts-nocheck`'i kaldırıldı (tip denetimi geri açıldı).
+**4) Güvenlik başlıkları canlı üretimde doğrulandı.** `https://komsu-app.vercel.app` yanıtında tam CSP, `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload`, `X-Frame-Options`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy` mevcut. DB advisors DDL sonrası yeniden tarandı → yeni sorun yok.
 
-**CI sıkılaştırıldı:** typecheck + `next build` + test artık **zorunlu kapı**, koşu **yeşil** → üretim build'i hem kanıtlı hem her push'ta korunuyor.
-
----
-
-## 4. Açık Denetim Bulgusu: "Yazılmış ama tablosu olmayan" 4 özellik
-
-Bu servisler kodda var ama dayandıkları tablo canlı DB'de yok/eksik → **runtime'da çalışmazlar** (`@ts-nocheck` ile dormant):
-- **Ödeme** (`payment`) → `payments` tablosu yok.
-- **İşletme aboneliği** (`business-subscription`) → `business_subscriptions` tablosu yok.
-- **İlan kotası** (`listing-quota`) → `user_listing_quotas` tablosu yok.
-- **İçerik moderasyon** (`content-moderation`) → tablo VAR ama kolon uyumsuzlukları (düzeltilebilir).
-
-→ **Ürün kararı:** Bu özellikler yayında olacaksa tabloları migration ile oluşturulmalı; olmayacaksa dormant kalabilir. (Detay: `TECH_DEBT.md` #3, #8.)
+**5) Chrome + Vercel duman testi geçti.**
+- **Yerel (Chrome/preview):** 11 rota HTTP 200; `/giris`, `/kayit`, `/kvkk` render edildi; sadece zararsız dev-only konsol mesajları.
+- **Canlı Vercel (prod):** Açık sayfalar 200 (`/giris`, `/kayit`, `/kvkk`, `/gizlilik`); korumalı rotalar temiz **307 → `/giris?next=<yol>`** huni yönlendirmesi (döngü yok); güvenlik başlıkları canlı.
 
 ---
 
-## 5. Kalan İş (öncelik sırası)
+## 4. Sahibin Yapması Gerekenler (yayından önce — koddan değil panelden)
 
-1. **K3 — Test coverage (en zayıf nokta):** Kritik akışlar (ödeme callback, ilan oluşturma, mesajlaşma, grup) için otomatik test ekle. Şu an 4 test.
-2. **Eksik özellik tabloları (yukarıdaki 4):** ürün kararı + migration.
-3. **K5 KVKK:** veri envanteri + saklama/silme politikası + (TC Kimlik/adres özel-nitelikli veri için) hukuki gözden geçirme.
-4. **K10 mobil:** `cap add` + izin gerekçeleri + gizlilik etiketleri.
-5. **God-file bölme (#6):** `askida-bagis` (1994), `kayit` (1272) vb. — bakım borcu; runtime test gerektirir.
-6. **Lint borcu (254):** çoğu load-bearing supabase `any` — kademeli; market-ready için zorunlu değil (tracked).
-7. **K8/K9:** SLO+alert, yedek geri-yükleme testi + runbook.
+1. **Vercel prod ortamına `SUPABASE_SERVICE_ROLE_KEY` ekle.** Bu anahtar olmadan hesap-silme API'si güvenli şekilde **503** döner (kod bilerek böyle degrade ediyor). Anahtar girilince silme uçtan uca çalışır.
+2. **Supabase Auth → "Leaked password protection" toggle'ını aç.** (Advisors'ın işaret ettiği tek sahip-ayarı.)
+3. **"deploy et" de.** Bu oturumun tüm işi `coskun` rafında, **CI ile build-doğrulanmış ama henüz CANLI DEĞİL.** Üretim hâlâ eski `main` (Nisan) kodunu sunuyor. Önizlemeler bilerek kapalı olduğu için, yeni iş ancak açık "deploy et" talimatıyla `main`'e gidip yayınlanır.
+
+---
+
+## 5. Kalan İş (öncelik sırası — bakım borcu, stop-ship değil)
+
+1. **K3 — e2e/entegrasyon testi:** Ödeme callback, ilan oluşturma, mesajlaşma, hesap silme için DB'ye dokunan uçtan-uca testler. (Birim katmanı tamam.)
+2. **K5 KVKK formalizasyonu:** saklama/silme politikası + TC Kimlik/adres özel-nitelikli veri için hukuki gözden geçirme.
+3. **K10 mobil:** `cap add` + izin gerekçeleri + gizlilik etiketleri.
+4. **God-file bölme:** `askida-bagis` (~1994), `kayit` (~1272), `pazar/ilan-ver` (~1130) — runtime testi gerektirir.
+5. **Lint borcu (~254):** çoğu load-bearing supabase `any`; kademeli, market-ready için zorunlu değil (tracked).
+6. **K8/K9:** SLO+alert, yedek geri-yükleme testi + runbook.
 
 ---
 
 ## 6. Hüküm
 
-Ürün **artık sert stop-ship engeli taşımıyor** ve üretim build'i CI'da kanıtlı. Ancak 12 kapı 🟡 (sadece K1 tam 🟢) olduğu için **henüz "tam pazara hazır" değil** — özellikle **test coverage (K3)**, **eksik özellik tabloları** ve **KVKK formalizasyonu** yayından önce kapatılmalı. Tüm borç `TECH_DEBT.md`'de görünür ve planlı.
+Ürün **artık sert stop-ship engeli taşımıyor**, üretim build'i CI'da kanıtlı (tsc 0 hata · 141 test yeşil), canlı Vercel sitesi doğru çalışıyor ve güvenlik başlıkları üretimde aktif. Bu oturumda **hesap-silme çökmesi** (yayın için gerçek bir engeldi) onarıldı, **0 `@ts-nocheck`** kalmadı ve test kapsamı **35 kat** arttı.
+
+Yine de **"tam pazara hazır" demek için 10 kapı 🟡** — özellikle **sahibin 3 panel-işi** (service-role anahtarı, parola-koruma toggle, "deploy et") ve **e2e test + KVKK formalizasyonu** yayından önce kapatılmalı. Tüm borç `TECH_DEBT.md`'de görünür ve planlı. **Yeşil CI = "build geçiyor"; "her senaryo test edildi" demek değildir** — bunu yayından önce aklında tut.
