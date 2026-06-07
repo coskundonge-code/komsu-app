@@ -39,8 +39,9 @@
   `pazar/ilan-ver` (~1130). Kayıt/eDevlet hunisi en riskli — **sahip başındayken**
   çalışma-zamanı testi gerektirir.
 - ⬜ **Tip güvenliği borcu** (`TECH_DEBT #4`): kalan tip uyarılarını erit.
-- ⬜ **Kalan mock/sahte veri kalıntıları** (`TECH_DEBT #12`): büyük kısmı temizlendi;
-  birkaç düşük-riskli son-kullanıcı sayfası kademeli temizlenecek (her biri test ister).
+- ⬜ **Kalan mock/sahte veri kalıntıları** (`TECH_DEBT #12`): büyük kısmı temizlendi —
+  işletme paneli istatistik/performans/QR-tara sayfaları da bu turda dürüst "yakında"ya
+  çevrildi; geriye yalnızca birkaç düşük-riskli son-kullanıcı fallback'i kaldı.
 - ⬜ **Lint borcu** (`TECH_DEBT #5`): kalan `any` kullanımı kademeli azaltılacak.
 
 ---
@@ -62,7 +63,8 @@
 - ✅ Yasal metinler (KVKK/gizlilik/koşullar) güncel Türk mevzuatına göre yeniden
   yazıldı (`TECH_DEBT #15`).
 - ✅ İşletim Kılavuzu `RUNBOOK.md` oluşturuldu.
-- ✅ Sahte/mock veri yüzeylerinin büyük kısmı gerçeğe bağlandı (`TECH_DEBT #12`).
+- ✅ Sahte/mock veri yüzeylerinin büyük kısmı gerçeğe bağlandı; işletme paneli
+  istatistik/performans/QR-tara sayfaları dürüst "yakında"ya çevrildi (`TECH_DEBT #12`).
 - ✅ İçerik şikâyet akışı gerçeğe bağlandı (`TECH_DEBT #13`).
 - ✅ Hesap silme FK zinciri düzeltildi (`TECH_DEBT #14`).
 - ✅ Kritik akışlara testler eklendi (194 test), CI kapıları sıkılaştırıldı (`#7`).
