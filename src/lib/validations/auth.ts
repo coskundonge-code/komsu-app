@@ -95,6 +95,69 @@ export const resetPasswordFormSchema = z
     path: ['confirmPassword'],
   })
 
+// ——— Kayıt formu adım doğrulaması (SAF — kayit/page.tsx bunları çağırır) ———
+//
+// İki aşamalı kayıt formu (1: kimlik/ad/e-posta, 2: şifre/telefon) için saf
+// doğrulama. Sayfa yalnız bu sonuçları state'e yazar; doğrulama kuralları burada
+// testle kilitlenir (K1). Auth signUp çağrısı bu fonksiyonlardan bağımsızdır.
+
+export interface RegisterStep1Input {
+  tcKimlikNo: string
+  fullName: string
+  email: string
+  phone?: string
+}
+
+export interface StepValidationResult<K extends string> {
+  valid: boolean
+  errors: Partial<Record<K, string>>
+}
+
+/**
+ * Adım 1: yalnız kimlik/ad/e-posta. Şifre henüz girilmediği için şema geçici bir
+ * şifreyle çalıştırılır ve yalnız bu üç alanın hataları yüzeye çıkarılır
+ * (orijinal sayfa davranışı birebir korunur).
+ */
+export function validateRegisterStep1(
+  input: RegisterStep1Input
+): StepValidationResult<'tcKimlikNo' | 'fullName' | 'email'> {
+  const errors: Partial<Record<'tcKimlikNo' | 'fullName' | 'email', string>> = {}
+  const result = registerSchema.safeParse({
+    tcKimlikNo: input.tcKimlikNo,
+    fullName: input.fullName,
+    email: input.email,
+    phone: input.phone || undefined,
+    password: 'temppass1',
+    confirmPassword: 'temppass1',
+  })
+  if (!result.success) {
+    const fieldErrors = result.error.flatten().fieldErrors
+    if (fieldErrors.tcKimlikNo?.[0]) errors.tcKimlikNo = fieldErrors.tcKimlikNo[0]
+    if (fieldErrors.fullName?.[0]) errors.fullName = fieldErrors.fullName[0]
+    if (fieldErrors.email?.[0]) errors.email = fieldErrors.email[0]
+  }
+  return { valid: Object.keys(errors).length === 0, errors }
+}
+
+/**
+ * Adım 2 (tam form): şema tümünü doğrular, yalnız şifre/şifre-tekrar/telefon
+ * hatalarını yüzeye çıkarır (kimlik/ad/e-posta adım 1'de doğrulandı). `valid`
+ * doğrudan şema sonucudur — orijinal `return result.success` davranışı.
+ */
+export function validateRegisterStep2(
+  input: RegisterFormData
+): StepValidationResult<'password' | 'confirmPassword' | 'phone'> {
+  const errors: Partial<Record<'password' | 'confirmPassword' | 'phone', string>> = {}
+  const result = registerSchema.safeParse(input)
+  if (!result.success) {
+    const fieldErrors = result.error.flatten().fieldErrors
+    if (fieldErrors.password?.[0]) errors.password = fieldErrors.password[0]
+    if (fieldErrors.confirmPassword?.[0]) errors.confirmPassword = fieldErrors.confirmPassword[0]
+    if (fieldErrors.phone?.[0]) errors.phone = fieldErrors.phone[0]
+  }
+  return { valid: result.success, errors }
+}
+
 // Export types
 export type LoginFormData = z.infer<typeof loginSchema>
 export type RegisterFormData = z.infer<typeof registerSchema>
