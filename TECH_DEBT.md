@@ -2,7 +2,7 @@
 
 > Kural (AI Architecture Rules / K2+K12): Borç sıfır olmak zorunda değil; **görünür ve
 > planlı** olmalı. Her madde: ne · nerede · etki · neden ertelendi · ödeme planı + tarih.
-> Son güncelleme: 2026-06-05
+> Son güncelleme: 2026-06-07
 
 ## Kabul edilen riskler (Faz 0'da bilinçli bırakıldı)
 
@@ -39,8 +39,8 @@
 - **Ödeme planı:** Bulk `any`'yi köken azaltmanın kaldıracı = types.ts'i canlı şemadan yeniden üret (supabase sonuçları tiplenince `as any[]` gereksizleşir) → kalan cast'leri kaldır. Dosya dosya da eritilebilir. CI lint bu süre informational. **Hedef: kademeli.**
 
 ### 6. Tanrı-dosyalar (>500 satır)
-- **Ne:** `askida-bagis/page.tsx` (1994), `kayit/page.tsx` (1272), `pazar/ilan-ver/page.tsx` (1130) + 9 dosya 800–999.
-- **Ödeme planı:** Bileşen + hook'a böl; veri çekmeyi servis/hook katmanına taşı. **Hedef: Faz 1.**
+- **Ne:** `askida-bagis/page.tsx` (1994 — **artık "yakında" ile kapatıldı**, bkz. #9), `kayit/page.tsx` (1272), `pazar/ilan-ver/page.tsx` (1130) + 9 dosya 800–999.
+- **Ödeme planı:** Bileşen + hook'a böl; veri çekmeyi servis/hook katmanına taşı. `kayit` (kayıt hunisi/eDevlet) en riskli — runtime testi gerektirir, sahip başındayken yapılmalı. **Hedef: Faz 1.**
 
 ### 7. CI kapıları (2026-06-06 sıkılaştırıldı)
 - **Yapıldı:** `typecheck (tsc --noEmit)` + `next build` + `test` artık ZORUNLU kapı (kırmızı = push'ta görünür/CI patlar). ✅
@@ -56,3 +56,13 @@
 - **2026-06-06 — `content-moderation.ts` AKTİVE EDİLDİ:** `content_moderation` tablosu VARDI ama servis canlıda olmayan kolonlara yazıyordu. Eksik kolonlar additive migration ile eklendi (`author_id`+FK, `ai_categories`, `ai_reviewed_at`, `content_snapshot`, `title_snapshot`, `image_urls_snapshot`, `priority`, `auto_approved`); `ai_reasoning`→`reason`, `admin_id`→`resolved_by`, `admin_note`→`admin_notes`, `admin_reviewed_at`→`resolved_at` konvansiyonuna indirildi. **RLS düzeltildi:** insert artık AI akışını (`author_id=auth.uid()`) + şikâyet akışını kabul ediyor, admin'ler tüm kayıtları görüp güncelleyebiliyor (önceki politika AI insert'i runtime'da reddediyordu). types.ts hizalandı → `@ts-nocheck` kaldırıldı, `tsc` 0. ✅
 - **Kalan `@ts-nocheck`: 0 dosya.** Tüm servisler tip-denetimli.
 - **Not:** Tablo + tip = servisler DERLENEBİLİR/tip-güvenli. Özelliklerin uçtan uca ÇALIŞMASI için UI bağlama + test ayrı bir adım (ürün işi).
+
+### 9. "Askıda Bağış" prototip ödeme akışı geçici olarak kapatıldı (2026-06-07)
+- **Ne / nerede:** `src/app/(main)/askida-bagis/page.tsx`. Sayfa ana menü + mobil çekmece + sidebar'dan erişilebilir bir **headline özellik** idi ama ödeme adımı tamamlanmamıştı:
+  - **SAHTE kart formu** (kodda açıkça `{/* Credit Card Form (Fake iyzico) */}`, ~satır 1382) gerçek kart numarası (PAN) topluyordu → **PCI/uyumluluk riski** + Apple/Google ret sebebi (K4/K5/K10).
+  - Form var olmayan `/api/payment/iyzico` ucuna POST atıyordu → **404** (gerçek ödeme PayTR; donation için PaymentType bile yok). Ödeme sessizce başarısız.
+  - DB boşken kullanıcıya **sahte istatistik** gösteriyordu (`items: 47, businesses: 8` sabit).
+- **Etki:** Yüksek (gerçek kullanıcı sahte kart formuna kart girip 404 alabilirdi; mağaza reddi riski).
+- **Yapıldı:** Sayfa default export'u temiz bir **"Askıda Bağış çok yakında"** ekranıyla değiştirildi (kapı). Tüm çalışma kodu (`AskidaBagisPageContent`) dosyada **korunuyor**; `_AskidaBagisPageGatedContent` içinde referanslı tutuldu. `tsc` 0 hata, `next build` 0. Nav bağlantıları bırakıldı (artık nazik bir "yakında" gösteriyor).
+- **Geri açma:** Ödeme PayTR'a bağlanıp (donation için `PaymentType` + backend) uçtan uca test edilince, default export'u tek satırla `return <AskidaBagisPageContent />` yaparak aç.
+- **Ödeme planı:** Donation ödemesini PayTR hosted-page akışına bağla (kendi formunda kart TOPLAMA — PCI). **Hedef: Faz 1 (ürün kararı + entegrasyon).**

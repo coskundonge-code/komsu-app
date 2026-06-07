@@ -1985,7 +1985,40 @@ function AskidaBagisPageContent() {
   )
 }
 
+// NOT (2026-06-07 / pazara-hazırlık denetimi):
+// "Askıda Bağış" özelliği henüz tamamlanmadı. Ödeme adımı SAHTE bir kart formu
+// (bkz. ~satır 1382 "Fake iyzico") olup var olmayan /api/payment/iyzico ucuna
+// POST atıyordu (404) ve gerçek kart numarası topluyordu — bu bir PCI/uyumluluk
+// riski ve Apple/Google mağaza ret sebebidir. Ayrıca DB boşken kullanıcıya sahte
+// istatistik (47 ürün / 8 işletme) gösteriyordu.
+// Gerçek kullanıcılar bozuk/sahte ödeme akışına ulaşmasın diye özellik geçici
+// olarak "yakında" ekranıyla kapatıldı. TÜM çalışma kodu (AskidaBagisPageContent)
+// aşağıda KORUNUYOR; ödeme PayTR'a bağlanıp test edildikten sonra tek satırla
+// (return <AskidaBagisPageContent />) geri açılabilir.
 export default function AskidaBagisPage() {
+  return (
+    <div className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center px-4 text-center">
+      <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+        <Heart className="h-10 w-10 text-primary" />
+      </div>
+      <h1 className="mb-2 text-2xl font-bold">Askıda Bağış çok yakında</h1>
+      <p className="mb-6 text-text-muted">
+        Mahalle esnafıyla dayanışma özelliğimizi güvenli ödeme altyapısıyla
+        birlikte hazırlıyoruz. Çok yakında burada olacak.
+      </p>
+      <a
+        href="/"
+        className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 font-medium text-white transition hover:opacity-90"
+      >
+        <ArrowRight className="h-4 w-4" />
+        Ana sayfaya dön
+      </a>
+    </div>
+  )
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- özellik tamamlanınca geri açılacak
+function _AskidaBagisPageGatedContent() {
   return (
     <Suspense fallback={<div className="w-full py-12 text-center text-text-muted">Yükleniyor...</div>}>
       <AskidaBagisPageContent />
