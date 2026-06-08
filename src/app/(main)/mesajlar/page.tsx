@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { Suspense, useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { ChevronLeft, Search, Send, Image as ImageIcon, Smile, MessageCirclePlus, Phone, Video, MessageSquare, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -11,6 +12,8 @@ import type { Database } from "@/lib/supabase/types";
 const createClient = () => createTypedClient()
 
 type ProfileRow = Database['public']['Tables']['profiles']['Row']
+
+type TabKey = "all" | "unread" | "marketplace";
 
 interface Conversation {
   id: string;
@@ -33,13 +36,319 @@ interface Message {
   userId?: string;
 }
 
-export default function MessagesPage() {
+// ---------------------------------------------------------------------------
+// Conversation List — module-level component (props in).
+// Defining this INSIDE the page caused React to remount it on every keystroke,
+// which is why focus jumped out of inputs while typing. Keeping it at module
+// scope gives it a stable identity across renders.
+// ---------------------------------------------------------------------------
+interface ConversationListProps {
+  conversations: Conversation[];
+  filteredConversations: Conversation[];
+  searchQuery: string;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  activeTab: TabKey;
+  setActiveTab: React.Dispatch<React.SetStateAction<TabKey>>;
+  unreadCount: number;
+  marketplaceCount: number;
+  selectedId: string;
+  setSelectedId: React.Dispatch<React.SetStateAction<string>>;
+}
+
+function ConversationList({
+  conversations,
+  filteredConversations,
+  searchQuery,
+  setSearchQuery,
+  activeTab,
+  setActiveTab,
+  unreadCount,
+  marketplaceCount,
+  selectedId,
+  setSelectedId,
+}: ConversationListProps) {
+  return (
+    <div className="flex flex-col h-full bg-surface border-r border-border">
+      {/* Header */}
+      <div className="p-4 border-b border-border">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-bold text-text-primary">Mesajlar</h1>
+          <Link
+            href="/mesajlar/new"
+            className="inline-flex items-center gap-2 px-3 py-2 bg-primary hover:bg-primary-hover text-white rounded-full transition-colors text-sm font-medium"
+            title="Yeni mesaj başlat"
+          >
+            <MessageCirclePlus size={18} />
+            <span className="hidden sm:inline">Yeni Mesaj</span>
+          </Link>
+        </div>
+
+        {/* Search */}
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+          <input
+            type="text"
+            placeholder="Kişi veya mesaj ara..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label="Kişi veya mesaj ara"
+            className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+          />
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-2 overflow-x-auto">
+          <button
+            onClick={() => setActiveTab("all")}
+            className={cn(
+              "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors",
+              activeTab === "all"
+                ? "bg-primary text-white"
+                : "bg-background text-text-primary hover:bg-[#e0e0e0]"
+            )}
+          >
+            Tümü
+          </button>
+          <button
+            onClick={() => setActiveTab("unread")}
+            className={cn(
+              "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors relative",
+              activeTab === "unread"
+                ? "bg-primary text-white"
+                : "bg-background text-text-primary hover:bg-[#e0e0e0]"
+            )}
+          >
+            Okunmamış
+            {unreadCount > 0 && (
+              <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab("marketplace")}
+            className={cn(
+              "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors flex items-center gap-2 relative",
+              activeTab === "marketplace"
+                ? "bg-primary text-white"
+                : "bg-background text-text-primary hover:bg-[#e0e0e0]"
+            )}
+          >
+            <ShoppingBag size={16} />
+            Pazar Yeri
+            {marketplaceCount > 0 && (
+              <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                {marketplaceCount > 9 ? "9+" : marketplaceCount}
+              </span>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Conversation List */}
+      <div className="flex-1 overflow-y-auto divide-y divide-[#e0e0e0]">
+        {filteredConversations.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full p-8">
+            <MessageSquare size={48} className="text-[#e0e0e0] mb-3" />
+            <p className="text-text-muted text-sm font-medium">
+              {activeTab === "unread" ? "Okunmamış mesaj yok" : activeTab === "marketplace" ? "Pazar yeri sohbeti yok" : "Sohbet yok"}
+            </p>
+            <p className="text-text-muted text-xs mt-1">
+              {searchQuery ? "Başka bir arama terimi deneyin" : conversations.length === 0 ? "İlk sohbetinizi başlatın" : "Yeni bir sohbet başlatın"}
+            </p>
+            {!searchQuery && conversations.length === 0 && (
+              <Link
+                href="/mesajlar/new"
+                className="mt-4 px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-full text-sm font-medium transition-colors"
+              >
+                Yeni Sohbet Başlat
+              </Link>
+            )}
+          </div>
+        ) : (
+          filteredConversations.map((convo) => (
+            <button
+              key={convo.id}
+              onClick={() => setSelectedId(convo.id)}
+              className={cn(
+                "w-full flex items-center gap-3 p-3 hover:bg-background transition-all duration-150 text-left border-l-4 border-transparent",
+                selectedId === convo.id && "bg-primary-light border-l-4 border-primary"
+              )}
+            >
+              {/* Avatar with online indicator */}
+              <div className="relative flex-shrink-0">
+                <img
+                  src={convo.avatar}
+                  alt={convo.name}
+                  loading="lazy"
+                  className="w-14 h-14 rounded-full object-cover shadow-sm"
+                />
+                {convo.online && (
+                  <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-primary rounded-full border-2 border-white shadow-sm" />
+                )}
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2 mb-1">
+                  <p className={cn("text-sm truncate", convo.unread > 0 ? "font-bold text-text-primary" : "font-semibold text-text-primary")}>
+                    {convo.name}
+                  </p>
+                  <span className="text-xs text-text-muted flex-shrink-0 whitespace-nowrap">{convo.time}</span>
+                </div>
+                <p className={cn("text-xs truncate", convo.unread > 0 ? "text-text-primary font-medium" : "text-text-muted")}>
+                  {convo.lastMessage}
+                </p>
+              </div>
+
+              {/* Unread Badge */}
+              {convo.unread > 0 && (
+                <div className="flex-shrink-0">
+                  <span className="w-6 h-6 bg-primary text-white text-xs font-bold rounded-full flex items-center justify-center shadow-sm">
+                    {convo.unread > 9 ? "9+" : convo.unread}
+                  </span>
+                </div>
+              )}
+            </button>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Chat View — module-level component (props in). Same remount fix as above:
+// this used to be redefined on every render, so the message input lost focus
+// after each character.
+// ---------------------------------------------------------------------------
+interface ChatViewProps {
+  isMobile: boolean;
+  selected: Conversation | undefined;
+  messages: Message[];
+  messageText: string;
+  setMessageText: React.Dispatch<React.SetStateAction<string>>;
+  handleSend: () => void;
+  setSelectedId: React.Dispatch<React.SetStateAction<string>>;
+}
+
+function ChatView({
+  isMobile,
+  selected,
+  messages,
+  messageText,
+  setMessageText,
+  handleSend,
+  setSelectedId,
+}: ChatViewProps) {
+  return (
+    <div className="flex flex-col h-full bg-surface">
+      {/* Chat Header */}
+      <div className="flex items-center justify-between gap-3 p-4 border-b border-border bg-surface shadow-sm">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          {isMobile && (
+            <button onClick={() => setSelectedId("")} aria-label="Geri dön" className="p-1 hover:bg-background rounded-full transition-colors flex-shrink-0">
+              <ChevronLeft size={20} className="text-text-primary" />
+            </button>
+          )}
+          <div className="relative flex-shrink-0">
+            <img
+              src={selected?.avatar || ""}
+              alt={selected?.name || ""}
+              loading="lazy"
+              className="w-12 h-12 rounded-full object-cover shadow-sm"
+            />
+            {selected?.online && (
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-primary rounded-full border-2 border-white" />
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold text-text-primary truncate">{selected?.name}</p>
+            <div className="flex items-center gap-1">
+              <div className={`w-2 h-2 rounded-full flex-shrink-0 ${selected?.online ? "bg-primary" : "bg-[#8f8f8f]"}`}></div>
+              <p className="text-xs text-text-muted truncate">
+                {selected?.online ? "Çevrimiçi" : "Son görülme: 5 dk önce"}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Header Actions */}
+        <div className="flex items-center gap-1 flex-shrink-0">
+          <button className="p-2 hover:bg-background rounded-full transition-colors" aria-label="Telefon ara">
+            <Phone size={20} className="text-primary" />
+          </button>
+          <button className="p-2 hover:bg-background rounded-full transition-colors" aria-label="Video ara">
+            <Video size={20} className="text-primary" />
+          </button>
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-4 bg-background space-y-3">
+        {messages.map((msg) => (
+          <div key={msg.id} className={cn("flex", msg.isOwn ? "justify-end" : "justify-start")}>
+            <div
+              className={cn(
+                "max-w-[65%] px-4 py-2.5 rounded-2xl text-sm break-words",
+                msg.isOwn
+                  ? "bg-primary text-white rounded-br-none shadow-sm"
+                  : "bg-surface text-text-primary border border-border rounded-bl-none"
+              )}
+            >
+              <p>{msg.text}</p>
+              <p className={cn("text-[10px] mt-1.5 flex items-center justify-end gap-1", msg.isOwn ? "text-[#a7dbb8]" : "text-text-muted")}>
+                {msg.time}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Message Input */}
+      <div className="p-4 border-t border-border bg-surface">
+        <div className="flex items-center gap-2">
+          <button className="p-2.5 hover:bg-background rounded-full transition-colors flex-shrink-0" aria-label="Fotoğraf ekle">
+            <ImageIcon size={20} className="text-primary" />
+          </button>
+          <input
+            type="text"
+            value={messageText}
+            onChange={(e) => setMessageText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSend();
+            }}
+            placeholder="Mesajınızı yazın..."
+            className="flex-1 px-4 py-2.5 bg-background border border-border rounded-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+          />
+          <button className="p-2.5 hover:bg-background rounded-full transition-colors flex-shrink-0" aria-label="İmoji ekle">
+            <Smile size={20} className="text-primary" />
+          </button>
+          <button
+            onClick={handleSend}
+            disabled={!messageText.trim()}
+            aria-label="Mesaj gönder"
+            className="p-2.5 bg-primary hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed rounded-full transition-colors flex-shrink-0"
+          >
+            <Send size={18} className="text-white" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MessagesContent() {
   const { user, loading: authLoading } = useCurrentUser();
-  const [selectedId, setSelectedId] = useState("");
+  const searchParams = useSearchParams();
+  // Conversation id passed in by "mesaj gönder" buttons (e.g. /mesajlar?selected=<id>).
+  const selectedParam = searchParams.get("selected") ?? "";
+
+  const [selectedId, setSelectedId] = useState(selectedParam);
   const [isMobile, setIsMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [messageText, setMessageText] = useState("");
-  const [activeTab, setActiveTab] = useState<"all" | "unread" | "marketplace">("all");
+  const [activeTab, setActiveTab] = useState<TabKey>("all");
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -47,6 +356,13 @@ export default function MessagesPage() {
   const [, setLoadingMessages] = useState(false);
 
   const selected = conversations.find((c) => c.id === selectedId);
+
+  // Open the conversation requested via the URL (?selected=...). Runs on mount
+  // and whenever the param changes (e.g. tapping "mesaj gönder" again from
+  // another page while already on /mesajlar).
+  useEffect(() => {
+    if (selectedParam) setSelectedId(selectedParam);
+  }, [selectedParam]);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -291,258 +607,34 @@ export default function MessagesPage() {
   const unreadCount = conversations.reduce((sum, c) => sum + c.unread, 0);
   const marketplaceCount = conversations.filter((c) => c.type === "marketplace").reduce((sum, c) => sum + c.unread, 0);
 
-  // Conversation List Component
-  const ConversationList = () => (
-    <div className="flex flex-col h-full bg-surface border-r border-border">
-      {/* Header */}
-      <div className="p-4 border-b border-border">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold text-text-primary">Mesajlar</h1>
-          <Link
-            href="/mesajlar/new"
-            className="inline-flex items-center gap-2 px-3 py-2 bg-primary hover:bg-primary-hover text-white rounded-full transition-colors text-sm font-medium"
-            title="Yeni mesaj başlat"
-          >
-            <MessageCirclePlus size={18} />
-            <span className="hidden sm:inline">Yeni Mesaj</span>
-          </Link>
-        </div>
-
-        {/* Search */}
-        <div className="relative mb-4">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-          <input
-            type="text"
-            placeholder="Kişi veya mesaj ara..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            aria-label="Kişi veya mesaj ara"
-            className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-          />
-        </div>
-
-        {/* Tabs */}
-        <div className="flex gap-2 overflow-x-auto">
-          <button
-            onClick={() => setActiveTab("all")}
-            className={cn(
-              "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors",
-              activeTab === "all"
-                ? "bg-primary text-white"
-                : "bg-background text-text-primary hover:bg-[#e0e0e0]"
-            )}
-          >
-            Tümü
-          </button>
-          <button
-            onClick={() => setActiveTab("unread")}
-            className={cn(
-              "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors relative",
-              activeTab === "unread"
-                ? "bg-primary text-white"
-                : "bg-background text-text-primary hover:bg-[#e0e0e0]"
-            )}
-          >
-            Okunmamış
-            {unreadCount > 0 && (
-              <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-                {unreadCount > 9 ? "9+" : unreadCount}
-              </span>
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab("marketplace")}
-            className={cn(
-              "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors flex items-center gap-2 relative",
-              activeTab === "marketplace"
-                ? "bg-primary text-white"
-                : "bg-background text-text-primary hover:bg-[#e0e0e0]"
-            )}
-          >
-            <ShoppingBag size={16} />
-            Pazar Yeri
-            {marketplaceCount > 0 && (
-              <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-                {marketplaceCount > 9 ? "9+" : marketplaceCount}
-              </span>
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Conversation List */}
-      <div className="flex-1 overflow-y-auto divide-y divide-[#e0e0e0]">
-        {filteredConversations.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full p-8">
-            <MessageSquare size={48} className="text-[#e0e0e0] mb-3" />
-            <p className="text-text-muted text-sm font-medium">
-              {activeTab === "unread" ? "Okunmamış mesaj yok" : activeTab === "marketplace" ? "Pazar yeri sohbeti yok" : "Sohbet yok"}
-            </p>
-            <p className="text-text-muted text-xs mt-1">
-              {searchQuery ? "Başka bir arama terimi deneyin" : conversations.length === 0 ? "İlk sohbetinizi başlatın" : "Yeni bir sohbet başlatın"}
-            </p>
-            {!searchQuery && conversations.length === 0 && (
-              <Link
-                href="/mesajlar/new"
-                className="mt-4 px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-full text-sm font-medium transition-colors"
-              >
-                Yeni Sohbet Başlat
-              </Link>
-            )}
-          </div>
-        ) : (
-          filteredConversations.map((convo) => (
-            <button
-              key={convo.id}
-              onClick={() => setSelectedId(convo.id)}
-              className={cn(
-                "w-full flex items-center gap-3 p-3 hover:bg-background transition-all duration-150 text-left border-l-4 border-transparent",
-                selectedId === convo.id && "bg-primary-light border-l-4 border-primary"
-              )}
-            >
-              {/* Avatar with online indicator */}
-              <div className="relative flex-shrink-0">
-                <img
-                  src={convo.avatar}
-                  alt={convo.name}
-                  loading="lazy"
-                  className="w-14 h-14 rounded-full object-cover shadow-sm"
-                />
-                {convo.online && (
-                  <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-primary rounded-full border-2 border-white shadow-sm" />
-                )}
-              </div>
-
-              {/* Content */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2 mb-1">
-                  <p className={cn("text-sm truncate", convo.unread > 0 ? "font-bold text-text-primary" : "font-semibold text-text-primary")}>
-                    {convo.name}
-                  </p>
-                  <span className="text-xs text-text-muted flex-shrink-0 whitespace-nowrap">{convo.time}</span>
-                </div>
-                <p className={cn("text-xs truncate", convo.unread > 0 ? "text-text-primary font-medium" : "text-text-muted")}>
-                  {convo.lastMessage}
-                </p>
-              </div>
-
-              {/* Unread Badge */}
-              {convo.unread > 0 && (
-                <div className="flex-shrink-0">
-                  <span className="w-6 h-6 bg-primary text-white text-xs font-bold rounded-full flex items-center justify-center shadow-sm">
-                    {convo.unread > 9 ? "9+" : convo.unread}
-                  </span>
-                </div>
-              )}
-            </button>
-          ))
-        )}
-      </div>
-    </div>
-  );
-
-  // Chat View Component
-  const ChatView = () => (
-    <div className="flex flex-col h-full bg-surface">
-      {/* Chat Header */}
-      <div className="flex items-center justify-between gap-3 p-4 border-b border-border bg-surface shadow-sm">
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          {isMobile && (
-            <button onClick={() => setSelectedId("")} aria-label="Geri dön" className="p-1 hover:bg-background rounded-full transition-colors flex-shrink-0">
-              <ChevronLeft size={20} className="text-text-primary" />
-            </button>
-          )}
-          <div className="relative flex-shrink-0">
-            <img
-              src={selected?.avatar || ""}
-              alt={selected?.name || ""}
-              loading="lazy"
-              className="w-12 h-12 rounded-full object-cover shadow-sm"
-            />
-            {selected?.online && (
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-primary rounded-full border-2 border-white" />
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-text-primary truncate">{selected?.name}</p>
-            <div className="flex items-center gap-1">
-              <div className={`w-2 h-2 rounded-full flex-shrink-0 ${selected?.online ? "bg-primary" : "bg-[#8f8f8f]"}`}></div>
-              <p className="text-xs text-text-muted truncate">
-                {selected?.online ? "Çevrimiçi" : "Son görülme: 5 dk önce"}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Header Actions */}
-        <div className="flex items-center gap-1 flex-shrink-0">
-          <button className="p-2 hover:bg-background rounded-full transition-colors" aria-label="Telefon ara">
-            <Phone size={20} className="text-primary" />
-          </button>
-          <button className="p-2 hover:bg-background rounded-full transition-colors" aria-label="Video ara">
-            <Video size={20} className="text-primary" />
-          </button>
-        </div>
-      </div>
-
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 bg-background space-y-3">
-        {messages.map((msg) => (
-          <div key={msg.id} className={cn("flex", msg.isOwn ? "justify-end" : "justify-start")}>
-            <div
-              className={cn(
-                "max-w-[65%] px-4 py-2.5 rounded-2xl text-sm break-words",
-                msg.isOwn
-                  ? "bg-primary text-white rounded-br-none shadow-sm"
-                  : "bg-surface text-text-primary border border-border rounded-bl-none"
-              )}
-            >
-              <p>{msg.text}</p>
-              <p className={cn("text-[10px] mt-1.5 flex items-center justify-end gap-1", msg.isOwn ? "text-[#a7dbb8]" : "text-text-muted")}>
-                {msg.time}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Message Input */}
-      <div className="p-4 border-t border-border bg-surface">
-        <div className="flex items-center gap-2">
-          <button className="p-2.5 hover:bg-background rounded-full transition-colors flex-shrink-0" aria-label="Fotoğraf ekle">
-            <ImageIcon size={20} className="text-primary" />
-          </button>
-          <input
-            type="text"
-            value={messageText}
-            onChange={(e) => setMessageText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSend();
-            }}
-            placeholder="Mesajınızı yazın..."
-            className="flex-1 px-4 py-2.5 bg-background border border-border rounded-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-          />
-          <button className="p-2.5 hover:bg-background rounded-full transition-colors flex-shrink-0" aria-label="İmoji ekle">
-            <Smile size={20} className="text-primary" />
-          </button>
-          <button
-            onClick={handleSend}
-            disabled={!messageText.trim()}
-            aria-label="Mesaj gönder"
-            className="p-2.5 bg-primary hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed rounded-full transition-colors flex-shrink-0"
-          >
-            <Send size={18} className="text-white" />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
   // Mobile View
   if (isMobile) {
     return (
       <div className="h-[calc(100vh-56px)] bg-surface">
-        {selectedId ? <ChatView /> : <ConversationList />}
+        {selectedId ? (
+          <ChatView
+            isMobile={isMobile}
+            selected={selected}
+            messages={messages}
+            messageText={messageText}
+            setMessageText={setMessageText}
+            handleSend={handleSend}
+            setSelectedId={setSelectedId}
+          />
+        ) : (
+          <ConversationList
+            conversations={conversations}
+            filteredConversations={filteredConversations}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            unreadCount={unreadCount}
+            marketplaceCount={marketplaceCount}
+            selectedId={selectedId}
+            setSelectedId={setSelectedId}
+          />
+        )}
       </div>
     );
   }
@@ -551,11 +643,30 @@ export default function MessagesPage() {
   return (
     <div className="flex h-[calc(100vh-56px)] bg-background">
       <div className="w-80 flex-shrink-0 h-full">
-        <ConversationList />
+        <ConversationList
+          conversations={conversations}
+          filteredConversations={filteredConversations}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          unreadCount={unreadCount}
+          marketplaceCount={marketplaceCount}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+        />
       </div>
       <div className="flex-1">
         {selected ? (
-          <ChatView />
+          <ChatView
+            isMobile={isMobile}
+            selected={selected}
+            messages={messages}
+            messageText={messageText}
+            setMessageText={setMessageText}
+            handleSend={handleSend}
+            setSelectedId={setSelectedId}
+          />
         ) : conversations.length === 0 ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
@@ -582,6 +693,23 @@ export default function MessagesPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function MessagesPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center h-[calc(100vh-56px)] bg-background">
+          <div className="text-center">
+            <MessageSquare size={48} className="mx-auto text-text-muted mb-3 opacity-50" />
+            <p className="text-text-muted text-sm">Mesajlar yükleniyor...</p>
+          </div>
+        </div>
+      }
+    >
+      <MessagesContent />
+    </Suspense>
   );
 }
 
