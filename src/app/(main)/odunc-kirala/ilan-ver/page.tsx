@@ -14,8 +14,15 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
+import { uploadMultipleMedia } from '@/lib/upload';
+import { toast } from '@/lib/utils/show-toast';
 
 type Step = 1 | 2 | 3;
+
+interface PhotoItem {
+  file: File;
+  preview: string;
+}
 
 interface FormData {
   title: string;
@@ -25,7 +32,7 @@ interface FormData {
   price: string;
   condition: string;
   pickupLocation: string;
-  photos: string[];
+  photos: PhotoItem[];
   deposit: string;
   maxDuration: string;
   terms: string;
@@ -86,17 +93,21 @@ export default function NewListingPage() {
         ...prev,
         photos: [
           ...prev.photos,
-          ...newPhotos.map((file) => URL.createObjectURL(file)),
+          ...newPhotos.map((file) => ({ file, preview: URL.createObjectURL(file) })),
         ],
       }));
     }
   };
 
   const removePhoto = (index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      photos: prev.photos.filter((_, i) => i !== index),
-    }));
+    setFormData((prev) => {
+      const target = prev.photos[index];
+      if (target) URL.revokeObjectURL(target.preview);
+      return {
+        ...prev,
+        photos: prev.photos.filter((_, i) => i !== index),
+      };
+    });
   };
 
   const handleDragDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -109,7 +120,7 @@ export default function NewListingPage() {
         ...prev,
         photos: [
           ...prev.photos,
-          ...newPhotos.map((file) => URL.createObjectURL(file)),
+          ...newPhotos.map((file) => ({ file, preview: URL.createObjectURL(file) })),
         ],
       }));
     }
@@ -139,14 +150,43 @@ export default function NewListingPage() {
         return;
       }
 
-      // Upload images
-      const imageUrls: string[] = [];
-      for (let i = 0; i < formData.photos.length; i++) {
-        const photoUrl = formData.photos[i];
-        // Photos are already URLs from preview, so we'll use them as-is
-        // In production, you'd upload actual files
-        imageUrls.push(photoUrl);
+      // Resolve the user's real neighborhood — never hardcode it.
+      const { data: nbMember } = await supabase
+        .from('neighborhood_members')
+        .select('neighborhood_id')
+        .eq('user_id', user.id)
+        .single();
+      const neighborhoodId = (nbMember as { neighborhood_id?: string } | null)?.neighborhood_id ?? null;
+      if (!neighborhoodId) {
+        toast.error('Mahalleniz tanımlı değil. İlan vermeden önce mahallenizi seçin.');
+        setIsSubmitting(false);
+        return;
       }
+
+      // Actually upload the selected photos to storage and persist the public
+      // URLs. Previously the form saved ephemeral blob: preview URLs, so every
+      // saved listing ended up with broken images.
+      let imageUrls: string[] | null = null;
+      if (formData.photos.length > 0) {
+        const files = formData.photos.map((p) => p.file);
+        const { urls, errors: uploadErrors } = await uploadMultipleMedia(
+          files,
+          'listing-images',
+          `odunc-kirala/${user.id}`
+        );
+        if (urls.length > 0) imageUrls = urls;
+        if (uploadErrors.length > 0) {
+          console.warn('Bazı fotoğraflar yüklenemedi:', uploadErrors);
+          if (urls.length === 0) {
+            toast.error('Fotoğraflar yüklenemedi. Lütfen tekrar deneyin.');
+            setIsSubmitting(false);
+            return;
+          }
+        }
+      }
+
+      const parsedMaxDuration = parseInt(formData.maxDuration, 10);
+      const parsedDeposit = parseInt(formData.deposit, 10);
 
       // Create lending item
       const { error } = await supabase
@@ -155,9 +195,11 @@ export default function NewListingPage() {
           title: formData.title,
           description: formData.description,
           price_per_unit: formData.type === 'free' ? 0 : parseInt(formData.price),
+          deposit_amount: formData.type === 'free' || !Number.isFinite(parsedDeposit) ? 0 : parsedDeposit,
+          max_lending_days: Number.isFinite(parsedMaxDuration) && parsedMaxDuration > 0 ? parsedMaxDuration : 7,
           user_id: user.id,
-          neighborhood_id: '51ded332-1c5c-428f-9022-4f5956bef2a4',
-          image_urls: imageUrls.length > 0 ? imageUrls : null,
+          neighborhood_id: neighborhoodId,
+          image_urls: imageUrls,
           condition: formData.condition || 'good',
           status: 'available',
           lending_type: formData.type === 'free' ? 'free' : 'paid',
@@ -168,6 +210,7 @@ export default function NewListingPage() {
 
       if (error) {
         console.error('Error creating listing:', error);
+        toast.error('İlan kaydedilemedi: ' + error.message);
       } else {
         setIsSubmitted(true);
         setTimeout(() => {
@@ -456,7 +499,7 @@ export default function NewListingPage() {
                   {formData.photos.map((photo, idx) => (
                     <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border border-border">
                       <Image
-                        src={photo}
+                        src={photo.preview}
                         alt={`Photo ${idx + 1}`}
                         fill
                         unoptimized
