@@ -3,7 +3,7 @@
 > Bu dosya, uygulamanın canlıya/mağazaya çıkması için **kalan tüm işlerin** sade
 > listesidir. "Kim yapacak" ve "ne zaman" ölçütüne göre üçe ayrıldı.
 > Teknik ayrıntılar: `TECH_DEBT.md` · Operasyon: `RUNBOOK.md`
-> Son güncelleme: 2026-06-08
+> Son güncelleme: 2026-06-09
 
 İşaretler: ⬜ yapılacak · ✅ yapıldı · 🔴 yayın engeli (bu olmadan canlıya çıkılmaz)
 
@@ -22,8 +22,9 @@
   (Anahtar girilene kadar ödeme "simülasyon modunda" — hiçbir şey tahsil etmez.)
 - ⬜ **Ürün kararı (para modeli):** İlan vermek / öne çıkarmak ücretli mi olacak,
   yoksa yalnızca işletme aboneliği mi? (İlan şu an ücretsiz yayınlanıyor.)
-- ⬜ **Blog içerik kararı:** Liste sayfasında 12 başlık var ama yalnızca 3'ünün
-  gerçek yazısı yazılı. Kalan 9'u yazılacak mı, yoksa liste 3'e mi indirilecek?
+- ✅ **Blog içerik kararı (2026-06-09 — sahip "içerik kararı senin, tamamla" dedi):** Liste 3 gerçek
+  yazıya indirildi (sahte 9 başlık + ölü `#post-<id>` çapaları kaldırıldı). Sonradan yeni yazı yazmak
+  isterseniz `blog/[slug]/page.tsx` içine ekleyip liste + `allArticles`'a bir satır eklemek yeterli.
 - ⬜ **"deploy et" kararı:** `main`'e geçiş = canlıya çıkış. Yalnızca siz deyince.
 - ⬜ **Google Vision API anahtarı** (AI görsel moderasyonunu açmak için — şiddetle önerilir):
   Google Cloud Console'da Vision API'yi etkinleştir → API key oluştur → `GOOGLE_CLOUD_VISION_API_KEY`
@@ -39,19 +40,21 @@
 
 ## B) TEKNİK — YAYIN ÖNCESİ (ben/teknik yaparım, Faz 1)
 
-- 🔴 ⬜ **GÜVENLİK — yetki yükseltme açığı (KRİTİK, 2026-06-08 tespit):** Şu an herhangi bir
-  kayıtlı kullanıcı, kendi profilinde `is_admin` / `account_locked` kolonunu doğrudan değiştirip
-  **kendini yönetici yapabilir** (ya da kendi kilidini açabilir). Sebep: `profiles` tablosunda bu
-  kolonlar için yazma engeli yok — RLS güncelleme politikası `auth.uid()=id` ama kolon ayrımı
-  yapmıyor, `authenticated` rolünün kolon-UPDATE yetkisi var ve koruyucu trigger yok. **Düzeltme
-  hazır:** (1) kullanıcı kendi `is_admin`/`account_locked` alanını değiştiremesin diye
-  `BEFORE UPDATE` trigger; (2) admin panelinin başkalarını kilitleyip yetkilendirebilmesi için
-  "adminler tüm profilleri güncelleyebilir" RLS politikası. **Canlı veritabanı güvenlik değişikliği
-  olduğu için uygulamadan önce onayını bekliyorum — "güvenlik açığını kapat" de, hemen uygularım.**
-- ⬜ **Mesajlar sayfası iki bug (`mesajlar/page.tsx`):** (1) sohbet listesi + sohbet ekranı ana
-  bileşenin İÇİNDE tanımlı → her tuş vuruşunda yeniden kuruluyor, mesaj yazarken imleç/odak kayıyor;
-  (2) başka sayfadan "mesaj gönder" ile gelince `?selected=` parametresi okunmuyor, doğru sohbet
-  otomatik açılmıyor. Alt bileşenleri dışarı taşı + ilk seçili sohbeti `useSearchParams` ile oku.
+- ✅ **GÜVENLİK — yetki yükseltme açığı KAPATILDI (KRİTİK, 2026-06-09 sahip onayıyla uygulandı):**
+  Eskiden herhangi bir kayıtlı kullanıcı kendi profilinde `is_admin` / `account_locked` kolonunu
+  doğrudan değiştirip **kendini yönetici yapabiliyordu** (ya da kendi kilidini açabiliyordu).
+  Uygulanan düzeltme (canlı DB migration): (1) kullanıcının kendi `is_admin`/`account_locked`
+  alanını değiştirmesini engelleyen `BEFORE UPDATE` trigger (`guard_profile_privileged_columns`,
+  SECURITY INVOKER); (2) admin panelinin başkalarını kilitleyip yetkilendirebilmesi için "adminler
+  tüm profilleri güncelleyebilir" RLS politikası; RLS özyinelemesini önlemek için
+  `is_current_user_admin()` (SECURITY DEFINER, pinned `search_path`). Ek sertleştirme: RPC `EXECUTE`
+  yetkisi `public`/`anon`'dan alındı, yalnızca `authenticated`'a verildi. `get_advisors`(security)
+  ile doğrulandı — açık kapandı.
+- ✅ **Mesajlar sayfası iki bug DÜZELTİLDİ (`mesajlar/page.tsx`, 2026-06-09):** (1) sohbet listesi +
+  sohbet ekranı ana bileşenin içinde tanımlıydı → her tuş vuruşunda yeniden kuruluyor, imleç/odak
+  kayıyordu; alt bileşenler modül seviyesine taşındı (props ile). (2) `?selected=` parametresi
+  `useSearchParams` ile okunup doğru sohbet otomatik açılıyor; Next 16 gereği sayfa `<Suspense>` ile
+  sarıldı. tsc + 254 test + `next build` geçti.
 
 - ✅ **AI görsel moderasyonu — uç inşa edildi** (`TECH_DEBT #11`): `/api/moderate-media`
   Google Vision SafeSearch ile yazıldı, eşikleri test edildi (13 test). **Kalan tek adım
@@ -68,9 +71,12 @@
 - ⬜ **Kalan mock/sahte veri kalıntıları** (`TECH_DEBT #12`): büyük kısmı temizlendi —
   işletme paneli istatistik/performans/QR-tara sayfaları da bu turda dürüst "yakında"ya
   çevrildi; geriye yalnızca birkaç düşük-riskli son-kullanıcı fallback'i kaldı.
-- ⬜ **Ödünç/kiralık ilan formu fotoğraf + mahalle bug'ı** (`TECH_DEBT #16`): `odunc-kirala/ilan-ver`
-  fotoğrafları gerçekten yüklemiyor (kaydedince kırılıyor) + tüm ilanları sabit bir mahalleye
-  yazıyor. Düzeltme **sahip başındayken** (tarayıcıda fotoğraf yükleme testi gerekir).
+- ✅ **Ödünç/kiralık ilan formu fotoğraf + mahalle bug'ı DÜZELTİLDİ** (`TECH_DEBT #16`, 2026-06-09):
+  `odunc-kirala/ilan-ver` artık fotoğrafları `uploadMultipleMedia` ile `listing-images` kovasına
+  gerçekten yüklüyor (eskiden blob: önizleme kaydedip ölü bağlantı bırakıyordu); mahalle sabit id
+  yerine `neighborhood_members`'tan kullanıcıya göre çözülüyor (mahallesiz kullanıcı uyarılıp
+  engelleniyor); depozito + azami süre alanları da doğru kaydediliyor. **Kalan tek doğrulama:**
+  tarayıcıda uçtan uca fotoğraf yükleme denemesi (sahip başındayken bir kez bakılması iyi olur).
 - ⬜ **Lint borcu** (`TECH_DEBT #5`): kalan `any` kullanımı kademeli azaltılacak.
 
 ---
@@ -92,6 +98,15 @@
 
 ## ✅ Bu oturumda biten önemli işler (özet)
 
+- ✅ **(2026-06-09) Yetki yükseltme güvenlik açığı kapatıldı** (KRİTİK): kullanıcı artık kendini
+  yönetici yapamaz / kendi kilidini açamaz. Trigger + RLS politikası + SECURITY DEFINER admin kontrolü
+  + RPC yetki sertleştirmesi canlı DB'ye uygulandı; advisor ile doğrulandı. (B bölümü)
+- ✅ **(2026-06-09) Mesajlar iki bug düzeltildi:** mesaj yazarken imleç kaçması (gereksiz yeniden
+  kurulum) + başka sayfadan gelince doğru sohbetin açılmaması (`?selected`). (B bölümü)
+- ✅ **(2026-06-09) Ödünç/kiralık ilan formu** artık fotoğrafları gerçekten yüklüyor + ilanı doğru
+  mahalleye yazıyor + depozito/süre kaydediyor. (`TECH_DEBT #16`)
+- ✅ **(2026-06-09) Blog** 3 gerçek yazıya indirildi, ölü bağlantılar (`#post-<id>` + var olmayan
+  "benzer yazılar") kaldırıldı. (A bölümü içerik kararı)
 - ✅ **Admin paneline sunucu-taraflı `is_admin` kapısı eklendi** (`middleware.ts`): eskiden giriş
   yapan HERKES `/admin/*` adresini açıp tüm kullanıcıların kişisel verisini görebiliyordu (ciddi
   KVKK riski). Artık admin olmayan kullanıcı ana sayfaya yönlendiriliyor — sayfa-içi kontrole değil,
