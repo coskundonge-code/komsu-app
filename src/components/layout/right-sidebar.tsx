@@ -45,7 +45,7 @@ export function RightSidebar() {
           </div>
         </div>
         <Link
-          href="/mahalle"
+          href="/uyarilar"
           className="flex items-center justify-between px-4 py-2.5 hover:bg-surface-hover transition-colors"
         >
           <span className="text-xs font-medium text-primary">Tüm uyarıları gör</span>
