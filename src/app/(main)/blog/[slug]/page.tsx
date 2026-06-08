@@ -127,7 +127,7 @@ const blogArticles: Record<string, any> = {
         text: 'Güvenlik, bir kişinin değil, bir topluluğun işidir. Başlayın ve fark yaratın!',
       },
     ],
-    relatedArticles: [2, 5, 9],
+    relatedArticles: [2, 3],
   },
   'mahallem-topluluk-yonetimi': {
     id: 2,
@@ -194,7 +194,7 @@ const blogArticles: Record<string, any> = {
         text: 'Çatışmalar her topluluğun parçasıdır. Sessiz ve profesyonel bir şekilde ele alın. Gerekirse tartışmayı özel mesajlara taşıyın.',
       },
     ],
-    relatedArticles: [1, 4, 7],
+    relatedArticles: [1, 3],
   },
   'yerel-isletmecilerin-basari-hikayeleri': {
     id: 3,
@@ -249,7 +249,7 @@ const blogArticles: Record<string, any> = {
         text: 'Başarının sırrı? Mahallede yaşayan insanları anlama ve onların ihtiyaçlarına hızlı cevap verme.',
       },
     ],
-    relatedArticles: [1, 4, 8],
+    relatedArticles: [1, 2],
   },
 };
 
@@ -281,61 +281,6 @@ const allArticles = [
     image: getFeedImageUrl(3, 400, 300),
     category: 'İşletme Hikayeleri',
     readTime: '6 dk',
-  },
-  {
-    id: 4,
-    slug: 'yeni-ozellik-komsu-yardim-agi',
-    title: 'Yeni Özellik: Komşu Yardım Ağı',
-    excerpt: 'Mahalle sakinlerinin birbirlerine yardım etmesi için tasarlanmış yeni özelliği keşfet.',
-    image: getFeedImageUrl(4, 400, 300),
-    category: 'Uygulama Güncellemeleri',
-    readTime: '4 dk',
-  },
-  {
-    id: 5,
-    slug: 'beyoglu-mahallesi-guvenli-topluluk',
-    title: 'Beyoğlu Mahallesi: Güvenli Bir Topluluk Hikayesi',
-    excerpt: 'Nasıl bir mahalle "en güvenli mahalle" unvanını kazandığını gördük.',
-    image: getFeedImageUrl(5, 400, 300),
-    category: 'Mahalle Haberleri',
-    readTime: '8 dk',
-  },
-  {
-    id: 6,
-    slug: 'cevrimici-guvenlik-ipuclari',
-    title: 'Çevrimiçi Güvenlik: Her Mahalle Sakininin Bilmesi Gerekenler',
-    excerpt: 'Platformda güvenli kalmanın ve mahallenizdeki mevcut tehditleri tanımanın yolları.',
-    image: getFeedImageUrl(6, 400, 300),
-    category: 'Güvenlik İpuçları',
-    readTime: '6 dk',
-  },
-  {
-    id: 7,
-    slug: 'topluluk-etkinligi-mahalle-piknigi',
-    title: 'Topluluk Etkinliği: İlk Mahalle Pikniği Başarılı Oldu',
-    excerpt: 'Beşiktaş Mahallesi sakinleri ilk kez buluştu ve harika vakit geçirdi.',
-    image: getFeedImageUrl(7, 400, 300),
-    category: 'Mahalle Haberleri',
-    readTime: '5 dk',
-  },
-  {
-    id: 8,
-    slug: 'mahallem-mobil-hizli-kullanma-ipuclari',
-    title: 'Mahallemiz Mobilini Hızlı Kullanma İpuçları',
-    excerpt: 'Mobil uygulamayı en etkili şekilde kullanmak için hızlı rehberimiz.',
-    image: getFeedImageUrl(8, 400, 300),
-    category: 'Uygulama Güncellemeleri',
-    readTime: '3 dk',
-  },
-  {
-    id: 9,
-    slug: 'atil-alanlari-toplum-bahcelerine-donusturme',
-    title: 'Mahallede Atıl Alanları Topluluk Bahçelerine Dönüştürme',
-    excerpt:
-      'Yeşil alanlar ve topluluk bahçeleri oluşturarak mahallenizi nasıl güzelleştirebilirsiniz?',
-    image: getFeedImageUrl(9, 400, 300),
-    category: 'Topluluk',
-    readTime: '7 dk',
   },
 ];
 
