@@ -28,12 +28,30 @@
 - ⬜ **Google Vision API anahtarı** (AI görsel moderasyonunu açmak için — şiddetle önerilir):
   Google Cloud Console'da Vision API'yi etkinleştir → API key oluştur → `GOOGLE_CLOUD_VISION_API_KEY`
   olarak ENV'e gir (lokal `.env.local` + Vercel). Uç hazır; anahtar girilince otomatik devreye girer.
+- ⬜ **Google ile giriş (OAuth):** Supabase Panel → Authentication → Providers → **Google**'ı aç +
+  Google Cloud Console'dan OAuth Client ID/Secret gir. Yetkili yönlendirme adresi:
+  `https://dogjnzcofvpsqbepdaek.supabase.co/auth/v1/callback`. Açılana kadar "Google ile kaydol/giriş"
+  butonu `provider is not enabled` hatası verir (kod doğru — yalnızca ayar eksik). (2026-06-08 tespit edildi)
 - ⬜ **Sentry DSN** (hata izlemeyi aktif etmek için — opsiyonel ama şiddetle önerilir).
 - ⬜ **Supabase yedek planı:** Pro plan + PITR (anlık geri yükleme) açık mı doğrula.
 
 ---
 
 ## B) TEKNİK — YAYIN ÖNCESİ (ben/teknik yaparım, Faz 1)
+
+- 🔴 ⬜ **GÜVENLİK — yetki yükseltme açığı (KRİTİK, 2026-06-08 tespit):** Şu an herhangi bir
+  kayıtlı kullanıcı, kendi profilinde `is_admin` / `account_locked` kolonunu doğrudan değiştirip
+  **kendini yönetici yapabilir** (ya da kendi kilidini açabilir). Sebep: `profiles` tablosunda bu
+  kolonlar için yazma engeli yok — RLS güncelleme politikası `auth.uid()=id` ama kolon ayrımı
+  yapmıyor, `authenticated` rolünün kolon-UPDATE yetkisi var ve koruyucu trigger yok. **Düzeltme
+  hazır:** (1) kullanıcı kendi `is_admin`/`account_locked` alanını değiştiremesin diye
+  `BEFORE UPDATE` trigger; (2) admin panelinin başkalarını kilitleyip yetkilendirebilmesi için
+  "adminler tüm profilleri güncelleyebilir" RLS politikası. **Canlı veritabanı güvenlik değişikliği
+  olduğu için uygulamadan önce onayını bekliyorum — "güvenlik açığını kapat" de, hemen uygularım.**
+- ⬜ **Mesajlar sayfası iki bug (`mesajlar/page.tsx`):** (1) sohbet listesi + sohbet ekranı ana
+  bileşenin İÇİNDE tanımlı → her tuş vuruşunda yeniden kuruluyor, mesaj yazarken imleç/odak kayıyor;
+  (2) başka sayfadan "mesaj gönder" ile gelince `?selected=` parametresi okunmuyor, doğru sohbet
+  otomatik açılmıyor. Alt bileşenleri dışarı taşı + ilk seçili sohbeti `useSearchParams` ile oku.
 
 - ✅ **AI görsel moderasyonu — uç inşa edildi** (`TECH_DEBT #11`): `/api/moderate-media`
   Google Vision SafeSearch ile yazıldı, eşikleri test edildi (13 test). **Kalan tek adım
@@ -74,6 +92,14 @@
 
 ## ✅ Bu oturumda biten önemli işler (özet)
 
+- ✅ **Admin paneline sunucu-taraflı `is_admin` kapısı eklendi** (`middleware.ts`): eskiden giriş
+  yapan HERKES `/admin/*` adresini açıp tüm kullanıcıların kişisel verisini görebiliyordu (ciddi
+  KVKK riski). Artık admin olmayan kullanıcı ana sayfaya yönlendiriliyor — sayfa-içi kontrole değil,
+  middleware'e dayanan asıl kapı.
+- ✅ **Next 16 dinamik sayfa çökmeleri düzeltildi** (`use(params)`): `pazar/kategori/[slug]`
+  (açılışta çöküyordu), `odunc-kirala/[id]` ve `blog/[slug]` (her zaman "bulunamadı" diyordu).
+- ✅ **Bozuk Türkçe (mojibake) düzeltildi:** `hesap-kilitli`, `(business)/error`, `(admin)/error`
+  sayfalarındaki bozuk karakterler ("HesabÄ±nÄ±z" gibi) temiz UTF-8'e çevrildi.
 - ✅ Yasal metinler (KVKK/gizlilik/koşullar) güncel Türk mevzuatına göre yeniden
   yazıldı (`TECH_DEBT #15`).
 - ✅ İşletim Kılavuzu `RUNBOOK.md` oluşturuldu.
