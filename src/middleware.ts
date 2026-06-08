@@ -72,7 +72,7 @@ function checkVerification(request: NextRequest, user: User): NextResponse | nul
 }
 
 export async function middleware(request: NextRequest) {
-  const { response, user } = await updateSession(request)
+  const { response, user, supabase } = await updateSession(request)
   const path = request.nextUrl.pathname
 
   if (path.startsWith('/api/')) {
@@ -101,6 +101,24 @@ export async function middleware(request: NextRequest) {
   if (!matchesRoute(path, locationExemptRoutes)) {
     const redirect = checkVerification(request, user)
     if (redirect) return redirect
+  }
+
+  // Admin routes - require the is_admin flag server-side. Without this the
+  // (admin) group is just a normal protected route, so any logged-in user could
+  // open /admin/* and read every user's data. This is the authoritative gate;
+  // the per-page client guard is only a UX nicety.
+  if (path === '/admin' || path.startsWith('/admin/')) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('is_admin')
+      .eq('id', user.id)
+      .single()
+
+    if (profile?.is_admin !== true) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/'
+      return NextResponse.redirect(url)
+    }
   }
 
   return response

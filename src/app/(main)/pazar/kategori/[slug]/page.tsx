@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, use } from 'react';
 import { Search, Plus, Heart, MapPin, MessageCircle, X, Package, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -78,13 +78,15 @@ const conditionOptions = [
 ];
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export default function CategoryPage({ params }: PageProps) {
-  const slug = params.slug.toLowerCase();
+  // Next 16: params is a Promise even in client components — must unwrap with use().
+  const { slug: slugParam } = use(params);
+  const slug = slugParam.toLowerCase();
   const categoryInfo = categoryMap[slug];
 
   const [searchQuery, setSearchQuery] = useState('');

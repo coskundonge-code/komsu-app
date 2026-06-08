@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, use } from 'react';
 import { getFeedImageUrl } from '@/lib/demo-images';
 import {
   ArrowLeft,
@@ -342,12 +342,14 @@ const allArticles = [
 export default function BlogDetailPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
+  // Next 16: params is a Promise even in client components — must unwrap with use().
+  const { slug } = use(params);
   const [copied, setCopied] = useState(false);
   const [activeTableOfContents, setActiveTableOfContents] = useState<number | null>(null);
 
-  const article = blogArticles[params.slug];
+  const article = blogArticles[slug];
 
   if (!article) {
     return (
@@ -372,14 +374,14 @@ export default function BlogDetailPage({
     .filter(Boolean);
 
   const handleCopyLink = () => {
-    const url = `${window.location.origin}/blog/${params.slug}`;
+    const url = `${window.location.origin}/blog/${slug}`;
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleShare = (platform: string) => {
-    const url = `${window.location.origin}/blog/${params.slug}`;
+    const url = `${window.location.origin}/blog/${slug}`;
     const title = article.title;
 
     let shareUrl = '';

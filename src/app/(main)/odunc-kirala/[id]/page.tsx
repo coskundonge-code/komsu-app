@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
@@ -66,7 +66,9 @@ function ownerInitials(name: string) {
     .join('');
 }
 
-export default function LendingDetailPage({ params }: { params: { id: string } }) {
+export default function LendingDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  // Next 16: params is a Promise even in client components — must unwrap with use().
+  const { id } = use(params);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const [listing, setListing] = useState<LendingDetail | null>(null);
@@ -77,7 +79,7 @@ export default function LendingDetailPage({ params }: { params: { id: string } }
 
     const fetchListing = async () => {
       setLoading(true);
-      const { data, error } = await getLendingItemById(params.id);
+      const { data, error } = await getLendingItemById(id);
       if (cancelled) return;
 
       if (error || !data) {
@@ -112,7 +114,7 @@ export default function LendingDetailPage({ params }: { params: { id: string } }
     return () => {
       cancelled = true;
     };
-  }, [params.id]);
+  }, [id]);
 
   if (loading) {
     return (
