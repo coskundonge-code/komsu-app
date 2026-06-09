@@ -248,7 +248,7 @@ export default function HowItWorksPage() {
           <div className="relative z-10">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Mahallenin Parçası Olun</h2>
             <p className="text-green-100 mb-8 max-w-2xl mx-auto leading-relaxed">Mahallemiz ile mahallenizin yaşam kalitesini iyileştirin, yeni arkadaşlar edinin ve birlikte güçlü bir topluluk oluşturun.</p>
-            <Link href="/kaydol" className="inline-block px-8 py-4 bg-surface text-primary font-bold rounded-lg hover:bg-gray-100 transition-colors shadow-lg">
+            <Link href="/kayit" className="inline-block px-8 py-4 bg-surface text-primary font-bold rounded-lg hover:bg-gray-100 transition-colors shadow-lg">
               Hemen Başla
             </Link>
           </div>

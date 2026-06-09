@@ -4,6 +4,7 @@ import { updateSession } from '@/lib/supabase/middleware'
 type SupabaseMiddlewareClient = Awaited<ReturnType<typeof updateSession>>['supabase']
 
 const publicRoutes = [
+  '/blog',
   '/giris',
   '/kayit',
   '/sifre-sifirla',
@@ -23,6 +24,7 @@ const publicRoutes = [
 ]
 
 const locationExemptRoutes = [
+  '/blog',
   '/konum-secimi',
   '/giris',
   '/kayit',
@@ -140,6 +142,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|manifest.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
