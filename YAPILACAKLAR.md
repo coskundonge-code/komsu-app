@@ -3,9 +3,33 @@
 > Bu dosya, uygulamanın canlıya/mağazaya çıkması için **kalan tüm işlerin** sade
 > listesidir. "Kim yapacak" ve "ne zaman" ölçütüne göre üçe ayrıldı.
 > Teknik ayrıntılar: `TECH_DEBT.md` · Operasyon: `RUNBOOK.md`
-> Son güncelleme: 2026-06-09
+> Son güncelleme: 2026-06-10
 
 İşaretler: ⬜ yapılacak · ✅ yapıldı · 🔴 yayın engeli (bu olmadan canlıya çıkılmaz)
+
+---
+
+## ⚠️ E2E SON KONTROL (2026-06-10) — ayrıntı: `E2E_SON_KONTROL_RAPORU.md`
+
+17 modüllük uçtan-uca denetim yapıldı. Güvenlik temeli **sağlam** (canlı DB'de
+doğrulandı: ödeme/kart sahteciliği, yetki yükseltme, veri sızıntısı kapalı). Ama:
+
+- 🔴 ⬜ **MESAJLAŞMA TAMAMEN KIRIK (P0 — yayın engeli).** `conversation_participants`
+  RLS politikası sonsuz özyineleme veriyor (canlı: `ERROR 42P17`) + sohbet oluşturma
+  katılımcı insert'i reddediliyor → iki komşu mesajlaşamıyor. Tablolar boş olduğu için
+  bugüne dek görünmedi; önceki düzeltmeler yalnızca ekran tarafıydı. Hazır çözüm planı
+  raporda; sahip "ayrı, odaklı tur" istediği için bu turda **dokunulmadı**.
+- 🟠 ⬜ **Post "beğen" verisi tutmuyor** (zaten beğenilmişe tıklayınca reaction'ı siler,
+  UI +1 gösterir; yenileyince kaybolur) — `post-card.tsx`.
+- 🟠 ⬜ **Uyarılar kartları 404** — `/uyarilar/[id]` rotası yok.
+- 🟠 ✅ **Kırık "Hemen Başla" CTA** `/kaydol`→`/kayit` (hakkinda + nasil-calisir). [9773ab0]
+- 🟠 ✅ **Blog + site haritası/robots/manifest auth duvarının arkasındaydı** → herkese
+  açıldı (SEO/PWA; prod build 200 doğrulandı). [9773ab0]
+- 🟡 12 orta + ⚪ 8 düşük bulgu (arama sonsuz spinner, boş-isimde feed çöküşü, etkinlik
+  katılımcı sayısı hep 0, favori kalıcılığı yok, paylaş butonları no-op, CSRF/Origin
+  kontrolü yok, PWA ikonları eksik vb.) — tümü dosya/satır + çözümle raporda.
+
+**Karar: 🔴 NO-GO** — P0 (mesajlaşma) kapanana ve P1'ler bitene kadar pazara hazır değil.
 
 ---
 
