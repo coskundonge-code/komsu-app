@@ -6,6 +6,29 @@
 
 ---
 
+## ✅ GÜNCELLEME (2026-06-10) — düzeltmeler uygulandı (coskun rafı)
+
+İlk denetimden sonra bulgular **onay beklenmeden sırayla düzeltildi**. Açık P0/P1 kalmadı.
+
+**Düzeltildi ve doğrulandı (tsc 0 · build 0 · 264 test · canlı DB):**
+- 🔴→✅ **P0 Mesajlaşma** — RLS özyinelemesi + güvenli sohbet oluşturma RPC (migration `20260610120000`); canlı DB'de doğrulandı (42P17 bitti; RPC create+reuse+2 katılımcı). Commit `32eed98`.
+- 🟠→✅ **P1 Post beğeni** — durum DB'den başlar, optimistic + rollback, doğru sayaç. `f94d4fd`.
+- 🟠→✅ **P1 Uyarılar 404** — ölü link kaldırıldı. `0332708`.
+- 🟠→✅ **P1 /kaydol CTA + SEO/PWA gating** — `9773ab0`.
+- 🟡→✅ **P2** — arama sonsuz spinner, boş-isim feed çöküşü, etkinlik katılımcı sayısı + RSVP rollback, ilan paylaş butonları, işlevsiz chat butonları, PWA manifest ikonları, görsel yükleme tür/boyut doğrulaması. `f94d4fd`, `0332708`, `43ac3c5`.
+
+**Bilerek ertelendi (gerekçeli):**
+- **API Origin/CSRF kontrolü (P2):** uygulama aynı zamanda Capacitor mobil — naif Origin kontrolü mobil isteklerini KIRAR; Capacitor origin allowlist'i ile dikkatli yapılmalı (SameSite=Lax zaten kısmi koruma).
+- **Feed'i React Query'ye taşıma + pazar favorileri kalıcılığı (P2):** mimari/şema değişikliği → ayrı tur.
+- **robots'un "allow" dediği app sayfaları login-gated (P2):** public landing ürün kararı.
+- **verify-document headless Chrome (P2) · CSP unsafe-inline (P3) · PostGIS advisor gürültüsü (P3) · sitemap dinamik içerik (P3) · /favoriler içerik uyumu (P2):** düşük öncelik / karar gerektirir.
+
+**E2E teknik kapısı: açık P0/P1 YOK → teknik olarak GEÇTİ.** (Yayın hâlâ `YAPILACAKLAR.md` A bölümündeki **yasal metin / MERSİS-VERBİS / avukat onayı / PayTR canlı anahtar** maddelerine bağlı — bunlar sahip/avukat işi, teknik değil.)
+
+> Aşağısı ilk denetim raporudur (NO-GO o anki durumdu); yukarıdaki güncelleme geçerlidir.
+
+---
+
 ## 0. Sade özet (teknik olmayan)
 
 Uygulamanın **güvenlik temeli sağlam** — ödeme sahteciliği, yetki yükseltme, veri

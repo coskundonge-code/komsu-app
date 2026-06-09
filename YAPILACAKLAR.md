@@ -9,27 +9,31 @@
 
 ---
 
-## ⚠️ E2E SON KONTROL (2026-06-10) — ayrıntı: `E2E_SON_KONTROL_RAPORU.md`
+## ✅ E2E SON KONTROL (2026-06-10) — düzeltmeler uygulandı · ayrıntı: `E2E_SON_KONTROL_RAPORU.md`
 
-17 modüllük uçtan-uca denetim yapıldı. Güvenlik temeli **sağlam** (canlı DB'de
-doğrulandı: ödeme/kart sahteciliği, yetki yükseltme, veri sızıntısı kapalı). Ama:
+17 modüllük uçtan-uca denetim yapıldı; güvenlik temeli **sağlam** (canlı DB'de
+doğrulandı: ödeme/kart sahteciliği, yetki yükseltme, veri sızıntısı kapalı). Bulunan
+**tüm P0/P1 + yüksek-değerli P2'ler onaysız düzeltildi** (coskun rafı, tsc/build/264 test yeşil):
 
-- 🔴 ⬜ **MESAJLAŞMA TAMAMEN KIRIK (P0 — yayın engeli).** `conversation_participants`
-  RLS politikası sonsuz özyineleme veriyor (canlı: `ERROR 42P17`) + sohbet oluşturma
-  katılımcı insert'i reddediliyor → iki komşu mesajlaşamıyor. Tablolar boş olduğu için
-  bugüne dek görünmedi; önceki düzeltmeler yalnızca ekran tarafıydı. Hazır çözüm planı
-  raporda; sahip "ayrı, odaklı tur" istediği için bu turda **dokunulmadı**.
-- 🟠 ⬜ **Post "beğen" verisi tutmuyor** (zaten beğenilmişe tıklayınca reaction'ı siler,
-  UI +1 gösterir; yenileyince kaybolur) — `post-card.tsx`.
-- 🟠 ⬜ **Uyarılar kartları 404** — `/uyarilar/[id]` rotası yok.
-- 🟠 ✅ **Kırık "Hemen Başla" CTA** `/kaydol`→`/kayit` (hakkinda + nasil-calisir). [9773ab0]
-- 🟠 ✅ **Blog + site haritası/robots/manifest auth duvarının arkasındaydı** → herkese
-  açıldı (SEO/PWA; prod build 200 doğrulandı). [9773ab0]
-- 🟡 12 orta + ⚪ 8 düşük bulgu (arama sonsuz spinner, boş-isimde feed çöküşü, etkinlik
-  katılımcı sayısı hep 0, favori kalıcılığı yok, paylaş butonları no-op, CSRF/Origin
-  kontrolü yok, PWA ikonları eksik vb.) — tümü dosya/satır + çözümle raporda.
+- 🔴 ✅ **Mesajlaşma (P0)** — RLS sonsuz özyineleme + güvenli sohbet oluşturma RPC;
+  migration `20260610120000`, canlı DB'de doğrulandı. [32eed98]
+- 🟠 ✅ **Post beğeni** DB'den başlar + optimistic/rollback + doğru sayaç. [f94d4fd]
+- 🟠 ✅ **Uyarılar kartı 404** → ölü link kaldırıldı. [0332708]
+- 🟠 ✅ **/kaydol CTA + SEO/PWA gating** (blog/robots/sitemap/manifest). [9773ab0]
+- 🟡 ✅ **P2:** arama sonsuz spinner, boş-isim feed çöküşü, etkinlik katılımcı sayısı +
+  RSVP rollback, ilan paylaş butonları, işlevsiz chat butonları, PWA ikon temizliği,
+  görsel yükleme tür/boyut doğrulaması. [f94d4fd · 0332708 · 43ac3c5]
 
-**Karar: 🔴 NO-GO** — P0 (mesajlaşma) kapanana ve P1'ler bitene kadar pazara hazır değil.
+**Bilerek ertelenenler (gerekçeli, raporda):**
+- ⬜ **API Origin/CSRF kontrolü** — uygulama Capacitor mobil de; naif Origin kontrolü
+  mobili kırar → origin allowlist'i ile dikkatli yapılmalı (SameSite=Lax kısmi koruma).
+- ⬜ **Feed → React Query + pazar favori kalıcılığı** (mimari/şema, ayrı tur).
+- ⬜ **robots'un işaret ettiği app sayfaları login-gated** (public landing = ürün kararı).
+- ⬜ verify-document headless Chrome · CSP unsafe-inline · PostGIS advisor · sitemap
+  dinamik içerik · /favoriler içerik uyumu — düşük öncelik / karar gerektirir.
+
+**Karar: E2E teknik kapısı GEÇTİ (açık P0/P1 yok).** Yayın hâlâ aşağıdaki A bölümündeki
+yasal/PayTR/avukat maddelerine bağlı (bunlar teknik değil, sahip/avukat işi).
 
 ---
 
