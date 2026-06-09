@@ -105,9 +105,16 @@ export async function POST(request: NextRequest) {
             mahalle_card_active: true,
             mahalle_card_expiry: expiryDate.toISOString(),
           }).eq('id', userId)
-        } else if (paymentType === 'business_membership' && userId) {
+        } else if ((paymentType === 'business_membership' || paymentType === 'business_yearly') && userId) {
+          // Aylık (business_membership) → +1 ay; Yıllık (business_yearly) → +1 yıl.
+          // Her ikisi de aynı bayrağı (business_membership_active) açar, yalnız
+          // bitiş tarihi döneme göre değişir.
           const expiryDate = new Date()
-          expiryDate.setMonth(expiryDate.getMonth() + 1)
+          if (paymentType === 'business_yearly') {
+            expiryDate.setFullYear(expiryDate.getFullYear() + 1)
+          } else {
+            expiryDate.setMonth(expiryDate.getMonth() + 1)
+          }
           await supabase.from('profiles').update({
             business_membership_active: true,
             business_membership_expiry: expiryDate.toISOString(),

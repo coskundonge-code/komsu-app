@@ -30,6 +30,7 @@ export const LISTING_PRICING = {
 // ==========================================
 export const BUSINESS_MEMBERSHIP = {
   monthlyFee: 99,
+  yearlyFee: 990,
   currency: 'TRY',
   period: 'monthly' as const,
   label: 'Esnaf Üyeliği - Aylık',
@@ -76,12 +77,13 @@ export const ASKIDA_BAGIS = {
 // token üretirken (charge tutarı) hem callback'te (ödenen tutar doğrulaması)
 // burası referanstır.
 export const PAYMENT_AMOUNTS: Record<
-  'mahalle_card' | 'listing_fee' | 'business_membership',
+  'mahalle_card' | 'listing_fee' | 'business_membership' | 'business_yearly',
   number
 > = {
   mahalle_card: MAHALLE_CARD_PRICE.amount, // 4.99 TL / yıl
   listing_fee: LISTING_PRICING.paidListingAmount, // 99 TL
   business_membership: BUSINESS_MEMBERSHIP.monthlyFee, // 99 TL / ay
+  business_yearly: BUSINESS_MEMBERSHIP.yearlyFee, // 990 TL / yıl
 }
 
 export function getPaymentAmount(paymentType: string): number | null {

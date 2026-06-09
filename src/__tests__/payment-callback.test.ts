@@ -36,11 +36,13 @@ const TEST_SALT = 'test_merchant_salt'
 const UUID = '3fa85f64-5717-4562-b3fc-2c963f66afa6'
 
 // pricing.ts ile birebir aynı (kuruş): mahalle_card 4.99 TL, business_membership
-// ve listing_fee 99 TL. Callback ödenen tutarı bu değerlerle karşılaştırır.
+// (aylık) ve listing_fee 99 TL, business_yearly (yıllık) 990 TL. Callback ödenen
+// tutarı bu değerlerle karşılaştırır.
 const KURUS = {
   mahalle_card: 499,
   business_membership: 9900,
   listing_fee: 9900,
+  business_yearly: 99000,
 }
 
 let POST: typeof import('@/app/api/payment/callback/route').POST
@@ -194,6 +196,28 @@ describe('PayTR callback — başarılı ödeme yan etkileri', () => {
       hash: validHash(oid, 'success', amount),
     })
     expect(res.status).toBe(200)
+    const profile = updateMock.mock.calls[0][0] as Record<string, unknown>
+    expect(profile.business_membership_active).toBe(true)
+    expect(profileEqMock).toHaveBeenCalledWith('id', UUID)
+  })
+
+  it('business_yearly success → 200, 990 TL ödenir, üyelik bayrağı aktive (yıllık)', async () => {
+    const oid = `business_yearly_${UUID}_${Date.now()}`
+    const amount = String(KURUS.business_yearly) // 99000 kuruş = 990 TL
+    const res = await makeCall({
+      merchant_oid: oid,
+      status: 'success',
+      total_amount: amount,
+      hash: validHash(oid, 'success', amount),
+    })
+    expect(res.status).toBe(200)
+
+    // payments.upsert: doğru tür + 990 TL tutar (kuruş→TL)
+    const payment = upsertMock.mock.calls[0][0] as Record<string, unknown>
+    expect(payment.payment_type).toBe('business_yearly')
+    expect(payment.amount).toBe(990)
+
+    // Yıllık ödeme de aynı bayrağı açar (aktivasyon doğru kullanıcıya).
     const profile = updateMock.mock.calls[0][0] as Record<string, unknown>
     expect(profile.business_membership_active).toBe(true)
     expect(profileEqMock).toHaveBeenCalledWith('id', UUID)

@@ -10,15 +10,16 @@ import {
 
 /**
  * İşletme abonelik fiyatlandırma saf-mantık testleri.
- * Para doğruluğu kritik: tek plan 1.900₺/ay, 19.900₺/yıl, 3 ay ücretsiz deneme.
+ * Para doğruluğu kritik: tek plan 99₺/ay, 990₺/yıl, 3 ay ücretsiz deneme.
+ * Fiyat tek kaynaktan (pricing.ts → BUSINESS_MEMBERSHIP) türetilir.
  * (Supabase'e giden async fonksiyonlar burada test edilmez.)
  */
 describe('business-subscription sabitleri', () => {
-  it('aylık fiyat 1900 TL', () => {
-    expect(MONTHLY_PRICE).toBe(1900)
+  it('aylık fiyat 99 TL', () => {
+    expect(MONTHLY_PRICE).toBe(99)
   })
-  it('yıllık fiyat 19900 TL', () => {
-    expect(YEARLY_PRICE).toBe(19900)
+  it('yıllık fiyat 990 TL', () => {
+    expect(YEARLY_PRICE).toBe(990)
   })
   it('ücretsiz deneme 3 ay', () => {
     expect(FREE_TRIAL_MONTHS).toBe(3)
@@ -32,9 +33,9 @@ describe('getPricingInfo', () => {
   it('tam fiyat nesnesini döndürür (shape + değerler)', () => {
     const info = getPricingInfo()
     expect(info).toEqual({
-      monthlyPrice: 1900,
-      yearlyPrice: 19900,
-      yearlySavings: 2900,
+      monthlyPrice: 99,
+      yearlyPrice: 990,
+      yearlySavings: 198, // 99*12 - 990 = 1188 - 990
       freeTrialMonths: 3,
       currency: 'TRY',
     })

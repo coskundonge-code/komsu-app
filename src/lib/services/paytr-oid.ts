@@ -3,8 +3,9 @@
  *
  * Üretim noktası (tek kaynak): `src/app/api/payment/route.ts`
  *   const merchantOid = `${paymentType}_${userId}_${Date.now()}`
- * burada paymentType ∈ {'mahalle_card', 'listing_fee', 'business_membership'}
- * (route.ts'teki ALLOWED_PAYMENT_TYPES allowlist'i) ve userId bir UUID'dir.
+ * burada paymentType ∈ {'mahalle_card', 'listing_fee', 'business_membership',
+ * 'business_yearly'} (route.ts'teki ALLOWED_PAYMENT_TYPES allowlist'i) ve userId
+ * bir UUID'dir.
  *
  * Callback (`src/app/api/payment/callback/route.ts`) bu OID'i geri ayrıştırıp
  * (a) `payments.payment_type` kolonuna ne yazılacağını, (b) hangi kullanıcının
@@ -13,18 +14,19 @@
  * mantık route'tan çıkarılıp saf/test edilebilir kılındı (K1: ince route).
  *
  * Dikkat — örtük bağ: paymentType iki kelimeli olduğunda (mahalle_CARD,
- * listing_FEE, business_MEMBERSHIP) ikinci kelime `_` ile ayrıldığı için OID'in
- * 2. token'ı ('card' | 'fee' | 'membership') geri-birleştirme allowlist'ini
- * oluşturur. userId UUID olduğundan (tire içerir, alt-çizgi içermez) `split('_')`
- * userId'yi tek parça olarak korur ve daima son token'dan (timestamp) bir
- * öncekidir. Yeni bir iki-kelimeli payment type eklenirse allowlist GÜNCELLENMELİ
- * — bu testler (paytr-oid.test.ts) o senkronizasyonu kilitler.
+ * listing_FEE, business_MEMBERSHIP, business_YEARLY) ikinci kelime `_` ile
+ * ayrıldığı için OID'in 2. token'ı ('card' | 'fee' | 'membership' | 'yearly')
+ * geri-birleştirme allowlist'ini oluşturur. userId UUID olduğundan (tire içerir,
+ * alt-çizgi içermez) `split('_')` userId'yi tek parça olarak korur ve daima son
+ * token'dan (timestamp) bir öncekidir. Yeni bir iki-kelimeli payment type
+ * eklenirse allowlist GÜNCELLENMELİ — bu testler (paytr-oid.test.ts) o
+ * senkronizasyonu kilitler.
  */
 
-const TWO_WORD_SECOND_TOKENS = ['card', 'fee', 'membership'] as const;
+const TWO_WORD_SECOND_TOKENS = ['card', 'fee', 'membership', 'yearly'] as const;
 
 export interface ParsedMerchantOid {
-  /** payments.payment_type'a yazılan değer: mahalle_card | listing_fee | business_membership | <tek-kelime>. */
+  /** payments.payment_type'a yazılan değer: mahalle_card | listing_fee | business_membership | business_yearly | <tek-kelime>. */
   paymentType: string;
   /** Aktive edilecek kullanıcının id'si (UUID). Ayrıştırılamazsa ''. */
   userId: string;

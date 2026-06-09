@@ -1,15 +1,18 @@
 /**
  * İşletme Abonelik Sistemi
- * Tek plan: 1.900₺/ay veya 19.900₺/yıl (12 ay peşin)
+ * Tek plan: 99₺/ay veya 990₺/yıl (12 ay peşin)
  * İlk 3 ay ücretsiz deneme - kredi kartı gerekmez
  * Süre dolunca sayfa blur/kilitlenir, ilan çıkılamaz
  */
 
 import { createClient } from '@/lib/supabase/client';
+import { BUSINESS_MEMBERSHIP } from '@/lib/pricing';
 
-// Sabitler
-export const MONTHLY_PRICE = 1900; // TL/ay
-export const YEARLY_PRICE = 19900; // TL/yıl (12 ay peşin)
+// Sabitler — TEK DOĞRULUK KAYNAĞI pricing.ts (BUSINESS_MEMBERSHIP). Buraya
+// elle fiyat yazma; ödeme tarafıyla (/api/payment, callback) çelişmesin diye
+// fiyat tek yerden türetilir.
+export const MONTHLY_PRICE = BUSINESS_MEMBERSHIP.monthlyFee; // 99 TL/ay
+export const YEARLY_PRICE = BUSINESS_MEMBERSHIP.yearlyFee; // 990 TL/yıl (12 ay peşin)
 export const FREE_TRIAL_MONTHS = 3; // Ücretsiz deneme süresi
 export const CURRENCY = 'TRY';
 

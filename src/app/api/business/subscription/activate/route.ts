@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { rateLimit, getClientIp, rateLimitResponse } from '@/lib/rate-limit'
 import { createClient as createServerClient } from '@/lib/supabase/server'
+import { BUSINESS_MEMBERSHIP } from '@/lib/pricing'
 
 /**
  * İşletme Aboneliği Aktivasyon API
@@ -24,9 +25,10 @@ import { createClient as createServerClient } from '@/lib/supabase/server'
  * Şimdilik (PayTR simülasyon modunda, tablolar boşken) bu sade kapı yeterli.
  */
 
-// business-subscription.ts ile senkron tutulmalı (MONTHLY_PRICE / YEARLY_PRICE).
-const MONTHLY_PRICE = 1900
-const YEARLY_PRICE = 19900
+// Fiyat TEK KAYNAKTAN (pricing.ts) gelir — business-subscription.ts ile aynı
+// değerler. Elle sabit yazma; ödeme tarafıyla çelişmesin.
+const MONTHLY_PRICE = BUSINESS_MEMBERSHIP.monthlyFee // 99 TL/ay
+const YEARLY_PRICE = BUSINESS_MEMBERSHIP.yearlyFee // 990 TL/yıl
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
@@ -70,12 +72,17 @@ export async function POST(request: NextRequest) {
     const admin = createServiceClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
     // 3) Ödeme kapısı (yalnızca canlı PayTR yapılandırmasında zorunlu).
+    // Yıllık ve aylık AYRI ödeme tipleridir (farklı tutar): yıllık 'business_yearly'
+    // (990 TL), aylık 'business_membership' (99 TL). Seçilen döneme ait
+    // TAMAMLANMIŞ ödeme aranır — aksi halde 99 TL'lik aylık ödemeyle yıllık
+    // aktive edilemez.
     if (PAYTR_CONFIGURED) {
+      const expectedPaymentType = billingPeriod === 'yearly' ? 'business_yearly' : 'business_membership'
       const { data: paid } = await admin
         .from('payments')
         .select('id')
         .eq('user_id', user.id)
-        .eq('payment_type', 'business_membership')
+        .eq('payment_type', expectedPaymentType)
         .eq('status', 'completed')
         .limit(1)
         .maybeSingle()

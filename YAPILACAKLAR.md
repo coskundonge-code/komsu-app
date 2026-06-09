@@ -116,13 +116,15 @@
   değiştirir → yeni kullanıcıları kilitleme riski; kontrollü + testli geçiş ister. Sahip onay verirse plan:
   profiles'a `tc_kimlik_no` sütunu + `handle_new_user` trigger metadata'dan kopyalar + metadata'dan temizlenir
   + okuma yeri (`adres-dogrulama`) profiles'a döner.
-- ⬜ **İşletme üyelik fiyatı İKİ FARKLI YERDE ÇELİŞİYOR (SAHİP KARARI gerekiyor, 2026-06-09):** Ödeme tarafı
-  (`pricing.ts` → `PAYMENT_AMOUNTS.business_membership = 99 TL/ay`) ile abonelik tarafı
-  (`business-subscription.ts` → `MONTHLY_PRICE = 1.900 TL`, `YEARLY_PRICE = 19.900 TL`) farklı tutarlar
-  söylüyor. PayTR callback ödenen tutarı `pricing.ts`'e (99 TL) göre doğruladığı için, canlı PayTR'de işletme
-  abonelik aktivasyonu doğru tutarla eşleşmeyebilir. **Aktif açık değil** (şu an PayTR simülasyon modunda, ödeme
-  kapısı yalnızca canlıda zorlanıyor) ama canlıya çıkmadan fiyat tek kaynağa indirilmeli. **Bilerek otomatik
-  YAPMADIM:** hangi tutarın doğru olduğu (99 mu 1.900 mü) bir iş kararı; sahip söylemeli, ben tahmin etmemeliyim.
+- ✅ **İşletme üyelik fiyat çelişkisi ÇÖZÜLDÜ — tek kaynak 99/990 (SAHİP KARARI 2026-06-09):** Sahip kararı:
+  **aylık 99 TL, yıllık 990 TL.** Fiyat artık TEK doğruluk kaynağında (`pricing.ts` → `BUSINESS_MEMBERSHIP`:
+  `monthlyFee: 99`, `yearlyFee: 990`). `business-subscription.ts` ve abonelik aktivasyon ucu (`activate/route.ts`)
+  bu sabitleri import ediyor — elle yazılı `1900/19900` kaldırıldı. Yıllık artık GERÇEKTEN 990 TL tahsil ediyor:
+  ayrı `business_yearly` ödeme tipi eklendi (uçtan uca: `/api/payment` allowlist + açıklama, `payment-modal`,
+  `uyelik` sayfası dönem→tip eşlemesi, `paytr-oid` 2-kelime allowlist'e `yearly`, callback `business_yearly`
+  başarılı ödemede üyelik bayrağını +1 YIL bitişle açıyor). Aktivasyon ödeme kapısı seçilen döneme ait
+  TAMAMLANMIŞ ödemeyi arıyor (99 TL aylıkla yıllık aktive edilemez). pricing-extra/payment-callback/paytr-oid/
+  business-subscription testleri güncellendi; 264 test + tsc + build geçti.
 - ✅ **Mesajlar sayfası iki bug DÜZELTİLDİ (`mesajlar/page.tsx`, 2026-06-09):** (1) sohbet listesi +
   sohbet ekranı ana bileşenin içinde tanımlıydı → her tuş vuruşunda yeniden kuruluyor, imleç/odak
   kayıyordu; alt bileşenler modül seviyesine taşındı (props ile). (2) `?selected=` parametresi

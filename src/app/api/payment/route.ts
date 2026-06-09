@@ -25,7 +25,7 @@ const PAYTR_TEST_MODE = process.env.PAYTR_TEST_MODE === 'true' ? '1' : '0'
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://komsu-app.vercel.app'
 
 interface PaymentRequest {
-  paymentType: 'mahalle_card' | 'listing_fee' | 'business_membership'
+  paymentType: 'mahalle_card' | 'listing_fee' | 'business_membership' | 'business_yearly'
   amount: number
   userEmail: string
   userName: string
@@ -37,6 +37,7 @@ const PAYMENT_DESCRIPTIONS: Record<string, string> = {
   mahalle_card: 'Mahalle Kartı - Yıllık Üyelik',
   listing_fee: 'İlan Yayınlama Ücreti',
   business_membership: 'Esnaf Üyeliği - Aylık',
+  business_yearly: 'Esnaf Üyeliği - Yıllık',
 }
 
 export async function POST(request: NextRequest) {
@@ -60,7 +61,7 @@ export async function POST(request: NextRequest) {
     const body: PaymentRequest = await request.json()
     const { paymentType } = body
 
-    const ALLOWED_PAYMENT_TYPES: string[] = ['mahalle_card', 'listing_fee', 'business_membership']
+    const ALLOWED_PAYMENT_TYPES: string[] = ['mahalle_card', 'listing_fee', 'business_membership', 'business_yearly']
     if (!ALLOWED_PAYMENT_TYPES.includes(paymentType)) {
       return NextResponse.json({ error: 'Geçersiz ödeme tipi' }, { status: 400 })
     }

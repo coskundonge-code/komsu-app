@@ -316,7 +316,7 @@ export default function UyelikPage() {
           isOpen={showPayment}
           onClose={() => setShowPayment(false)}
           onSuccess={handlePaymentSuccess}
-          paymentType="business_membership"
+          paymentType={billingPeriod === 'yearly' ? 'business_yearly' : 'business_membership'}
           amount={amount}
           title="Esnaf Üyeliği"
           description={`${billingPeriod === 'monthly' ? 'Aylık' : 'Yıllık'} esnaf üyelik ödemesi`}

@@ -6,7 +6,7 @@ import { parseMerchantOid } from '@/lib/services/paytr-oid'
  *
  * Üretim (tek kaynak) — src/app/api/payment/route.ts:
  *   const merchantOid = `${paymentType}_${userId}_${Date.now()}`
- *   paymentType ∈ {'mahalle_card', 'listing_fee', 'business_membership'}
+ *   paymentType ∈ {'mahalle_card', 'listing_fee', 'business_membership', 'business_yearly'}
  *   userId = auth kullanıcı id'si (UUID)
  *
  * Tüketim — src/app/api/payment/callback/route.ts: parseMerchantOid() ile geri
@@ -22,7 +22,7 @@ function buildOid(paymentType: string, userId: string, ts = 1_717_800_000_000): 
 
 const UUID = '3fa85f64-5717-4562-b3fc-2c963f66afa6'
 
-describe('parseMerchantOid — üç gerçek ödeme türü', () => {
+describe('parseMerchantOid — dört gerçek ödeme türü', () => {
   it('mahalle_card doğru paymentType + userId verir', () => {
     expect(parseMerchantOid(buildOid('mahalle_card', UUID))).toEqual({
       paymentType: 'mahalle_card',
@@ -43,6 +43,15 @@ describe('parseMerchantOid — üç gerçek ödeme türü', () => {
       userId: UUID,
     })
   })
+
+  it('business_yearly doğru paymentType + userId verir (yıllık üyelik)', () => {
+    // 'yearly' allowlist'te olmalı; aksi halde 'business' + kayıp 'yearly' olur
+    // ve callback yanlış tutar/aktivasyon yapar.
+    expect(parseMerchantOid(buildOid('business_yearly', UUID))).toEqual({
+      paymentType: 'business_yearly',
+      userId: UUID,
+    })
+  })
 })
 
 describe('parseMerchantOid — UUID bütünlüğü', () => {
@@ -52,8 +61,8 @@ describe('parseMerchantOid — UUID bütünlüğü', () => {
     expect(userId).toContain('-')
   })
 
-  it('round-trip: üretim biçimi → ayrıştırma her üç türde de userId’yi geri verir', () => {
-    for (const pt of ['mahalle_card', 'listing_fee', 'business_membership']) {
+  it('round-trip: üretim biçimi → ayrıştırma her dört türde de userId’yi geri verir', () => {
+    for (const pt of ['mahalle_card', 'listing_fee', 'business_membership', 'business_yearly']) {
       const parsed = parseMerchantOid(buildOid(pt, UUID))
       expect(parsed.paymentType).toBe(pt)
       expect(parsed.userId).toBe(UUID)
@@ -62,14 +71,17 @@ describe('parseMerchantOid — UUID bütünlüğü', () => {
 })
 
 describe('parseMerchantOid — aktivasyona uygunluk', () => {
-  // callback/route.ts yalnızca mahalle_card ve business_membership için profil
-  // aktivasyonu yapar; her ikisi de boş-olmayan userId üretmeli, yoksa
-  // aktivasyon sessizce atlanır (yanlış kullanıcıyı aktive etmemek için kritik).
+  // callback/route.ts mahalle_card, business_membership ve business_yearly için
+  // profil aktivasyonu yapar; hepsi boş-olmayan userId üretmeli, yoksa aktivasyon
+  // sessizce atlanır (yanlış kullanıcıyı aktive etmemek için kritik).
   it('mahalle_card aktivasyon için boş-olmayan userId verir', () => {
     expect(parseMerchantOid(buildOid('mahalle_card', UUID)).userId).toBe(UUID)
   })
   it('business_membership aktivasyon için boş-olmayan userId verir', () => {
     expect(parseMerchantOid(buildOid('business_membership', UUID)).userId).toBe(UUID)
+  })
+  it('business_yearly aktivasyon için boş-olmayan userId verir', () => {
+    expect(parseMerchantOid(buildOid('business_yearly', UUID)).userId).toBe(UUID)
   })
 })
 

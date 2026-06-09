@@ -3,6 +3,7 @@ import {
   calculateListingFee,
   requiresImmediateVerification,
   validateBusinessRegistration,
+  getPaymentAmount,
   MAHALLE_CARD_PRICE,
   LISTING_PRICING,
   BUSINESS_MEMBERSHIP,
@@ -102,10 +103,20 @@ describe('pricing sabitleri (drift koruması)', () => {
     expect(LISTING_PRICING.paidListingAmount).toBe(99)
   })
 
-  it('esnaf üyeliği: 99 TL/ay, min %5 indirim şartı', () => {
+  it('esnaf üyeliği: 99 TL/ay, 990 TL/yıl, min %5 indirim şartı', () => {
     expect(BUSINESS_MEMBERSHIP.monthlyFee).toBe(99)
+    expect(BUSINESS_MEMBERSHIP.yearlyFee).toBe(990)
     expect(BUSINESS_MEMBERSHIP.requirements.minDiscountPercent).toBe(5)
     expect(BUSINESS_MEMBERSHIP.requirements.addressVerification).toBe(true)
+  })
+
+  it('ödeme tutarı tablosu (getPaymentAmount) tüm türleri kapsar — tek kaynak', () => {
+    // Callback bu değerlerle ödenen tutarı doğrular; yıllık AYRI tip ve 990 TL.
+    expect(getPaymentAmount('mahalle_card')).toBe(4.99)
+    expect(getPaymentAmount('listing_fee')).toBe(99)
+    expect(getPaymentAmount('business_membership')).toBe(99)
+    expect(getPaymentAmount('business_yearly')).toBe(990)
+    expect(getPaymentAmount('bilinmeyen')).toBeNull()
   })
 
   it('adres doğrulama süresi 7 gün', () => {
