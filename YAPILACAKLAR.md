@@ -50,6 +50,28 @@
   `is_current_user_admin()` (SECURITY DEFINER, pinned `search_path`). Ek sertleştirme: RPC `EXECUTE`
   yetkisi `public`/`anon`'dan alındı, yalnızca `authenticated`'a verildi. `get_advisors`(security)
   ile doğrulandı — açık kapandı.
+- ✅ **GÜVENLİK — doğrulama kapısı (konum/e-Devlet) forge'a karşı KAPATILDI (2026-06-09):**
+  Eskiden middleware, kullanıcının "konum onaylı" + "e-Devlet doğrulanmış" durumunu **`user_metadata`'dan**
+  okuyordu. `user_metadata` istemciden `supabase.auth.updateUser({data})` ile yazılabildiği için kullanıcı
+  kendini doğrulanmış ilan edip kapıyı geçebilirdi (is_admin açığıyla **aynı sınıf**). Düzeltme: (1) tek
+  doğruluk kaynağı artık `public.profiles`; (2) `guard_profile_privileged_columns` trigger'ı
+  `edevlet_verified_at` + `edevlet_verification_deadline` sütunlarını da istemci yazımına karşı kilitledi
+  (yalnızca sunucu/service_role veya admin yazabilir); (3) middleware bu alanları profiles'tan okuyor;
+  (4) `/api/verify-document` gerçek doğrulama başarısında rozeti service_role ile profiles'a kalıcı yazıyor;
+  (5) `konum-secimi` `location_confirmed_at`'i profiles'a yazıyor + eski kullanıcılar için metadata→profiles
+  geri-doldurma yapıldı (kimse yeniden /konum-secimi'ne düşmesin; edevlet BİLEREK taşınmadı — forge'lu değer
+  laundering edilmesin diye). Migration: `guard_edevlet_verification_columns`.
+- ✅ **GÜVENLİK — verify-document kullanıcı-başına rate limit (2026-06-09):** IP rate limitine EK olarak
+  `verify-doc-user:<id>` kotası eklendi + uç artık giriş zorunlu (giriş yoksa 401). Paylaşımlı IP
+  (yurt/okul/şirket NAT) arkasındaki masum kullanıcılar, tek saldırganın IP kotasını tüketmesinden korunuyor.
+- ⬜ **KVKK — TC Kimlik No `user_metadata`'da (SAHİP KARARI gerekiyor, 2026-06-09):** TC Kimlik No kayıt
+  sırasında `user_metadata`'ya yazılıyor (`kayit/page.tsx`) ve JWT içinde taşınıyor. **Aktif güvenlik açığı
+  DEĞİL** — TC'ye bağlı bir yetki yok; yalnızca doğrulama formunu önden doldurmak için ve sadece kullanıcının
+  kendisine görünür. Ama KVKK veri-minimizasyonu açısından TC gibi hassas veriyi korumalı (gerekirse şifreli)
+  bir sütuna taşımak daha doğru. **Bilerek otomatik YAPMADIM:** bu değişiklik kayıt/auth-trigger yolunu
+  değiştirir → yeni kullanıcıları kilitleme riski; kontrollü + testli geçiş ister. Sahip onay verirse plan:
+  profiles'a `tc_kimlik_no` sütunu + `handle_new_user` trigger metadata'dan kopyalar + metadata'dan temizlenir
+  + okuma yeri (`adres-dogrulama`) profiles'a döner.
 - ✅ **Mesajlar sayfası iki bug DÜZELTİLDİ (`mesajlar/page.tsx`, 2026-06-09):** (1) sohbet listesi +
   sohbet ekranı ana bileşenin içinde tanımlıydı → her tuş vuruşunda yeniden kuruluyor, imleç/odak
   kayıyordu; alt bileşenler modül seviyesine taşındı (props ile). (2) `?selected=` parametresi

@@ -442,12 +442,15 @@ export default function KonumSecimi() {
       }
 
       // Update profiles (extended fields: il/ilçe/mahalle)
+      // location_confirmed_at artık tek doğruluk kaynağı: middleware doğrulama
+      // kapısını profiles'tan okuyor (forge edilebilir user_metadata'dan değil).
       const { error: profileError } = await supabase
         .from('profiles')
         .update({
           location_province: formData.il.name,
           location_district: formData.ilce.name,
           location_neighborhood: formData.mahalle,
+          location_confirmed_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         })
         .eq('id', user.id)

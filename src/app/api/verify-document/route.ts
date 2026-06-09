@@ -40,6 +40,23 @@ export async function POST(request: NextRequest) {
     const rl = await rateLimit(`verify-doc:${ip}`, { limit: 5, windowMs: 10 * 60_000 })
     if (!rl.success) return rateLimitResponse(rl) as any
 
+    // Oturum zorunlu: doğrulama her zaman giriş yapmış bir kullanıcıya bağlıdır.
+    // Hem rozeti onun adına kalıcı yazmak hem de anonim brute-force'u engellemek için.
+    const supabase = await createServerClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      return NextResponse.json(
+        { verified: false, message: 'Bu işlem için giriş yapmalısınız.' },
+        { status: 401 }
+      )
+    }
+
+    // Açık 2: Kullanıcı başına rate limit (IP'ye EK). Paylaşımlı IP arkasındaki
+    // (okul/yurt/şirket NAT) masum kullanıcıları tek bir saldırganın IP kotasını
+    // tüketmesinden korur; ayrıca tek kullanıcının kendi brute-force'unu da sınırlar.
+    const rlUser = await rateLimit(`verify-doc-user:${user.id}`, { limit: 5, windowMs: 10 * 60_000 })
+    if (!rlUser.success) return rateLimitResponse(rlUser) as any
+
     const body: VerifyRequest = await request.json()
     const { code, tcKimlikNo, documentInfo } = body
 
@@ -90,6 +107,14 @@ export async function POST(request: NextRequest) {
     if (scrapedData) {
       const comparison = compareDocuments(scrapedData, documentInfo || {})
 
+      // Açık 1 (tamamlayıcı): Gerçek doğrulama başarılıysa e-Devlet rozetini SUNUCU
+      // tarafında kalıcı yaz. Tek doğruluk kaynağı profiles tablosu; bu yazım yalnızca
+      // service_role ile yapılır (guard trigger'ı bypass eder), böylece kullanıcı
+      // user_metadata üzerinden kendini "doğrulanmış" ilan edemez.
+      if (comparison.isMatch) {
+        await persistEdevletVerified(user.id)
+      }
+
       return NextResponse.json({
         verified: comparison.isMatch,
         message: comparison.isMatch
@@ -120,33 +145,24 @@ export async function POST(request: NextRequest) {
 
     if (documentInfo && (documentInfo.fullName || documentInfo.address)) {
       try {
-        const supabase = await createServerClient()
-        const { data: { user } } = await supabase.auth.getUser()
-
-        if (user) {
-          const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-          const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-          if (SUPABASE_URL && SERVICE_KEY) {
-            const admin = createAdminClient(SUPABASE_URL, SERVICE_KEY, {
-              auth: { autoRefreshToken: false, persistSession: false },
-            })
-            // Aynı barkod için pending kayıt varsa upsert (idempotency)
-            await admin.from('address_verifications').upsert(
-              {
-                user_id: user.id,
-                verification_status: 'pending',
-                barcode_value: cleanCode,
-                document_uploaded_at: new Date().toISOString(),
-                address_text: [
-                  documentInfo.address,
-                  documentInfo.neighborhood,
-                  documentInfo.district,
-                  documentInfo.city,
-                ].filter(Boolean).join(', ') || null,
-              },
-              { onConflict: 'user_id,barcode_value' as any },
-            )
-          }
+        const admin = getAdminClient()
+        if (admin) {
+          // Aynı barkod için pending kayıt varsa upsert (idempotency)
+          await admin.from('address_verifications').upsert(
+            {
+              user_id: user.id,
+              verification_status: 'pending',
+              barcode_value: cleanCode,
+              document_uploaded_at: new Date().toISOString(),
+              address_text: [
+                documentInfo.address,
+                documentInfo.neighborhood,
+                documentInfo.district,
+                documentInfo.city,
+              ].filter(Boolean).join(', ') || null,
+            },
+            { onConflict: 'user_id,barcode_value' as any },
+          )
         }
       } catch (err) {
         console.error('[verify-document] manual queue write failed:', err)
@@ -177,6 +193,38 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
+}
+
+/**
+ * Service-role Supabase istemcisi. RLS ve guard trigger'ı bypass eder; yalnızca
+ * sunucu tarafı yazımları için (e-Devlet rozeti, manuel inceleme kuyruğu). Anahtar
+ * eksikse null döner (build/env eksikliğinde patlamak yerine sessizce atla).
+ */
+function getAdminClient() {
+  const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+  const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+  if (!SUPABASE_URL || !SERVICE_KEY) return null
+  return createAdminClient(SUPABASE_URL, SERVICE_KEY, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  })
+}
+
+/**
+ * e-Devlet doğrulamasını profiles.edevlet_verified_at sütununa kalıcı yazar.
+ * Tek doğruluk kaynağı budur (middleware buradan okur). guard trigger istemci
+ * yazımını engellediğinden bu yazım service_role ile yapılır.
+ */
+async function persistEdevletVerified(userId: string): Promise<void> {
+  const admin = getAdminClient()
+  if (!admin) {
+    console.error('[verify-document] SERVICE_ROLE_KEY yok; edevlet_verified_at yazılamadı')
+    return
+  }
+  const { error } = await admin
+    .from('profiles')
+    .update({ edevlet_verified_at: new Date().toISOString() })
+    .eq('id', userId)
+  if (error) console.error('[verify-document] edevlet_verified_at yazımı başarısız:', error)
 }
 
 /**
