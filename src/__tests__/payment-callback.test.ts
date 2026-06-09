@@ -5,11 +5,12 @@ import crypto from 'crypto'
  * PayTR callback (PARA YOLU) güvenlik + yan-etki sözleşmesi.
  *
  * Üretim: src/app/api/payment/callback/route.ts — PayTR ödeme bildirimini alır,
- * HMAC-SHA256 hash'i doğrular, sonra (a) payments tablosuna completed/failed
- * yazar, (b) başarılı mahalle_card / business_membership ödemelerinde ilgili
- * profili AKTİVE eder. Buradaki bir gevşeklik = sahte bir POST ile bedava kart/
- * üyelik veya yanlış kullanıcıya aktivasyon demek. Bu yüzden reddetme kapılarını
- * (hash/durum/tutar) ve aktivasyon yan-etkilerini burada kilitliyoruz.
+ * HMAC-SHA256 hash'i doğrular, ÖDENEN TUTARI sunucudaki fiyatla karşılaştırır,
+ * sonra (a) payments tablosuna completed/failed yazar, (b) başarılı mahalle_card /
+ * business_membership ödemelerinde ilgili profili AKTİVE eder. Buradaki bir
+ * gevşeklik = sahte bir POST ile bedava kart/üyelik veya yanlış kullanıcıya
+ * aktivasyon demek. Bu yüzden reddetme kapılarını (hash/durum/tutar bütünlüğü/
+ * idempotency) ve aktivasyon yan-etkilerini burada kilitliyoruz.
  *
  * Supabase mock'lanır: gerçek DB'ye yazmadan route'un DOĞRU tabloya/işleme
  * gittiğini (payments.upsert, profiles.update().eq()) doğrularız.
@@ -17,9 +18,13 @@ import crypto from 'crypto'
 
 // ── Supabase mock (hoisted) ──────────────────────────────────────────────────
 const upsertMock = vi.fn().mockResolvedValue({ data: null, error: null })
-const eqMock = vi.fn().mockResolvedValue({ data: null, error: null })
-const updateMock = vi.fn((_data?: Record<string, unknown>) => ({ eq: eqMock }))
-const fromMock = vi.fn(() => ({ upsert: upsertMock, update: updateMock }))
+const profileEqMock = vi.fn().mockResolvedValue({ data: null, error: null })
+const updateMock = vi.fn((_data?: Record<string, unknown>) => ({ eq: profileEqMock }))
+// Idempotency okuması: from('payments').select('status').eq('merchant_oid', oid).maybeSingle()
+const maybeSingleMock = vi.fn().mockResolvedValue({ data: null, error: null })
+const selectEqMock = vi.fn(() => ({ maybeSingle: maybeSingleMock }))
+const selectMock = vi.fn(() => ({ eq: selectEqMock }))
+const fromMock = vi.fn(() => ({ upsert: upsertMock, update: updateMock, select: selectMock }))
 
 vi.mock('@supabase/supabase-js', () => ({
   createClient: vi.fn(() => ({ from: fromMock })),
@@ -29,6 +34,14 @@ vi.mock('@supabase/supabase-js', () => ({
 const TEST_KEY = 'test_merchant_key'
 const TEST_SALT = 'test_merchant_salt'
 const UUID = '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+
+// pricing.ts ile birebir aynı (kuruş): mahalle_card 4.99 TL, business_membership
+// ve listing_fee 99 TL. Callback ödenen tutarı bu değerlerle karşılaştırır.
+const KURUS = {
+  mahalle_card: 499,
+  business_membership: 9900,
+  listing_fee: 9900,
+}
 
 let POST: typeof import('@/app/api/payment/callback/route').POST
 
@@ -45,7 +58,7 @@ beforeEach(() => {
   vi.clearAllMocks()
 })
 
-// route.ts:30-34 ile birebir aynı hash üretimi — geçerli imzayı testte yeniden kurar.
+// route.ts ile birebir aynı hash üretimi — geçerli imzayı testte yeniden kurar.
 function validHash(merchantOid: string, status: string, totalAmount: string): string {
   const hashStr = [merchantOid, TEST_SALT, status, totalAmount].join('')
   return crypto.createHmac('sha256', TEST_KEY).update(hashStr).digest('base64')
@@ -64,7 +77,7 @@ function makeCall(fields: Record<string, string | undefined>) {
 describe('PayTR callback — güvenlik kapıları (reddetme yolları)', () => {
   it('eksik parametre (hash yok) → 400, DB’ye dokunmaz', async () => {
     const oid = `mahalle_card_${UUID}_${Date.now()}`
-    const res = await makeCall({ merchant_oid: oid, status: 'success', total_amount: '15000' })
+    const res = await makeCall({ merchant_oid: oid, status: 'success', total_amount: '499' })
     expect(res.status).toBe(400)
     expect(await res.text()).toContain('missing params')
     expect(fromMock).not.toHaveBeenCalled()
@@ -75,7 +88,7 @@ describe('PayTR callback — güvenlik kapıları (reddetme yolları)', () => {
     const res = await makeCall({
       merchant_oid: oid,
       status: 'success',
-      total_amount: '15000',
+      total_amount: '499',
       hash: 'BERBAT_HASH',
     })
     expect(res.status).toBe(400)
@@ -85,8 +98,8 @@ describe('PayTR callback — güvenlik kapıları (reddetme yolları)', () => {
 
   it('imzalı tutar değiştirilirse hash tutmaz → 400 (tutar bütünlüğü)', async () => {
     const oid = `mahalle_card_${UUID}_${Date.now()}`
-    // Hash 100 TL (15000 kuruş) için üretildi; gönderilen tutar 1 kuruş.
-    const signed = validHash(oid, 'success', '15000')
+    // Hash 499 kuruş için üretildi; gönderilen tutar 1 kuruş → hash tutmaz.
+    const signed = validHash(oid, 'success', '499')
     const res = await makeCall({
       merchant_oid: oid,
       status: 'success',
@@ -104,8 +117,8 @@ describe('PayTR callback — güvenlik kapıları (reddetme yolları)', () => {
     const res = await makeCall({
       merchant_oid: oid,
       status,
-      total_amount: '15000',
-      hash: validHash(oid, status, '15000'),
+      total_amount: '499',
+      hash: validHash(oid, status, '499'),
     })
     expect(res.status).toBe(400)
     expect(await res.text()).toContain('invalid status')
@@ -125,12 +138,28 @@ describe('PayTR callback — güvenlik kapıları (reddetme yolları)', () => {
     expect(await res.text()).toContain('invalid total_amount')
     expect(fromMock).not.toHaveBeenCalled()
   })
+
+  it('geçerli imza ama tutar fiyatla uyuşmuyor → 400, AKTİVASYON YOK (fiyat oynaması reddi)', async () => {
+    const oid = `mahalle_card_${UUID}_${Date.now()}`
+    // Doğru imzalı ama 1 kuruşluk bir bildirim: imza geçer, fakat beklenen 499.
+    const amount = '1'
+    const res = await makeCall({
+      merchant_oid: oid,
+      status: 'success',
+      total_amount: amount,
+      hash: validHash(oid, 'success', amount),
+    })
+    expect(res.status).toBe(400)
+    expect(await res.text()).toContain('amount mismatch')
+    // Tutar yanlışsa hiçbir DB yazımı/aktivasyon olmamalı.
+    expect(fromMock).not.toHaveBeenCalled()
+  })
 })
 
 describe('PayTR callback — başarılı ödeme yan etkileri', () => {
   it('mahalle_card success → 200, payments completed + profil kartı aktive', async () => {
     const oid = `mahalle_card_${UUID}_${Date.now()}`
-    const amount = '15000' // kuruş
+    const amount = String(KURUS.mahalle_card) // 499 kuruş = 4.99 TL
     const res = await makeCall({
       merchant_oid: oid,
       status: 'success',
@@ -146,18 +175,18 @@ describe('PayTR callback — başarılı ödeme yan etkileri', () => {
     expect(payment.status).toBe('completed')
     expect(payment.payment_type).toBe('mahalle_card')
     expect(payment.user_id).toBe(UUID)
-    expect(payment.amount).toBe(150)
+    expect(payment.amount).toBe(4.99)
 
     // profiles.update(...).eq('id', UUID): kart aktivasyonu doğru kullanıcıya
     expect(fromMock).toHaveBeenCalledWith('profiles')
     const profile = updateMock.mock.calls[0][0] as Record<string, unknown>
     expect(profile.mahalle_card_active).toBe(true)
-    expect(eqMock).toHaveBeenCalledWith('id', UUID)
+    expect(profileEqMock).toHaveBeenCalledWith('id', UUID)
   })
 
   it('business_membership success → 200, üyelik bayrağı doğru kullanıcıya aktive', async () => {
     const oid = `business_membership_${UUID}_${Date.now()}`
-    const amount = '30000'
+    const amount = String(KURUS.business_membership)
     const res = await makeCall({
       merchant_oid: oid,
       status: 'success',
@@ -167,12 +196,12 @@ describe('PayTR callback — başarılı ödeme yan etkileri', () => {
     expect(res.status).toBe(200)
     const profile = updateMock.mock.calls[0][0] as Record<string, unknown>
     expect(profile.business_membership_active).toBe(true)
-    expect(eqMock).toHaveBeenCalledWith('id', UUID)
+    expect(profileEqMock).toHaveBeenCalledWith('id', UUID)
   })
 
   it('listing_fee success → 200, payments yazılır ama profil AKTİVE EDİLMEZ', async () => {
     const oid = `listing_fee_${UUID}_${Date.now()}`
-    const amount = '25000'
+    const amount = String(KURUS.listing_fee)
     const res = await makeCall({
       merchant_oid: oid,
       status: 'success',
@@ -183,12 +212,31 @@ describe('PayTR callback — başarılı ödeme yan etkileri', () => {
     expect(upsertMock).toHaveBeenCalledTimes(1)
     expect(fromMock).not.toHaveBeenCalledWith('profiles')
   })
+
+  it('aynı bildirim ikinci kez gelirse (zaten completed) → 200, TEKRAR aktivasyon yok (idempotency)', async () => {
+    const oid = `mahalle_card_${UUID}_${Date.now()}`
+    const amount = String(KURUS.mahalle_card)
+    // İlk okuma "zaten tamamlanmış" döner → route erken OK döner.
+    maybeSingleMock.mockResolvedValueOnce({ data: { status: 'completed' }, error: null })
+    const res = await makeCall({
+      merchant_oid: oid,
+      status: 'success',
+      total_amount: amount,
+      hash: validHash(oid, 'success', amount),
+    })
+    expect(res.status).toBe(200)
+    expect(await res.text()).toBe('OK')
+    // Çift yazma / çift aktivasyon olmamalı.
+    expect(upsertMock).not.toHaveBeenCalled()
+    expect(fromMock).not.toHaveBeenCalledWith('profiles')
+  })
 })
 
 describe('PayTR callback — başarısız ödeme', () => {
   it('mahalle_card failed → 200, payments failed + AKTİVASYON YOK', async () => {
     const oid = `mahalle_card_${UUID}_${Date.now()}`
-    const amount = '15000'
+    // Başarısız ödemede tutar doğrulaması uygulanmaz (yalnız success'te).
+    const amount = String(KURUS.mahalle_card)
     const res = await makeCall({
       merchant_oid: oid,
       status: 'failed',

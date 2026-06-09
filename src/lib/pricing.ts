@@ -69,6 +69,26 @@ export const ASKIDA_BAGIS = {
 }
 
 // ==========================================
+// SUNUCU TARAFI ÖDEME TUTARLARI (tek doğruluk kaynağı)
+// ==========================================
+// /api/payment ve /api/payment/callback bu tabloyu kullanır. Tutar İSTEMCİDEN
+// ALINMAZ — aksi halde kullanıcı 250 TL'lik ilanı 1 TL'ye geçirebilirdi. Hem
+// token üretirken (charge tutarı) hem callback'te (ödenen tutar doğrulaması)
+// burası referanstır.
+export const PAYMENT_AMOUNTS: Record<
+  'mahalle_card' | 'listing_fee' | 'business_membership',
+  number
+> = {
+  mahalle_card: MAHALLE_CARD_PRICE.amount, // 4.99 TL / yıl
+  listing_fee: LISTING_PRICING.paidListingAmount, // 99 TL
+  business_membership: BUSINESS_MEMBERSHIP.monthlyFee, // 99 TL / ay
+}
+
+export function getPaymentAmount(paymentType: string): number | null {
+  return (PAYMENT_AMOUNTS as Record<string, number>)[paymentType] ?? null
+}
+
+// ==========================================
 // ÖDEME AYARLARI (PayTR)
 // ==========================================
 export const PAYMENT_CONFIG = {

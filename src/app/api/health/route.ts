@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 /**
@@ -27,7 +27,22 @@ interface HealthCheck {
   details?: Record<string, unknown>
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Halka açık varsayılan = SADECE canlılık (liveness): süreç ayakta mı?
+  // Ayrıntılı teşhis (DB/auth gecikmesi, bellek, sürüm, env, sağlayıcı durumu)
+  // bilgi sızıntısıdır ve her anonim istekte DB'ye vurmak DoS amplifikasyonudur.
+  // Bu yüzden ayrıntı yalnızca HEALTH_CHECK_TOKEN sırrını bilen çağırana açılır.
+  const token = process.env.HEALTH_CHECK_TOKEN || ''
+  const provided = request.headers.get('x-health-token') || ''
+  const authorized = token.length > 0 && provided === token
+
+  if (!authorized) {
+    return NextResponse.json(
+      { status: 'ok', timestamp: new Date().toISOString() },
+      { status: 200, headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' } }
+    )
+  }
+
   const checks: Record<string, HealthCheck> = {}
   const checkStartTime = Date.now()
 

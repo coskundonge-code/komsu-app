@@ -13,7 +13,7 @@ export async function getNotifications(userId: string, options?: { limit?: numbe
     .order('created_at', { ascending: false })
 
   if (options?.unreadOnly) query = query.eq('is_read', false)
-  if (options?.limit) query = query.limit(options.limit)
+  query = query.limit(options?.limit ?? 50) // sınırsız çekme yok (perf)
 
   const { data, error } = await query
   return { data, error }
@@ -43,7 +43,7 @@ export async function getAlerts(neighborhoodId?: string, options?: { limit?: num
 
   if (neighborhoodId) query = query.eq('neighborhood_id', neighborhoodId)
   if (options?.severity) query = query.eq('severity', options.severity)
-  if (options?.limit) query = query.limit(options.limit)
+  query = query.limit(options?.limit ?? 50) // sınırsız çekme yok (perf)
 
   const { data, error } = await query
   return { data, error }

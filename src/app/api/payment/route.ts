@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { rateLimit, getClientIp, rateLimitResponse } from '@/lib/rate-limit'
+import { createClient as createServerClient } from '@/lib/supabase/server'
+import { getPaymentAmount } from '@/lib/pricing'
 
 /**
  * PayTR Ödeme Token Oluşturma API
@@ -44,19 +46,43 @@ export async function POST(request: NextRequest) {
     const rl = await rateLimit(`payment:${ip}`, { limit: 10, windowMs: 60_000 })
     if (!rl.success) return rateLimitResponse(rl) as any
 
+    // Oturum zorunlu. KİMLİK ve TUTAR İSTEMCİDEN ALINMAZ:
+    // - userId/email session'dan türetilir → başkası adına ödeme/merchant_oid
+    //   üretilemez (impersonation kapatıldı).
+    // - tutar sunucudaki fiyat tablosundan (pricing.ts) hesaplanır → kullanıcı
+    //   99 TL'lik ürünü 1 TL'ye geçiremez (fiyat oynaması kapatıldı).
+    const supabase = await createServerClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      return NextResponse.json({ error: 'Bu işlem için giriş yapmalısınız.' }, { status: 401 })
+    }
+
     const body: PaymentRequest = await request.json()
-    const { paymentType, amount, userEmail, userName, userId } = body
+    const { paymentType } = body
 
-  const ALLOWED_PAYMENT_TYPES: string[] = ['mahalle_card', 'listing_fee', 'business_membership']
-  if (!ALLOWED_PAYMENT_TYPES.includes(paymentType)) {
-    return NextResponse.json({ error: 'Geçersiz ödeme tipi' }, { status: 400 })
-  }
+    const ALLOWED_PAYMENT_TYPES: string[] = ['mahalle_card', 'listing_fee', 'business_membership']
+    if (!ALLOWED_PAYMENT_TYPES.includes(paymentType)) {
+      return NextResponse.json({ error: 'Geçersiz ödeme tipi' }, { status: 400 })
+    }
 
-    if (!paymentType || !amount || !userEmail || !userName || !userId) {
-      return NextResponse.json(
-        { error: 'Eksik parametreler' },
-        { status: 400 }
-      )
+    const amount = getPaymentAmount(paymentType)
+    if (amount == null) {
+      return NextResponse.json({ error: 'Geçersiz ödeme tipi' }, { status: 400 })
+    }
+
+    const userId = user.id
+    const userEmail = user.email || ''
+    // İsim yalnızca PayTR formunda görüntü amaçlı; profil adını kullan, yoksa
+    // e-posta yerel kısmına düş. İstemciden gelen isme güvenmiyoruz.
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('full_name')
+      .eq('id', userId)
+      .single()
+    const userName = profile?.full_name || userEmail.split('@')[0] || 'Kullanıcı'
+
+    if (!userEmail) {
+      return NextResponse.json({ error: 'Hesabınızda e-posta tanımlı değil.' }, { status: 400 })
     }
 
     if (!PAYTR_MERCHANT_ID || !PAYTR_MERCHANT_KEY || !PAYTR_MERCHANT_SALT) {

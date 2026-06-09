@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { createClient } from '@supabase/supabase-js'
 import { parseMerchantOid } from '@/lib/services/paytr-oid'
+import { getPaymentAmount } from '@/lib/pricing'
 
 /**
  * PayTR Callback (Bildirim) API
@@ -24,6 +25,14 @@ export async function POST(request: NextRequest) {
 
     if (!merchantOid || !status || !totalAmount || !hash) {
       return new NextResponse('PAYTR notification error: missing params', { status: 400 })
+    }
+
+    // PayTR anahtarları yoksa boş anahtarla HMAC üretiyorduk; merchantOid+status+
+    // total_amount bilen biri bu hash'i taklit edip SAHTE "başarılı ödeme"
+    // gönderebilir ve bedava üyelik açabilirdi. Anahtar yoksa callback'i hiç
+    // işleme — gerçek PayTR entegrasyonu da yoksa zaten meşru çağrı gelmez.
+    if (!PAYTR_MERCHANT_KEY || !PAYTR_MERCHANT_SALT) {
+      return new NextResponse('PAYTR notification error: provider not configured', { status: 503 })
     }
 
     // Hash doğrulama
@@ -50,8 +59,33 @@ export async function POST(request: NextRequest) {
 
     const { paymentType, userId } = parseMerchantOid(merchantOid)
 
+    // Tutar doğrulaması (ikinci bağımsız kapı): ödenen tutar, sunucudaki fiyat
+    // tablosuyla BİREBİR uyuşmalı. Token üreten /api/payment tutarı zaten sunucuda
+    // hesaplıyor; uyuşmazsa bu bir oynamadır → ÜYELİK AKTİVASYONU YAPILMAZ.
+    const expectedAmount = getPaymentAmount(paymentType)
+    if (expectedAmount == null) {
+      return new NextResponse('PAYTR notification error: unknown payment type', { status: 400 })
+    }
+    const expectedKurus = Math.round(expectedAmount * 100)
+    if (status === 'success' && amountKurus !== expectedKurus) {
+      console.error('PayTR amount mismatch', { merchantOid, amountKurus, expectedKurus })
+      return new NextResponse('PAYTR notification error: amount mismatch', { status: 400 })
+    }
+
     if (SUPABASE_URL && SUPABASE_SERVICE_KEY) {
       const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+
+      // Idempotency: PayTR aynı bildirimi birden çok kez gönderebilir. Ödeme zaten
+      // 'completed' ise üyeliği/kartı TEKRAR aktive etme (çift aktivasyon + mükerrer
+      // kayıt yok; merchant_oid artık UNIQUE).
+      const { data: existing } = await supabase
+        .from('payments')
+        .select('status')
+        .eq('merchant_oid', merchantOid)
+        .maybeSingle()
+      if (existing?.status === 'completed') {
+        return new NextResponse('OK', { status: 200 })
+      }
 
       if (status === 'success') {
         await supabase.from('payments').upsert({
@@ -62,7 +96,7 @@ export async function POST(request: NextRequest) {
           status: 'completed',
           provider: 'paytr',
           completed_at: new Date().toISOString(),
-        })
+        }, { onConflict: 'merchant_oid' })
 
         if (paymentType === 'mahalle_card' && userId) {
           const expiryDate = new Date()
@@ -87,7 +121,7 @@ export async function POST(request: NextRequest) {
           amount: amountTl,
           status: 'failed',
           provider: 'paytr',
-        })
+        }, { onConflict: 'merchant_oid' })
       }
     }
 

@@ -59,8 +59,10 @@ export async function getListings(options?: {
     default: query = query.order('created_at', { ascending: false })
   }
 
-  if (options?.limit) query = query.limit(options.limit)
-  if (options?.offset) query = query.range(options.offset, options.offset + (options.limit || 10) - 1)
+  // Çağıran limit vermezse bile sınırsız çekme yok (DoS/perf koruması).
+  const limit = options?.limit ?? 100
+  query = query.limit(limit)
+  if (options?.offset) query = query.range(options.offset, options.offset + limit - 1)
 
   const { data, error } = await query
   return { data, error }

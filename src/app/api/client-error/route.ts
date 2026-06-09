@@ -9,6 +9,7 @@
 
 import { NextResponse } from "next/server";
 import { logError } from "@/lib/logger";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -21,6 +22,13 @@ function cap(value: unknown, max: number): string | undefined {
 }
 
 export async function POST(request: Request) {
+  // Açık uç → log seli / kötüye kullanımı IP başına sınırla. Aşılırsa sessizce
+  // 200 dön (sözleşme: her durumda 200; istemci yanıtı okumuyor) ama LOGLAMA —
+  // böylece saldırgan logger'ı dolduramaz.
+  const ip = getClientIp(request);
+  const rl = await rateLimit(`client-error:${ip}`, { limit: 30, windowMs: 60_000 });
+  if (!rl.success) return NextResponse.json({ ok: true });
+
   try {
     const raw: unknown = await request.json().catch(() => ({}));
     const body = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;

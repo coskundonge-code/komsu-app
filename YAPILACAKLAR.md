@@ -64,6 +64,49 @@
 - ✅ **GÜVENLİK — verify-document kullanıcı-başına rate limit (2026-06-09):** IP rate limitine EK olarak
   `verify-doc-user:<id>` kotası eklendi + uç artık giriş zorunlu (giriş yoksa 401). Paylaşımlı IP
   (yurt/okul/şirket NAT) arkasındaki masum kullanıcılar, tek saldırganın IP kotasını tüketmesinden korunuyor.
+- ✅ **GÜVENLİK — ödeme zinciri (PayTR) sertleştirildi (2026-06-09):** (1) `/api/payment` artık
+  **kimlik + tutarı istemciden ALMIYOR** — kullanıcı oturumdan türetiliyor (başkası adına ödeme/merchant_oid
+  üretilemez) ve tutar sunucudaki fiyat tablosundan (`pricing.ts`) hesaplanıyor (99 TL'lik ürün 1 TL'ye
+  geçirilemez). (2) Callback artık PayTR anahtarı yoksa boş anahtarla HMAC üretip **sahte "başarılı ödeme"**
+  kabul etmiyor (503). (3) Callback ödenen tutarı sunucu fiyatıyla karşılaştırıyor — uyuşmazsa AKTİVASYON
+  YOK (400). (4) Idempotency: aynı bildirim ikinci kez gelirse çift aktivasyon/mükerrer kayıt yok
+  (`merchant_oid` UNIQUE + "zaten completed" erken çıkış). 11 yeni/güncel test bu kapıları kilitledi. (B #7)
+- ✅ **GÜVENLİK — RLS sertleştirme: payments / notifications / kart tabloları (2026-06-09 migration):**
+  (1) `notifications` üzerindeki `USING(true)` SELECT politikası kaldırıldı — eskiden HERKES tüm
+  kullanıcıların bildirimlerini (kişisel veri) okuyabiliyordu; artık yalnızca kendi bildirimini görür.
+  (2) `payments`/`card_transactions`/`mahallem_cards` üzerindeki istemci INSERT/UPDATE politikaları
+  kaldırıldı — para/kart satırlarını yalnızca sunucu (service_role, callback) yazar; kullanıcı kendine
+  bedava kart/ödeme satırı uyduramaz. Bu tablolar boştu → veri riski sıfır. `merchant_oid` UNIQUE kısıtı
+  eklendi (idempotency dayanağı). Migration: `rls_hardening_payments_notifs_cards`. (B #6)
+- ✅ **GÜVENLİK — açık API uçları sertleştirildi (2026-06-09):** (1) `/api/health` varsayılan olarak
+  yalnızca "ayakta mı" (liveness) döner; DB/auth gecikmesi, bellek, sürüm, ENV durumu gibi **teşhis
+  ayrıntıları** artık yalnızca `HEALTH_CHECK_TOKEN` sırrını bilen çağırana açılır (bilgi sızıntısı + her
+  anonim istekte DB'ye vuran DoS amplifikasyonu kapatıldı). (2) `/api/client-error` IP başına rate-limit'lendi
+  (30/dk) — açık uç olduğu için saldırgan logger'ı sel gibi dolduramaz. (B #8)
+- ✅ **PERF — sınırsız veri çekme kapatıldı (2026-06-09):** `getPosts`/`getListings`/`getNotifications`/
+  `getAlerts` çağıran bir limit vermezse bile artık varsayılan üst sınır uyguluyor (100/100/50/50) — mevcut
+  tüm sayfalar zaten açık limit geçtiği için davranış değişmez, yalnızca ileride limit unutulan bir çağrı
+  sınırsız satır çekemez (DoS/perf koruması).
+- ✅ **Güvenlik advisor taraması temiz (2026-06-09):** Bu turdaki RLS değişiklikleri YENİ bir advisor
+  hatası üretmedi. Kalan uyarılar PostGIS/eklenti gürültüsü (`spatial_ref_sys`, `pg_trgm`, `postgis`,
+  `st_estimatedextent` — kabul edildi) + `is_current_user_admin()` RPC (düşük risk; EXECUTE yetkisi RLS
+  politikaları için gerekli, kaldırmak admin kontrolünü bozar → dokunulmadı).
+- ⬜ **İstemci-taraflı kural zorlaması — sunucuya taşınmalı (FLAG, riskli olduğu için BİLEREK otomatik
+  YAPILMADI, 2026-06-09):** Üç kural şu an tarayıcıda zorlanıyor, teknik bilgili biri atlayabilir: (a)
+  **ücretsiz ilan kotası** — kullanıcı `user_listing_quotas` satırında kendi `free_used`'ını 0'a çekecek
+  şekilde UPDATE edebiliyor (`ulq_update_own`) → sınırsız ücretsiz ilan; (b) **işletme abonelik duvarı**
+  istemci kontrolüne dayanıyor; (c) **görsel moderasyon** API anahtarı yoksa "fail-open". Önerilen kalıcı
+  çözüm: kota/abonelik yazımını `SECURITY DEFINER` RPC + tabloyu service_role'a kilitleyen RLS ile sunucuya
+  taşımak. **Neden şimdi yapmadım:** ilan-verme + işletme akışının ana yolunu değiştirir; 2 kullanıcılı
+  canlıda tam test edilemeden kilitlemek gönderiyi bozabilir → sahip başındayken kontrollü yapılmalı.
+  (Mali risk düşük: ücretsiz limit 1 ilan, ücret 9,90 TL.)
+- ⬜ **Mesajlaşma — N+1 + sınırsız çekme + sohbet RLS (FLAG, 2026-06-09):** `mesajlar/page.tsx` her sohbet
+  için 3 ayrı sorgu atıyor (N+1) ve bir sohbetin TÜM mesajlarını sınırsız çekiyor; sohbet listesi de
+  `conversations`'ı RLS'e güvenerek filtreliyor — RLS gevşekse başkasının sohbetleri sızabilir (IDOR riski).
+  **Neden şimdi yapmadım:** realtime abonelik + iyimser güncelleme içeren karmaşık istemci bileşeni; sorgu
+  şeklini değiştirmek sohbet ekranını bozabilir ve oturumsuz/2-kullanıcılı ortamda görsel doğrulayamam.
+  Önerilen: katılımcı/profil/son-mesajı tek toplu sorguda çek, mesajlara sayfalama (son N + "daha eski")
+  ekle, `conversation_participants` RLS'ini doğrula.
 - ⬜ **KVKK — TC Kimlik No `user_metadata`'da (SAHİP KARARI gerekiyor, 2026-06-09):** TC Kimlik No kayıt
   sırasında `user_metadata`'ya yazılıyor (`kayit/page.tsx`) ve JWT içinde taşınıyor. **Aktif güvenlik açığı
   DEĞİL** — TC'ye bağlı bir yetki yok; yalnızca doğrulama formunu önden doldurmak için ve sadece kullanıcının
@@ -120,6 +163,13 @@
 
 ## ✅ Bu oturumda biten önemli işler (özet)
 
+- ✅ **(2026-06-09) Uçtan uca güvenlik + sistem taraması** (sahip "her noktayı gözden geçir, düzelt"
+  dedi): **Ödeme zinciri** (kimlik/tutar artık sunucuda + sahte ödeme/fiyat oynaması/çift aktivasyon
+  kapatıldı), **RLS sertleştirme** (bildirim PII sızıntısı + uydurma ödeme/kart satırı kapatıldı),
+  **açık API uçları** (health teşhis token'a bağlandı, client-error rate-limit), **sınırsız sorgu
+  kapakları** düzeltildi. Riskli 2 madde (istemci-taraflı kota/abonelik zorlaması, mesajlaşma N+1/RLS)
+  bilerek **bayraklandı** — ana akışı bozma riski yüzünden sahip başındayken yapılmalı. tsc + 256 test +
+  `next build` + güvenlik advisor temiz. (B bölümü)
 - ✅ **(2026-06-09) Yetki yükseltme güvenlik açığı kapatıldı** (KRİTİK): kullanıcı artık kendini
   yönetici yapamaz / kendi kilidini açamaz. Trigger + RLS politikası + SECURITY DEFINER admin kontrolü
   + RPC yetki sertleştirmesi canlı DB'ye uygulandı; advisor ile doğrulandı. (B bölümü)
