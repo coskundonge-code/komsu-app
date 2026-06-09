@@ -11,6 +11,10 @@ import type { Database } from "@/lib/supabase/types";
 
 const createClient = () => createTypedClient()
 
+// Performans sınırları: sınırsız çekim büyük hesaplarda ağ/bellek yükü yaratır.
+const CONVERSATIONS_PAGE_SIZE = 100; // sohbet listesinde en güncel N konuşma
+const MESSAGES_PAGE_SIZE = 50; // bir sohbet açıldığında ilk yüklenecek son N mesaj
+
 type ProfileRow = Database['public']['Tables']['profiles']['Row']
 
 type TabKey = "all" | "unread" | "marketplace";
@@ -380,7 +384,8 @@ function MessagesContent() {
       try {
         const supabase = createClient();
 
-        // Fetch conversations where the current user is a participant
+        // Kullanıcının katılımcı olduğu konuşmalar (RLS süzer). En güncel N ile
+        // sınırlı — sınırsız çekim büyük hesaplarda performans sorunudur.
         const { data: dbConversations, error } = await supabase
           .from('conversations')
           .select(`
@@ -392,6 +397,7 @@ function MessagesContent() {
             updated_at
           `)
           .order('updated_at', { ascending: false })
+          .limit(CONVERSATIONS_PAGE_SIZE)
 
         if (error) {
           console.error('Error fetching conversations:', error);
@@ -404,31 +410,58 @@ function MessagesContent() {
           return;
         }
 
-        // Fetch participants and messages for each conversation
-        const conversationPromises = (dbConversations as any[]).map(async (conv: any) => {
-          // Get the other participant from conversation_participants
-          const { data: participants } = await supabase
-            .from('conversation_participants')
-            .select('user_id')
-            .eq('conversation_id', conv.id);
+        const convList = dbConversations as any[];
+        const convIds = convList.map((c) => c.id);
 
-          const otherUserId = (participants as any[])?.find((p: any) => p.user_id !== user?.id)?.user_id || '';
+        // ── N+1 yerine TOPLU sorgular ─────────────────────────────────────────
+        // Önceki tasarım her konuşma için 3 ayrı sorgu atıyordu (katılımcı +
+        // profil + son mesaj) → 3×N+1 yuvarlak gidiş. Artık tüm konuşmalar için
+        // 3 toplu sorgu. RLS her sorguda aynen geçerli (yalnızca kendi
+        // konuşmaları döner).
 
-          const { data: profileData } = await supabase
+        // 1) Tüm konuşmaların katılımcıları tek sorguda → karşı taraf eşlemesi.
+        const { data: allParticipants } = await supabase
+          .from('conversation_participants')
+          .select('conversation_id, user_id')
+          .in('conversation_id', convIds);
+
+        const otherUserByConv = new Map<string, string>();
+        for (const p of ((allParticipants as any[]) || [])) {
+          if (p.user_id !== user?.id && !otherUserByConv.has(p.conversation_id)) {
+            otherUserByConv.set(p.conversation_id, p.user_id);
+          }
+        }
+
+        // 2) Karşı tarafların profilleri tek sorguda.
+        const otherUserIds = Array.from(
+          new Set(Array.from(otherUserByConv.values()).filter(Boolean))
+        );
+        const profileById = new Map<string, any>();
+        if (otherUserIds.length > 0) {
+          const { data: profiles } = await supabase
             .from('profiles')
             .select('*')
-            .eq('id', otherUserId)
-            .single() as { data: any };
+            .in('id', otherUserIds);
+          for (const pr of ((profiles as any[]) || [])) {
+            profileById.set(pr.id, pr);
+          }
+        }
 
-          // Get last message
-          const { data: lastMsg } = await supabase
-            .from('messages')
-            .select('body, created_at')
-            .eq('conversation_id', conv.id)
-            .order('created_at', { ascending: false })
-            .limit(1)
-            .single() as { data: any };
+        // 3) Konuşma başına SON mesaj tek RPC ile (DISTINCT ON; SECURITY INVOKER
+        //    olduğu için messages RLS'i korunur — IDOR yok).
+        const lastMsgByConv = new Map<string, any>();
+        const { data: lastMsgs } = await (supabase.rpc as any)('get_last_messages', {
+          p_conversation_ids: convIds,
+        });
+        for (const lm of ((lastMsgs as any[]) || [])) {
+          lastMsgByConv.set(lm.conversation_id, lm);
+        }
 
+        // Konuşma sırasını (updated_at desc) koruyarak birleştir.
+        const loadedConversations: Conversation[] = convList.map((conv) => {
+          const otherUserId = otherUserByConv.get(conv.id) || '';
+          const profileData = profileById.get(otherUserId);
+          const lastMsg = lastMsgByConv.get(conv.id);
           const timeAgo = formatTimeAgo(conv.updated_at || conv.created_at);
 
           return {
@@ -445,8 +478,7 @@ function MessagesContent() {
           };
         });
 
-        const loadedConversations = await Promise.all(conversationPromises);
-        setConversations(loadedConversations.length > 0 ? loadedConversations : []);
+        setConversations(loadedConversations);
       } catch (err) {
         console.error('Error loading conversations:', err);
         setConversations([]);
@@ -487,11 +519,15 @@ function MessagesContent() {
       try {
         const supabase = createClient();
 
+        // Son N mesajı çek (en yeni → en eski), sonra göstermek için ters çevir.
+        // Sınırsız çekim yerine sayfalı: uzun sohbetlerde ilk yük hafif kalır;
+        // yeni mesajlar zaten realtime INSERT aboneliğiyle eklenir.
         const { data: dbMessages, error } = await supabase
           .from('messages')
           .select('id, sender_id, body, created_at')
           .eq('conversation_id', selectedId)
-          .order('created_at', { ascending: true });
+          .order('created_at', { ascending: false })
+          .limit(MESSAGES_PAGE_SIZE);
 
         if (error) {
           console.error('Error fetching messages:', error);
@@ -504,13 +540,15 @@ function MessagesContent() {
           return;
         }
 
-        const formattedMessages: Message[] = (dbMessages as any[]).map((msg: any) => ({
-          id: msg.id,
-          text: msg.body,
-          time: formatTimeForDisplay(msg.created_at),
-          isOwn: msg.sender_id === user?.id,
-          userId: msg.sender_id,
-        }));
+        const formattedMessages: Message[] = [...(dbMessages as any[])]
+          .reverse()
+          .map((msg: any) => ({
+            id: msg.id,
+            text: msg.body,
+            time: formatTimeForDisplay(msg.created_at),
+            isOwn: msg.sender_id === user?.id,
+            userId: msg.sender_id,
+          }));
 
         setMessages(formattedMessages);
       } catch (err) {

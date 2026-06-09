@@ -225,46 +225,31 @@ async function updateSubscriptionStatus(subscriptionId: string, status: Subscrip
 }
 
 /**
- * Ücretli abonelik başlatır (deneme süresi sonrası)
+ * Ücretli abonelik başlatır (deneme süresi sonrası).
+ *
+ * GÜVENLİK: Aktivasyon ARTIK istemciden doğrudan yapılamaz. DB'deki
+ * guard_business_subscription_privileged trigger'ı istemcinin status='active'
+ * ve ödeme alanlarını yazmasını engeller (ödeme yapmadan kendini aktive etme
+ * açığı kapandı). Bu fonksiyon sunucu ucuna yönlendirir; orada oturum, sahiplik
+ * ve ödeme/simülasyon kapısı doğrulanıp aktivasyon service_role ile yazılır.
+ * `businessId` sunucuda session'dan türetilir (istemci değerine güvenilmez).
  */
 export async function activateSubscription(
-  businessId: string,
+  _businessId: string,
   billingPeriod: BillingPeriod
 ): Promise<BusinessSubscription | null> {
   try {
-    const supabase = createClient();
-    const now = new Date();
-    const endDate = new Date(now);
-    const price = billingPeriod === 'monthly' ? MONTHLY_PRICE : YEARLY_PRICE;
-
-    if (billingPeriod === 'monthly') {
-      endDate.setMonth(endDate.getMonth() + 1);
-    } else {
-      endDate.setFullYear(endDate.getFullYear() + 1);
-    }
-
-    // Mevcut aboneliği güncelle
-    const { data, error } = await supabase
-      .from('business_subscriptions')
-      .update({
-        status: 'active',
-        billing_period: billingPeriod,
-        subscription_start_date: now.toISOString(),
-        subscription_end_date: endDate.toISOString(),
-        current_price: price,
-        auto_renew: true,
-        updated_at: now.toISOString(),
-      })
-      .eq('business_id', businessId)
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Error activating subscription:', error);
+    const res = await fetch('/api/business/subscription/activate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ billingPeriod }),
+    });
+    const json = await res.json().catch(() => null);
+    if (!res.ok || !json?.success || !json?.subscription) {
+      console.error('Error activating subscription:', json?.error || res.status);
       return null;
     }
-
-    return mapSubscription(data);
+    return mapSubscription(json.subscription);
   } catch (error) {
     console.error('Error in activateSubscription:', error);
     return null;

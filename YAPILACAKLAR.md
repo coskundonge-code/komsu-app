@@ -91,22 +91,23 @@
   hatası üretmedi. Kalan uyarılar PostGIS/eklenti gürültüsü (`spatial_ref_sys`, `pg_trgm`, `postgis`,
   `st_estimatedextent` — kabul edildi) + `is_current_user_admin()` RPC (düşük risk; EXECUTE yetkisi RLS
   politikaları için gerekli, kaldırmak admin kontrolünü bozar → dokunulmadı).
-- ⬜ **İstemci-taraflı kural zorlaması — sunucuya taşınmalı (FLAG, riskli olduğu için BİLEREK otomatik
-  YAPILMADI, 2026-06-09):** Üç kural şu an tarayıcıda zorlanıyor, teknik bilgili biri atlayabilir: (a)
-  **ücretsiz ilan kotası** — kullanıcı `user_listing_quotas` satırında kendi `free_used`'ını 0'a çekecek
-  şekilde UPDATE edebiliyor (`ulq_update_own`) → sınırsız ücretsiz ilan; (b) **işletme abonelik duvarı**
-  istemci kontrolüne dayanıyor; (c) **görsel moderasyon** API anahtarı yoksa "fail-open". Önerilen kalıcı
-  çözüm: kota/abonelik yazımını `SECURITY DEFINER` RPC + tabloyu service_role'a kilitleyen RLS ile sunucuya
-  taşımak. **Neden şimdi yapmadım:** ilan-verme + işletme akışının ana yolunu değiştirir; 2 kullanıcılı
-  canlıda tam test edilemeden kilitlemek gönderiyi bozabilir → sahip başındayken kontrollü yapılmalı.
-  (Mali risk düşük: ücretsiz limit 1 ilan, ücret 9,90 TL.)
-- ⬜ **Mesajlaşma — N+1 + sınırsız çekme + sohbet RLS (FLAG, 2026-06-09):** `mesajlar/page.tsx` her sohbet
-  için 3 ayrı sorgu atıyor (N+1) ve bir sohbetin TÜM mesajlarını sınırsız çekiyor; sohbet listesi de
-  `conversations`'ı RLS'e güvenerek filtreliyor — RLS gevşekse başkasının sohbetleri sızabilir (IDOR riski).
-  **Neden şimdi yapmadım:** realtime abonelik + iyimser güncelleme içeren karmaşık istemci bileşeni; sorgu
-  şeklini değiştirmek sohbet ekranını bozabilir ve oturumsuz/2-kullanıcılı ortamda görsel doğrulayamam.
-  Önerilen: katılımcı/profil/son-mesajı tek toplu sorguda çek, mesajlara sayfalama (son N + "daha eski")
-  ekle, `conversation_participants` RLS'ini doğrula.
+- ✅ **İstemci-taraflı kural zorlaması — kota + abonelik SUNUCUYA TAŞINDI (2026-06-09):** (a) **Ücretsiz ilan
+  kotası** artık `consume_free_listing_quota()` `SECURITY DEFINER` RPC ile atomik tüketiliyor;
+  `user_listing_quotas` üzerindeki `ulq_update_own`/`ulq_insert_own` politikaları kaldırıldı → kullanıcı kendi
+  `free_used`'ını 0'a çekip sınırsız ücretsiz ilan veremiyor (kota oynaması açığı kapandı). (b) **İşletme
+  abonelik aktivasyonu** artık `guard_business_subscription_privileged` trigger'ı ile DB'de korunuyor (istemci
+  `status='active'` + ödeme alanlarını yazamaz) ve aktivasyon yalnızca yeni `POST
+  /api/business/subscription/activate` ucunda yapılıyor (oturum + sahiplik + PayTR canlıysa tamamlanmış ödeme
+  kapısı doğrulanıp service_role ile yazılıyor). İki migration uygulandı, doğrulandı; 260 test geçiyor. (c)
+  **Görsel moderasyon fail-open** yalnızca YAPILANDIRMA işi: `GOOGLE_CLOUD_VISION_API_KEY` eklenince kapanır
+  (kod zaten hazır) → sahip görevi, kod değişikliği yok.
+- ✅ **Mesajlaşma — N+1 + sınırsız çekme DÜZELTİLDİ (2026-06-09):** `mesajlar/page.tsx` artık her sohbet için 3
+  ayrı sorgu yerine 3 TOPLU sorgu atıyor (katılımcılar `.in()`, profiller `.in()`, son mesajlar tek
+  `get_last_messages` RPC'si — `DISTINCT ON`; `SECURITY INVOKER` olduğu için messages RLS'i korunur, IDOR yok).
+  Sohbet listesi son 100 konuşmayla, açılan sohbet son 50 mesajla sınırlı (sayfalama; yeni mesajlar realtime
+  aboneliğiyle gelmeye devam eder). Sohbet RLS'i doğrulandı: `conversations`/`messages`/`conversation_participants`
+  SELECT politikaları katılımcı-bazlı (başkasının sohbeti sızmıyor) → güvenlik değişikliği gerekmedi, yalnızca
+  performans iyileştirmesi.
 - ⬜ **KVKK — TC Kimlik No `user_metadata`'da (SAHİP KARARI gerekiyor, 2026-06-09):** TC Kimlik No kayıt
   sırasında `user_metadata`'ya yazılıyor (`kayit/page.tsx`) ve JWT içinde taşınıyor. **Aktif güvenlik açığı
   DEĞİL** — TC'ye bağlı bir yetki yok; yalnızca doğrulama formunu önden doldurmak için ve sadece kullanıcının
@@ -115,6 +116,13 @@
   değiştirir → yeni kullanıcıları kilitleme riski; kontrollü + testli geçiş ister. Sahip onay verirse plan:
   profiles'a `tc_kimlik_no` sütunu + `handle_new_user` trigger metadata'dan kopyalar + metadata'dan temizlenir
   + okuma yeri (`adres-dogrulama`) profiles'a döner.
+- ⬜ **İşletme üyelik fiyatı İKİ FARKLI YERDE ÇELİŞİYOR (SAHİP KARARI gerekiyor, 2026-06-09):** Ödeme tarafı
+  (`pricing.ts` → `PAYMENT_AMOUNTS.business_membership = 99 TL/ay`) ile abonelik tarafı
+  (`business-subscription.ts` → `MONTHLY_PRICE = 1.900 TL`, `YEARLY_PRICE = 19.900 TL`) farklı tutarlar
+  söylüyor. PayTR callback ödenen tutarı `pricing.ts`'e (99 TL) göre doğruladığı için, canlı PayTR'de işletme
+  abonelik aktivasyonu doğru tutarla eşleşmeyebilir. **Aktif açık değil** (şu an PayTR simülasyon modunda, ödeme
+  kapısı yalnızca canlıda zorlanıyor) ama canlıya çıkmadan fiyat tek kaynağa indirilmeli. **Bilerek otomatik
+  YAPMADIM:** hangi tutarın doğru olduğu (99 mu 1.900 mü) bir iş kararı; sahip söylemeli, ben tahmin etmemeliyim.
 - ✅ **Mesajlar sayfası iki bug DÜZELTİLDİ (`mesajlar/page.tsx`, 2026-06-09):** (1) sohbet listesi +
   sohbet ekranı ana bileşenin içinde tanımlıydı → her tuş vuruşunda yeniden kuruluyor, imleç/odak
   kayıyordu; alt bileşenler modül seviyesine taşındı (props ile). (2) `?selected=` parametresi

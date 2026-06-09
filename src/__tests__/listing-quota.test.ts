@@ -30,12 +30,17 @@ const builder = {
 }
 const fromMock = vi.fn(() => builder)
 
+// Kota tüketimi artık SECURITY DEFINER RPC ile yapılır: supabase.rpc('consume_free_listing_quota').
+let rpcResult: { data: unknown; error: unknown } = { data: null, error: null }
+const rpcMock = vi.fn(() => Promise.resolve(rpcResult))
+
 vi.mock('@/lib/supabase/client', () => ({
-  createClient: vi.fn(() => ({ from: fromMock })),
+  createClient: vi.fn(() => ({ from: fromMock, rpc: rpcMock })),
 }))
 
 import {
   checkCanPost,
+  consumeFreeQuota,
   FREE_LISTING_LIMIT,
   LISTING_FEE,
   CURRENCY,
@@ -47,6 +52,7 @@ const THIS_YEAR = new Date().getFullYear()
 beforeEach(() => {
   vi.clearAllMocks()
   singleResult = { data: null, error: null }
+  rpcResult = { data: null, error: null }
 })
 
 describe('listing-quota — fiyat/limit sabitleri (sessiz değişim guard)', () => {
@@ -126,5 +132,38 @@ describe("checkCanPost — 'sale'/'rental' yıllık kotaya tabi (DB'ye bakar)", 
     const res = await checkCanPost(UUID) // listingType yok
     expect(fromMock).toHaveBeenCalled() // DB'ye baktı → muaf değil
     expect(res?.canPostFree).toBe(false)
+  })
+
+  it('kota satırı YOKSA (yeni kullanıcı) → istemci INSERT yapmadan varsayılan: canPostFree:true', async () => {
+    // Politika kilidi sonrası istemci kota satırı oluşturamaz; satır yoksa
+    // "henüz hiç hak kullanılmadı" varsayılır. INSERT çağrısı OLMAMALI.
+    singleResult = { data: null, error: null }
+    const res = await checkCanPost(UUID, 'sale')
+    expect(res?.canPostFree).toBe(true)
+    expect(res?.remainingFree).toBe(1)
+    expect(builder.insert).not.toHaveBeenCalled()
+  })
+})
+
+describe('consumeFreeQuota — tüketim yalnızca sunucu RPC ile (kota oynaması kapalı)', () => {
+  it('istemci free_used’ı doğrudan UPDATE etmez; consume_free_listing_quota RPC çağrılır', async () => {
+    rpcResult = { data: [{ ok: true, used: 1, yr: THIS_YEAR, reset_at: null }], error: null }
+    const res = await consumeFreeQuota(UUID)
+    expect(rpcMock).toHaveBeenCalledWith('consume_free_listing_quota')
+    expect(builder.update).not.toHaveBeenCalled() // istemci tarafı doğrudan yazma YOK
+    expect(res?.freeUsed).toBe(1)
+    expect(res?.canPostFree).toBe(false) // 1 >= limit(1)
+  })
+
+  it('kota dolu ise RPC ok:false → null döner (yeni ücretsiz hak verilmez)', async () => {
+    rpcResult = { data: [{ ok: false, used: 1, yr: THIS_YEAR, reset_at: null }], error: null }
+    const res = await consumeFreeQuota(UUID)
+    expect(res).toBeNull()
+  })
+
+  it('RPC hata verirse → null (sessizce hak tüketmez)', async () => {
+    rpcResult = { data: null, error: { message: 'boom' } }
+    const res = await consumeFreeQuota(UUID)
+    expect(res).toBeNull()
   })
 })
