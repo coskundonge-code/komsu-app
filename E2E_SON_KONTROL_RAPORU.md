@@ -164,7 +164,7 @@ denemez. P0 + P1'ler kapanınca tekrar değerlendirilmeli.
 
 ## 7. P3 (düşük / gürültü)
 
-- **spatial_ref_sys RLS kapalı** (Supabase advisor ERROR): PostGIS sistem tablosu, yalnızca public referans verisi; migration enable etmeyi denedi ama tablo sahipliği nedeniyle tutmadı. Gerçek risk düşük.
+- **spatial_ref_sys RLS kapalı** (Supabase advisor ERROR + 2026-06-08 "kritik" güvenlik e-postası — değerlendirildi): bu PostGIS'in standart EPSG/SRID referans katalogudur (8500 satır, **kullanıcı verisi / PII / sır YOK**; her PostGIS kurulumunda aynı). "Verileriniz ifşa olabilir / veri ihlali" çerçevesi **geçersiz** — okunabilen tek şey herkese açık koordinat-sistemi tanımları. **Diğer tüm public tablolarda RLS açık** (canlı doğrulandı: RLS-kapalı yalnız bu tablo) → kullanıcı verisi açıkta değil. Gerçek (düşük) hijyen sorunu: anon/authenticated bu tabloda INSERT/UPDATE/DELETE/TRUNCATE yetkisine sahip (referans veriyi bozabilir; geri yüklenebilir, ihlal değil). **API'den düzeltilemez:** tablo `supabase_admin` mülkiyetinde; `postgres` rolüyle RLS açılamıyor (`must be owner` 42501) ve yetki revoke edilemiyor (no-op — canlı `has_table_privilege` ile doğrulandı). Kalıcı çözüm Supabase Support / platform-düzeyi yetki gerektirir; aksi halde PostGIS için bilinen advisor false-positive'i olarak kabul edilebilir. **E-posta güvenliği:** böyle e-postalardaki linke tıklamayın; doğrulama doğrudan proje API'siyle yapıldı.
 - **PostGIS extensions in public + `st_estimatedextent` anon-executable**: advisor gürültüsü, uygulama verisi açığa çıkmaz.
 - **CSP `script-src 'unsafe-inline'`**: XSS azaltmayı zayıflatır (Next varsayılan tradeoff). Sertleştirme: nonce-tabanlı CSP.
 - **Chat telefon/video butonları no-op** (`mesajlar/page.tsx:282-287`): özellik yok; butonları gizle.
