@@ -211,7 +211,7 @@ export default function FAQPage() {
         {/* FAQ List */}
         <div className="space-y-3 mb-8">
           {filteredFAQs.length > 0 ? (
-            filteredFAQs.map((faq, idx) => {
+            filteredFAQs.map((faq) => {
               const globalIdx = faqData.indexOf(faq);
               const isExpanded = expandedItems.includes(globalIdx);
 
@@ -304,7 +304,7 @@ export default function FAQPage() {
               href="/yardim"
               className="px-6 py-2 bg-surface border border-primary text-primary font-medium rounded-lg hover:bg-background transition-colors"
             >
-              Yardım Merkezi'ne Dön
+              Yardım Merkezi&apos;ne Dön
             </Link>
           </div>
         </div>

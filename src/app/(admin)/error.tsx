@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { AlertCircle, RefreshCw, Home } from 'lucide-react';
+import { reportClientError } from '@/lib/utils/report-client-error';
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -11,7 +12,7 @@ interface ErrorProps {
 
 export default function AdminError({ error, reset }: ErrorProps) {
   useEffect(() => {
-    console.error('Admin route error:', error);
+    reportClientError(error, { boundary: 'admin-error' });
   }, [error]);
 
   return (
@@ -23,14 +24,14 @@ export default function AdminError({ error, reset }: ErrorProps) {
           </div>
         </div>
 
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">YÃ¶netici Paneli HatasÄ±</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">Yönetici Paneli Hatası</h1>
         <p className="text-gray-600 mb-6">
-          Bu sayfada beklenmedik bir hata oluÅtu. LÃ¼tfen tekrar deneyin.
+          Bu sayfada beklenmedik bir hata oluştu. Lütfen tekrar deneyin.
         </p>
 
         {process.env.NODE_ENV === 'development' && error?.message && (
           <details className="text-left mb-6 p-4 bg-gray-100 rounded-lg border border-gray-300">
-            <summary className="cursor-pointer font-semibold text-gray-700">Hata DetaylarÄ±</summary>
+            <summary className="cursor-pointer font-semibold text-gray-700">Hata Detayları</summary>
             <pre className="mt-3 text-xs text-gray-600 overflow-auto max-h-48 bg-white p-3 rounded border">
               {error.message}
             </pre>
@@ -50,7 +51,7 @@ export default function AdminError({ error, reset }: ErrorProps) {
             className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-primary text-primary font-semibold rounded-lg hover:bg-green-50 transition-colors"
           >
             <Home size={20} />
-            <span>Admin Paneline DÃ¶n</span>
+            <span>Admin Paneline Dön</span>
           </Link>
         </div>
       </div>

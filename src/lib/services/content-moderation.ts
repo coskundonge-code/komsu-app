@@ -1,4 +1,3 @@
-// @ts-nocheck
 // İçerik Moderasyon Sistemi - AI Filtresi + Admin Onay
 
 import { createClient } from '@/lib/supabase/client';
@@ -99,13 +98,6 @@ const SPAM_PATTERNS = [
   /₺\d+.*₺\d+.*₺\d+/g,          // Çoklu fiyat spam
 ];
 
-const PERSONAL_INFO_PATTERNS = [
-  /\b\d{11}\b/g,                  // TC Kimlik No (11 haneli)
-  /\b\d{16}\b/g,                  // Kredi kartı numarası
-  /\bTR\d{24}\b/gi,              // IBAN
-  /\b[A-Z]\d{2}[A-Z]{3}\d{4}\b/g, // Pasaport
-];
-
 // ============ AI CONTENT FILTER ============
 
 /**
@@ -116,7 +108,7 @@ export function analyzeContent(
   text: string,
   title?: string,
   contentType?: ContentType,
-  imageUrls?: string[]
+  _imageUrls?: string[]
 ): ModerationResult {
   const fullText = [title, text].filter(Boolean).join(' ').toLowerCase();
   const categories: AICategory[] = [];
@@ -432,7 +424,7 @@ export async function submitForModeration(
         status,
         ai_score: aiResult.score,
         ai_categories: aiResult.categories,
-        ai_reasoning: aiResult.reasoning,
+        reason: aiResult.reasoning,
         ai_reviewed_at: new Date().toISOString(),
         content_snapshot: content,
         title_snapshot: title || null,
@@ -472,7 +464,7 @@ export async function getModerationQueue(
 
     let query = supabase
       .from('content_moderation')
-      .select('*, profiles:author_id(full_name, avatar_url)', { count: 'exact' })
+      .select('*, profiles:content_moderation_author_id_fkey(full_name, avatar_url)', { count: 'exact' })
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 
@@ -493,14 +485,14 @@ export async function getModerationQueue(
       status: item.status,
       aiScore: item.ai_score,
       aiCategories: item.ai_categories || [],
-      aiReasoning: item.ai_reasoning,
+      aiReasoning: item.reason,
       contentSnapshot: item.content_snapshot,
       titleSnapshot: item.title_snapshot,
       imageUrls: item.image_urls_snapshot,
       priority: item.priority,
       autoApproved: item.auto_approved,
       createdAt: item.created_at,
-      adminNote: item.admin_note,
+      adminNote: item.admin_notes,
     }));
 
     return { items, total: count || 0 };
@@ -524,9 +516,9 @@ export async function approveContent(
       .from('content_moderation')
       .update({
         status: 'published',
-        admin_id: adminId,
-        admin_note: note || null,
-        admin_reviewed_at: new Date().toISOString(),
+        resolved_by: adminId,
+        admin_notes: note || null,
+        resolved_at: new Date().toISOString(),
       })
       .eq('id', moderationId);
 
@@ -552,9 +544,9 @@ export async function rejectContent(
       .from('content_moderation')
       .update({
         status: 'admin_rejected',
-        admin_id: adminId,
-        admin_note: note,
-        admin_reviewed_at: new Date().toISOString(),
+        resolved_by: adminId,
+        admin_notes: note,
+        resolved_at: new Date().toISOString(),
       })
       .eq('id', moderationId);
 
@@ -579,7 +571,7 @@ export async function getModerationStats(): Promise<ModerationStats> {
         .in('status', ['pending_ai', 'pending_admin']),
       supabase.from('content_moderation').select('*', { count: 'exact', head: true })
         .in('status', ['published', 'admin_approved'])
-        .gte('admin_reviewed_at', today),
+        .gte('resolved_at', today),
       supabase.from('content_moderation').select('*', { count: 'exact', head: true })
         .in('status', ['admin_rejected', 'ai_rejected'])
         .gte('created_at', today),

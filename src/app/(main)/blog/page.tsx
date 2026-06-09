@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
+import { getFeedImageUrl } from '@/lib/demo-images'
 import {
   ArrowLeft,
   Calendar,
@@ -14,6 +14,7 @@ import {
 
 interface BlogPost {
   id: number;
+  slug: string;
   title: string;
   excerpt: string;
   image: string;
@@ -26,20 +27,22 @@ interface BlogPost {
 const blogPosts: BlogPost[] = [
   {
     id: 1,
+    slug: "mahallede-guvenlik-nasil-artirabiliriz",
     title: "Mahallede Güvenliği Nasıl Artırabiliriz?",
     excerpt:
       "Komşuluk bağlantılarını güçlendirerek mahallede güvenlik hissi oluşturmanın pratik yollarını öğrenin.",
     image: getFeedImageUrl(1, 600, 400),
     author: "Ayşe Kaya",
     date: "2026-03-08",
-    category: "Güvenlik",
+    category: "Güvenlik İpuçları",
     readTime: "5 dk okuma",
   },
   {
     id: 2,
-    title: "Mahallemiz Yeni Topluluk Özellikleri: Daha İyi Bağlantılar",
+    slug: "mahallem-topluluk-yonetimi",
+    title: "Mahallemiz Topluluk Yönetimi: En İyi Uygulamalar",
     excerpt:
-      "Mahalle gruplarını etkili bir şekilde yönetmek ve aktif bir topluluk oluşturmak için yeni araçlarımızı keşfedin.",
+      "Mahalle gruplarını etkili bir şekilde yönetmek ve aktif bir topluluk oluşturmak için ipuçları.",
     image: getFeedImageUrl(2, 600, 400),
     author: "Mehmet Demir",
     date: "2026-03-06",
@@ -48,127 +51,30 @@ const blogPosts: BlogPost[] = [
   },
   {
     id: 3,
-    title: "Mahallede Komşu Yardım Ağını Etkin Kullanma",
+    slug: "yerel-isletmecilerin-basari-hikayeleri",
+    title: "Yerel İşletmecilerin Başarı Hikayeleri",
     excerpt:
-      "Komşularınızla yardımlaşmak ve birbirini desteklemek için Mahallemiz'in yardım ağı özelliğini nasıl kullanacağınızı öğrenin.",
+      "Cihangir Mahallesinde işletmesini Mahallemiz sayesinde nasıl büyüttüğünü öğrenin.",
     image: getFeedImageUrl(3, 600, 400),
     author: "Zeynep Aydın",
     date: "2026-03-04",
-    category: "İpuçları",
+    category: "İşletme Hikayeleri",
     readTime: "6 dk okuma",
-  },
-  {
-    id: 4,
-    title: "Günceleme: Geliştirilmiş Mahalle İçeriği Paylaşımı",
-    excerpt:
-      "Mahalle sakinlerinin birbirlerine yardım etmesi için tasarlanmış yeni güvenlik ve gizlilik özelliklerini keşfet.",
-    image: getFeedImageUrl(4, 600, 400),
-    author: "Mahallemiz Ekibi",
-    date: "2026-03-01",
-    category: "Güncellemeler",
-    readTime: "4 dk okuma",
-  },
-  {
-    id: 5,
-    title: "Cihangir Mahallesi: Topluluk Birliği Başarı Hikayesi",
-    excerpt:
-      "Nasıl bir mahalle Mahallemiz sayesinde daha güvenli ve bağlı bir topluluk haline geldiğini gördük.",
-    image: getFeedImageUrl(5, 600, 400),
-    author: "Ali Yılmaz",
-    date: "2026-02-28",
-    category: "Topluluk",
-    readTime: "8 dk okuma",
-  },
-  {
-    id: 6,
-    title: "Mahallemiz'de Çevrimiçi Güvenlik ve Gizlilik Rehberi",
-    excerpt:
-      "Platformda güvenli kalmanın ve mahallenizdeki mevcut tehditleri tanımanın pratik yolları.",
-    image: getFeedImageUrl(6, 600, 400),
-    author: "Dr. Fatih Özer",
-    date: "2026-02-25",
-    category: "Güvenlik",
-    readTime: "6 dk okuma",
-  },
-  {
-    id: 7,
-    title: "Beşiktaş İlk Mahalle Pikniği: Komşuları Bir Araya Getirdi",
-    excerpt:
-      "Mahalle sakinlerinin ilk kez buluştuğu etkinlikle daha güçlü topluluk bağları oluştu.",
-    image: getFeedImageUrl(7, 600, 400),
-    author: "Emine Şahin",
-    date: "2026-02-22",
-    category: "Topluluk",
-    readTime: "5 dk okuma",
-  },
-  {
-    id: 8,
-    title: "Mahallemiz Mobilini Verimli Kullanma: Pro İpuçları",
-    excerpt:
-      "Mobil uygulamayı en etkili şekilde kullanarak mahalle bağlantılarınızı yoğunlaştırın.",
-    image: getFeedImageUrl(8, 600, 400),
-    author: "Seren Tuna",
-    date: "2026-02-20",
-    category: "İpuçları",
-    readTime: "3 dk okuma",
-  },
-  {
-    id: 9,
-    title: "Mahallede Yeşil Alan Projesi: Topluluk Bahçesi Kurma Rehberi",
-    excerpt:
-      "Atıl alanları yeşil bahçelere dönüştürerek mahalle halkını bir araya getirin.",
-    image: getFeedImageUrl(9, 600, 400),
-    author: "Canan Çelik",
-    date: "2026-02-18",
-    category: "İpuçları",
-    readTime: "7 dk okuma",
-  },
-  {
-    id: 10,
-    title: "Mahallede Yeni Komşuları Tanıma: Sosyal Rehberi",
-    excerpt:
-      "Mahalle topluluğunu genişletmek ve yeni komşularla sağlıklı ilişkiler kurmak için stratejiler.",
-    image: getFeedImageUrl(10, 600, 400),
-    author: "Hakan Özdemir",
-    date: "2026-02-15",
-    category: "Topluluk",
-    readTime: "5 dk okuma",
-  },
-  {
-    id: 11,
-    title: "Mahallede Güvenlik Gözetim Sistemi Kurma Tartışması",
-    excerpt:
-      "Mahallenin güvenliğini artırmak için yapılacak ortak çalışmalar ve hukuki çerçeve.",
-    image: getFeedImageUrl(11, 600, 400),
-    author: "Murat Kaplan",
-    date: "2026-02-12",
-    category: "Güvenlik",
-    readTime: "8 dk okuma",
-  },
-  {
-    id: 12,
-    title: "Mahallemiz İpuçları: Daha Etkili İçerik Paylaşımı",
-    excerpt:
-      "Mahalle haberlerinizi nasıl daha geniş bir kitleye ulaştıracağınızı ve katılımı nasıl artıracağınızı öğrenin.",
-    image: getFeedImageUrl(12, 600, 400),
-    author: "Leyla Şener",
-    date: "2026-02-10",
-    category: "İpuçları",
-    readTime: "4 dk okuma",
   },
 ];
 
-const categories = ["Tümü", "Güncellemeler", "Topluluk", "İpuçları", "Güvenlik"];
+const categories = ["Tümü", "Güvenlik İpuçları", "Topluluk", "İşletme Hikayeleri"];
 
 export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState("Tümü");
 
   const featuredPost = blogPosts[0];
+  const showFeatured = selectedCategory === "Tümü";
 
   const filteredPosts =
     selectedCategory === "Tümü"
       ? blogPosts.slice(1)
-      : blogPosts.slice(1).filter((post) => post.category === selectedCategory);
+      : blogPosts.filter((post) => post.category === selectedCategory);
 
   const displayedPosts = filteredPosts.slice(0, 6);
 
@@ -200,8 +106,9 @@ export default function BlogPage() {
 
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Featured Post - Large Card */}
+        {showFeatured && (
         <section className="mb-16">
-          <Link href={`#post-${featuredPost.id}`}>
+          <Link href={`/blog/${featuredPost.slug}`}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-surface rounded-xl border border-border p-8 hover:border-primary hover:shadow-lg transition-all duration-300 group cursor-pointer">
               {/* Image */}
               <div className="relative h-64 md:h-96 rounded-lg overflow-hidden">
@@ -255,6 +162,7 @@ export default function BlogPage() {
             </div>
           </Link>
         </section>
+        )}
 
         {/* Category Filter Chips */}
         <section className="mb-12">
@@ -289,7 +197,7 @@ export default function BlogPage() {
           {displayedPosts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {displayedPosts.map((post) => (
-                <Link key={post.id} href={`#post-${post.id}`}>
+                <Link key={post.id} href={`/blog/${post.slug}`}>
                   <div className="h-full bg-surface rounded-xl border border-border overflow-hidden hover:border-primary hover:shadow-lg transition-all duration-200 group">
                     {/* Image */}
                     <div className="relative h-48 overflow-hidden bg-gray-100">
@@ -367,7 +275,7 @@ export default function BlogPage() {
         {/* Footer */}
         <div className="border-t border-border bg-surface rounded-t-lg py-8 px-8 text-center">
           <p className="text-sm text-text-muted mb-6">
-            © 2026 Mahallemiz — Trendex Lojistik tarafından geliştirilmiştir.
+            © 2026 Mahallemiz — Consulting Partners tarafından geliştirilmiştir.
           </p>
           <div className="flex items-center justify-center gap-6 flex-wrap">
             <Link

@@ -12,6 +12,9 @@
 
 # testing
 /coverage
+# Playwright e2e artifacts (regenerated each run)
+/playwright-report/
+/test-results/
 
 # next.js
 /.next/
@@ -84,8 +87,15 @@ Thumbs.db
 node_modules
 
 .claude/worktrees/
+.claude/launch.json
+.claude/settings.local.json
 # local helper log (auto-generated)
 commit-push-coskun.log
 
 # Local run logs (commit-push-coskun.log vb.)
+*.log
+
+# regen artifacts
+src/lib/supabase/types.ts.bak
+regen-types-error.txt
 *.log

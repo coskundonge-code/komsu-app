@@ -1,4 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { rateLimit, getClientIp, rateLimitResponse } from '@/lib/rate-limit'
+import { createClient as createServerClient } from '@/lib/supabase/server'
+import { createClient as createAdminClient } from '@supabase/supabase-js'
+import { compareDocuments, parseEdevletResult } from '@/lib/services/edevlet-match'
 
 /**
  * POST /api/verify-document
@@ -30,6 +34,29 @@ const tcPattern = /^[1-9]\d{10}$/
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit: IP başına 5 doğrulama denemesi / 10 dakika
+    // (eDevlet scraper pahalı + brute-force barkod denemelerini engeller)
+    const ip = getClientIp(request)
+    const rl = await rateLimit(`verify-doc:${ip}`, { limit: 5, windowMs: 10 * 60_000 })
+    if (!rl.success) return rateLimitResponse(rl) as any
+
+    // Oturum zorunlu: doğrulama her zaman giriş yapmış bir kullanıcıya bağlıdır.
+    // Hem rozeti onun adına kalıcı yazmak hem de anonim brute-force'u engellemek için.
+    const supabase = await createServerClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      return NextResponse.json(
+        { verified: false, message: 'Bu işlem için giriş yapmalısınız.' },
+        { status: 401 }
+      )
+    }
+
+    // Açık 2: Kullanıcı başına rate limit (IP'ye EK). Paylaşımlı IP arkasındaki
+    // (okul/yurt/şirket NAT) masum kullanıcıları tek bir saldırganın IP kotasını
+    // tüketmesinden korur; ayrıca tek kullanıcının kendi brute-force'unu da sınırlar.
+    const rlUser = await rateLimit(`verify-doc-user:${user.id}`, { limit: 5, windowMs: 10 * 60_000 })
+    if (!rlUser.success) return rateLimitResponse(rlUser) as any
+
     const body: VerifyRequest = await request.json()
     const { code, tcKimlikNo, documentInfo } = body
 
@@ -80,6 +107,14 @@ export async function POST(request: NextRequest) {
     if (scrapedData) {
       const comparison = compareDocuments(scrapedData, documentInfo || {})
 
+      // Açık 1 (tamamlayıcı): Gerçek doğrulama başarılıysa e-Devlet rozetini SUNUCU
+      // tarafında kalıcı yaz. Tek doğruluk kaynağı profiles tablosu; bu yazım yalnızca
+      // service_role ile yapılır (guard trigger'ı bypass eder), böylece kullanıcı
+      // user_metadata üzerinden kendini "doğrulanmış" ilan edemez.
+      if (comparison.isMatch) {
+        await persistEdevletVerified(user.id)
+      }
+
       return NextResponse.json({
         verified: comparison.isMatch,
         message: comparison.isMatch
@@ -99,12 +134,54 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Scraping başarısız olduysa, doğrulamayı reddet (güvenlik)
+    // -------------------------------------------------------------------
+    // Fallback: Scraping başarısız oldu.
+    //
+    // documentInfo (frontend OCR çıktısı) varsa, manuel admin onay kuyruğuna
+    // pending kayıt at; admin paneldeki /admin/dogrulama görsel inceleme
+    // yapacak. documentInfo yoksa eski 503 davranışı.
+    // -------------------------------------------------------------------
     console.warn('Scraping failed:', scrapeError)
+
+    if (documentInfo && (documentInfo.fullName || documentInfo.address)) {
+      try {
+        const admin = getAdminClient()
+        if (admin) {
+          // Aynı barkod için pending kayıt varsa upsert (idempotency)
+          await admin.from('address_verifications').upsert(
+            {
+              user_id: user.id,
+              verification_status: 'pending',
+              barcode_value: cleanCode,
+              document_uploaded_at: new Date().toISOString(),
+              address_text: [
+                documentInfo.address,
+                documentInfo.neighborhood,
+                documentInfo.district,
+                documentInfo.city,
+              ].filter(Boolean).join(', ') || null,
+            },
+            { onConflict: 'user_id,barcode_value' as any },
+          )
+        }
+      } catch (err) {
+        console.error('[verify-document] manual queue write failed:', err)
+        // pending kayıt başarısız olsa bile kullanıcıya makul mesaj döndür
+      }
+
+      return NextResponse.json({
+        verified: false,
+        pending: true,
+        message: 'Otomatik doğrulama şu anda kullanılamıyor. Belgeniz manuel inceleme kuyruğuna alındı; en geç 24 saat içinde sonuçlandırılacak.',
+        code: cleanCode,
+        mode: 'manual_review',
+        verificationUrl: 'https://www.turkiye.gov.tr/nvi-yerlesim-yeri-ve-diger-adres-belgesi-sorgulama',
+      }, { status: 202 })
+    }
 
     return NextResponse.json({
       verified: false,
-      message: 'Otomatik doğrulama şu anda kullanılamıyor. Lütfen daha sonra tekrar deneyin veya manuel doğrulama yapınız.',
+      message: 'Otomatik doğrulama şu anda kullanılamıyor. Lütfen belgenizi PDF olarak yüklemeyi deneyin (manuel inceleme kuyruğuna alınır) veya daha sonra tekrar deneyin.',
       code: cleanCode,
       mode: 'unavailable',
       verificationUrl: 'https://www.turkiye.gov.tr/nvi-yerlesim-yeri-ve-diger-adres-belgesi-sorgulama'
@@ -116,6 +193,38 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
+}
+
+/**
+ * Service-role Supabase istemcisi. RLS ve guard trigger'ı bypass eder; yalnızca
+ * sunucu tarafı yazımları için (e-Devlet rozeti, manuel inceleme kuyruğu). Anahtar
+ * eksikse null döner (build/env eksikliğinde patlamak yerine sessizce atla).
+ */
+function getAdminClient() {
+  const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+  const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+  if (!SUPABASE_URL || !SERVICE_KEY) return null
+  return createAdminClient(SUPABASE_URL, SERVICE_KEY, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  })
+}
+
+/**
+ * e-Devlet doğrulamasını profiles.edevlet_verified_at sütununa kalıcı yazar.
+ * Tek doğruluk kaynağı budur (middleware buradan okur). guard trigger istemci
+ * yazımını engellediğinden bu yazım service_role ile yapılır.
+ */
+async function persistEdevletVerified(userId: string): Promise<void> {
+  const admin = getAdminClient()
+  if (!admin) {
+    console.error('[verify-document] SERVICE_ROLE_KEY yok; edevlet_verified_at yazılamadı')
+    return
+  }
+  const { error } = await admin
+    .from('profiles')
+    .update({ edevlet_verified_at: new Date().toISOString() })
+    .eq('id', userId)
+  if (error) console.error('[verify-document] edevlet_verified_at yazımı başarısız:', error)
 }
 
 /**
@@ -303,138 +412,6 @@ async function clickDevamButton(page: any): Promise<void> {
   }
 }
 
-/**
- * e-Devlet sonuç sayfası metnini parse et
- */
-function parseEdevletResult(text: string): Record<string, string> {
-  const result: Record<string, string> = {}
-
-  // Ad Soyad
-  const nameMatch = text.match(/(?:Adı?\s*Soyadı?|Ad\s*Soyad)\s*[:\-]?\s*([A-ZÇĞİÖŞÜ\s]+?)(?:\n|T\.C\.|Doğum)/i)
-  if (nameMatch) result.fullName = nameMatch[1].trim()
-
-  // Adres
-  const addressMatch = text.match(/(?:Adres|Yerleşim\s*Yeri)\s*[:\-]?\s*(.+?)(?:\n\n|Belge|Tarih)/i)
-  if (addressMatch) result.address = addressMatch[1].trim().replace(/\s+/g, ' ')
-
-  // Belge türü
-  if (text.includes('Yerleşim Yeri')) {
-    result.documentType = 'Yerleşim Yeri ve Diğer Adres Belgesi'
-  }
-
-  // Düzenleme tarihi
-  const dateMatch = text.match(/(?:Düzenlenme|Düzenleme|Belge)\s*Tarih[i]?\s*[:\-]?\s*(\d{2}[\./]\d{2}[\./]\d{4})/i)
-  if (dateMatch) result.issueDate = dateMatch[1]
-
-  // Geçerlilik tarihi
-  const validMatch = text.match(/(?:Geçerlilik|Son\s*Kullanma)\s*Tarih[i]?\s*[:\-]?\s*(\d{2}[\./]\d{2}[\./]\d{4})/i)
-  if (validMatch) result.validUntil = validMatch[1]
-
-  // Kurum
-  result.issuedBy = 'Nüfus ve Vatandaşlık İşleri Genel Müdürlüğü'
-
-  // Hata kontrolü
-  if (text.includes('Belge bulunamadı') || text.includes('bulunamadı') || text.includes('hatalı')) {
-    result.error = 'Belge bulunamadı veya bilgiler hatalı.'
-  }
-
-  return result
-}
-
-/**
- * Yüklenen PDF bilgileri ile scrape edilen bilgileri karşılaştır
- */
-function compareDocuments(
-  scraped: Record<string, string>,
-  uploaded: Record<string, string>
-): { isMatch: boolean; details: Record<string, any> } {
-  const details: Record<string, any> = {}
-  let matchCount = 0
-  let totalChecked = 0
-
-  // Hata varsa doğrudan false döndür
-  if (scraped.error) {
-    return {
-      isMatch: false,
-      details: { error: scraped.error }
-    }
-  }
-
-  // Ad Soyad karşılaştırma
-  if (scraped.fullName && uploaded.fullName) {
-    totalChecked++
-    const scrapedName = normalizeText(scraped.fullName)
-    const uploadedName = normalizeText(uploaded.fullName)
-    const nameMatch = scrapedName.includes(uploadedName) || uploadedName.includes(scrapedName)
-    details.fullName = { scraped: scraped.fullName, uploaded: uploaded.fullName, match: nameMatch }
-    if (nameMatch) matchCount++
-  }
-
-  // Adres karşılaştırma (mahalle, ilçe, il bazında)
-  if (scraped.address && uploaded.address) {
-    totalChecked++
-    const addressMatch = compareAddresses(scraped.address, uploaded.address)
-    details.address = { scraped: scraped.address, uploaded: uploaded.address, match: addressMatch }
-    if (addressMatch) matchCount++
-  } else if (uploaded.neighborhood || uploaded.district || uploaded.city) {
-    totalChecked++
-    const scrapedAddr = normalizeText(scraped.address || '')
-    let partMatch = false
-    if (uploaded.neighborhood && scrapedAddr.includes(normalizeText(uploaded.neighborhood))) partMatch = true
-    if (uploaded.district && scrapedAddr.includes(normalizeText(uploaded.district))) partMatch = true
-    if (uploaded.city && scrapedAddr.includes(normalizeText(uploaded.city))) partMatch = true
-    details.address = {
-      scraped: scraped.address,
-      uploaded: `${uploaded.neighborhood || ''} ${uploaded.district || ''} ${uploaded.city || ''}`.trim(),
-      match: partMatch
-    }
-    if (partMatch) matchCount++
-  }
-
-  // Eğer hiç karşılaştırılacak bilgi yoksa, belge doğrulandı say
-  // (barkod + TC ile sorgulama zaten yapıldı)
-  if (totalChecked === 0) {
-    return {
-      isMatch: true,
-      details: {
-        note: 'Barkod ve TC Kimlik No ile doğrulama başarılı.',
-        scrapedData: scraped
-      }
-    }
-  }
-
-  return {
-    isMatch: matchCount > 0, // En az bir bilgi eşleşirse doğrula
-    details
-  }
-}
-
-function normalizeText(text: string): string {
-  return text
-    .toUpperCase()
-    .replace(/İ/g, 'I')
-    .replace(/Ğ/g, 'G')
-    .replace(/Ü/g, 'U')
-    .replace(/Ş/g, 'S')
-    .replace(/Ö/g, 'O')
-    .replace(/Ç/g, 'C')
-    .replace(/[^A-Z0-9\s]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-}
-
-function compareAddresses(addr1: string, addr2: string): boolean {
-  const norm1 = normalizeText(addr1)
-  const norm2 = normalizeText(addr2)
-
-  // Birebir eşleşme
-  if (norm1 === norm2) return true
-
-  // Kelime bazlı eşleşme (%60 üstü)
-  const words1 = norm1.split(' ').filter(w => w.length > 2)
-  const words2 = norm2.split(' ').filter(w => w.length > 2)
-  const commonWords = words1.filter(w => words2.includes(w))
-  const matchRatio = commonWords.length / Math.min(words1.length, words2.length)
-
-  return matchRatio >= 0.6
-}
+// SAF eşleştirme mantığı src/lib/services/edevlet-match.ts'e taşındı (K1: ince
+// route + test edilebilir domain). parseEdevletResult & compareDocuments yukarıda
+// import ediliyor; normalizeText & compareAddresses o modülde dahili kullanılır.

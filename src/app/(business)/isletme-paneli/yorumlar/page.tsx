@@ -1,10 +1,20 @@
 'use client';
 
-import { useState } from 'react';
-import { Star, Send, ChevronDown, Filter, ArrowUpDown } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Star, ChevronDown, Filter, ArrowUpDown, Loader2, Store } from 'lucide-react';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
+import { useCurrentUser } from '@/lib/hooks/use-auth';
+import { createClient } from '@/lib/supabase/client';
+
+// NOT (2026-06-07): Bu sayfa eskiden 8 sahte yorumla (mockReviews + demo-images
+// avatarları) çalışıyordu ve "Cevap Ver" düğmesi yalnızca yerel state değiştiriyor,
+// hiçbir yere kaydetmiyordu. Gerçekte `business_reviews` tablosunda CEVAP (reply)
+// kolonu YOK; sahibe reviews üzerinde UPDATE vermek müşteri puanını değiştirmesine
+// yol açar (güven riski). Bu yüzden sayfa artık giriş yapan kullanıcının işletmesine
+// ait GERÇEK yorumları gösteren dürüst, salt-okunur bir panel. Sahip-cevabı özelliği
+// ayrı (kurcalamaya kapalı) bir tabloyla ileride eklenecek. Bkz. TECH_DEBT #12.
 
 const ratingFilters = [
   { id: 'all', label: 'Tümü', stars: null },
@@ -15,105 +25,85 @@ const ratingFilters = [
   { id: '1', label: '1 Yıldız', stars: 1 },
 ];
 
-const mockReviews = [
-  {
-    id: '1',
-    authorName: 'Ayşe Kaya',
-    avatar: getFeedImageUrl(101, 48, 48),
-    rating: 5,
-    date: '2026-03-09',
-    text: 'Harika bir deneyim yaşadım! Personel çok ilgili ve nazik, yemekler lezzetli ve taze. Kesinlikle tekrar gelirim ve arkadaşlarıma tavsiye ederim.',
-    replied: false,
-  },
-  {
-    id: '2',
-    authorName: 'Mert Demir',
-    avatar: getFeedImageUrl(102, 48, 48),
-    rating: 4,
-    date: '2026-03-07',
-    text: 'Genel olarak güzel bir yer. Ortam ve ambiyans çok hoş. Tek sıkıntısı menü biraz daha çeşitli olabilir ama yemek kalitesi iyiydi.',
-    replied: true,
-  },
-  {
-    id: '3',
-    authorName: 'Zeynep Şahin',
-    avatar: getFeedImageUrl(103, 48, 48),
-    rating: 5,
-    date: '2026-03-05',
-    text: 'Muhteşem! Servis hızlı, yemekler damak tadına hitap ediyordu. Fiyatlar da oldukça uygun. Kesinlikle geleceğim.',
-    replied: false,
-  },
-  {
-    id: '4',
-    authorName: 'Fatma Yılmaz',
-    avatar: getFeedImageUrl(104, 48, 48),
-    rating: 3,
-    date: '2026-03-03',
-    text: 'Ortalama bir deneyim. Yemek iyiydi ama bekleme süresi biraz uzundu. Personel ise çok ilgiliydi.',
-    replied: false,
-  },
-  {
-    id: '5',
-    authorName: 'Ahmet Çetin',
-    avatar: getFeedImageUrl(105, 48, 48),
-    rating: 5,
-    date: '2026-03-01',
-    text: 'Birinci sınıf hizmet! Mekan çok güzel tasarlanmış, müzik seviyesi mükemmel, yemekler süper lezzetli. Sahibine teşekkürler!',
-    replied: true,
-  },
-  {
-    id: '6',
-    authorName: 'Seda Eren',
-    avatar: getFeedImageUrl(106, 48, 48),
-    rating: 4,
-    date: '2026-02-27',
-    text: 'Güzel bir mekan, temizlik standartları yüksek. Biraz kalabalık olsa da keyifli bir zaman geçirdim.',
-    replied: false,
-  },
-  {
-    id: '7',
-    authorName: 'Emre Koç',
-    avatar: getFeedImageUrl(107, 48, 48),
-    rating: 5,
-    date: '2026-02-25',
-    text: 'En son ziyaretimiz harika geçti. Yeni menüdeki tatlılar resmen mübarek! Özellikle baklava enfes.',
-    replied: false,
-  },
-  {
-    id: '8',
-    authorName: 'Nuri Polat',
-    avatar: getFeedImageUrl(108, 48, 48),
-    rating: 2,
-    date: '2026-02-23',
-    text: 'Kahveler biraz nötr geldi bana. Ortam güzel ama yemek kalitesi beklenenden düşüktü. Fiyata göre biraz pahalı.',
-    replied: false,
-  },
-];
+interface Review {
+  id: string;
+  authorName: string;
+  avatar: string | null;
+  rating: number;
+  date: string;
+  text: string;
+}
 
-const getAverageRating = (reviews: typeof mockReviews): string => {
+const getAverageRating = (reviews: Review[]): string => {
   if (reviews.length === 0) return '0.0';
   const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
   return (sum / reviews.length).toFixed(1);
 };
 
-const getTotalCount = (reviews: typeof mockReviews) => reviews.length;
-
-const getMonthlyCount = (reviews: typeof mockReviews) => {
-  const now = new Date();
-  const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
-  return reviews.filter((r) => new Date(r.date) > oneMonthAgo).length;
+const getMonthlyCount = (reviews: Review[]) => {
+  const oneMonthAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+  return reviews.filter((r) => r.date && new Date(r.date).getTime() > oneMonthAgo).length;
 };
 
 export default function BusinessPanelReviewsPage() {
+  const { user } = useCurrentUser();
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [hasNoBusiness, setHasNoBusiness] = useState(false);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [openDropdown, setOpenDropdown] = useState(false);
-  const [replyingId, setReplyingId] = useState<string | null>(null);
-  const [replyText, setReplyText] = useState('');
-  const [replies, setReplies] = useState<Record<string, boolean>>({});
   const [sortBy, setSortBy] = useState<'date' | 'rating'>('date');
   const [sortOpen, setSortOpen] = useState(false);
 
-  const filtered = mockReviews.filter((review) => {
+  useEffect(() => {
+    if (!user?.id) return;
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      const supabase = createClient() as any;
+
+      // Giriş yapan kullanıcının işletmesini bul
+      const { data: business, error: bizError } = await supabase
+        .from('businesses')
+        .select('id')
+        .eq('owner_id', user.id)
+        .maybeSingle();
+
+      if (cancelled) return;
+
+      if (bizError || !business) {
+        setHasNoBusiness(true);
+        setLoading(false);
+        return;
+      }
+
+      // O işletmeye ait gerçek yorumları çek (yorum sahibinin adı/avatarı join ile)
+      const { data: reviewData } = await supabase
+        .from('business_reviews')
+        .select('*, profiles!business_reviews_user_id_fkey(full_name, avatar_url)')
+        .eq('business_id', business.id)
+        .order('created_at', { ascending: false });
+
+      if (cancelled) return;
+
+      const mapped: Review[] = ((reviewData as any[]) || []).map((r) => ({
+        id: r.id,
+        authorName: r.profiles?.full_name || 'Anonim',
+        avatar: r.profiles?.avatar_url || null,
+        rating: r.rating || 0,
+        date: r.created_at,
+        text: r.body || '',
+      }));
+
+      setReviews(mapped);
+      setLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id]);
+
+  const filtered = reviews.filter((review) => {
     if (selectedRating === null) return true;
     return review.rating === selectedRating;
   });
@@ -121,23 +111,44 @@ export default function BusinessPanelReviewsPage() {
   const sorted = [...filtered].sort((a, b) => {
     if (sortBy === 'date') {
       return new Date(b.date).getTime() - new Date(a.date).getTime();
-    } else {
-      return b.rating - a.rating;
     }
+    return b.rating - a.rating;
   });
 
-  const handleReplySubmit = (reviewId: string) => {
-    if (replyText.trim()) {
-      setReplies({ ...replies, [reviewId]: true });
-      setReplyText('');
-      setReplyingId(null);
-    }
-  };
-
   const selectedLabel = ratingFilters.find((f) => f.stars === selectedRating)?.label || 'Tümü';
-  const averageRating = getAverageRating(mockReviews);
-  const totalCount = getTotalCount(mockReviews);
-  const monthlyCount = getMonthlyCount(mockReviews);
+  const averageRating = getAverageRating(reviews);
+  const totalCount = reviews.length;
+  const monthlyCount = getMonthlyCount(reviews);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+      </div>
+    );
+  }
+
+  if (hasNoBusiness) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <Store className="w-8 h-8 text-primary" />
+          </div>
+          <h1 className="text-2xl font-bold text-text-primary mb-2">Henüz bir işletmeniz yok</h1>
+          <p className="text-text-muted mb-6">
+            Yorumları görüntülemek için önce bir işletme eklemeniz gerekir.
+          </p>
+          <Link
+            href="/isletme-ekle"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-hover transition-colors"
+          >
+            İşletme Ekle
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -146,8 +157,10 @@ export default function BusinessPanelReviewsPage() {
         <div className="bg-surface rounded-lg shadow-sm border border-border overflow-hidden mb-6 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-text-primary">Müşteri Yorumları Yönetimi</h1>
-              <p className="text-text-muted text-sm mt-1">Müşteri değerlendirmelerini filtreleyin, yanıtlayın ve performansınızı takip edin</p>
+              <h1 className="text-2xl font-bold text-text-primary">Müşteri Yorumları</h1>
+              <p className="text-text-muted text-sm mt-1">
+                İşletmenize gelen değerlendirmeleri filtreleyin ve performansınızı takip edin
+              </p>
             </div>
           </div>
 
@@ -187,11 +200,7 @@ export default function BusinessPanelReviewsPage() {
                             <Star
                               key={i}
                               size={12}
-                              className={
-                                i < filter.stars!
-                                  ? 'fill-yellow-400 text-yellow-400'
-                                  : 'text-gray-300'
-                              }
+                              className={i < filter.stars! ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
                             />
                           ))}
                         </div>
@@ -222,9 +231,7 @@ export default function BusinessPanelReviewsPage() {
                     }}
                     className={cn(
                       'w-full text-left px-4 py-3 text-sm transition-colors',
-                      sortBy === 'date'
-                        ? 'bg-primary text-white font-medium'
-                        : 'text-text-secondary hover:bg-background'
+                      sortBy === 'date' ? 'bg-primary text-white font-medium' : 'text-text-secondary hover:bg-background'
                     )}
                   >
                     En Yeni
@@ -236,9 +243,7 @@ export default function BusinessPanelReviewsPage() {
                     }}
                     className={cn(
                       'w-full text-left px-4 py-3 text-sm transition-colors',
-                      sortBy === 'rating'
-                        ? 'bg-primary text-white font-medium'
-                        : 'text-text-secondary hover:bg-background'
+                      sortBy === 'rating' ? 'bg-primary text-white font-medium' : 'text-text-secondary hover:bg-background'
                     )}
                   >
                     En Yüksek Puan
@@ -271,9 +276,6 @@ export default function BusinessPanelReviewsPage() {
                   ))}
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-xs text-text-muted">Mükemmel</p>
-              </div>
             </div>
           </div>
 
@@ -300,17 +302,23 @@ export default function BusinessPanelReviewsPage() {
               className="bg-surface rounded-lg shadow-sm border border-border p-6 hover:shadow-md transition-shadow"
             >
               {/* Review Header */}
-              <div className="flex items-start gap-4 mb-4">
+              <div className="flex items-start gap-4">
                 {/* Avatar */}
                 <div className="flex-shrink-0">
-                  <Image
-                    src={review.avatar}
-                    alt={review.authorName}
-                    width={48}
-                    height={48}
-                    unoptimized
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
+                  {review.avatar ? (
+                    <Image
+                      src={review.avatar}
+                      alt={review.authorName}
+                      width={48}
+                      height={48}
+                      unoptimized
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold">
+                      {review.authorName[0]?.toUpperCase() || 'A'}
+                    </div>
+                  )}
                 </div>
 
                 {/* Author Info and Stars */}
@@ -318,88 +326,31 @@ export default function BusinessPanelReviewsPage() {
                   <div className="flex items-center justify-between mb-1">
                     <div>
                       <p className="font-semibold text-text-primary">{review.authorName}</p>
-                      <p className="text-xs text-text-muted">
-                        {new Date(review.date).toLocaleDateString('tr-TR', {
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric',
-                        })}
-                      </p>
+                      {review.date && (
+                        <p className="text-xs text-text-muted">
+                          {new Date(review.date).toLocaleDateString('tr-TR', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                          })}
+                        </p>
+                      )}
                     </div>
                     <div className="flex gap-0.5">
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
                           size={16}
-                          className={
-                            i < review.rating
-                              ? 'fill-[#f59e0b] text-[#f59e0b]'
-                              : 'text-[#e0e0e0]'
-                          }
+                          className={i < review.rating ? 'fill-[#f59e0b] text-[#f59e0b]' : 'text-[#e0e0e0]'}
                         />
                       ))}
                     </div>
                   </div>
+                  {review.text && (
+                    <p className="text-text-primary text-sm mt-3 leading-relaxed">{review.text}</p>
+                  )}
                 </div>
               </div>
-
-              {/* Review Text */}
-              <p className="text-text-primary text-sm mb-4 leading-relaxed">{review.text}</p>
-
-              {/* Reply Section */}
-              {replies[review.id] || review.replied ? (
-                <div className="mb-4 p-4 bg-background rounded-lg border border-border">
-                  <p className="text-xs font-semibold text-text-muted mb-2">İŞLETME CEVABI</p>
-                  <p className="text-sm text-text-primary">
-                    {replies[review.id]
-                      ? replyText
-                      : 'Teşekkür ederiz! Yorumunuz için minnettarız. Daha iyi hizmet sunmak için çalışmaya devam edeceğiz.'}
-                  </p>
-                </div>
-              ) : replyingId === review.id ? (
-                <div className="mb-4 p-4 bg-background rounded-lg border border-border">
-                  <textarea
-                    value={replyText}
-                    onChange={(e) => setReplyText(e.target.value)}
-                    placeholder="Müşteriye yanıt yazın..."
-                    className="w-full bg-surface border border-border rounded-lg p-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-30 resize-none mb-3"
-                    rows={3}
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleReplySubmit(review.id)}
-                      className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors font-medium text-sm"
-                    >
-                      <Send className="w-4 h-4" />
-                      Gönder
-                    </button>
-                    <button
-                      onClick={() => {
-                        setReplyingId(null);
-                        setReplyText('');
-                      }}
-                      className="px-4 py-2 border border-border text-text-primary rounded-lg hover:bg-background transition-colors font-medium text-sm"
-                    >
-                      İptal
-                    </button>
-                  </div>
-                </div>
-              ) : null}
-
-              {/* Action Buttons */}
-              {!replies[review.id] && !review.replied && replyingId !== review.id && (
-                <div className="flex gap-3 pt-4 border-t border-border">
-                  <button
-                    onClick={() => setReplyingId(review.id)}
-                    className="text-sm font-medium text-primary hover:text-primary-hover transition-colors"
-                  >
-                    Cevap Ver
-                  </button>
-                  <button className="text-sm font-medium text-text-muted hover:text-text-primary transition-colors">
-                    Raporla
-                  </button>
-                </div>
-              )}
             </div>
           ))}
         </div>
@@ -418,13 +369,13 @@ export default function BusinessPanelReviewsPage() {
         )}
 
         {/* Star Rating Distribution */}
-        {sorted.length > 0 && (
+        {reviews.length > 0 && (
           <div className="bg-surface rounded-lg shadow-sm border border-border p-6 mt-8">
             <h3 className="text-lg font-bold text-text-primary mb-4">Yıldız Dağılımı</h3>
             <div className="space-y-3">
               {[5, 4, 3, 2, 1].map((rating) => {
-                const count = mockReviews.filter((r) => r.rating === rating).length;
-                const percentage = (count / mockReviews.length) * 100;
+                const count = reviews.filter((r) => r.rating === rating).length;
+                const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
 
                 return (
                   <div key={rating} className="flex items-center gap-3">
@@ -433,11 +384,7 @@ export default function BusinessPanelReviewsPage() {
                         <Star
                           key={i}
                           size={14}
-                          className={
-                            i < rating
-                              ? 'fill-[#f59e0b] text-[#f59e0b]'
-                              : 'text-[#e0e0e0]'
-                          }
+                          className={i < rating ? 'fill-[#f59e0b] text-[#f59e0b]' : 'text-[#e0e0e0]'}
                         />
                       ))}
                     </div>

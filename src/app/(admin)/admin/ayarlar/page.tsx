@@ -67,8 +67,8 @@ export default function AyarlarPage() {
       premiumPrice: 499,
     },
     api: {
-      apiKey: 'sk_live_1a2b3c4d5e6f7g8h9i0j',
-      apiSecret: 'sk_secret_1a2b3c4d5e6f7g8h9i0j',
+      apiKey: '',
+      apiSecret: '',
     },
   });
 

@@ -2,9 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   typescript: {
-    // TODO: Remove once all TypeScript errors are fixed (tracked in CI/CD pipeline)
-    // Current known issues: service files with incomplete DB integration
-    ignoreBuildErrors: true,
+    // Production build TypeScript hatalarını yakalar.
+    // Geçici @ts-nocheck'lar:
+    //   - src/lib/services/payment.ts (K1: payments tablosu eklenince kaldırılacak)
+    //   - src/app/api/payment/callback/route.ts (K1)
+    ignoreBuildErrors: false,
   },
   // Image optimization
   images: {

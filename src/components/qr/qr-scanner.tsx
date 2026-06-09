@@ -40,7 +40,7 @@ export default function QRScanner({ isOpen, onClose, onScan, title = 'QR Kod Tar
           stopCamera()
         }
       }, 3000)
-    } catch (err) {
+    } catch {
       setError('Kamera erişimi sağlanamadı. Lütfen kamera izni verin veya manuel giriş kullanın.')
     }
   }

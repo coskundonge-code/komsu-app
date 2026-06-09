@@ -11,11 +11,8 @@ import {
   Clock,
   AlertCircle,
   Eye,
-  EyeOff,
   Plus,
-  ChevronRight,
 } from 'lucide-react';
-import Image from 'next/image';
 
 interface FormData {
   title: string;
@@ -192,7 +189,7 @@ export default function CreateEventPage() {
       const startDatetime = `${formData.startDate}T${formData.startTime}:00`;
       const endDatetime = `${formData.endDate}T${formData.endTime}:00`;
 
-      const { data, error } = await createEvent({
+      const { error } = await createEvent({
         title: formData.title,
         description: formData.description,
         start_date: startDatetime,

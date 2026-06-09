@@ -2,7 +2,6 @@ import React from 'react';
 import {
   MessageCircle,
   Heart,
-  Bell,
   Share2,
   User,
   AlertCircle,

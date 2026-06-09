@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { ChevronLeft, Search, Send, Image as ImageIcon, Smile, MessageCirclePlus, Phone, Video, MessageSquare, ShoppingBag, Bell } from "lucide-react";
+import React, { Suspense, useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { ChevronLeft, Search, Send, Image as ImageIcon, Smile, MessageCirclePlus, Phone, Video, MessageSquare, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useCurrentUser } from "@/lib/hooks/use-auth";
@@ -10,9 +11,13 @@ import type { Database } from "@/lib/supabase/types";
 
 const createClient = () => createTypedClient()
 
-type ConversationRow = Database['public']['Tables']['conversations']['Row']
-type MessageRow = Database['public']['Tables']['messages']['Row']
+// Performans sınırları: sınırsız çekim büyük hesaplarda ağ/bellek yükü yaratır.
+const CONVERSATIONS_PAGE_SIZE = 100; // sohbet listesinde en güncel N konuşma
+const MESSAGES_PAGE_SIZE = 50; // bir sohbet açıldığında ilk yüklenecek son N mesaj
+
 type ProfileRow = Database['public']['Tables']['profiles']['Row']
+
+type TabKey = "all" | "unread" | "marketplace";
 
 interface Conversation {
   id: string;
@@ -35,305 +40,38 @@ interface Message {
   userId?: string;
 }
 
-const mockConversations: Conversation[] = [
-  {
-    id: "1",
-    name: "Ahmet Yılmaz",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ahmet",
-    lastMessage: "Temizlik malzemeleri hakkında bilgi alabilir miyim?",
-    time: "2 sa",
-    unread: 2,
-    online: true,
-    type: "personal",
-  },
-  {
-    id: "2",
-    name: "Fatma Şahin",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=fatma",
-    lastMessage: "Tükenmez kalem ve defter bölüştürebiliriz",
-    time: "5 sa",
-    unread: 1,
-    online: false,
-    type: "personal",
-  },
-];
+// ---------------------------------------------------------------------------
+// Conversation List — module-level component (props in).
+// Defining this INSIDE the page caused React to remount it on every keystroke,
+// which is why focus jumped out of inputs while typing. Keeping it at module
+// scope gives it a stable identity across renders.
+// ---------------------------------------------------------------------------
+interface ConversationListProps {
+  conversations: Conversation[];
+  filteredConversations: Conversation[];
+  searchQuery: string;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  activeTab: TabKey;
+  setActiveTab: React.Dispatch<React.SetStateAction<TabKey>>;
+  unreadCount: number;
+  marketplaceCount: number;
+  selectedId: string;
+  setSelectedId: React.Dispatch<React.SetStateAction<string>>;
+}
 
-const mockMessages: Record<string, Array<Message>> = {
-  "1": [
-    { id: "1", text: "Merhaba! Halı temizleme hakkında bir sorum vardı.", time: "10:30", isOwn: true },
-    { id: "2", text: "Merhaba! Elbette, yardımcı olabilirim. Ne tür halı temizliği arıyorsunuz?", time: "10:35", isOwn: false },
-    { id: "3", text: "Oturma odasındaki halı için uygun bir yöntem önerebilir misiniz?", time: "10:40", isOwn: true },
-    { id: "4", text: "Taze lekeler için buz ve limonlu su denemekten başlayabilirsiniz.", time: "10:45", isOwn: false },
-  ],
-  "2": [
-    { id: "1", text: "Merhabalar, çocuklara kalem ve defter satın aldım ama çok fazla.", time: "08:20", isOwn: false },
-    { id: "2", text: "İlgilenirseniz bölüştürebiliriz.", time: "08:25", isOwn: false },
-    { id: "3", text: "Çok iyi! Kaç kalem ve defter var?", time: "09:00", isOwn: true },
-  ],
-};
-
-export default function MessagesPage() {
-  const { user, profile, loading: authLoading } = useCurrentUser();
-  const [selectedId, setSelectedId] = useState("");
-  const [isMobile, setIsMobile] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [messageText, setMessageText] = useState("");
-  const [activeTab, setActiveTab] = useState<"all" | "unread" | "marketplace">("all");
-
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [loadingConversations, setLoadingConversations] = useState(true);
-  const [loadingMessages, setLoadingMessages] = useState(false);
-
-  const selected = conversations.find((c) => c.id === selectedId);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-
-  // Fetch conversations from Supabase
-  useEffect(() => {
-    if (!user || authLoading) return;
-
-    async function loadConversations() {
-      setLoadingConversations(true);
-      try {
-        const supabase = createClient();
-
-        // Fetch conversations where user is involved
-        // Note: conversations table is for marketplace/system use - would need conversation_participants for user lookups
-        // For now, using mock data as conversations structure doesn't have direct user_id fields
-        const { data: dbConversations, error } = await supabase
-          .from('conversations')
-          .select(`
-            id,
-            type,
-            listing_id,
-            title,
-            created_at,
-            updated_at
-          `)
-          .order('updated_at', { ascending: false })
-
-        if (error) {
-          console.error('Error fetching conversations:', error);
-          setConversations([]);
-          return;
-        }
-
-        if (!dbConversations || dbConversations.length === 0) {
-          setConversations([]);
-          return;
-        }
-
-        // Fetch participants and messages for each conversation
-        const conversationPromises = (dbConversations as any[]).map(async (conv: any) => {
-          // Get the other participant from conversation_participants
-          const { data: participants } = await supabase
-            .from('conversation_participants')
-            .select('user_id')
-            .eq('conversation_id', conv.id);
-
-          const otherUserId = (participants as any[])?.find((p: any) => p.user_id !== user.id)?.user_id || '';
-
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', otherUserId)
-            .single() as { data: any };
-
-          // Get last message
-          const { data: lastMsg } = await supabase
-            .from('messages')
-            .select('body, created_at')
-            .eq('conversation_id', conv.id)
-            .order('created_at', { ascending: false })
-            .limit(1)
-            .single() as { data: any };
-
-          const timeAgo = formatTimeAgo(conv.updated_at || conv.created_at);
-
-          return {
-            id: conv.id,
-            name: profileData?.full_name || 'Unknown',
-            avatar: profileData?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${otherUserId}`,
-            lastMessage: lastMsg?.body || 'No messages yet',
-            time: timeAgo,
-            unread: 0,
-            online: false,
-            type: 'personal' as const,
-            otherUserId,
-            otherUserProfile: profileData,
-          };
-        });
-
-        const loadedConversations = await Promise.all(conversationPromises);
-        setConversations(loadedConversations.length > 0 ? loadedConversations : []);
-      } catch (err) {
-        console.error('Error loading conversations:', err);
-        setConversations([]);
-      } finally {
-        setLoadingConversations(false);
-      }
-    }
-
-    loadConversations();
-
-    // Setup realtime subscription for conversations
-    const supabase = createClient();
-    const channel = supabase.channel('conversations_changes')
-      .on('postgres_changes', {
-        event: '*',
-        schema: 'public',
-        table: 'conversations'
-      }, () => {
-        // Reload conversations on any change
-        loadConversations();
-      })
-      .subscribe();
-
-    return () => {
-      channel.unsubscribe();
-    };
-  }, [user, authLoading]);
-
-  // Fetch messages for selected conversation
-  useEffect(() => {
-    if (!selectedId || !user) {
-      setMessages([]);
-      return;
-    }
-
-    async function loadMessages() {
-      setLoadingMessages(true);
-      try {
-        const supabase = createClient();
-
-        const { data: dbMessages, error } = await supabase
-          .from('messages')
-          .select('id, sender_id, body, created_at')
-          .eq('conversation_id', selectedId)
-          .order('created_at', { ascending: true });
-
-        if (error) {
-          console.error('Error fetching messages:', error);
-          setMessages([]);
-          return;
-        }
-
-        if (!dbMessages || dbMessages.length === 0) {
-          setMessages([]);
-          return;
-        }
-
-        const formattedMessages: Message[] = (dbMessages as any[]).map((msg: any) => ({
-          id: msg.id,
-          text: msg.body,
-          time: formatTimeForDisplay(msg.created_at),
-          isOwn: msg.sender_id === user.id,
-          userId: msg.sender_id,
-        }));
-
-        setMessages(formattedMessages);
-      } catch (err) {
-        console.error('Error loading messages:', err);
-        setMessages([]);
-      } finally {
-        setLoadingMessages(false);
-      }
-    }
-
-    loadMessages();
-
-    // Setup realtime subscription for messages
-    const supabase = createClient();
-    const channel = supabase.channel(`messages_${selectedId}`)
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'messages',
-        filter: `conversation_id=eq.${selectedId}`
-      }, (payload: any) => {
-        const newMsg: Message = {
-          id: payload.new.id,
-          text: payload.new.body,
-          time: formatTimeForDisplay(payload.new.created_at),
-          isOwn: payload.new.sender_id === user.id,
-          userId: payload.new.sender_id,
-        };
-        setMessages((prev) => [...prev, newMsg]);
-      })
-      .subscribe();
-
-    return () => {
-      channel.unsubscribe();
-    };
-  }, [selectedId, user]);
-
-  const handleSend = async () => {
-    if (!messageText.trim() || !selectedId || !user) return;
-
-    const messageContent = messageText.trim();
-    setMessageText("");
-
-    try {
-      const supabase = createClient();
-
-      const { data, error } = await supabase
-        .from('messages')
-        .insert({
-          conversation_id: selectedId,
-          sender_id: user.id,
-          body: messageContent,
-        })
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error sending message:', error);
-        // Add as optimistic update
-        const now = new Date();
-        const timeStr = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
-        const newMsg: Message = {
-          id: `msg-${Date.now()}`,
-          text: messageContent,
-          time: timeStr,
-          isOwn: true,
-        };
-        setMessages((prev) => [...prev, newMsg]);
-      }
-    } catch (err) {
-      console.error('Error sending message:', err);
-      // Fallback to optimistic update
-      const now = new Date();
-      const timeStr = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
-      const newMsg: Message = {
-        id: `msg-${Date.now()}`,
-        text: messageContent,
-        time: timeStr,
-        isOwn: true,
-      };
-      setMessages((prev) => [...prev, newMsg]);
-    }
-  };
-
-  let filteredConversations = conversations.filter((c) => {
-    if (searchQuery && !c.name.toLowerCase().includes(searchQuery.toLowerCase()) && !c.lastMessage.toLowerCase().includes(searchQuery.toLowerCase())) {
-      return false;
-    }
-    if (activeTab === "unread" && c.unread === 0) return false;
-    if (activeTab === "marketplace" && c.type !== "marketplace") return false;
-    return true;
-  });
-
-  const unreadCount = conversations.reduce((sum, c) => sum + c.unread, 0);
-  const marketplaceCount = conversations.filter((c) => c.type === "marketplace").reduce((sum, c) => sum + c.unread, 0);
-
-  // Conversation List Component
-  const ConversationList = () => (
+function ConversationList({
+  conversations,
+  filteredConversations,
+  searchQuery,
+  setSearchQuery,
+  activeTab,
+  setActiveTab,
+  unreadCount,
+  marketplaceCount,
+  selectedId,
+  setSelectedId,
+}: ConversationListProps) {
+  return (
     <div className="flex flex-col h-full bg-surface border-r border-border">
       {/* Header */}
       <div className="p-4 border-b border-border">
@@ -481,9 +219,33 @@ export default function MessagesPage() {
       </div>
     </div>
   );
+}
 
-  // Chat View Component
-  const ChatView = () => (
+// ---------------------------------------------------------------------------
+// Chat View — module-level component (props in). Same remount fix as above:
+// this used to be redefined on every render, so the message input lost focus
+// after each character.
+// ---------------------------------------------------------------------------
+interface ChatViewProps {
+  isMobile: boolean;
+  selected: Conversation | undefined;
+  messages: Message[];
+  messageText: string;
+  setMessageText: React.Dispatch<React.SetStateAction<string>>;
+  handleSend: () => void;
+  setSelectedId: React.Dispatch<React.SetStateAction<string>>;
+}
+
+function ChatView({
+  isMobile,
+  selected,
+  messages,
+  messageText,
+  setMessageText,
+  handleSend,
+  setSelectedId,
+}: ChatViewProps) {
+  return (
     <div className="flex flex-col h-full bg-surface">
       {/* Chat Header */}
       <div className="flex items-center justify-between gap-3 p-4 border-b border-border bg-surface shadow-sm">
@@ -578,12 +340,339 @@ export default function MessagesPage() {
       </div>
     </div>
   );
+}
+
+function MessagesContent() {
+  const { user, loading: authLoading } = useCurrentUser();
+  const searchParams = useSearchParams();
+  // Conversation id passed in by "mesaj gönder" buttons (e.g. /mesajlar?selected=<id>).
+  const selectedParam = searchParams.get("selected") ?? "";
+
+  const [selectedId, setSelectedId] = useState(selectedParam);
+  const [isMobile, setIsMobile] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [messageText, setMessageText] = useState("");
+  const [activeTab, setActiveTab] = useState<TabKey>("all");
+
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [, setLoadingConversations] = useState(true);
+  const [, setLoadingMessages] = useState(false);
+
+  const selected = conversations.find((c) => c.id === selectedId);
+
+  // Open the conversation requested via the URL (?selected=...). Runs on mount
+  // and whenever the param changes (e.g. tapping "mesaj gönder" again from
+  // another page while already on /mesajlar).
+  useEffect(() => {
+    if (selectedParam) setSelectedId(selectedParam);
+  }, [selectedParam]);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  // Fetch conversations from Supabase
+  useEffect(() => {
+    if (!user || authLoading) return;
+
+    async function loadConversations() {
+      setLoadingConversations(true);
+      try {
+        const supabase = createClient();
+
+        // Kullanıcının katılımcı olduğu konuşmalar (RLS süzer). En güncel N ile
+        // sınırlı — sınırsız çekim büyük hesaplarda performans sorunudur.
+        const { data: dbConversations, error } = await supabase
+          .from('conversations')
+          .select(`
+            id,
+            type,
+            listing_id,
+            title,
+            created_at,
+            updated_at
+          `)
+          .order('updated_at', { ascending: false })
+          .limit(CONVERSATIONS_PAGE_SIZE)
+
+        if (error) {
+          console.error('Error fetching conversations:', error);
+          setConversations([]);
+          return;
+        }
+
+        if (!dbConversations || dbConversations.length === 0) {
+          setConversations([]);
+          return;
+        }
+
+        const convList = dbConversations as any[];
+        const convIds = convList.map((c) => c.id);
+
+        // ── N+1 yerine TOPLU sorgular ─────────────────────────────────────────
+        // Önceki tasarım her konuşma için 3 ayrı sorgu atıyordu (katılımcı +
+        // profil + son mesaj) → 3×N+1 yuvarlak gidiş. Artık tüm konuşmalar için
+        // 3 toplu sorgu. RLS her sorguda aynen geçerli (yalnızca kendi
+        // konuşmaları döner).
+
+        // 1) Tüm konuşmaların katılımcıları tek sorguda → karşı taraf eşlemesi.
+        const { data: allParticipants } = await supabase
+          .from('conversation_participants')
+          .select('conversation_id, user_id')
+          .in('conversation_id', convIds);
+
+        const otherUserByConv = new Map<string, string>();
+        for (const p of ((allParticipants as any[]) || [])) {
+          if (p.user_id !== user?.id && !otherUserByConv.has(p.conversation_id)) {
+            otherUserByConv.set(p.conversation_id, p.user_id);
+          }
+        }
+
+        // 2) Karşı tarafların profilleri tek sorguda.
+        const otherUserIds = Array.from(
+          new Set(Array.from(otherUserByConv.values()).filter(Boolean))
+        );
+        const profileById = new Map<string, any>();
+        if (otherUserIds.length > 0) {
+          const { data: profiles } = await supabase
+            .from('profiles')
+            .select('*')
+            .in('id', otherUserIds);
+          for (const pr of ((profiles as any[]) || [])) {
+            profileById.set(pr.id, pr);
+          }
+        }
+
+        // 3) Konuşma başına SON mesaj tek RPC ile (DISTINCT ON; SECURITY INVOKER
+        //    olduğu için messages RLS'i korunur — IDOR yok).
+        const lastMsgByConv = new Map<string, any>();
+        const { data: lastMsgs } = await (supabase.rpc as any)('get_last_messages', {
+          p_conversation_ids: convIds,
+        });
+        for (const lm of ((lastMsgs as any[]) || [])) {
+          lastMsgByConv.set(lm.conversation_id, lm);
+        }
+
+        // Konuşma sırasını (updated_at desc) koruyarak birleştir.
+        const loadedConversations: Conversation[] = convList.map((conv) => {
+          const otherUserId = otherUserByConv.get(conv.id) || '';
+          const profileData = profileById.get(otherUserId);
+          const lastMsg = lastMsgByConv.get(conv.id);
+          const timeAgo = formatTimeAgo(conv.updated_at || conv.created_at);
+
+          return {
+            id: conv.id,
+            name: profileData?.full_name || 'Unknown',
+            avatar: profileData?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${otherUserId}`,
+            lastMessage: lastMsg?.body || 'No messages yet',
+            time: timeAgo,
+            unread: 0,
+            online: false,
+            type: 'personal' as const,
+            otherUserId,
+            otherUserProfile: profileData,
+          };
+        });
+
+        setConversations(loadedConversations);
+      } catch (err) {
+        console.error('Error loading conversations:', err);
+        setConversations([]);
+      } finally {
+        setLoadingConversations(false);
+      }
+    }
+
+    loadConversations();
+
+    // Setup realtime subscription for conversations
+    const supabase = createClient();
+    const channel = supabase.channel('conversations_changes')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'conversations'
+      }, () => {
+        // Reload conversations on any change
+        loadConversations();
+      })
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [user, authLoading]);
+
+  // Fetch messages for selected conversation
+  useEffect(() => {
+    if (!selectedId || !user) {
+      setMessages([]);
+      return;
+    }
+
+    async function loadMessages() {
+      setLoadingMessages(true);
+      try {
+        const supabase = createClient();
+
+        // Son N mesajı çek (en yeni → en eski), sonra göstermek için ters çevir.
+        // Sınırsız çekim yerine sayfalı: uzun sohbetlerde ilk yük hafif kalır;
+        // yeni mesajlar zaten realtime INSERT aboneliğiyle eklenir.
+        const { data: dbMessages, error } = await supabase
+          .from('messages')
+          .select('id, sender_id, body, created_at')
+          .eq('conversation_id', selectedId)
+          .order('created_at', { ascending: false })
+          .limit(MESSAGES_PAGE_SIZE);
+
+        if (error) {
+          console.error('Error fetching messages:', error);
+          setMessages([]);
+          return;
+        }
+
+        if (!dbMessages || dbMessages.length === 0) {
+          setMessages([]);
+          return;
+        }
+
+        const formattedMessages: Message[] = [...(dbMessages as any[])]
+          .reverse()
+          .map((msg: any) => ({
+            id: msg.id,
+            text: msg.body,
+            time: formatTimeForDisplay(msg.created_at),
+            isOwn: msg.sender_id === user?.id,
+            userId: msg.sender_id,
+          }));
+
+        setMessages(formattedMessages);
+      } catch (err) {
+        console.error('Error loading messages:', err);
+        setMessages([]);
+      } finally {
+        setLoadingMessages(false);
+      }
+    }
+
+    loadMessages();
+
+    // Setup realtime subscription for messages
+    const supabase = createClient();
+    const channel = supabase.channel(`messages_${selectedId}`)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'messages',
+        filter: `conversation_id=eq.${selectedId}`
+      }, (payload: any) => {
+        const newMsg: Message = {
+          id: payload.new.id,
+          text: payload.new.body,
+          time: formatTimeForDisplay(payload.new.created_at),
+          isOwn: payload.new.sender_id === user.id,
+          userId: payload.new.sender_id,
+        };
+        setMessages((prev) => [...prev, newMsg]);
+      })
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [selectedId, user]);
+
+  const handleSend = async () => {
+    if (!messageText.trim() || !selectedId || !user) return;
+
+    const messageContent = messageText.trim();
+    setMessageText("");
+
+    try {
+      const supabase = createClient();
+
+      const { error } = await supabase
+        .from('messages')
+        .insert({
+          conversation_id: selectedId,
+          sender_id: user.id,
+          body: messageContent,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error sending message:', error);
+        // Add as optimistic update
+        const now = new Date();
+        const timeStr = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+        const newMsg: Message = {
+          id: `msg-${Date.now()}`,
+          text: messageContent,
+          time: timeStr,
+          isOwn: true,
+        };
+        setMessages((prev) => [...prev, newMsg]);
+      }
+    } catch (err) {
+      console.error('Error sending message:', err);
+      // Fallback to optimistic update
+      const now = new Date();
+      const timeStr = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+      const newMsg: Message = {
+        id: `msg-${Date.now()}`,
+        text: messageContent,
+        time: timeStr,
+        isOwn: true,
+      };
+      setMessages((prev) => [...prev, newMsg]);
+    }
+  };
+
+  const filteredConversations = conversations.filter((c) => {
+    if (searchQuery && !c.name.toLowerCase().includes(searchQuery.toLowerCase()) && !c.lastMessage.toLowerCase().includes(searchQuery.toLowerCase())) {
+      return false;
+    }
+    if (activeTab === "unread" && c.unread === 0) return false;
+    if (activeTab === "marketplace" && c.type !== "marketplace") return false;
+    return true;
+  });
+
+  const unreadCount = conversations.reduce((sum, c) => sum + c.unread, 0);
+  const marketplaceCount = conversations.filter((c) => c.type === "marketplace").reduce((sum, c) => sum + c.unread, 0);
 
   // Mobile View
   if (isMobile) {
     return (
       <div className="h-[calc(100vh-56px)] bg-surface">
-        {selectedId ? <ChatView /> : <ConversationList />}
+        {selectedId ? (
+          <ChatView
+            isMobile={isMobile}
+            selected={selected}
+            messages={messages}
+            messageText={messageText}
+            setMessageText={setMessageText}
+            handleSend={handleSend}
+            setSelectedId={setSelectedId}
+          />
+        ) : (
+          <ConversationList
+            conversations={conversations}
+            filteredConversations={filteredConversations}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            unreadCount={unreadCount}
+            marketplaceCount={marketplaceCount}
+            selectedId={selectedId}
+            setSelectedId={setSelectedId}
+          />
+        )}
       </div>
     );
   }
@@ -592,11 +681,30 @@ export default function MessagesPage() {
   return (
     <div className="flex h-[calc(100vh-56px)] bg-background">
       <div className="w-80 flex-shrink-0 h-full">
-        <ConversationList />
+        <ConversationList
+          conversations={conversations}
+          filteredConversations={filteredConversations}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          unreadCount={unreadCount}
+          marketplaceCount={marketplaceCount}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+        />
       </div>
       <div className="flex-1">
         {selected ? (
-          <ChatView />
+          <ChatView
+            isMobile={isMobile}
+            selected={selected}
+            messages={messages}
+            messageText={messageText}
+            setMessageText={setMessageText}
+            handleSend={handleSend}
+            setSelectedId={setSelectedId}
+          />
         ) : conversations.length === 0 ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
@@ -623,6 +731,23 @@ export default function MessagesPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function MessagesPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center h-[calc(100vh-56px)] bg-background">
+          <div className="text-center">
+            <MessageSquare size={48} className="mx-auto text-text-muted mb-3 opacity-50" />
+            <p className="text-text-muted text-sm">Mesajlar yükleniyor...</p>
+          </div>
+        </div>
+      }
+    >
+      <MessagesContent />
+    </Suspense>
   );
 }
 

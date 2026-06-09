@@ -93,7 +93,7 @@ export default function CommunityGuidelinesPage() {
           {/* Header */}
           <div className="bg-gradient-to-br from-primary to-primary-hover p-8 text-white">
             <h1 className="text-3xl font-bold mb-2">Topluluk Kuralları</h1>
-            <p className="text-green-100">Mahallemiz'de herkese saygılı, güvenli ve aydınlık bir ortam</p>
+            <p className="text-green-100">Mahallemiz&apos;de herkese saygılı, güvenli ve aydınlık bir ortam</p>
           </div>
 
           {/* Giriş */}
@@ -243,7 +243,7 @@ export default function CommunityGuidelinesPage() {
           {/* Footer */}
           <div className="border-t border-border bg-background py-6 px-8 text-center">
             <p className="text-sm text-text-muted mb-4">
-              © 2026 Mahallemiz — Trendex Lojistik tarafından geliştirilmiştir.
+              © 2026 Mahallemiz — Consulting Partners tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link

@@ -5,11 +5,9 @@ import { toast } from '@/lib/utils/show-toast';
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images'
 import { useCurrentUser } from '@/lib/hooks/use-auth';
-import { getProfile, updateProfile } from '@/lib/hooks/use-profile';
+import { updateProfile } from '@/lib/hooks/use-profile';
 import {
-  User,
   Mail,
   Smartphone,
   Globe,
@@ -25,23 +23,19 @@ import {
   MapPin,
 } from "lucide-react";
 
-const mockUser = {
-  id: "1",
-  name: "Ayşe Yılmaz",
-  email: "ayse.yilmaz@example.com",
-  phone: "+90 555 123 4567",
-  avatar: getAvatarUrl('1', 0),
-  bio: "Mahalle temsilcisi ve sosyal aktiviteler koordinatörü.",
-  neighborhood: "Güngören, İstanbul",
-};
+// NOT (2026-06-07): Bu sayfa eskiden mockUser (Ayşe Yılmaz, sahte e-posta/telefon/
+// biyografi + demo avatar) gösteriyordu ve boş alanlarda bu sahte değerlere düşüyordu.
+// Artık yalnızca giriş yapan kullanıcının gerçek `profiles` kaydına bağlı. Avatar
+// gerçek avatar_url yoksa baş harf rozetiyle gösterilir (uydurma foto yok); mahalle
+// ve son giriş gerçek veriden gelir. Bkz. TECH_DEBT #12.
 
 export default function AyarlarPage() {
-  const { user, profile } = useCurrentUser();
+  const { user, profile, neighborhood } = useCurrentUser();
   const [profileData, setProfileData] = useState({
-    name: mockUser.name,
-    email: mockUser.email,
-    phone: mockUser.phone,
-    bio: mockUser.bio,
+    name: "",
+    email: "",
+    phone: "",
+    bio: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -50,19 +44,18 @@ export default function AyarlarPage() {
   const [language, setLanguage] = useState("tr");
   const [saved, setSaved] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [editingField, setEditingField] = useState<string | null>(null);
 
-  // Load profile data on mount
+  // Load real profile data on mount (no mock fallback)
   useEffect(() => {
-    if (profile) {
+    if (profile || user) {
       setProfileData({
-        name: profile.full_name || mockUser.name,
-        email: profile.email || mockUser.email,
-        phone: profile.phone || mockUser.phone,
-        bio: profile.bio || mockUser.bio,
+        name: profile?.full_name || "",
+        email: profile?.email || user?.email || "",
+        phone: profile?.phone || "",
+        bio: profile?.bio || "",
       });
     }
-  }, [profile]);
+  }, [profile, user]);
 
   const handleProfileChange = (field: string, value: string) => {
     setProfileData((prev) => ({
@@ -148,23 +141,31 @@ export default function AyarlarPage() {
           {/* Avatar */}
           <div className="flex items-center gap-6 mb-8 pb-8 border-b border-border">
             <div className="relative">
-              <Image
-                src={mockUser.avatar}
-                alt={profileData.name}
-                width={80}
-                height={80}
-                unoptimized
-                className="w-20 h-20 rounded-full bg-background"
-              />
+              {profile?.avatar_url ? (
+                <Image
+                  src={profile.avatar_url}
+                  alt={profileData.name || "Profil"}
+                  width={80}
+                  height={80}
+                  unoptimized
+                  className="w-20 h-20 rounded-full bg-background object-cover"
+                />
+              ) : (
+                <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center text-white text-2xl font-bold">
+                  {(profileData.name || "K")[0].toUpperCase()}
+                </div>
+              )}
               <button className="absolute bottom-0 right-0 p-2 bg-primary text-white rounded-full hover:bg-primary-hover transition-colors">
                 <Camera className="w-4 h-4" />
               </button>
             </div>
             <div>
               <h3 className="text-lg font-semibold text-text-primary">
-                {profileData.name}
+                {profileData.name || "İsimsiz Komşu"}
               </h3>
-              <p className="text-sm text-text-muted">{mockUser.neighborhood}</p>
+              {neighborhood && (
+                <p className="text-sm text-text-muted">{neighborhood.district}, {neighborhood.city}</p>
+              )}
               <button className="mt-2 text-sm text-primary hover:text-primary-hover font-medium transition-colors">
                 Fotoğraf Değiştir
               </button>
@@ -381,12 +382,16 @@ export default function AyarlarPage() {
               </div>
               <div className="w-3 h-3 bg-primary rounded-full"></div>
             </div>
-            <div className="flex items-center justify-between p-3 bg-background rounded-lg">
-              <div>
-                <p className="text-sm font-medium text-text-primary">Son Giriş</p>
-                <p className="text-xs text-text-muted">10 Mart 2026, 14:32</p>
+            {user?.last_sign_in_at && (
+              <div className="flex items-center justify-between p-3 bg-background rounded-lg">
+                <div>
+                  <p className="text-sm font-medium text-text-primary">Son Giriş</p>
+                  <p className="text-xs text-text-muted">
+                    {new Date(user.last_sign_in_at).toLocaleString("tr-TR", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
@@ -406,10 +411,13 @@ export default function AyarlarPage() {
             <button className="w-full py-3 px-4 bg-red-100 border border-red-300 text-red-700 font-semibold rounded-lg hover:bg-red-200 transition-colors">
               Hesabı Geçici Olarak Devre Dışı Bırak
             </button>
-            <button className="w-full py-3 px-4 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2">
+            <Link
+              href="/ayarlar/hesabi-sil"
+              className="w-full py-3 px-4 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
+            >
               <LogOut className="w-5 h-5" />
               Hesabı Kalıcı Olarak Sil
-            </button>
+            </Link>
           </div>
         </div>
 

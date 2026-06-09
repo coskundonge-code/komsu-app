@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Calendar, MapPin, Users, Image as ImageIcon, Globe, ArrowLeft } from 'lucide-react';
+import { Calendar, MapPin, Image as ImageIcon, Globe, ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
 

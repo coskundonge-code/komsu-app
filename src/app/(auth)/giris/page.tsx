@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Eye, EyeOff, Mail, Lock, AlertCircle, Shield, Users, MapPin } from 'lucide-react'
 import { loginSchema } from '@/lib/validations/auth'
 
 export default function GirisPage() {
-  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)

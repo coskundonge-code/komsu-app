@@ -9,7 +9,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
-import { getAvatarUrl } from '@/lib/demo-images'
+import { getDefaultAvatar } from '@/lib/demo-images'
 import { useCurrentUser } from '@/lib/hooks/use-auth'
 
 interface MobileDrawerProps {
@@ -37,13 +37,15 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
   const userNeighborhood = metadata?.ilce && metadata?.il
     ? `${metadata.ilce}, ${metadata.il}`
     : 'Konum belirtilmemiş'
-  const userAvatar = getAvatarUrl(userName, 0)
+  // Gerçek avatar varsa onu kullan; yoksa baş harfli nötr placeholder (sahte foto değil)
+  const userAvatar =
+    (profile as any)?.avatar_url || metadata?.avatar_url || getDefaultAvatar(userName)
 
   const handleLogout = async () => {
     try {
       const supabase = createClient()
       await supabase.auth.signOut()
-    } catch (e) {
+    } catch {
       // Ignore client-side errors
     }
     const form = document.createElement('form')

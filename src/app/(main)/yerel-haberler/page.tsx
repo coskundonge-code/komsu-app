@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect } from "react";
 
-import { MapPin, Newspaper, Building2, Clock } from "lucide-react";
+import { MapPin, Newspaper, Clock } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 

@@ -125,7 +125,7 @@ export default function ContactPage() {
       icon: MapPin,
       title: "Adres",
       value: "İstanbul, Türkiye",
-      description: "Trendex Lojistik A.Ş.",
+      description: "Consulting Partners Yönetim Danışmanlığı A.Ş.",
     },
     {
       icon: Phone,
@@ -328,7 +328,7 @@ export default function ContactPage() {
                   </div>
 
                   <p className="text-xs text-text-muted text-center">
-                    * Zorunlu alanları doldurunuz. İşlenmiş verileriniz KVKK'ya uygun olarak güvence altında tutulacaktır.
+                    * Zorunlu alanları doldurunuz. İşlenmiş verileriniz KVKK&apos;ya uygun olarak güvence altında tutulacaktır.
                   </p>
                 </form>
               )}
@@ -409,7 +409,7 @@ export default function ContactPage() {
           {/* Footer */}
           <div className="border-t border-border bg-background py-6 px-8 text-center">
             <p className="text-sm text-text-muted mb-4">
-              © 2026 Mahallemiz — Trendex Lojistik tarafından geliştirilmiştir.
+              © 2026 Mahallemiz — Consulting Partners tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link

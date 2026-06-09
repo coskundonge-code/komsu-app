@@ -7,7 +7,7 @@ interface PaymentModalProps {
   isOpen: boolean
   onClose: () => void
   onSuccess: (paymentId: string) => void
-  paymentType: 'mahalle_card' | 'listing_fee' | 'business_membership'
+  paymentType: 'mahalle_card' | 'listing_fee' | 'business_membership' | 'business_yearly'
   amount: number
   title: string
   description: string

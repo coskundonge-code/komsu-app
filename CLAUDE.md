@@ -2,6 +2,23 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Otonomi (kullanıcı izni: "Tam serbest", 2026-06-06)
+
+Sahip kod bilmiyor ve her adımda onay sorulmasından rahatsız. **Onay sorma, işi yap, sonucu sade Türkçe anlat.** Bu, kalıcı bir izindir.
+
+Onaysız yapılabilecekler (varsayılan):
+- Kod düzenleme, dosya oluşturma/silme, refactor.
+- Supabase migration / `execute_sql` (önce canlı şemayı `execute_sql` ile doğrula — bu kural kalkmadı).
+- `npm run build/test/lint`, `tsc`, `graphify` vb. komutlar.
+- `git add` + `commit` + **`coskun` rafına** `push`.
+
+Hâlâ geçerli istisnalar (bunlarda DUR / önce sor veya bayrakla):
+- **`main` dalına push / deploy yalnızca kullanıcı açıkça "deploy et" derse.** `coskun` = geliştirme rafı.
+- Geri dönüşü olmayan / yıkıcı işlemler (veri silme, tablo drop, `git reset --hard`, `push --force`, prod ödeme/anahtar değişimi): yapma, önce kısaca bilgi ver.
+- `.claude/settings.local.json` commit'lenmez.
+
+Geri almak için: kullanıcı "onay iste / tam serbesti kapat" derse `.claude/settings.local.json` içindeki `"defaultMode": "bypassPermissions"` satırını kaldır ve bu bölümü güncelle.
+
 ## Commands
 
 ```bash
@@ -81,7 +98,20 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY
 Optional:
 ```
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+GOOGLE_CLOUD_VISION_API_KEY   # AI görsel moderasyonu (/api/moderate-media); yoksa fail-open (moderasyon kapalı)
 RESEND_API_KEY
 NEXT_PUBLIC_FIREBASE_API_KEY
 NEXT_PUBLIC_FIREBASE_PROJECT_ID
 ```
+
+<!-- gopro-token-test-komsumapp: 2026-04-30 23:08 -->
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+Rules:
+- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).

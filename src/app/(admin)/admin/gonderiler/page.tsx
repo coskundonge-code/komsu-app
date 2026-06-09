@@ -1,703 +1,200 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import React, { useState, useMemo } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createClient } from '@/lib/supabase/client';
-import { useCurrentUser } from '@/lib/hooks/use-auth';
-import {
-  Search,
-  ChevronLeft,
-  ChevronRight,
-  Eye,
-  Trash2,
-  MessageCircle,
-  Heart,
-  AlertCircle,
-  CheckCircle,
-  XCircle,
-  Download,
-  Filter,
-} from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight, MessageSquare, Trash2, Pin, AlertCircle } from 'lucide-react';
 
-interface Post {
-  id: string;
-  content: string;
-  author: string;
-  type: 'gönderi' | 'ilan' | 'acil durum' | 'etkinlik';
-  status: 'yayınlandı' | 'onay bekleniyor' | 'reddedildi' | 'kaldırıldı';
-  moderationScore: number;
-  likes: number;
-  comments: number;
-  views: number;
-  createdAt: string;
-  neighborhood?: string;
-  authorId?: string;
+// AUDIT_REPORT.md K3 — gerçek posts tablosuna bağlı
+
+type PostRow = {
+  id: string
+  title: string | null
+  body: string | null
+  type: string
+  category: string | null
+  is_pinned: boolean
+  is_urgent: boolean
+  visibility: string
+  comment_count: number
+  reaction_count: number
+  created_at: string
+  author_name: string
+  neighborhood_name: string
 }
 
-const MOCK_POSTS: Post[] = [
-  {
-    id: '1',
-    content: 'Mahallede çöp birikintisi sorunu var, belediye çağrıldı',
-    author: 'Ahmet K.',
-    type: 'gönderi',
-    status: 'yayınlandı',
-    moderationScore: 0.95,
-    likes: 42,
-    comments: 8,
-    views: 234,
-    createdAt: '2024-03-09 14:30',
-    neighborhood: 'Beşiktaş',
-  },
-  {
-    id: '2',
-    content: 'Tasarımcı mobilya satılık, duruşu mükemmel',
-    author: 'Fatma D.',
-    type: 'ilan',
-    status: 'yayınlandı',
-    moderationScore: 0.92,
-    likes: 23,
-    comments: 5,
-    views: 156,
-    createdAt: '2024-03-09 12:15',
-    neighborhood: 'Kadıköy',
-  },
-  {
-    id: '3',
-    content: 'Hastane yakınında kedi yaralı, acil bakıma ihtiyacı var!!!',
-    author: 'Zeynep A.',
-    type: 'acil durum',
-    status: 'yayınlandı',
-    moderationScore: 0.88,
-    likes: 67,
-    comments: 23,
-    views: 890,
-    createdAt: '2024-03-09 10:45',
-    neighborhood: 'Şişli',
-  },
-  {
-    id: '4',
-    content: 'Cumartesi mahalle pikniği düzenlenecek, herkesi bekliyoruz',
-    author: 'Mustafa T.',
-    type: 'etkinlik',
-    status: 'yayınlandı',
-    moderationScore: 0.91,
-    likes: 89,
-    comments: 34,
-    views: 567,
-    createdAt: '2024-03-08 16:20',
-    neighborhood: 'Levent',
-  },
-  {
-    id: '5',
-    content: 'Evdeğiştirme fırsat, 2+1 araniyor',
-    author: 'Elif Y.',
-    type: 'ilan',
-    status: 'onay bekleniyor',
-    moderationScore: 0.76,
-    likes: 5,
-    comments: 1,
-    views: 45,
-    createdAt: '2024-03-08 13:00',
-    neighborhood: 'Fatih',
-  },
-  {
-    id: '6',
-    content: 'Yolda kaza var, lütfen alternatif rota kullanın',
-    author: 'İbrahim M.',
-    type: 'gönderi',
-    status: 'yayınlandı',
-    moderationScore: 0.93,
-    likes: 34,
-    comments: 12,
-    views: 423,
-    createdAt: '2024-03-08 09:30',
-    neighborhood: 'Moda',
-  },
-  {
-    id: '7',
-    content: 'Yoga dersleri başlıyor, sıfırdan başlayanlar için',
-    author: 'Ayşe S.',
-    type: 'etkinlik',
-    status: 'yayınlandı',
-    moderationScore: 0.89,
-    likes: 56,
-    comments: 18,
-    views: 312,
-    createdAt: '2024-03-07 15:45',
-    neighborhood: 'Caferağa',
-  },
-  {
-    id: '8',
-    content: 'Spam mesajlar gönderiyorum herkes satın alsın!!!',
-    author: 'Fake User',
-    type: 'gönderi',
-    status: 'reddedildi',
-    moderationScore: 0.15,
-    likes: 0,
-    comments: 0,
-    views: 12,
-    createdAt: '2024-03-07 10:00',
-    neighborhood: 'Beşiktaş',
-  },
-  {
-    id: '9',
-    content: 'Komşu bir sorunla uğraşıyoruz, hukuki tavsiye arıyorum',
-    author: 'Hasan B.',
-    type: 'gönderi',
-    status: 'yayınlandı',
-    moderationScore: 0.87,
-    likes: 28,
-    comments: 9,
-    views: 178,
-    createdAt: '2024-03-06 14:20',
-    neighborhood: 'Levent',
-  },
-  {
-    id: '10',
-    content: 'Bu post nefret söylemi içeriyor',
-    author: 'Banned User',
-    type: 'gönderi',
-    status: 'kaldırıldı',
-    moderationScore: 0.05,
-    likes: 0,
-    comments: 0,
-    views: 8,
-    createdAt: '2024-03-06 08:15',
-    neighborhood: 'Şişli',
-  },
-  {
-    id: '11',
-    content: 'Elektrik tesisatçı aranıyor, acil durum',
-    author: 'Cengiz K.',
-    type: 'acil durum',
-    status: 'yayınlandı',
-    moderationScore: 0.90,
-    likes: 19,
-    comments: 4,
-    views: 132,
-    createdAt: '2024-03-05 18:00',
-    neighborhood: 'Kadıköy',
-  },
-  {
-    id: '12',
-    content: 'İkinci el çamaşır makinesi, 50TL',
-    author: 'Demet N.',
-    type: 'ilan',
-    status: 'yayınlandı',
-    moderationScore: 0.94,
-    likes: 12,
-    comments: 3,
-    views: 89,
-    createdAt: '2024-03-05 11:30',
-    neighborhood: 'Fatih',
-  },
-  {
-    id: '13',
-    content: 'Mahalle futbol turnuvası başlıyor, katılmak isteyen yazır',
-    author: 'Serkan H.',
-    type: 'etkinlik',
-    status: 'onay bekleniyor',
-    moderationScore: 0.88,
-    likes: 34,
-    comments: 15,
-    views: 256,
-    createdAt: '2024-03-04 16:45',
-    neighborhood: 'Moda',
-  },
-  {
-    id: '14',
-    content: 'Bahçe bakım hizmetleri sağlıyorum',
-    author: 'Kemal A.',
-    type: 'ilan',
-    status: 'yayınlandı',
-    moderationScore: 0.86,
-    likes: 8,
-    comments: 2,
-    views: 67,
-    createdAt: '2024-03-04 10:00',
-    neighborhood: 'Levent',
-  },
-  {
-    id: '15',
-    content: 'Polis kontrolü var, ön planda durmuş',
-    author: 'Yusuf P.',
-    type: 'gönderi',
-    status: 'yayınlandı',
-    moderationScore: 0.89,
-    likes: 56,
-    comments: 21,
-    views: 534,
-    createdAt: '2024-03-03 09:15',
-    neighborhood: 'Beşiktaş',
-  },
-];
-
-const TYPE_CONFIG = {
-  gönderi: { label: 'Gönderi', color: 'bg-blue-100 text-blue-800', icon: '📝' },
-  ilan: { label: 'İlan', color: 'bg-purple-100 text-purple-800', icon: '📌' },
-  'acil durum': {
-    label: 'Acil Durum',
-    color: 'bg-red-100 text-red-800',
-    icon: '🚨',
-  },
-  etkinlik: {
-    label: 'Etkinlik',
-    color: 'bg-green-100 text-green-800',
-    icon: '🎉',
-  },
-};
-
-const STATUS_CONFIG = {
-  yayınlandı: {
-    label: 'Yayınlandı',
-    color: 'bg-green-100 text-green-800',
-  },
-  'onay bekleniyor': {
-    label: 'Onay Bekleniyor',
-    color: 'bg-yellow-100 text-yellow-800',
-  },
-  reddedildi: { label: 'Reddedildi', color: 'bg-orange-100 text-orange-800' },
-  kaldırıldı: { label: 'Kaldırıldı', color: 'bg-red-100 text-red-800' },
-};
+async function fetchPosts(): Promise<PostRow[]> {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('posts')
+    .select(`id, title, body, type, category, is_pinned, is_urgent, visibility, comment_count, reaction_count, created_at,
+             profiles!posts_author_id_fkey ( full_name ),
+             neighborhoods ( name )`)
+    .order('created_at', { ascending: false })
+    .limit(500)
+  if (error) throw error
+  return ((data as any[]) || []).map((p) => ({
+    id: p.id, title: p.title, body: p.body, type: p.type,
+    category: p.category, is_pinned: p.is_pinned || false,
+    is_urgent: p.is_urgent || false, visibility: p.visibility || 'public',
+    comment_count: p.comment_count || 0, reaction_count: p.reaction_count || 0,
+    created_at: p.created_at,
+    author_name: p.profiles?.full_name || '—',
+    neighborhood_name: p.neighborhoods?.name || '—',
+  }))
+}
 
 export default function GonderilerPage() {
-  const router = useRouter();
-  const { user: authUser, profile, loading: authLoading } = useCurrentUser();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [typeFilter, setTypeFilter] = useState<string>('');
-  const [statusFilter, setStatusFilter] = useState<string>('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [actionModal, setActionModal] = useState<{
-    open: boolean;
-    post: Post | null;
-    action: string;
-  }>({ open: false, post: null, action: '' });
-  const [posts, setPosts] = useState<Post[]>(MOCK_POSTS);
-  const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient()
+  const [searchTerm, setSearchTerm] = useState('')
+  const [typeFilter, setTypeFilter] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 15
 
-  const itemsPerPage = 10;
+  const { data: posts = [], isLoading, error }: { data?: PostRow[]; isLoading: boolean; error: Error | null } = useQuery({
+    queryKey: ['admin', 'posts'],
+    queryFn: fetchPosts,
+  })
 
-  // Check admin access
-  if (!authLoading && (!authUser || profile?.is_admin !== true)) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Yetkisiz Erişim</h1>
-          <p className="text-gray-600 mb-6">
-            Bu sayfaya erişim için admin yetkisi gereklidir.
-          </p>
-          <Link
-            href="/"
-            className="inline-block px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
-          >
-            Ana Sayfaya Dön
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  if (authLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <p className="text-gray-600">Yükleniyor...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Fetch posts from Supabase
-  useEffect(() => {
-    async function fetchPosts() {
-      setLoading(true);
-      const supabase = createClient();
-      try {
-        const { data, error } = await supabase
-          .from('posts')
-          .select(`
-            id,
-            title,
-            body,
-            type,
-            created_at,
-            author_id,
-            profiles:author_id (full_name)
-          `)
-          .order('created_at', { ascending: false });
-
-        if (!error && data) {
-          const mappedPosts: Post[] = data.map((post: any) => ({
-            id: post.id,
-            content: post.body || post.title || 'İçeriksiz Gönderi',
-            author: post.profiles?.full_name || 'Bilinmeyen Yazar',
-            authorId: post.author_id,
-            type: (post.type || 'gönderi') as any,
-            status: 'yayınlandı',
-            moderationScore: 0.85,
-            likes: 0,
-            comments: 0,
-            views: 0,
-            createdAt: new Date(post.created_at).toLocaleString('tr-TR'),
-          }));
-          setPosts(mappedPosts);
-        }
-      } catch (err) {
-        console.error('Gönderiler yüklenirken hata:', err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchPosts();
-  }, []);
-
-  const filteredPosts = useMemo(() => {
-    return posts.filter((post) => {
-      const matchesSearch =
-        post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.author.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesType = !typeFilter || post.type === typeFilter;
-      const matchesStatus = !statusFilter || post.status === statusFilter;
-      return matchesSearch && matchesType && matchesStatus;
-    });
-  }, [searchTerm, typeFilter, statusFilter]);
-
-  const paginatedPosts = useMemo(() => {
-    const startIdx = (currentPage - 1) * itemsPerPage;
-    return filteredPosts.slice(startIdx, startIdx + itemsPerPage);
-  }, [filteredPosts, currentPage]);
-
-  const totalPages = Math.ceil(filteredPosts.length / itemsPerPage);
-
-  const stats = [
-    {
-      title: 'Toplam Gönderi',
-      value: posts.length,
-      icon: '📊',
-      color: '#00833e',
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const supabase = createClient()
+      const { error } = await supabase.from('posts').delete().eq('id', id)
+      if (error) throw error
     },
-    {
-      title: 'Yayınlanmış',
-      value: posts.filter((p) => p.status === 'yayınlandı').length,
-      icon: '✓',
-      color: '#4CAF50',
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'posts'] }),
+  })
+
+  const pinMutation = useMutation({
+    mutationFn: async ({ id, pinned }: { id: string; pinned: boolean }) => {
+      const supabase = createClient()
+      const { error } = await supabase.from('posts').update({ is_pinned: pinned }).eq('id', id)
+      if (error) throw error
     },
-    {
-      title: 'Onay Bekleniyor',
-      value: posts.filter((p) => p.status === 'onay bekleniyor').length,
-      icon: '⏳',
-      color: '#FF9800',
-    },
-    {
-      title: 'Reddedilmiş',
-      value: posts.filter(
-        (p) => p.status === 'reddedildi' || p.status === 'kaldırıldı'
-      ).length,
-      icon: '✕',
-      color: '#F44336',
-    },
-  ];
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'posts'] }),
+  })
+
+  const types = useMemo(() => Array.from(new Set(posts.map((p) => p.type))).sort(), [posts])
+
+  const filtered = useMemo(() => {
+    return posts.filter((p) => {
+      const q = searchTerm.toLowerCase()
+      const matchesSearch = !q ||
+        (p.title || '').toLowerCase().includes(q) ||
+        (p.body || '').toLowerCase().includes(q) ||
+        p.author_name.toLowerCase().includes(q)
+      const matchesType = !typeFilter || p.type === typeFilter
+      return matchesSearch && matchesType
+    })
+  }, [posts, searchTerm, typeFilter])
+
+  const paginated = useMemo(() => filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage), [filtered, currentPage])
+  const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage))
+
+  const totalComments = posts.reduce((s, p) => s + p.comment_count, 0)
+  const totalReactions = posts.reduce((s, p) => s + p.reaction_count, 0)
+  const urgentCount = posts.filter(p => p.is_urgent).length
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Gönderi Yönetimi</h1>
-        <p className="text-gray-600">
-          {loading ? 'Yükleniyor...' : 'Tüm gönderileri yönetin, filtreleyin ve moderasyon işlemleri yapın'}
-        </p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3"><MessageSquare className="text-primary" /> Gönderi Yönetimi</h1>
+        <p className="text-gray-600">Mahalle gönderilerini yönetin ve moderasyon yapın</p>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {stats.map((stat, idx) => (
-          <div key={idx} className="bg-surface p-6 rounded-lg border border-border">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-gray-600 text-sm">{stat.title}</p>
-                <p className="text-3xl font-bold mt-2" style={{ color: stat.color }}>
-                  {stat.value}
-                </p>
-              </div>
-              <div className="text-2xl">{stat.icon}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Filters */}
-      <div className="bg-surface p-6 rounded-lg border border-border mb-6">
-        <div className="flex gap-4 flex-wrap">
-          <div className="flex-1 min-w-64">
-            <div className="relative">
-              <Search className="absolute left-3 top-3 text-gray-400" size={20} />
-              <input
-                type="text"
-                placeholder="Gönderi veya yazar ara..."
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-          </div>
-          <select
-            value={typeFilter}
-            onChange={(e) => {
-              setTypeFilter(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            <option value="">Tüm Türler</option>
-            {Object.entries(TYPE_CONFIG).map(([key, val]) => (
-              <option key={key} value={key}>
-                {val.label}
-              </option>
-            ))}
-          </select>
-          <select
-            value={statusFilter}
-            onChange={(e) => {
-              setStatusFilter(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            <option value="">Tüm Durumlar</option>
-            {Object.entries(STATUS_CONFIG).map(([key, val]) => (
-              <option key={key} value={key}>
-                {val.label}
-              </option>
-            ))}
-          </select>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="bg-surface p-6 rounded-lg border border-border">
+          <p className="text-gray-600 text-sm">Toplam</p>
+          <p className="text-3xl font-bold mt-2 text-primary">{posts.length}</p>
+        </div>
+        <div className="bg-surface p-6 rounded-lg border border-border">
+          <p className="text-gray-600 text-sm">Acil</p>
+          <p className="text-3xl font-bold mt-2 text-red-600">{urgentCount}</p>
+        </div>
+        <div className="bg-surface p-6 rounded-lg border border-border">
+          <p className="text-gray-600 text-sm">Toplam Yorum</p>
+          <p className="text-3xl font-bold mt-2 text-blue-600">{totalComments}</p>
+        </div>
+        <div className="bg-surface p-6 rounded-lg border border-border">
+          <p className="text-gray-600 text-sm">Toplam Reaksiyon</p>
+          <p className="text-3xl font-bold mt-2 text-yellow-600">{totalReactions}</p>
         </div>
       </div>
 
-      {/* Posts Table */}
-      <div className="bg-surface rounded-lg border border-border overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border bg-background">
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                  Gönderi
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                  Yazar
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                  Tür
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                  Durum
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                  Moderasyon
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                  Etkileşim
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                  İşlem
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedPosts.map((post) => {
-                const typeConfig = TYPE_CONFIG[post.type];
-                const statusConfig = STATUS_CONFIG[post.status];
-                return (
-                  <tr
-                    key={post.id}
-                    className="border-b border-border hover:bg-background"
-                  >
-                    <td className="px-6 py-4">
-                      <div>
-                        <p className="font-medium text-gray-900 line-clamp-2">
-                          {post.content}
-                        </p>
-                        <p className="text-xs text-gray-500 mt-1">{post.createdAt}</p>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div>
-                        <p className="font-medium text-gray-900">{post.author}</p>
-                        <p className="text-xs text-gray-500">{post.neighborhood}</p>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${typeConfig.color}`}
-                      >
-                        {typeConfig.icon} {typeConfig.label}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${statusConfig.color}`}
-                      >
-                        {statusConfig.label}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
+      <div className="bg-surface p-6 rounded-lg border border-border mb-6 flex gap-4 flex-wrap">
+        <div className="flex-1 min-w-64 relative">
+          <Search className="absolute left-3 top-3 text-gray-400" size={20} />
+          <input type="text" placeholder="Başlık, içerik veya yazar ara..." value={searchTerm}
+            onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1) }}
+            className="w-full pl-10 pr-4 py-2 border border-border rounded-lg" />
+        </div>
+        <select value={typeFilter} onChange={(e) => { setTypeFilter(e.target.value); setCurrentPage(1) }}
+          className="px-4 py-2 border border-border rounded-lg">
+          <option value="">Tüm Türler</option>
+          {types.map((t) => <option key={t} value={t}>{t}</option>)}
+        </select>
+      </div>
+
+      {isLoading && <div className="bg-surface p-8 rounded-lg text-center text-gray-600">Yükleniyor…</div>}
+      {error && <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg">Hata: {(error as Error).message}</div>}
+
+      {!isLoading && !error && (
+        <div className="bg-surface rounded-lg border border-border overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-background border-b border-border">
+                <tr>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">Başlık</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">Yazar</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">Mahalle</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">Tür</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">Etkileşim</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">Tarih</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">İşlem</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginated.map((p) => (
+                  <tr key={p.id} className="border-b border-border hover:bg-background">
+                    <td className="px-6 py-4 max-w-xs">
                       <div className="flex items-center gap-2">
-                        <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-primary"
-                            style={{ width: `${post.moderationScore * 100}%` }}
-                          />
-                        </div>
-                        <span className="text-sm font-medium text-gray-900">
-                          {Math.round(post.moderationScore * 100)}%
-                        </span>
+                        {p.is_pinned && <Pin size={14} className="text-blue-600 flex-shrink-0" />}
+                        {p.is_urgent && <AlertCircle size={14} className="text-red-600 flex-shrink-0" />}
+                        <p className="font-medium text-gray-900 truncate">{p.title || (p.body || '').slice(0, 60) + '…'}</p>
                       </div>
                     </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{p.author_name}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{p.neighborhood_name}</td>
+                    <td className="px-6 py-4"><span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full">{p.type}</span></td>
                     <td className="px-6 py-4 text-sm">
-                      <div className="flex gap-4 text-gray-600">
-                        <span>👁 {post.views}</span>
-                        <span>❤️ {post.likes}</span>
-                        <span>💬 {post.comments}</span>
-                      </div>
+                      <span className="text-blue-600">💬 {p.comment_count}</span>
+                      <span className="ml-2 text-yellow-600">❤️ {p.reaction_count}</span>
                     </td>
-                    <td className="px-6 py-4">
-                      <button
-                        onClick={() =>
-                          setActionModal({
-                            open: true,
-                            post,
-                            action: 'view',
-                          })
-                        }
-                        className="text-primary hover:text-primary-hover font-medium text-sm"
-                      >
-                        Detay
+                    <td className="px-6 py-4 text-sm text-gray-500">{new Date(p.created_at).toLocaleDateString('tr-TR')}</td>
+                    <td className="px-6 py-4 flex gap-2">
+                      <button onClick={() => pinMutation.mutate({ id: p.id, pinned: !p.is_pinned })}
+                        disabled={pinMutation.isPending}
+                        className={`p-1 rounded disabled:opacity-50 ${p.is_pinned ? 'text-blue-600' : 'text-gray-400 hover:text-blue-600'}`}
+                        title={p.is_pinned ? 'Sabitlemeyi kaldır' : 'Sabitle'}>
+                        <Pin size={16} />
+                      </button>
+                      <button onClick={() => { if (confirm('Bu gönderiyi silmek istiyor musunuz?')) deleteMutation.mutate(p.id) }}
+                        disabled={deleteMutation.isPending}
+                        className="text-red-600 hover:text-red-800 p-1 rounded disabled:opacity-50">
+                        <Trash2 size={16} />
                       </button>
                     </td>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        <div className="flex items-center justify-between px-6 py-4 border-t border-border">
-          <span className="text-sm text-gray-600">
-            {filteredPosts.length === 0 ? (
-              'Sonuç bulunamadı'
-            ) : (
-              <>
-                Sayfa {currentPage} / {totalPages} ({filteredPosts.length} gönderi)
-              </>
-            )}
-          </span>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-              disabled={currentPage === 1}
-              className="p-2 hover:bg-background rounded-lg disabled:opacity-50 transition"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-              disabled={currentPage === totalPages}
-              className="p-2 hover:bg-background rounded-lg disabled:opacity-50 transition"
-            >
-              <ChevronRight size={20} />
-            </button>
+                ))}
+                {paginated.length === 0 && (<tr><td colSpan={7} className="px-6 py-12 text-center text-gray-500">Gönderi bulunamadı.</td></tr>)}
+              </tbody>
+            </table>
           </div>
-        </div>
-      </div>
-
-      {/* Detail Modal */}
-      {actionModal.open && actionModal.post && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-surface rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto">
-            <div className="p-6 border-b border-border flex justify-between items-start">
-              <h2 className="text-xl font-bold text-gray-900">Gönderi Detayı</h2>
-              <button
-                onClick={() => setActionModal({ open: false, post: null, action: '' })}
-                className="text-gray-500 hover:text-gray-900"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="p-6 space-y-4">
-              <div>
-                <p className="text-sm text-gray-500 font-semibold">İçerik</p>
-                <p className="text-gray-900 mt-1">{actionModal.post.content}</p>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-500 font-semibold">Yazar</p>
-                  <p className="text-gray-900 mt-1">{actionModal.post.author}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 font-semibold">Mahalle</p>
-                  <p className="text-gray-900 mt-1">{actionModal.post.neighborhood}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 font-semibold">Tür</p>
-                  <p className="text-gray-900 mt-1">
-                    {TYPE_CONFIG[actionModal.post.type].label}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 font-semibold">Durum</p>
-                  <p className="text-gray-900 mt-1">
-                    {STATUS_CONFIG[actionModal.post.status].label}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 font-semibold">Moderasyon Skoru</p>
-                  <p className="text-gray-900 mt-1">
-                    {Math.round(actionModal.post.moderationScore * 100)}%
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 font-semibold">Tarih</p>
-                  <p className="text-gray-900 mt-1">{actionModal.post.createdAt}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-6 border-t border-border flex gap-3">
-              <button
-                onClick={() => setActionModal({ open: false, post: null, action: '' })}
-                className="flex-1 px-4 py-2 border border-border rounded-lg text-gray-900 font-medium hover:bg-background"
-              >
-                Kapat
-              </button>
-              {actionModal.post.status === 'onay bekleniyor' && (
-                <>
-                  <button
-                    onClick={() => setActionModal({ open: false, post: null, action: '' })}
-                    className="flex-1 px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-hover"
-                  >
-                    Onayla
-                  </button>
-                  <button
-                    onClick={() => setActionModal({ open: false, post: null, action: '' })}
-                    className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600"
-                  >
-                    Reddet
-                  </button>
-                </>
-              )}
-              {actionModal.post.status === 'yayınlandı' && (
-                <button
-                  onClick={() => setActionModal({ open: false, post: null, action: '' })}
-                  className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600"
-                >
-                  Kaldır
-                </button>
-              )}
+          <div className="flex items-center justify-between px-6 py-4 border-t border-border">
+            <span className="text-sm text-gray-600">Sayfa {currentPage} / {totalPages} ({filtered.length} gönderi)</span>
+            <div className="flex gap-2">
+              <button onClick={() => setCurrentPage(Math.max(1, currentPage - 1))} disabled={currentPage === 1} className="p-2 hover:bg-background rounded-lg disabled:opacity-50"><ChevronLeft size={20} /></button>
+              <button onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))} disabled={currentPage === totalPages} className="p-2 hover:bg-background rounded-lg disabled:opacity-50"><ChevronRight size={20} /></button>
             </div>
           </div>
         </div>

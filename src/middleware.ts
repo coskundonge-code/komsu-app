@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
-import type { User } from '@supabase/supabase-js'
+
+type SupabaseMiddlewareClient = Awaited<ReturnType<typeof updateSession>>['supabase']
 
 const publicRoutes = [
   '/giris',
@@ -49,18 +50,31 @@ function matchesRoute(path: string, routes: string[]): boolean {
   return routes.some(route => path === route || path.startsWith(route + '/'))
 }
 
-/** Returns a redirect response if the user fails location/eDevlet checks, otherwise null. */
-function checkVerification(request: NextRequest, user: User): NextResponse | null {
-  const metadata = user.user_metadata || {}
+/**
+ * Doğrulama kapısı. Durum (konum / e-Devlet) artık FORGE EDİLEBİLİR user_metadata'dan
+ * DEĞİL, public.profiles'tan okunur — guard trigger (guard_profile_privileged_columns)
+ * bu sütunları istemci yazımına karşı kilitler. is_admin kapısıyla aynı desen.
+ * Kullanıcı kapıyı geçemezse redirect, geçerse null döner.
+ */
+async function checkVerification(
+  request: NextRequest,
+  userId: string,
+  supabase: SupabaseMiddlewareClient,
+): Promise<NextResponse | null> {
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('location_confirmed_at, edevlet_verified_at, edevlet_verification_deadline')
+    .eq('id', userId)
+    .single()
 
-  if (!metadata.location_confirmed_at) {
+  if (!profile?.location_confirmed_at) {
     const url = request.nextUrl.clone()
     url.pathname = '/konum-secimi'
     return NextResponse.redirect(url)
   }
 
-  if (metadata.edevlet_verification_deadline && !metadata.edevlet_verified_at) {
-    const deadline = new Date(metadata.edevlet_verification_deadline)
+  if (profile.edevlet_verification_deadline && !profile.edevlet_verified_at) {
+    const deadline = new Date(profile.edevlet_verification_deadline)
     if (deadline < new Date()) {
       const url = request.nextUrl.clone()
       url.pathname = '/hesap-kilitli'
@@ -72,7 +86,7 @@ function checkVerification(request: NextRequest, user: User): NextResponse | nul
 }
 
 export async function middleware(request: NextRequest) {
-  const { response, user } = await updateSession(request)
+  const { response, user, supabase } = await updateSession(request)
   const path = request.nextUrl.pathname
 
   if (path.startsWith('/api/')) {
@@ -82,7 +96,7 @@ export async function middleware(request: NextRequest) {
   // Public routes - allow access but enforce verification for logged-in users
   if (matchesRoute(path, publicRoutes)) {
     if (user && !matchesRoute(path, locationExemptRoutes)) {
-      const redirect = checkVerification(request, user)
+      const redirect = await checkVerification(request, user.id, supabase)
       if (redirect) return redirect
     }
     return response
@@ -99,8 +113,26 @@ export async function middleware(request: NextRequest) {
 
   // Enforce verification for all authenticated protected routes
   if (!matchesRoute(path, locationExemptRoutes)) {
-    const redirect = checkVerification(request, user)
+    const redirect = await checkVerification(request, user.id, supabase)
     if (redirect) return redirect
+  }
+
+  // Admin routes - require the is_admin flag server-side. Without this the
+  // (admin) group is just a normal protected route, so any logged-in user could
+  // open /admin/* and read every user's data. This is the authoritative gate;
+  // the per-page client guard is only a UX nicety.
+  if (path === '/admin' || path.startsWith('/admin/')) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('is_admin')
+      .eq('id', user.id)
+      .single()
+
+    if (profile?.is_admin !== true) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/'
+      return NextResponse.redirect(url)
+    }
   }
 
   return response

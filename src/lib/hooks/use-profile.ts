@@ -4,7 +4,6 @@ import { createClient as createTypedClient } from '@/lib/supabase/client'
 const createClient = () => createTypedClient() as any
 import type { Database } from '@/lib/supabase/types'
 
-type Profile = Database['public']['Tables']['profiles']['Row']
 type ProfileUpdate = Database['public']['Tables']['profiles']['Update']
 
 export async function getProfile(userId: string) {
@@ -72,22 +71,25 @@ export async function getUserAddress(userId: string) {
 }
 
 export async function getFullProfile(userId: string) {
-  const [profileRes, addressRes, badgesRes, postsRes] = await Promise.all([
+  const [profileRes, addressRes, badgesRes, postsRes, listingsRes] = await Promise.all([
     getProfile(userId),
     getUserAddress(userId),
     getUserBadges(userId),
     getUserPosts(userId),
+    getUserListings(userId),
   ])
   return {
     profile: profileRes.data,
     address: addressRes.data,
     badges: badgesRes.data,
     posts: postsRes.data,
+    listings: listingsRes.data,
     errors: {
       profile: profileRes.error,
       address: addressRes.error,
       badges: badgesRes.error,
       posts: postsRes.error,
+      listings: listingsRes.error,
     },
   }
 }

@@ -16,7 +16,6 @@ import {
   CheckCircle2,
   MapPin,
   ChevronDown,
-  Heart,
   Lightbulb,
   BarChart3,
 } from "lucide-react";
@@ -270,7 +269,7 @@ export default function SecurityPage() {
               </h2>
               <div className="bg-background p-6 rounded-lg border border-border">
                 <p className="text-text-secondary leading-relaxed text-base">
-                  Mahallemiz'de güvenli olmak, hem çevrimiçi güvenlik hem de mahalle güvenliği hakkında
+                  Mahallemiz&apos;de güvenli olmak, hem çevrimiçi güvenlik hem de mahalle güvenliği hakkında
                   bilinçli olmak demektir. Bu rehber, seni ve mahalleni daha güvenli hale getirmek için tasarlanmış pratik ipuçları ve kaynaklarla dolu.
                 </p>
               </div>
@@ -364,7 +363,7 @@ export default function SecurityPage() {
                   <div className="flex-1">
                     <h3 className="font-bold text-text-primary text-base mb-1">Uygunsuz İçeriği Bildir</h3>
                     <p className="text-sm text-text-muted">
-                      Bir gönderi, yorum veya profil üzerindeki "Bildir" butonuna tıklayarak uygunsuz içeriği bildirin.
+                      Bir gönderi, yorum veya profil üzerindeki &quot;Bildir&quot; butonuna tıklayarak uygunsuz içeriği bildirin.
                     </p>
                   </div>
                 </div>
@@ -378,7 +377,7 @@ export default function SecurityPage() {
                   <div className="flex-1">
                     <h3 className="font-bold text-text-primary text-base mb-1">Sahte Hesabı Raporla</h3>
                     <p className="text-sm text-text-muted">
-                      Profil sayfasından Menü → "Sahte Hesabı Bildir" seçeneğini kullanın.
+                      Profil sayfasından Menü → &quot;Sahte Hesabı Bildir&quot; seçeneğini kullanın.
                     </p>
                   </div>
                 </div>
@@ -392,7 +391,7 @@ export default function SecurityPage() {
                   <div className="flex-1">
                     <h3 className="font-bold text-text-primary text-base mb-1">Destek Ekibiyle İletişime Geçin</h3>
                     <p className="text-sm text-text-muted">
-                      Ciddi güvenlik sorunu için: destek@mahallem.com veya Yardım Merkezi'nden ticket açın.
+                      Ciddi güvenlik sorunu için: destek@mahallem.com veya Yardım Merkezi&apos;nden ticket açın.
                     </p>
                   </div>
                 </div>
@@ -499,7 +498,7 @@ export default function SecurityPage() {
           {/* Footer */}
           <div className="border-t border-border bg-background py-8 px-8 text-center">
             <p className="text-sm text-text-muted mb-6">
-              © 2026 Mahallemiz — Trendex Lojistik tarafından geliştirilmiştir.
+              © 2026 Mahallemiz — Consulting Partners tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-6 flex-wrap">
               <Link

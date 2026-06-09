@@ -22,12 +22,22 @@ export function CookieBanner() {
     setIsVisible(false);
   };
 
-  const handleManageSettings = () => {
-    localStorage.setItem('cookie-consent', 'custom');
+  const handleReject = () => {
+    // KVKK: kullanıcı sadece zorunlu çerezleri kabul etmiş sayılır.
+    // Analytics/marketing yüklenmesin.
+    localStorage.setItem('cookie-consent', 'rejected');
     setIsVisible(false);
   };
 
+  const handleManageSettings = () => {
+    // İleride ayarları yönet ekranı eklendiğinde buradan açılacak.
+    // Şimdilik kullanıcıyı çerez politikasına yönlendir.
+    window.location.href = '/cerez-politikasi';
+  };
+
   const handleClose = () => {
+    // Banner'ı kapatmak rıza yerine geçmez; tekrar açılır.
+    // Kullanıcı açıkça kabul ya da red etmeli.
     setIsVisible(false);
   };
 
@@ -68,10 +78,16 @@ export function CookieBanner() {
               Kabul Et
             </button>
             <button
-              onClick={handleManageSettings}
+              onClick={handleReject}
               className="flex-1 sm:flex-none px-6 py-2.5 border-2 border-gray-300 text-gray-700 rounded-lg hover:border-gray-400 hover:bg-gray-50 font-medium transition-colors text-sm"
             >
-              Ayarları Yönet
+              Reddet
+            </button>
+            <button
+              onClick={handleManageSettings}
+              className="hidden sm:inline-flex px-4 py-2.5 text-text-muted hover:text-text-primary font-medium transition-colors text-sm underline"
+            >
+              Detaylar
             </button>
             <button
               onClick={handleClose}

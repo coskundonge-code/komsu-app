@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { AlertCircle, RefreshCw, Home } from 'lucide-react';
+import { reportClientError } from '@/lib/utils/report-client-error';
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -11,8 +12,7 @@ interface ErrorProps {
 
 export default function MainError({ error, reset }: ErrorProps) {
   useEffect(() => {
-    // Log the error to an error reporting service
-    console.error('Main route error:', error);
+    reportClientError(error, { boundary: 'main-error' });
   }, [error]);
 
   return (

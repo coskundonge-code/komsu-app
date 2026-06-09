@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { X, Loader2, Check, AlertCircle, CreditCard, Building2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 export type PaymentModalState = 'form' | 'processing' | 'success' | 'error';
 export type PaymentMethodChoice = 'card' | 'transfer';
@@ -336,7 +335,7 @@ export function PaymentModal({
               <label className="flex items-start gap-2 text-xs text-gray-600">
                 <input type="checkbox" defaultChecked className="mt-1" />
                 <span>
-                  Ödeme şartlarını kabul ediyorum ve Mahallemiz'in{' '}
+                  Ödeme şartlarını kabul ediyorum ve Mahallemiz&apos;in{' '}
                   <a href="/gizlilik" className="text-primary hover:underline">
                     gizlilik politikasını
                   </a>{' '}

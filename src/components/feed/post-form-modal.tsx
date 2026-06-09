@@ -58,8 +58,8 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
   const [pollQuestion, setPollQuestion] = useState('');
   const [pollOptions, setPollOptions] = useState(['', '']);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [neighborhoodId, setNeighborhoodId] = useState('51ded332-1c5c-428f-9022-4f5956bef2a4');
-  const [neighborhoodName, setNeighborhoodName] = useState('Moda');
+  const [neighborhoodId, setNeighborhoodId] = useState<string | null>(null);
+  const [neighborhoodName, setNeighborhoodName] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch user's neighborhood on mount
@@ -150,7 +150,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
   };
 
   const handleAddLocation = () => {
-    setLocation(neighborhoodName);
+    if (neighborhoodName) setLocation(neighborhoodName);
   };
 
   const handleRemoveLocation = () => {
@@ -178,6 +178,24 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
 
     setIsSubmitting(true);
     try {
+      // Mahalleyi çöz: modal açılışındaki fetch henüz bitmemiş olabilir; burada bir kez daha dene.
+      // Mahalle bulunamazsa gönderiyi sahte bir mahalleye yazmak yerine dürüstçe engelle.
+      let nbId = neighborhoodId;
+      if (!nbId) {
+        const supabase = createClient();
+        const { data: nb } = await supabase
+          .from('neighborhood_members')
+          .select('neighborhood_id')
+          .eq('user_id', user.id)
+          .single();
+        nbId = nb?.neighborhood_id ?? null;
+        if (nbId) setNeighborhoodId(nbId);
+      }
+      if (!nbId) {
+        toast.error('Mahalleniz tanımlı değil. Gönderi paylaşmadan önce mahallenizi belirleyin.');
+        return;
+      }
+
       // Upload images to Supabase Storage if present
       let mediaUrls: string[] | null = null;
       if (imageFiles.length > 0) {
@@ -192,7 +210,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
 
       const postData = {
         author_id: user.id,
-        neighborhood_id: neighborhoodId,
+        neighborhood_id: nbId,
         title: title.trim() || null,
         body: body.trim(),
         type: postType,
@@ -222,24 +240,16 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
         resetForm();
         onClose();
       } else {
-        // Fallback to mock data on error
-        const fallbackPost = {
-          id: Date.now().toString(),
-          type: postType,
-          title: title.trim() || undefined,
-          body: body.trim(),
-          visibility,
-          images: mediaUrls || images,
-          location,
-          author: { name: profile?.full_name || 'Siz', initial: profile?.full_name?.[0]?.toUpperCase() || 'S', neighborhood: neighborhoodName, profileId: user.id },
-          timeAgo: 'Az önce',
-          reactions: 0,
-          comments: 0,
-        };
-        onSubmit(fallbackPost);
-        resetForm();
-        onClose();
+        // NOT (2026-06-07): Eskiden kayıt BAŞARISIZ olduğunda kullanıcının girdisinden
+        // SAHTE bir "başarılı gönderi" üretip (id: Date.now()) akışa basıyordu —
+        // kullanıcı gönderisi yayınlandı sanıyor ama veritabanına hiç yazılmıyordu.
+        // Artık dürüst hata gösterilir, modal açık kalır ki tekrar denenebilsin.
+        console.error('Gönderi oluşturulamadı:', error);
+        toast.error('Gönderi paylaşılamadı. Lütfen tekrar deneyin.');
       }
+    } catch (err) {
+      console.error('Gönderi gönderilirken beklenmeyen hata:', err);
+      toast.error('Bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setIsSubmitting(false);
     }
@@ -321,7 +331,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
             </div>
             <div>
               <p className="text-sm font-bold text-text-primary">{profile?.full_name || 'Siz'}</p>
-              <p className="text-xs text-text-muted">{neighborhoodName}</p>
+              <p className="text-xs text-text-muted">{neighborhoodName || 'Mahalle belirtilmedi'}</p>
             </div>
           </div>
 

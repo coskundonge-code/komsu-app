@@ -22,22 +22,22 @@ export default function HesapKilitli() {
             <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-5">
               <Lock className="w-10 h-10 text-red-500" />
             </div>
-            <h1 className="text-2xl font-bold text-text-primary mb-2">HesabÄ±nÄ±z Kilitlendi</h1>
+            <h1 className="text-2xl font-bold text-text-primary mb-2">Hesabınız Kilitlendi</h1>
             <p className="text-text-muted text-sm mb-6">
-              7 gÃ¼nlÃ¼k sÃ¼re iÃ§inde e-Devlet Ã¼zerinden adres doÄrulamasÄ± yapÄ±lmadÄ±ÄÄ± iÃ§in hesabÄ±nÄ±z geÃ§ici olarak kilitlenmiÅtir.
+              7 günlük süre içinde e-Devlet üzerinden adres doğrulaması yapılmadığı için hesabınız geçici olarak kilitlenmiştir.
             </p>
 
             <div className="bg-background rounded-xl p-4 text-left space-y-3 mb-6">
               <div className="flex items-start gap-3 text-sm">
                 <FileText className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                 <span className="text-[#555]">
-                  HesabÄ±nÄ±zÄ± aÃ§mak iÃ§in e-Devlet Ã¼zerinden adres doÄrulama belgenizi yÃ¼kleyin.
+                  Hesabınızı açmak için e-Devlet üzerinden adres doğrulama belgenizi yükleyin.
                 </span>
               </div>
               <div className="flex items-start gap-3 text-sm">
                 <Shield className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                 <span className="text-[#555]">
-                  DoÄrulama tamamlandÄ±ÄÄ±nda hesabÄ±nÄ±z otomatik olarak aktifleÅtirilecektir.
+                  Doğrulama tamamlandığında hesabınız otomatik olarak aktifleştirilecektir.
                 </span>
               </div>
             </div>
@@ -47,7 +47,7 @@ export default function HesapKilitli() {
               className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3.5 rounded-xl text-sm transition flex items-center justify-center gap-2"
             >
               <FileText className="w-5 h-5" />
-              e-Devlet ile DoÄrula
+              e-Devlet ile Doğrula
             </Link>
 
             <button
@@ -55,7 +55,7 @@ export default function HesapKilitli() {
               className="mt-3 w-full border border-border hover:bg-surface-hover text-[#555] font-semibold py-3 rounded-xl text-sm transition flex items-center justify-center gap-2"
             >
               <LogOut className="w-4 h-4" />
-              ÃÄ±kÄ±Å Yap
+              Çıkış Yap
             </button>
           </div>
         </div>

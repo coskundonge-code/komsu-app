@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Briefcase, MapPin, Clock, Users, Heart, Award, GraduationCap, Utensils, Navigation, BarChart3, Send, Code2, Palette, MessageSquare, TrendingUp } from "lucide-react";
+import { ArrowLeft, Briefcase, MapPin, Clock, Users, Heart, Award, GraduationCap, Utensils, BarChart3, Send, Code2, Palette, MessageSquare, TrendingUp } from "lucide-react";
 import { useState } from "react";
 
 const positions = [
@@ -105,7 +105,7 @@ export default function CareersPage() {
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full -ml-24 -mb-24"></div>
 
             <div className="relative z-10">
-              <h1 className="text-4xl font-bold mb-3">Mahallemiz Ailesi'ne Katıl</h1>
+              <h1 className="text-4xl font-bold mb-3">Mahallemiz Ailesi&apos;ne Katıl</h1>
               <p className="text-lg text-green-100 max-w-2xl mx-auto">
                 Mahalleler ve topluluklar yönetmek için bizimle bir ekibin parçası olun. Anlamlı işler yapan, tutkulu bir takımda kendi potansiyelini keşfet.
               </p>
@@ -281,7 +281,7 @@ export default function CareersPage() {
             <section className="mb-12 p-8 bg-gradient-to-br from-primary/10 to-primary-hover/10 rounded-lg border border-primary/20">
               <h2 className="text-2xl font-bold text-text-primary mb-6 flex items-center gap-2">
                 <Users size={24} />
-                Neden Mahallemiz'e Katılmalısınız?
+                Neden Mahallemiz&apos;e Katılmalısınız?
               </h2>
               <ul className="space-y-4 text-text-secondary">
                 <li className="flex items-start gap-3">
@@ -315,7 +315,7 @@ export default function CareersPage() {
             <section className="mb-12 p-8 bg-gradient-to-br from-primary/5 to-primary-hover/5 rounded-lg border border-border">
               <h3 className="text-xl font-bold text-text-primary mb-3">Açık pozisyon bulamadın mı?</h3>
               <p className="text-text-secondary mb-4">
-                Eğer diğer pozisyonlar arasında uygun bir fırsat bulamadıysan, yine de bize CV'nizi ve motivasyon mektubunuzu gönderebilirsin. Gelen başvuruları düzenli olarak inceliyor ve uygun fırsatlar için seni işe almayı düşünüyoruz.
+                Eğer diğer pozisyonlar arasında uygun bir fırsat bulamadıysan, yine de bize CV&apos;nizi ve motivasyon mektubunuzu gönderebilirsin. Gelen başvuruları düzenli olarak inceliyor ve uygun fırsatlar için seni işe almayı düşünüyoruz.
               </p>
               <Link
                 href="mailto:kariyer@mahallem.com?subject=Genel Başvuru"
@@ -345,7 +345,7 @@ export default function CareersPage() {
           {/* Footer */}
           <div className="border-t border-border bg-background py-6 px-8 text-center">
             <p className="text-sm text-text-muted mb-4">
-              © 2026 Mahallemiz — Trendex Lojistik tarafından geliştirilmiştir.
+              © 2026 Mahallemiz — Consulting Partners tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link

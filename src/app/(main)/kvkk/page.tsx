@@ -1,13 +1,108 @@
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
-export default function KVKKPage() {
-  const currentDate = new Date().toLocaleDateString('tr-TR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
+/**
+ * KVKK Aydınlatma Metni — 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK)
+ * Madde 10 (aydınlatma yükümlülüğü) kapsamında hazırlanmıştır.
+ *
+ * NOT: Metin, uygulamanın GERÇEK veri akışına göre yazılmıştır (profiles /
+ * address_verifications / payments tabloları + verify-document akışı esas alındı):
+ *  - TC Kimlik No saklanmaz; yalnızca doğrulama anında e-Devlet'e iletilir.
+ *  - Kart bilgisi saklanmaz; ödeme altyapısı (PayTR) tarafından işlenir.
+ * Yayına almadan önce şirket sicil bilgileri (açık adres, MERSİS, VERBİS kayıt
+ * no, KEP adresi) yetkili tarafından tamamlanmalı ve bir hukukçu onaylamalıdır.
+ */
 
+// Sabit yürürlük tarihi — hukuki metinde her render'da değişen tarih OLMAMALI.
+const EFFECTIVE_DATE = '7 Haziran 2026';
+
+const PURPOSES = [
+  'Üyelik kaydının oluşturulması, hesabın yönetilmesi ve hizmetlerin sunulması',
+  'Mahalle/adres doğrulaması yapılması ve yalnızca gerçek mahalle sakinlerinin topluluğa katılmasının sağlanması',
+  'Topluluk güvenliğinin sağlanması, sahtecilik ve kötüye kullanımın önlenmesi',
+  'Pazaryeri ilanları, etkinlikler, gruplar ve mesajlaşma gibi platform özelliklerinin işletilmesi',
+  'Ücretli hizmetlere (Mahalle Kart, işletme üyeliği, ilan öne çıkarma) ilişkin ödemelerin alınması ve takibi',
+  'Talep, şikâyet ve başvuruların karşılanması; kullanıcı desteği sağlanması',
+  'Yasal yükümlülüklerin yerine getirilmesi ve yetkili mercilere bilgi verilmesi',
+  'Hizmet kalitesinin ölçülmesi, iyileştirilmesi ve anonim istatistiksel analiz',
+];
+
+const DATA_CATEGORIES: { category: string; items: string; note?: string }[] = [
+  {
+    category: 'Kimlik Bilgileri',
+    items: 'Ad, soyad, cinsiyet.',
+  },
+  {
+    category: 'İletişim Bilgileri',
+    items: 'E-posta adresi, telefon numarası.',
+  },
+  {
+    category: 'Konum ve Adres Bilgileri',
+    items:
+      'İl, ilçe, mahalle, açık adres metni ve harita üzerinde seçilen konum (enlem/boylam).',
+  },
+  {
+    category: 'Kimlik/Adres Doğrulama Bilgileri',
+    items:
+      'e-Devlet "Yerleşim Yeri ve Diğer Adres Belgesi" doğrulama barkodu, doğrulama durumu ve tarihi, varsa yüklenen belge görseli.',
+    note:
+      'TC Kimlik Numaranız yalnızca doğrulama anında turkiye.gov.tr sorgusu için kullanılır; sistemimizde SAKLANMAZ. Yalnızca belge barkodu ve doğrulama sonucu kaydedilir.',
+  },
+  {
+    category: 'Müşteri İşlem ve Finansal Bilgiler',
+    items:
+      'Ödeme tutarı, para birimi, ödeme türü/durumu, sipariş referansı, fatura/işlem tarihçesi.',
+    note:
+      'Kart numarası, son kullanma tarihi ve CVV gibi kart bilgileri tarafımızca SAKLANMAZ; ödeme altyapısı sağlayıcısı (PayTR) tarafından güvenli ortamda işlenir.',
+  },
+  {
+    category: 'Platform İçeriği',
+    items:
+      'Profil fotoğrafı, biyografi, paylaşılan gönderi/yorum/ilan/etkinlik içerikleri ve özel mesajlar.',
+  },
+  {
+    category: 'İşlem Güvenliği ve Teknik Veriler',
+    items:
+      'IP adresi, oturum ve giriş kayıtları, cihaz/tarayıcı bilgileri, log kayıtları ve çerez verileri.',
+  },
+];
+
+const LEGAL_GROUNDS = [
+  {
+    title: 'Sözleşmenin kurulması veya ifası (Md. 5/2-c)',
+    desc: 'Üyelik sözleşmesinin kurulması, hesabın yönetilmesi, ücretli hizmetlerin sunulması ve ödemelerin alınması.',
+  },
+  {
+    title: 'Hukuki yükümlülük (Md. 5/2-ç)',
+    desc: 'Vergi, ticaret ve diğer mevzuattan doğan saklama ve bilgilendirme yükümlülüklerinin yerine getirilmesi.',
+  },
+  {
+    title: 'Bir hakkın tesisi, kullanılması veya korunması (Md. 5/2-e)',
+    desc: 'Uyuşmazlıklarda ve hukuki taleplerde delil olarak kullanılması.',
+  },
+  {
+    title: 'Meşru menfaat (Md. 5/2-f)',
+    desc: 'Temel hak ve özgürlüklerinize zarar vermemek kaydıyla; topluluk güvenliği, sahtecilik önleme, hizmet güvenliği ve iyileştirme.',
+  },
+  {
+    title: 'Açık rıza (Md. 5/1)',
+    desc: 'Yukarıdaki sebeplerin bulunmadığı hâllerde; özellikle e-Devlet üzerinden adres doğrulaması, ticari elektronik ileti gönderimi ve verilerin yurt dışındaki sunuculara aktarımı için açık rızanız alınır.',
+  },
+];
+
+const RIGHTS_MADDE_11 = [
+  'Kişisel verilerinizin işlenip işlenmediğini öğrenme',
+  'İşlenmişse buna ilişkin bilgi talep etme',
+  'İşlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme',
+  'Yurt içinde veya yurt dışında aktarıldığı üçüncü kişileri bilme',
+  'Eksik veya yanlış işlenmişse düzeltilmesini isteme',
+  'KVKK Madde 7’deki şartlar çerçevesinde silinmesini veya yok edilmesini isteme',
+  'Düzeltme/silme işlemlerinin, verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme',
+  'Münhasıran otomatik sistemlerle analiz sonucu aleyhinize bir sonuç çıkmasına itiraz etme',
+  'Kanuna aykırı işleme nedeniyle zarara uğramanız hâlinde zararın giderilmesini talep etme',
+];
+
+export default function KVKKPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 py-6">
@@ -23,8 +118,10 @@ export default function KVKKPage() {
           {/* Header */}
           <div className="bg-gradient-to-br from-primary to-primary-hover p-8 text-white">
             <h1 className="text-3xl font-bold mb-2">KVKK Aydınlatma Metni</h1>
-            <p className="text-green-100">Kişisel Verilerin Korunması Hakkında Bilgilendirme</p>
-            <p className="text-green-100 text-sm mt-4">Yürürlük Tarihi: {currentDate}</p>
+            <p className="text-green-100">
+              6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) Madde 10 kapsamında bilgilendirme
+            </p>
+            <p className="text-green-100 text-sm mt-4">Son güncelleme: {EFFECTIVE_DATE}</p>
           </div>
 
           {/* Content */}
@@ -32,28 +129,32 @@ export default function KVKKPage() {
             {/* Giriş */}
             <section>
               <p className="text-text-secondary leading-relaxed">
-                Mahallemiz ("Uygulama"), kullanıcılarının kişisel verilerinin korunmasına büyük önem
-                vermektedir. Bu aydınlatma metni, uygulamayı kullanan tüm kişileri, Kişisel
-                Verilerin Korunması Kanunu ("KVKK") uyarınca, kişisel verilerinin nasıl
-                işlendiği, korunduğu ve kullanıldığı hakkında bilgilendirmektedir.
+                Mahallemiz (&quot;Uygulama&quot; veya &quot;Platform&quot;) olarak, kişisel
+                verilerinizin güvenliğine önem veriyoruz. Bu aydınlatma metni; veri sorumlusu
+                sıfatıyla, kişisel verilerinizi hangi amaçlarla ve hukuki sebeplerle işlediğimiz,
+                kimlere aktarabileceğimiz, hangi yöntemle topladığımız ve KVKK kapsamındaki
+                haklarınız hakkında sizi bilgilendirmek amacıyla hazırlanmıştır.
               </p>
             </section>
 
-            {/* Veri Sorumlusu */}
+            {/* 1. Veri Sorumlusu */}
             <section>
               <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
                 <span className="w-1 h-8 bg-primary rounded-full"></span>
-                Veri Sorumlusu
+                1. Veri Sorumlusunun Kimliği
               </h2>
               <div className="bg-background p-6 rounded-lg border border-border space-y-2 text-text-secondary">
                 <p>
-                  <strong>Şirket Adı:</strong> Trendex Lojistik ve Teknoloji A.Ş.
+                  <strong>Veri Sorumlusu:</strong> Consulting Partners Yönetim Danışmanlığı A.Ş.
                 </p>
                 <p>
                   <strong>Adres:</strong> İstanbul, Türkiye
                 </p>
                 <p>
-                  <strong>Email:</strong> destek@mahallem.com
+                  <strong>E-posta:</strong>{' '}
+                  <a href="mailto:kvkk@mahallem.com" className="text-primary hover:text-primary-hover underline">
+                    kvkk@mahallem.com
+                  </a>
                 </p>
                 <p>
                   <strong>Web:</strong> www.mahallem.com
@@ -61,27 +162,39 @@ export default function KVKKPage() {
               </div>
             </section>
 
-            {/* Kişisel Verilerin İşlenme Amacı */}
+            {/* 2. İşlenen Kişisel Veriler */}
             <section>
               <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
                 <span className="w-1 h-8 bg-primary rounded-full"></span>
-                Kişisel Verilerin İşlenme Amacı
+                2. İşlenen Kişisel Veriler ve Kategorileri
               </h2>
               <p className="text-text-secondary leading-relaxed mb-4">
-                Mahallemiz, kullanıcılardan toplanan kişisel verileri aşağıda belirtilen meşru
-                amaçlarla işlemektedir:
+                Hizmetin niteliğine ve kullanımınıza bağlı olarak aşağıdaki kategorilerde kişisel
+                veri işlenmektedir:
               </p>
+              <div className="grid gap-4">
+                {DATA_CATEGORIES.map((item) => (
+                  <div key={item.category} className="border border-border rounded-lg p-4 bg-surface">
+                    <h3 className="font-bold text-text-primary mb-2">{item.category}</h3>
+                    <p className="text-text-secondary text-sm">{item.items}</p>
+                    {item.note && (
+                      <p className="text-sm text-text-secondary mt-3 p-3 bg-green-50 border border-green-200 rounded">
+                        <strong>Önemli:</strong> {item.note}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* 3. İşleme Amaçları */}
+            <section>
+              <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
+                <span className="w-1 h-8 bg-primary rounded-full"></span>
+                3. Kişisel Verilerin İşlenme Amaçları
+              </h2>
               <div className="space-y-3">
-                {[
-                  'Kullanıcı hesabı oluşturma ve yönetimi',
-                  'Mahalle doğrulaması ve güvenlik sağlama',
-                  'Uygulama içi iletişim ve bildirimler',
-                  'Hizmet kalitesini iyileştirme ve geliştirme',
-                  'Yasal yükümlülükleri yerine getirme',
-                  'Bilgisayar güvenliği ve kötüye kullanımı önleme',
-                  'Müşteri desteği ve sorun giderme',
-                  'Anonim istatistiksel analiz ve raporlama',
-                ].map((item, idx) => (
+                {PURPOSES.map((item, idx) => (
                   <div key={idx} className="flex items-start gap-3 p-3 bg-background rounded-lg border border-border">
                     <span className="flex-shrink-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
                       ✓
@@ -92,234 +205,185 @@ export default function KVKKPage() {
               </div>
             </section>
 
-            {/* Toplanan Kişisel Veriler */}
+            {/* 4. Hukuki Sebepler */}
             <section>
               <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
                 <span className="w-1 h-8 bg-primary rounded-full"></span>
-                Toplanan Kişisel Veriler
+                4. İşlemenin Hukuki Sebepleri (KVKK Madde 5)
               </h2>
               <p className="text-text-secondary leading-relaxed mb-4">
-                Mahallemiz aşağıdaki kategorilerde kişisel veri toplamaktadır:
+                Kişisel verileriniz, KVKK Madde 5&apos;te düzenlenen aşağıdaki hukuki sebeplere
+                dayanılarak işlenmektedir:
               </p>
-              <div className="grid gap-4">
-                {[
-                  {
-                    category: 'Kimlik Bilgileri',
-                    items: 'Ad, soyad, e-posta adresi, telefon numarası',
-                  },
-                  {
-                    category: 'Konum Bilgileri',
-                    items: 'Mahalle, ilçe, şehir, posta kodu (doğrulama amacıyla)',
-                  },
-                  {
-                    category: 'Kullanım Verileri',
-                    items: 'Oturum açma bilgileri, IP adresi, cihaz bilgileri, kullanım alışkanlıkları',
-                  },
-                  {
-                    category: 'İletişim Verileri',
-                    items: 'Gönderilen mesajlar, yorum ve gönderiler (sadece gerekli durumlarda)',
-                  },
-                  {
-                    category: 'Teknik Veriler',
-                    items: 'Tarayıcı türü, işletim sistemi, çerez ve benzeri teknolojiler',
-                  },
-                ].map((item) => (
-                  <div key={item.category} className="border border-border rounded-lg p-4 bg-surface">
-                    <h3 className="font-bold text-text-primary mb-2">{item.category}</h3>
-                    <p className="text-text-secondary text-sm">{item.items}</p>
+              <div className="space-y-3">
+                {LEGAL_GROUNDS.map((g, idx) => (
+                  <div key={idx} className="border border-border rounded-lg p-4 bg-surface">
+                    <h3 className="font-bold text-text-primary text-sm">{g.title}</h3>
+                    <p className="text-text-secondary text-sm mt-2">{g.desc}</p>
                   </div>
                 ))}
               </div>
             </section>
 
-            {/* Kişisel Verilerin Aktarılması */}
+            {/* 5. Toplama Yöntemi */}
             <section>
               <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
                 <span className="w-1 h-8 bg-primary rounded-full"></span>
-                Kişisel Verilerin Aktarılması
+                5. Kişisel Verilerin Toplanma Yöntemi
+              </h2>
+              <div className="bg-background p-6 rounded-lg border border-border text-text-secondary leading-relaxed">
+                <p>
+                  Kişisel verileriniz; üyelik ve kayıt formları, profil ve ilan oluşturma ekranları,
+                  adres doğrulama akışı (turkiye.gov.tr/e-Devlet sorgusu), ödeme işlemleri, destek
+                  kanalları ve uygulamayı kullanımınız sırasında otomatik yollarla (çerezler, log
+                  kayıtları) elektronik ortamda toplanır.
+                </p>
+              </div>
+            </section>
+
+            {/* 6. Aktarım */}
+            <section>
+              <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
+                <span className="w-1 h-8 bg-primary rounded-full"></span>
+                6. Kişisel Verilerin Aktarılması
               </h2>
               <p className="text-text-secondary leading-relaxed mb-4">
-                Kişisel verileriniz aşağıdaki durumlar haricinde üçüncü kişilere aktarılmaz:
+                Kişisel verileriniz, yukarıdaki amaçlarla sınırlı olarak ve KVKK Madde 8 ve 9&apos;a
+                uygun şekilde aşağıdaki taraflara aktarılabilir:
               </p>
               <ul className="space-y-3 text-text-secondary">
                 <li className="flex items-start gap-3">
                   <span className="text-primary font-bold mt-1">•</span>
-                  <span>Yasal zorunluluklar ve mahkeme kararları</span>
+                  <span>
+                    <strong>Ödeme hizmeti sağlayıcısı (PayTR):</strong> ödemelerin güvenli şekilde
+                    alınması amacıyla.
+                  </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-primary font-bold mt-1">•</span>
-                  <span>Ödeme işlemi için ödeme sağlayıcıları</span>
+                  <span>
+                    <strong>Bulut altyapı ve barındırma sağlayıcıları:</strong> verilerin
+                    depolanması ve uygulamanın çalıştırılması amacıyla.
+                  </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-primary font-bold mt-1">•</span>
-                  <span>Teknik altyapı ve barındırma hizmet sağlayıcıları</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-primary font-bold mt-1">•</span>
-                  <span>Bilgisayar güvenliği ve dolandırıcılık önleme hizmetleri</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-primary font-bold mt-1">•</span>
-                  <span>Analitik ve raporlama hizmetleri (anonim veri olarak)</span>
+                  <span>
+                    <strong>Yetkili kamu kurum ve kuruluşları ile mahkemeler:</strong> yasal
+                    yükümlülükler ve talepler kapsamında.
+                  </span>
                 </li>
               </ul>
               <div className="mt-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
                 <p className="text-sm text-text-secondary">
-                  <strong>Not:</strong> Tüm veri işleme anlaşmaları KVKK uyarınca yürütülmektedir ve
-                  veri sorumlusu olarak sorumlulukları devam etmektedir.
+                  <strong>Yurt dışına aktarım:</strong> Kullanılan bulut altyapı sağlayıcılarının
+                  sunucuları yurt dışında bulunabilir. Bu durumda kişisel verileriniz, KVKK Madde
+                  9 uyarınca yeterlilik kararı, uygun güvenceler (standart sözleşme vb.) veya açık
+                  rızanız bulunması hâlinde yurt dışına aktarılır.
                 </p>
               </div>
             </section>
 
-            {/* Veri Saklama Süresi */}
+            {/* 7. Saklama Süresi */}
             <section>
               <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
                 <span className="w-1 h-8 bg-primary rounded-full"></span>
-                Veri Saklama Süresi
-              </h2>
-              <div className="bg-background p-6 rounded-lg border border-border text-text-secondary leading-relaxed">
-                <p className="mb-3">
-                  Kişisel veriler, toplandığı amacın gerçekleştirilmesi için gerekli olan süre kadar
-                  saklanmaktadır. Hesap silme işleminden sonra veriler, yasal yükümlülükler dışında
-                  30 gün içerisinde silinecektir.
-                </p>
-                <p>
-                  Yasal yükümlülükleri yerine getirmek için gerekli veriler, ilgili kanunların
-                  gerektirdiği süreler kadar saklanacaktır.
-                </p>
-              </div>
-            </section>
-
-            {/* Haklarınız */}
-            <section>
-              <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
-                <span className="w-1 h-8 bg-primary rounded-full"></span>
-                Haklarınız (KVKK Madde 12)
-              </h2>
-              <p className="text-text-secondary leading-relaxed mb-4">
-                KVKK uyarınca, aşağıdaki haklara sahipsiniz:
-              </p>
-              <div className="space-y-3">
-                {[
-                  {
-                    title: 'Bilgi Alma Hakkı',
-                    desc: 'Kişisel verilerinizin işlenip işlenmediği hakkında bilgi talep etme',
-                  },
-                  {
-                    title: 'Erişim Hakkı',
-                    desc: 'İşlenen kişisel verilerinize erişme',
-                  },
-                  {
-                    title: 'Düzeltme Hakkı',
-                    desc: 'Yanlış veya eksik kişisel verilerinizi düzelttirebilme',
-                  },
-                  {
-                    title: 'Silme Hakkı',
-                    desc: 'Kişisel verilerinizin silinmesini talep etme',
-                  },
-                  {
-                    title: 'İşlenmesini Kısıtlama Hakkı',
-                    desc: 'Kişisel verilerinizin işlenmesinin sınırlandırılmasını isteme',
-                  },
-                  {
-                    title: 'Taşıma Hakkı',
-                    desc: 'Kişisel verilerinizi yapılandırılmış, yaygın kullanılan, makine tarafından okunabilir formatta almak',
-                  },
-                  {
-                    title: 'İtiraz Hakkı',
-                    desc: 'Kişisel verilerinizin işlenmesine itiraz etme',
-                  },
-                  {
-                    title: 'Otomatik Karar Alma Hakkı',
-                    desc: 'Yalnızca otomatik sistemlerce alınan kararlar karşısında koruma talep etme',
-                  },
-                ].map((right, idx) => (
-                  <div
-                    key={idx}
-                    className="border border-border rounded-lg p-4 bg-surface hover:border-primary transition-colors"
-                  >
-                    <h3 className="font-bold text-text-primary text-sm">{right.title}</h3>
-                    <p className="text-text-secondary text-sm mt-2">{right.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Güvenlik Önlemleri */}
-            <section>
-              <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
-                <span className="w-1 h-8 bg-primary rounded-full"></span>
-                Güvenlik Önlemleri
+                7. Kişisel Verilerin Saklanma Süresi
               </h2>
               <div className="bg-background p-6 rounded-lg border border-border text-text-secondary leading-relaxed space-y-3">
                 <p>
-                  Mahallemiz, kişisel verilerinizin korunması için aşağıdaki önlemleri almaktadır:
+                  Kişisel verileriniz, işlenme amacının gerektirdiği ve ilgili mevzuatın öngördüğü
+                  süreler boyunca saklanır:
                 </p>
                 <ul className="space-y-2 ml-4">
                   <li className="flex items-start gap-2">
                     <span className="text-primary font-bold">▪</span>
-                    <span>SSL/TLS şifreleme teknolojisi</span>
+                    <span>Hesap ve profil verileri: üyeliğiniz aktif olduğu sürece.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary font-bold">▪</span>
-                    <span>Güvenli sunucu altyapısı ve düzenli yedekleme</span>
+                    <span>
+                      Hesap silindiğinde: yasal saklama yükümlülükleri dışındaki veriler en geç 30
+                      gün içinde silinir veya anonim hâle getirilir.
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary font-bold">▪</span>
-                    <span>Erişim kontrolleri ve kimlik doğrulama mekanizmaları</span>
+                    <span>
+                      Ödeme ve faturaya ilişkin kayıtlar: ilgili mali mevzuat (örn. 10 yıllık
+                      saklama) gereği zorunlu süre boyunca.
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary font-bold">▪</span>
-                    <span>Düzenli güvenlik denetimleri ve güncellemeler</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-bold">▪</span>
-                    <span>Personel eğitimi ve gizlilik politikaları</span>
+                    <span>Adres doğrulama kayıtları: doğrulamanın geçerlilik süresi ve makul ek süre boyunca.</span>
                   </li>
                 </ul>
               </div>
             </section>
 
-            {/* İletişim */}
+            {/* 8. Haklarınız (Madde 11) */}
             <section>
               <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
                 <span className="w-1 h-8 bg-primary rounded-full"></span>
-                İletişim
+                8. İlgili Kişi Olarak Haklarınız (KVKK Madde 11)
               </h2>
               <p className="text-text-secondary leading-relaxed mb-4">
-                KVKK kapsamında haklarınızı kullanmak için aşağıdaki yollarla bize ulaşabilirsiniz:
+                KVKK Madde 11 uyarınca veri sorumlusuna başvurarak aşağıdaki haklarınızı
+                kullanabilirsiniz:
               </p>
+              <div className="space-y-3">
+                {RIGHTS_MADDE_11.map((right, idx) => (
+                  <div
+                    key={idx}
+                    className="border border-border rounded-lg p-4 bg-surface hover:border-primary transition-colors"
+                  >
+                    <p className="text-text-secondary text-sm flex items-start gap-2">
+                      <span className="text-primary font-bold">{idx + 1}.</span>
+                      <span>{right}</span>
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* 9. Başvuru */}
+            <section>
+              <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
+                <span className="w-1 h-8 bg-primary rounded-full"></span>
+                9. Başvuru Usulü
+              </h2>
               <div className="bg-surface border border-border rounded-lg p-6 space-y-3 text-text-secondary">
                 <p>
-                  <strong>Email:</strong>{' '}
+                  Haklarınıza ilişkin taleplerinizi, &quot;Veri Sorumlusuna Başvuru Usul ve Esasları
+                  Hakkında Tebliğ&quot;e uygun olarak; kimliğinizi tevsik edici bilgilerle birlikte{' '}
                   <a href="mailto:kvkk@mahallem.com" className="text-primary hover:text-primary-hover underline">
                     kvkk@mahallem.com
-                  </a>
+                  </a>{' '}
+                  adresine veya yazılı olarak veri sorumlusu adresine iletebilirsiniz.
                 </p>
                 <p>
-                  <strong>Talep Formu:</strong> Başvurularınız, adınız, soyadınız ve kimlik numaranız ile
-                  gönderilmelidir.
-                </p>
-                <p>
-                  <strong>Değerlendirme Süresi:</strong> Başvurularınız 30 gün içerisinde
-                  yanıtlanacaktır.
+                  <strong>Yanıt süresi:</strong> Başvurularınız, talebin niteliğine göre en kısa
+                  sürede ve en geç 30 gün içinde sonuçlandırılır. İşlemin ayrıca bir maliyet
+                  gerektirmesi hâlinde Kurul tarifesindeki ücret alınabilir.
                 </p>
               </div>
             </section>
 
-            {/* Şikayetler */}
+            {/* 10. Şikayet */}
             <section>
               <h2 className="text-2xl font-bold text-text-primary mb-4 flex items-center gap-2">
                 <span className="w-1 h-8 bg-primary rounded-full"></span>
-                Şikayetler
+                10. Kurula Şikâyet Hakkı
               </h2>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-text-secondary">
                 <p className="leading-relaxed mb-3">
-                  Kişisel verilerinizin işlenmesiyle ilgili şikayetleriniz için, haklarınızın ihlal
-                  edildiğini düşünüyorsanız Kişisel Verileri Koruma Kurulu'na başvuru yapabilirsiniz.
+                  Başvurunuzun reddedilmesi, verilen yanıtı yetersiz bulmanız veya süresinde yanıt
+                  verilmemesi hâlinde; Kişisel Verileri Koruma Kurulu&apos;na şikâyette
+                  bulunabilirsiniz.
                 </p>
                 <p className="text-sm">
-                  <strong>KVKK Başvuru Portalı:</strong>{' '}
+                  <strong>Kişisel Verileri Koruma Kurumu:</strong>{' '}
                   <a
                     href="https://www.kvkk.gov.tr"
                     target="_blank"
@@ -332,13 +396,24 @@ export default function KVKKPage() {
               </div>
             </section>
 
+            {/* Taslak / hukukçu incelemesi uyarısı */}
+            <section>
+              <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-5 text-sm text-text-secondary">
+                <p className="font-semibold text-text-primary mb-1">Yayın öncesi not</p>
+                <p>
+                  Bu metin, uygulamanın güncel veri akışına ve 6698 sayılı Kanun&apos;a göre
+                  hazırlanmış bir taslaktır. Yayına alınmadan önce şirket sicil bilgileri (açık
+                  adres, MERSİS ve VERBİS kayıt numarası, KEP adresi) tamamlanmalı ve metin yetkili
+                  bir hukuk danışmanı tarafından gözden geçirilmelidir.
+                </p>
+              </div>
+            </section>
+
             {/* Son Not */}
             <section className="border-t border-border pt-8">
               <p className="text-text-muted text-sm leading-relaxed">
-                Bu KVKK Aydınlatma Metni, Trendex Lojistik tarafından hazırlanmış ve gerektiğinde
-                güncellenebilir. Değişiklikler, bu sayfada yayınlandığı tarihten itibaren
-                geçerlidir. Sizin tarafınızdan uygulamaya erişim devam ettirilmesi, güncellenmiş
-                metni kabul ettiğiniz anlamına gelmektedir.
+                Bu KVKK Aydınlatma Metni gerektiğinde güncellenebilir. Değişiklikler bu sayfada
+                yayınlandığı tarihten itibaren geçerlidir.
               </p>
             </section>
           </div>
@@ -346,7 +421,7 @@ export default function KVKKPage() {
           {/* Footer */}
           <div className="border-t border-border bg-background py-6 px-8 text-center">
             <p className="text-sm text-text-muted mb-4">
-              © 2026 Mahallemiz — Trendex Lojistik tarafından geliştirilmiştir.
+              © 2026 Mahallemiz — Consulting Partners tarafından geliştirilmiştir.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <Link

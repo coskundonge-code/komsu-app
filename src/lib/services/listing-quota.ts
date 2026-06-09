@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Listing Quota Service
  * Manages user's free listing allowance (3 per year)
@@ -20,7 +19,7 @@ export interface UserQuota {
   freeUsed: number;
   freeLimit: number;
   canPostFree: boolean;
-  resetDate?: string;
+  resetDate?: string | null;
 }
 
 export interface QuotaCheckResult {
@@ -51,9 +50,18 @@ export async function getUserQuota(userId: string): Promise<UserQuota | null> {
       return null;
     }
 
-    // If no quota record exists for this year, create one
+    // Kota satırı yoksa kullanıcı henüz hiç ücretsiz hak kullanmamış demektir.
+    // Satır artık YALNIZCA sunucu tarafı RPC ile (ilk tüketimde) oluşturulur;
+    // istemci kota satırı ekleyemez (ulq_insert_own politikası kaldırıldı).
     if (!data) {
-      return createUserQuotaForYear(userId, currentYear);
+      return {
+        userId,
+        year: currentYear,
+        freeUsed: 0,
+        freeLimit: FREE_LISTING_LIMIT,
+        canPostFree: true,
+        resetDate: null,
+      };
     }
 
     return {
@@ -71,47 +79,6 @@ export async function getUserQuota(userId: string): Promise<UserQuota | null> {
 }
 
 /**
- * Create a new quota record for user for the given year
- */
-async function createUserQuotaForYear(
-  userId: string,
-  year: number
-): Promise<UserQuota | null> {
-  try {
-    const supabase = createClient();
-    const resetDate = new Date(year + 1, 0, 1).toISOString(); // Jan 1 of next year
-
-    const { data, error } = await supabase
-      .from('user_listing_quotas')
-      .insert({
-        user_id: userId,
-        year,
-        free_used: 0,
-        reset_date: resetDate,
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Error creating quota:', error);
-      return null;
-    }
-
-    return {
-      userId: data.user_id,
-      year: data.year,
-      freeUsed: 0,
-      freeLimit: FREE_LISTING_LIMIT,
-      canPostFree: true,
-      resetDate: data.reset_date,
-    };
-  } catch (error) {
-    console.error('Error in createUserQuotaForYear:', error);
-    return null;
-  }
-}
-
-/**
  * Consume one free listing from user's quota
  * Returns the updated quota or null if quota is exhausted
  */
@@ -120,32 +87,29 @@ export async function consumeFreeQuota(userId: string): Promise<UserQuota | null
     const supabase = createClient();
     const currentYear = new Date().getFullYear();
 
-    const quota = await getUserQuota(userId);
-    if (!quota || !quota.canPostFree) {
-      console.warn('User has no free listings remaining');
-      return null;
-    }
-
-    const { data, error } = await supabase
-      .from('user_listing_quotas')
-      .update({ free_used: quota.freeUsed + 1 })
-      .eq('user_id', userId)
-      .eq('year', currentYear)
-      .select()
-      .single();
+    // Tüketim SUNUCU tarafında atomik yapılır: kontrol (limit < 1) + artırma tek
+    // işlemde. İstemci free_used'ı doğrudan yazamaz (ulq_update_own kaldırıldı);
+    // yalnızca bu SECURITY DEFINER RPC artırabilir → kota oynaması (self-reset) kapandı.
+    const { data, error } = await (supabase.rpc as any)('consume_free_listing_quota');
 
     if (error) {
       console.error('Error consuming quota:', error);
       return null;
     }
 
+    const row = Array.isArray(data) ? data[0] : data;
+    if (!row || row.ok !== true) {
+      console.warn('User has no free listings remaining');
+      return null;
+    }
+
     return {
-      userId: data.user_id,
-      year: data.year,
-      freeUsed: data.free_used,
+      userId,
+      year: row.yr ?? currentYear,
+      freeUsed: row.used,
       freeLimit: FREE_LISTING_LIMIT,
-      canPostFree: data.free_used < FREE_LISTING_LIMIT,
-      resetDate: data.reset_date,
+      canPostFree: row.used < FREE_LISTING_LIMIT,
+      resetDate: row.reset_at ?? null,
     };
   } catch (error) {
     console.error('Error in consumeFreeQuota:', error);

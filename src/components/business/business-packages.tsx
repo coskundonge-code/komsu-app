@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Check, Gift, CreditCard, Shield, Sparkles, Clock } from 'lucide-react';
+import { Check, Gift, Shield, Sparkles, Clock } from 'lucide-react';
 import {
   BillingPeriod,
   MONTHLY_PRICE,
@@ -131,7 +131,7 @@ export default function BusinessPackages({
               </div>
               {billingPeriod === 'yearly' && (
                 <p className="text-sm text-text-muted">
-                  Aylık {monthlyEquivalent.toLocaleString('tr-TR')}₺'ye denk gelir
+                  Aylık {monthlyEquivalent.toLocaleString('tr-TR')}₺&apos;ye denk gelir
                 </p>
               )}
               <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-primary-light rounded-full">

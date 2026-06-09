@@ -1,0 +1,81 @@
+name: CI
+
+# K7 — ilk otomatik kapı: her push/PR'de lint + typecheck + test + bağımlılık taraması.
+on:
+  push:
+    branches: [main, coskun]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Lint hala BILGI amacli (kalan ~253 borc; cogu load-bearing 'any' — TECH_DEBT #5).
+      - name: Lint (informational)
+        run: npm run lint
+        continue-on-error: true
+
+      # GERCEK KAPI: tip kontrolu artik temiz (101 hata sifirlandi) -> zorunlu.
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      # GERCEK KAPI: birim testler.
+      - name: Unit tests
+        run: npm run test
+
+      # GERCEK KAPI: uretim build'i derlenmeli.
+      - name: Production build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
+
+      # Bilgilendirme: uretim acigi kalmayinca zorunlu kapiya cevrilecek.
+      - name: Dependency audit (informational)
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+  # K3 — E2E duman testleri (Playwright). Simdilik BILGI amacli (continue-on-error):
+  # placeholder Supabase env + dev sunucusu ile ara sira kararsiz olabilir; kararli
+  # hale gelince zorunlu kapiya cevrilecek. quality job'unu bloklamaz.
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright (chromium)
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E smoke tests (informational)
+        run: npm run test:e2e -- --reporter=html
+        continue-on-error: true
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

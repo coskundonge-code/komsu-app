@@ -6,7 +6,6 @@ import type { Database } from '@/lib/supabase/types'
 
 const createClient = () => createTypedClient()
 
-type Post = Database['public']['Tables']['posts']['Row']
 type PostInsert = Database['public']['Tables']['posts']['Insert']
 
 // --- React Query hooks (use these in components) ---
@@ -52,13 +51,13 @@ export async function getPosts(options?: {
     query = query.eq('neighborhood_id', options.neighborhoodId)
   }
   if (options?.postType && options.postType !== 'general') {
-    query = query.eq('type', options.postType)
+    query = query.eq('type', options.postType as 'general' | 'safety' | 'recommendation' | 'lost_found' | 'classified' | 'event' | 'poll')
   }
-  if (options?.limit) {
-    query = query.limit(options.limit)
-  }
+  // Çağıran limit vermezse bile sınırsız çekme yok (DoS/perf koruması).
+  const limit = options?.limit ?? 100
+  query = query.limit(limit)
   if (options?.offset) {
-    query = query.range(options.offset, options.offset + (options.limit || 10) - 1)
+    query = query.range(options.offset, options.offset + limit - 1)
   }
 
   const { data, error } = await query
@@ -69,7 +68,7 @@ export async function getPostById(id: string) {
   const supabase = createClient()
   const { data, error } = await supabase
     .from('posts')
-    .select('*, profiles!posts_author_id_fkey(full_name, avatar_url), comments(*, profiles!comments_author_id_fkey(full_name, avatar_url))')
+    .select('*, profiles!posts_author_id_fkey(full_name, avatar_url), neighborhoods(name, district), comments(*, profiles!comments_author_id_fkey(full_name, avatar_url))')
     .eq('id', id)
     .single()
   return { data, error }

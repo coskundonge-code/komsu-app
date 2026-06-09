@@ -1,12 +1,19 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Plus, Heart, MapPin, ChevronDown, X, Zap } from 'lucide-react';
+import { Plus, Heart, MapPin, ChevronDown, X, Package, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
 import { useListings } from '@/lib/hooks/use-listings';
+import { useCurrentUser } from '@/lib/hooks/use-auth';
+
+// NOT (2026-06-07): Bu sayfa eskiden boş DB'de 16 sahte ilan (mockListings + demo-images)
+// gösteriyordu; ayrıca GERÇEK ilanları bile uydurma verilerle süslüyordu: rastgele demo
+// görsel (media_urls boşsa), Math.random() ile "mesafe", "puan" ve "yorum sayısı", ve var
+// olmayan is_featured kolonuna dayanan "Öne Çıkanlar" karuseli. Hepsi kaldırıldı; sayfa
+// artık yalnızca gerçek listings verisini gösteriyor. Mesafe filtresi de kaldırıldı çünkü
+// kullanıcı konumu + haversine olmadan gerçek mesafe hesaplanamıyordu. Bkz. TECH_DEBT #12.
 
 const tabs = [
   { id: 'all', label: 'Tüm İlanlar' },
@@ -15,32 +22,10 @@ const tabs = [
   { id: 'saved', label: 'Kaydedilenler' },
 ];
 
-const categories = [
-  'Elektronik',
-  'Mobilya',
-  'Giyim',
-  'Spor',
-  'Kitaplar',
-  'Bahçe',
-  'Oyuncak',
-  'Ev & Yaşam',
-  'Spor Malzemeleri',
-  'Diğer',
-];
-
-const distanceOptions = [
-  { label: '1 km', value: 1 },
-  { label: '3 km', value: 3 },
-  { label: '5 km', value: 5 },
-  { label: '10 km', value: 10 },
-  { label: 'Tümü', value: null },
-];
-
 const sortOptions = [
   { label: 'En Yeni', value: 'newest' },
   { label: 'En Düşük Fiyat', value: 'price-low' },
   { label: 'En Yüksek Fiyat', value: 'price-high' },
-  { label: 'En Yakın', value: 'nearest' },
 ];
 
 const priceRanges = [
@@ -51,271 +36,13 @@ const priceRanges = [
   { label: '5,000+ ₺', value: { min: 5000, max: null } },
 ];
 
+// listing_condition enum (types.ts): new | like_new | good | fair
 const conditions = [
   { label: 'Tümü', value: null },
   { label: 'Sıfır', value: 'new' },
-  { label: 'Az Kullanılmış', value: 'barely-used' },
+  { label: 'Az Kullanılmış', value: 'like_new' },
   { label: 'İyi', value: 'good' },
   { label: 'Orta', value: 'fair' },
-];
-
-const mockListings = [
-  {
-    id: '1',
-    title: 'Laptop Lenovo IdeaPad 5 - Az Kullanılmış',
-    price: 8500,
-    image: getFeedImageUrl(18, 500, 500),
-    location: 'Kadıköy',
-    neighborhood: 'Moda',
-    timeAgo: '2 saat',
-    distance: '2 km',
-    isFree: false,
-    featured: true,
-    category: 'Elektronik',
-    condition: 'barely-used',
-    rating: 4.8,
-    reviewCount: 12,
-  },
-  {
-    id: '2',
-    title: 'IKEA Kanepe - Açık Gri Renk, Çok İyi Durumda',
-    price: 2200,
-    image: getFeedImageUrl(19, 500, 500),
-    location: 'Moda',
-    neighborhood: 'Moda',
-    timeAgo: '4 saat',
-    distance: '1 km',
-    isFree: false,
-    featured: true,
-    category: 'Mobilya',
-    condition: 'good',
-    rating: 5,
-    reviewCount: 8,
-  },
-  {
-    id: '3',
-    title: 'Nike Spor Ayakkabı - Beden 42, Siyah',
-    price: 450,
-    image: getFeedImageUrl(20, 500, 500),
-    location: 'Caferağa',
-    neighborhood: 'Caferağa',
-    timeAgo: '5 saat',
-    distance: '3 km',
-    isFree: false,
-    featured: false,
-    category: 'Giyim',
-    condition: 'barely-used',
-    rating: 4.6,
-    reviewCount: 5,
-  },
-  {
-    id: '4',
-    title: 'Çocuk Kitapları Seti - 20 Adet',
-    price: 0,
-    image: getFeedImageUrl(21, 500, 500),
-    location: 'Kadıköy',
-    neighborhood: 'Güzeltepe',
-    timeAgo: '6 saat',
-    distance: '4 km',
-    isFree: true,
-    featured: false,
-    category: 'Kitaplar',
-    condition: 'good',
-    rating: 4.9,
-    reviewCount: 15,
-  },
-  {
-    id: '5',
-    title: 'Dumbbell Seti 20kg - Yeni, Ambalajında',
-    price: 1200,
-    image: getFeedImageUrl(22, 500, 500),
-    location: 'Moda',
-    neighborhood: 'Moda',
-    timeAgo: '1 gün',
-    distance: '1 km',
-    isFree: false,
-    featured: false,
-    category: 'Spor Malzemeleri',
-    condition: 'new',
-    rating: 5,
-    reviewCount: 3,
-  },
-  {
-    id: '6',
-    title: 'PlayStation 5 - Orjinal Kutu ile Satılıyor',
-    price: 6500,
-    image: getFeedImageUrl(23, 500, 500),
-    location: 'Kadıköy',
-    neighborhood: 'Fenerbahçe',
-    timeAgo: '1 gün',
-    distance: '2 km',
-    isFree: false,
-    featured: true,
-    category: 'Elektronik',
-    condition: 'new',
-    rating: 4.7,
-    reviewCount: 9,
-  },
-  {
-    id: '7',
-    title: 'Ahşap Yemek Masası - Masif Ceviz',
-    price: 1800,
-    image: getFeedImageUrl(24, 500, 500),
-    location: 'Fenerbahçe',
-    neighborhood: 'Fenerbahçe',
-    timeAgo: '1 gün',
-    distance: '5 km',
-    isFree: false,
-    featured: false,
-    category: 'Mobilya',
-    condition: 'good',
-    rating: 4.5,
-    reviewCount: 6,
-  },
-  {
-    id: '8',
-    title: 'Bebek Arabası - Stroller, İyi Durumda',
-    price: 0,
-    image: getFeedImageUrl(25, 500, 500),
-    location: 'Moda',
-    neighborhood: 'Moda',
-    timeAgo: '2 gün',
-    distance: '1 km',
-    isFree: true,
-    featured: false,
-    category: 'Ev & Yaşam',
-    condition: 'good',
-    rating: 4.8,
-    reviewCount: 11,
-  },
-  {
-    id: '9',
-    title: 'Samsung Galaxy Tab S9 - 11 inç, Gümüş',
-    price: 4200,
-    image: getFeedImageUrl(26, 500, 500),
-    location: 'Caferağa',
-    neighborhood: 'Caferağa',
-    timeAgo: '2 gün',
-    distance: '3 km',
-    isFree: false,
-    featured: false,
-    category: 'Elektronik',
-    condition: 'barely-used',
-    rating: 4.7,
-    reviewCount: 7,
-  },
-  {
-    id: '10',
-    title: 'Ahşap Kitaplık - Antika, Dekoratif',
-    price: 800,
-    image: getFeedImageUrl(27, 500, 500),
-    location: 'Kadıköy',
-    neighborhood: 'Fenerbahçe',
-    timeAgo: '3 saat',
-    distance: '2 km',
-    isFree: false,
-    featured: false,
-    category: 'Mobilya',
-    condition: 'fair',
-    rating: 4.3,
-    reviewCount: 4,
-  },
-  {
-    id: '11',
-    title: 'Bisiklet Kask - Derece Standartlı',
-    price: 250,
-    image: getFeedImageUrl(28, 500, 500),
-    location: 'Moda',
-    neighborhood: 'Moda',
-    timeAgo: '5 saat',
-    distance: '1 km',
-    isFree: false,
-    featured: false,
-    category: 'Spor Malzemeleri',
-    condition: 'good',
-    rating: 4.8,
-    reviewCount: 10,
-  },
-  {
-    id: '12',
-    title: 'Ütü Masası - Profesyonel, Metal Yapı',
-    price: 350,
-    image: getFeedImageUrl(29, 500, 500),
-    location: 'Fenerbahçe',
-    neighborhood: 'Fenerbahçe',
-    timeAgo: '6 saat',
-    distance: '5 km',
-    isFree: false,
-    featured: false,
-    category: 'Ev & Yaşam',
-    condition: 'good',
-    rating: 4.6,
-    reviewCount: 5,
-  },
-  {
-    id: '13',
-    title: 'LED Panel Işık Seti - Fotoğrafçılık için',
-    price: 1500,
-    image: getFeedImageUrl(30, 500, 500),
-    location: 'Caferağa',
-    neighborhood: 'Caferağa',
-    timeAgo: '1 gün',
-    distance: '3 km',
-    isFree: false,
-    featured: false,
-    category: 'Elektronik',
-    condition: 'barely-used',
-    rating: 4.9,
-    reviewCount: 8,
-  },
-  {
-    id: '14',
-    title: 'Kulaklık - Bluetooth, Beyaz',
-    price: 0,
-    image: getFeedImageUrl(31, 500, 500),
-    location: 'Kadıköy',
-    neighborhood: 'Moda',
-    timeAgo: '2 gün',
-    distance: '2 km',
-    isFree: true,
-    featured: false,
-    category: 'Elektronik',
-    condition: 'good',
-    rating: 4.7,
-    reviewCount: 6,
-  },
-  {
-    id: '15',
-    title: 'Golf Topu Seti - 50 Adet, Yeni',
-    price: 650,
-    image: getFeedImageUrl(32, 500, 500),
-    location: 'Şişli',
-    neighborhood: 'Teşvikiye',
-    timeAgo: '3 saat',
-    distance: '4 km',
-    isFree: false,
-    featured: false,
-    category: 'Spor Malzemeleri',
-    condition: 'new',
-    rating: 5,
-    reviewCount: 2,
-  },
-  {
-    id: '16',
-    title: 'Vintage Türk Halısı - 2x3m',
-    price: 5200,
-    image: getFeedImageUrl(33, 500, 500),
-    location: 'Moda',
-    neighborhood: 'Moda',
-    timeAgo: '4 saat',
-    distance: '1 km',
-    isFree: false,
-    featured: false,
-    category: 'Ev & Yaşam',
-    condition: 'fair',
-    rating: 4.4,
-    reviewCount: 7,
-  },
 ];
 
 function formatTimeAgo(date: Date): string {
@@ -323,19 +50,20 @@ function formatTimeAgo(date: Date): string {
   const diffMs = now.getTime() - date.getTime();
   const diffHours = Math.floor(diffMs / 3600000);
   const diffDays = Math.floor(diffMs / 86400000);
+  if (diffHours < 1) return 'az önce';
   if (diffHours < 24) return `${diffHours} saat`;
   if (diffDays < 30) return `${diffDays} gün`;
   return `${Math.floor(diffDays / 30)} ay`;
 }
 
 export default function MarketplacePage() {
+  const { user } = useCurrentUser();
   const [activeTab, setActiveTab] = useState('all');
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [visibleCount, setVisibleCount] = useState(6);
+  const [visibleCount, setVisibleCount] = useState(12);
 
   // Filter state
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedDistance, setSelectedDistance] = useState<number | null>(null);
   const [selectedPriceRange, setSelectedPriceRange] = useState<{ min: number; max: number | null } | null>(null);
   const [selectedCondition, setSelectedCondition] = useState<string | null>(null);
   const [selectedSort, setSelectedSort] = useState('newest');
@@ -347,22 +75,25 @@ export default function MarketplacePage() {
     if (!listingsResult?.data) return [];
     return (listingsResult.data as any[]).map((item) => ({
       id: item.id,
+      sellerId: item.seller_id,
       title: item.title || 'Başlıksız İlan',
       price: item.price || 0,
       listing_type: item.listing_type || 'sale',
-      image: (item.media_urls && item.media_urls.length > 0 ? item.media_urls[0] : null) || getFeedImageUrl(Math.floor(Math.random() * 30) + 1, 500, 500),
-      location: item.neighborhoods?.name || 'Bilinmiyor',
-      neighborhood: item.neighborhoods?.name || 'Bilinmiyor',
-      timeAgo: item.created_at ? formatTimeAgo(new Date(item.created_at)) : '1 saat',
-      distance: `${Math.floor(Math.random() * 10) + 1} km`,
-      isFree: item.price === 0 || item.price === null,
-      featured: Math.random() > 0.7,
+      image: item.media_urls && item.media_urls.length > 0 ? item.media_urls[0] : null,
+      neighborhood: item.neighborhoods?.name || null,
+      timeAgo: item.created_at ? formatTimeAgo(new Date(item.created_at)) : '',
+      isFree: item.price === 0 || item.price === null || item.listing_type === 'free',
       category: item.listing_categories?.name || 'Diğer',
-      condition: item.condition || 'good',
-      rating: Math.random() * 2 + 3,
-      reviewCount: Math.floor(Math.random() * 20),
+      condition: item.condition || null,
     }));
   }, [listingsResult]);
+
+  // Kategori seçenekleri gerçek ilanlardan türetiliyor (sabit liste yok → filtre her
+  // zaman gerçek veriyle eşleşir).
+  const categories = useMemo(
+    () => Array.from(new Set(listings.map((l) => l.category).filter(Boolean))) as string[],
+    [listings]
+  );
 
   const toggleFavorite = (id: string) => {
     const next = new Set(favorites);
@@ -371,16 +102,11 @@ export default function MarketplacePage() {
     setFavorites(next);
   };
 
-  // Apply filters and sorting
-  let allFiltered = (listings.length > 0 ? listings : mockListings).filter((l) => {
+  let allFiltered = listings.filter((l) => {
     if (activeTab === 'saved' && !favorites.has(l.id)) return false;
-    if (activeTab === 'sale' && l.listing_type !== 'sale' && l.listing_type !== 'rental') return false;
-    if (activeTab === 'rental' && l.listing_type !== 'rental') return false;
-    if (activeTab === 'lend' && l.listing_type !== 'lend') return false;
-    if (activeTab === 'free' && !l.isFree && l.listing_type !== 'free') return false;
-    if (activeTab === 'yours') return false; // handled separately
+    if (activeTab === 'yours' && l.sellerId !== user?.id) return false;
+    if (activeTab === 'rental' && l.listing_type !== 'rental' && l.listing_type !== 'lend') return false;
     if (selectedCategory && l.category !== selectedCategory) return false;
-    if (selectedDistance && parseFloat(l.distance) > selectedDistance) return false;
     if (selectedCondition && l.condition !== selectedCondition) return false;
     if (selectedPriceRange) {
       const price = l.price;
@@ -397,8 +123,6 @@ export default function MarketplacePage() {
         return a.price - b.price;
       case 'price-high':
         return b.price - a.price;
-      case 'nearest':
-        return parseFloat(a.distance) - parseFloat(b.distance);
       case 'newest':
       default:
         return 0;
@@ -408,58 +132,9 @@ export default function MarketplacePage() {
   const filtered = allFiltered.slice(0, visibleCount);
   const hasMore = visibleCount < allFiltered.length;
 
-  const featuredListings = (listings.length > 0 ? listings : mockListings).filter((l) => l.featured);
-
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto py-6 px-4 space-y-6">
-        {/* Featured Carousel */}
-        {featuredListings.length > 0 && (
-          <div className="bg-surface rounded-xl shadow-sm border border-border overflow-hidden">
-            <div className="p-4">
-              <h2 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
-                <Zap className="w-5 h-5 text-primary" />
-                Öne Çıkanlar
-              </h2>
-              <div className="overflow-x-auto pb-2 -mx-4 px-4">
-                <div className="flex gap-4">
-                  {featuredListings.map((listing) => (
-                    <Link
-                      key={listing.id}
-                      href={`/pazar/ilan/${listing.id}`}
-                      className="flex-shrink-0 w-56 bg-surface border border-border rounded-xl overflow-hidden hover:shadow-md transition-shadow group"
-                    >
-                      <div className="relative aspect-video overflow-hidden bg-background">
-                        <Image
-                          src={listing.image}
-                          alt={listing.title}
-                          fill
-                          unoptimized
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                        />
-                        <span className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded">
-                          ÖNE ÇIKAN
-                        </span>
-                      </div>
-                      <div className="p-3">
-                        <p className="text-sm font-semibold text-text-primary line-clamp-2 mb-1">
-                          {listing.title}
-                        </p>
-                        <p className="text-lg font-bold text-primary mb-1">
-                          {listing.isFree ? "Ücretsiz" : `₺${listing.price.toLocaleString("tr-TR")}`}
-                        </p>
-                        <p className="text-xs text-text-muted">
-                          {listing.neighborhood} • {listing.timeAgo}
-                        </p>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Header Section */}
         <div className="bg-surface rounded-xl shadow-sm border border-border overflow-hidden">
           <div className="p-6">
@@ -475,15 +150,14 @@ export default function MarketplacePage() {
               </Link>
             </div>
 
-
             {/* Tabs */}
-            <div className="flex gap-0 border-b border-border -mx-6 px-6">
+            <div className="flex gap-0 border-b border-border -mx-6 px-6 overflow-x-auto">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    'px-5 py-4 text-sm font-medium border-b-[3px] transition-colors',
+                    'px-5 py-4 text-sm font-medium border-b-[3px] transition-colors whitespace-nowrap',
                     activeTab === tab.id
                       ? 'text-primary border-primary'
                       : 'text-text-muted border-transparent hover:text-text-secondary'
@@ -499,87 +173,52 @@ export default function MarketplacePage() {
         {/* Filter Pills */}
         <div className="flex items-center gap-3 mb-6 overflow-x-auto pb-2 -mx-4 px-4">
           {/* Category Filter */}
-          <div className="relative">
-            <button
-              onClick={() => setOpenDropdown(openDropdown === 'category' ? null : 'category')}
-              className={cn(
-                'flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap shadow-sm transition-colors',
-                selectedCategory
-                  ? 'bg-primary text-white border border-primary'
-                  : 'bg-surface border border-border text-text-secondary hover:bg-surface-hover'
-              )}
-            >
-              {selectedCategory || 'Kategoriler'}
-              <ChevronDown className={cn('w-4 h-4', openDropdown === 'category' && 'rotate-180')} />
-            </button>
-            {openDropdown === 'category' && (
-              <div className="absolute top-full left-0 mt-2 bg-surface border border-border rounded-lg shadow-lg z-50 min-w-48">
-                <button
-                  onClick={() => {
-                    setSelectedCategory(null);
-                    setOpenDropdown(null);
-                  }}
-                  className="w-full text-left px-4 py-3 text-sm text-text-muted hover:bg-surface-hover border-b border-border"
-                >
-                  Tüm Kategoriler
-                </button>
-                {categories.map((cat) => (
+          {categories.length > 0 && (
+            <div className="relative">
+              <button
+                onClick={() => setOpenDropdown(openDropdown === 'category' ? null : 'category')}
+                className={cn(
+                  'flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap shadow-sm transition-colors',
+                  selectedCategory
+                    ? 'bg-primary text-white border border-primary'
+                    : 'bg-surface border border-border text-text-secondary hover:bg-surface-hover'
+                )}
+              >
+                {selectedCategory || 'Kategoriler'}
+                <ChevronDown className={cn('w-4 h-4', openDropdown === 'category' && 'rotate-180')} />
+              </button>
+              {openDropdown === 'category' && (
+                <div className="absolute top-full left-0 mt-2 bg-surface border border-border rounded-lg shadow-lg z-50 min-w-48">
                   <button
-                    key={cat}
                     onClick={() => {
-                      setSelectedCategory(cat);
+                      setSelectedCategory(null);
                       setOpenDropdown(null);
                     }}
-                    className={cn(
-                      'w-full text-left px-4 py-3 text-sm transition-colors',
-                      selectedCategory === cat
-                        ? 'bg-primary text-white font-medium'
-                        : 'text-text-secondary hover:bg-surface-hover'
-                    )}
+                    className="w-full text-left px-4 py-3 text-sm text-text-muted hover:bg-surface-hover border-b border-border"
                   >
-                    {cat}
+                    Tüm Kategoriler
                   </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Distance Filter */}
-          <div className="relative">
-            <button
-              onClick={() => setOpenDropdown(openDropdown === 'distance' ? null : 'distance')}
-              className={cn(
-                'flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap shadow-sm transition-colors',
-                selectedDistance
-                  ? 'bg-primary text-white border border-primary'
-                  : 'bg-surface border border-border text-text-secondary hover:bg-surface-hover'
+                  {categories.map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => {
+                        setSelectedCategory(cat);
+                        setOpenDropdown(null);
+                      }}
+                      className={cn(
+                        'w-full text-left px-4 py-3 text-sm transition-colors',
+                        selectedCategory === cat
+                          ? 'bg-primary text-white font-medium'
+                          : 'text-text-secondary hover:bg-surface-hover'
+                      )}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
               )}
-            >
-              {selectedDistance ? `${selectedDistance} km` : 'Mesafe'}
-              <ChevronDown className={cn('w-4 h-4', openDropdown === 'distance' && 'rotate-180')} />
-            </button>
-            {openDropdown === 'distance' && (
-              <div className="absolute top-full left-0 mt-2 bg-surface border border-border rounded-lg shadow-lg z-50">
-                {distanceOptions.map((opt) => (
-                  <button
-                    key={opt.label}
-                    onClick={() => {
-                      setSelectedDistance(opt.value);
-                      setOpenDropdown(null);
-                    }}
-                    className={cn(
-                      'w-full text-left px-4 py-3 text-sm transition-colors whitespace-nowrap',
-                      selectedDistance === opt.value
-                        ? 'bg-primary text-white font-medium'
-                        : 'text-text-secondary hover:bg-surface-hover'
-                    )}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* Price Range Filter */}
           <div className="relative">
@@ -688,11 +327,10 @@ export default function MarketplacePage() {
           </div>
 
           {/* Active Filters Display */}
-          {(selectedCategory || selectedDistance || selectedPriceRange || selectedCondition) && (
+          {(selectedCategory || selectedPriceRange || selectedCondition) && (
             <button
               onClick={() => {
                 setSelectedCategory(null);
-                setSelectedDistance(null);
                 setSelectedPriceRange(null);
                 setSelectedCondition(null);
               }}
@@ -705,10 +343,34 @@ export default function MarketplacePage() {
           )}
         </div>
 
-        {/* Main Grid Layout */}
+        {/* Listings Grid */}
         <div>
-          {/* Listings Grid - Full Width */}
-          <div>
+          {loading ? (
+            <div className="text-center py-16 text-text-muted">Yükleniyor...</div>
+          ) : filtered.length === 0 ? (
+            <div className="bg-surface rounded-xl border border-border p-12 text-center">
+              <h3 className="text-lg font-semibold text-text-primary mb-2">
+                {activeTab === 'saved'
+                  ? 'Kaydedilen ilan yok'
+                  : activeTab === 'yours'
+                  ? 'Henüz ilanınız yok'
+                  : 'Henüz ilan yok'}
+              </h3>
+              <p className="text-text-muted mb-6">
+                {activeTab === 'saved'
+                  ? 'Beğendiğin ilanları kalp simgesiyle buraya ekleyebilirsin.'
+                  : activeTab === 'yours'
+                  ? 'İlk ilanını vererek komşularınla paylaşmaya başla.'
+                  : 'Bu mahallede ilk ilanı sen verebilirsin.'}
+              </p>
+              <Link
+                href="/pazar/ilan-ver"
+                className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-full hover:bg-primary-hover transition-colors font-semibold text-sm"
+              >
+                İlan Ver
+              </Link>
+            </div>
+          ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {filtered.map((listing) => (
                 <Link
@@ -718,13 +380,19 @@ export default function MarketplacePage() {
                 >
                   {/* Image Container */}
                   <div className="relative aspect-square overflow-hidden bg-background">
-                    <Image
-                      src={listing.image}
-                      alt={listing.title}
-                      fill
-                      unoptimized
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                    />
+                    {listing.image ? (
+                      <Image
+                        src={listing.image}
+                        alt={listing.title}
+                        fill
+                        unoptimized
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-text-muted">
+                        <Package className="w-10 h-10" />
+                      </div>
+                    )}
                     {/* Free Badge */}
                     {listing.isFree && (
                       <span className="absolute top-3 left-3 bg-primary text-white text-xs font-bold px-3 py-1 rounded-md">
@@ -754,7 +422,7 @@ export default function MarketplacePage() {
 
                   {/* Content */}
                   <div className="p-4">
-                    {/* Price - Bold with improved formatting */}
+                    {/* Price */}
                     <div className="mb-1">
                       {listing.isFree ? (
                         <span className="text-lg font-bold text-primary">Ücretsiz</span>
@@ -772,38 +440,35 @@ export default function MarketplacePage() {
                     </p>
 
                     {/* Meta Info */}
-                    <div className="flex items-center gap-1.5 text-xs text-text-muted mb-1">
-                      <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-                      <span className="truncate">
-                        {listing.timeAgo} • {listing.distance}
-                      </span>
-                    </div>
-                    <div className="text-xs text-text-muted mb-2">
-                      {listing.neighborhood}
-                    </div>
-
-                    {/* Rating */}
-                    <div className="flex items-center gap-1">
-                      <span className="text-xs font-semibold text-primary">★ {listing.rating}</span>
-                      <span className="text-xs text-text-muted">({listing.reviewCount})</span>
-                    </div>
+                    {listing.neighborhood && (
+                      <div className="flex items-center gap-1.5 text-xs text-text-muted mb-1">
+                        <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span className="truncate">{listing.neighborhood}</span>
+                      </div>
+                    )}
+                    {listing.timeAgo && (
+                      <div className="flex items-center gap-1.5 text-xs text-text-muted">
+                        <Clock className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span>{listing.timeAgo}</span>
+                      </div>
+                    )}
                   </div>
                 </Link>
               ))}
             </div>
+          )}
 
-            {/* Load More Button */}
-            {hasMore && (
-              <div className="text-center mt-8">
-                <button
-                  onClick={() => setVisibleCount((prev) => prev + 6)}
-                  className="px-8 py-3 border border-border bg-surface rounded-full text-sm font-semibold text-text-secondary hover:bg-surface-hover transition-colors shadow-sm"
-                >
-                  Daha Fazla Göster ({allFiltered.length - visibleCount} ilan daha)
-                </button>
-              </div>
-            )}
-          </div>
+          {/* Load More Button */}
+          {hasMore && (
+            <div className="text-center mt-8">
+              <button
+                onClick={() => setVisibleCount((prev) => prev + 12)}
+                className="px-8 py-3 border border-border bg-surface rounded-full text-sm font-semibold text-text-secondary hover:bg-surface-hover transition-colors shadow-sm"
+              >
+                Daha Fazla Göster ({allFiltered.length - visibleCount} ilan daha)
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

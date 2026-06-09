@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Twitter, Instagram, Facebook } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface FooterProps extends React.HTMLAttributes<HTMLElement> {}
+type FooterProps = React.HTMLAttributes<HTMLElement>
 
 export function Footer({ className, ...props }: FooterProps) {
   const currentYear = new Date().getFullYear();

@@ -6,7 +6,6 @@ import type { Database } from '@/lib/supabase/types'
 
 const createClient = () => createTypedClient()
 
-type Listing = Database['public']['Tables']['listings']['Row']
 type ListingInsert = Database['public']['Tables']['listings']['Insert']
 
 // --- React Query hooks (use these in components) ---
@@ -49,7 +48,7 @@ export async function getListings(options?: {
   let query = supabase
     .from('listings')
     .select('*, profiles!listings_seller_id_fkey(full_name, avatar_url), listing_categories(name), neighborhoods(name)')
-    .eq('status', options?.status || 'active')
+    .eq('status', (options?.status || 'active') as 'active' | 'sold' | 'reserved' | 'expired')
 
   if (options?.neighborhoodId) query = query.eq('neighborhood_id', options.neighborhoodId)
   if (options?.categoryId) query = query.eq('category_id', options.categoryId)
@@ -60,8 +59,10 @@ export async function getListings(options?: {
     default: query = query.order('created_at', { ascending: false })
   }
 
-  if (options?.limit) query = query.limit(options.limit)
-  if (options?.offset) query = query.range(options.offset, options.offset + (options.limit || 10) - 1)
+  // Çağıran limit vermezse bile sınırsız çekme yok (DoS/perf koruması).
+  const limit = options?.limit ?? 100
+  query = query.limit(limit)
+  if (options?.offset) query = query.range(options.offset, options.offset + limit - 1)
 
   const { data, error } = await query
   return { data, error }

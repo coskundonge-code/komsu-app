@@ -1,0 +1,1847 @@
+{
+  "C:\\dev\\komsu-app\\capacitor.config.ts": {
+    "mtime": 1778619000.865371,
+    "ast_hash": "ebd5ce086ef05f1d3a491b5c9d9f88ec",
+    "semantic_hash": "ebd5ce086ef05f1d3a491b5c9d9f88ec"
+  },
+  "C:\\dev\\komsu-app\\eslint.config.mjs": {
+    "mtime": 1780855404.293386,
+    "ast_hash": "81ffe5bfbbdb7e6a7f3192d9e36ffb49",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\next.config.capacitor.ts": {
+    "mtime": 1778619000.865371,
+    "ast_hash": "6d5409a05b5a2ddd21da67de124b42ff",
+    "semantic_hash": "6d5409a05b5a2ddd21da67de124b42ff"
+  },
+  "C:\\dev\\komsu-app\\next.config.ts": {
+    "mtime": 1780736632.6347513,
+    "ast_hash": "0b2669fece316955bd948ae3f0351646",
+    "semantic_hash": "0b2669fece316955bd948ae3f0351646"
+  },
+  "C:\\dev\\komsu-app\\package.json": {
+    "mtime": 1780667560.6915822,
+    "ast_hash": "54ca8f4f9f6a59463e666b69ce3728d6",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\playwright.config.ts": {
+    "mtime": 1778758492.2868834,
+    "ast_hash": "8a7d686ecfbd233c9017db4091a75284",
+    "semantic_hash": "8a7d686ecfbd233c9017db4091a75284"
+  },
+  "C:\\dev\\komsu-app\\postcss.config.mjs": {
+    "mtime": 1778619000.865371,
+    "ast_hash": "239f3ebf717465dc636818a1a619398d",
+    "semantic_hash": "239f3ebf717465dc636818a1a619398d"
+  },
+  "C:\\dev\\komsu-app\\sentry.client.config.ts": {
+    "mtime": 1778758492.287888,
+    "ast_hash": "cc1d68124c47a6a015ad3d3da0ea1389",
+    "semantic_hash": "cc1d68124c47a6a015ad3d3da0ea1389"
+  },
+  "C:\\dev\\komsu-app\\sentry.edge.config.ts": {
+    "mtime": 1778758492.287888,
+    "ast_hash": "5f0e733dd04b93de49b16b4aafe62b33",
+    "semantic_hash": "5f0e733dd04b93de49b16b4aafe62b33"
+  },
+  "C:\\dev\\komsu-app\\sentry.server.config.ts": {
+    "mtime": 1778758492.287888,
+    "ast_hash": "5f0e733dd04b93de49b16b4aafe62b33",
+    "semantic_hash": "5f0e733dd04b93de49b16b4aafe62b33"
+  },
+  "C:\\dev\\komsu-app\\tsconfig.json": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "4ee606fcb88a78b1501412a3f87f1297",
+    "semantic_hash": "4ee606fcb88a78b1501412a3f87f1297"
+  },
+  "C:\\dev\\komsu-app\\vitest.config.ts": {
+    "mtime": 1778758492.3049052,
+    "ast_hash": "7ae9bce610c79d7b208c8b187b69cac7",
+    "semantic_hash": "7ae9bce610c79d7b208c8b187b69cac7"
+  },
+  "C:\\dev\\komsu-app\\.claude\\settings.local.json": {
+    "mtime": 1780853160.7660375,
+    "ast_hash": "0bfd8a3543f9ce5b33e649109f708417",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\e2e\\auth-flow.spec.ts": {
+    "mtime": 1778758492.284879,
+    "ast_hash": "b011f9e255e9fc251d89265d573b66b2",
+    "semantic_hash": "b011f9e255e9fc251d89265d573b66b2"
+  },
+  "C:\\dev\\komsu-app\\public\\manifest.json": {
+    "mtime": 1778619000.865371,
+    "ast_hash": "24c80ec2809e0090374a39820628ff0f",
+    "semantic_hash": "24c80ec2809e0090374a39820628ff0f"
+  },
+  "C:\\dev\\komsu-app\\public\\pdf.worker.min.mjs": {
+    "mtime": 1780668593.9615512,
+    "ast_hash": "1b3bec25faa882380aa81a1353c7734c",
+    "semantic_hash": "1b3bec25faa882380aa81a1353c7734c"
+  },
+  "C:\\dev\\komsu-app\\scripts\\postinstall.js": {
+    "mtime": 1778758492.287888,
+    "ast_hash": "888d1572501c3790ec7034c3444f6638",
+    "semantic_hash": "888d1572501c3790ec7034c3444f6638"
+  },
+  "C:\\dev\\komsu-app\\src\\instrumentation.ts": {
+    "mtime": 1780854231.8925993,
+    "ast_hash": "5b1db1e14d841eb48f2ef78190be7efc",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\middleware.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "d5109ed1260a11d02d466600f1b2289b",
+    "semantic_hash": "d5109ed1260a11d02d466600f1b2289b"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\error.tsx": {
+    "mtime": 1780854253.2427194,
+    "ast_hash": "3edc5a501f3584e87aa596d7ead5a5fe",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\layout.tsx": {
+    "mtime": 1780854240.9212265,
+    "ast_hash": "d27490ba1585b9e496e0d645f0a645ed",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\manifest.ts": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "c1917abc4e84532d3734da481cde07d5",
+    "semantic_hash": "c1917abc4e84532d3734da481cde07d5"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\not-found.tsx": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "f9169bbe793c971c79daecc993ae5a7d",
+    "semantic_hash": "f9169bbe793c971c79daecc993ae5a7d"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\robots.ts": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "6a409bba82c44b252650332ffb0e077e",
+    "semantic_hash": "6a409bba82c44b252650332ffb0e077e"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\sitemap.ts": {
+    "mtime": 1780826955.8795803,
+    "ast_hash": "4e6de840b25a9fd649b1da3f17493960",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\error.tsx": {
+    "mtime": 1780854264.3344138,
+    "ast_hash": "c76eb7703a83faf139b28616aef35683",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\admin\\layout.tsx": {
+    "mtime": 1780836071.73623,
+    "ast_hash": "2e79510e8625548b493fdc27c131c21c",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\admin\\loading.tsx": {
+    "mtime": 1778619000.880938,
+    "ast_hash": "718139e4cbcc7acef8632afbacec22ea",
+    "semantic_hash": "718139e4cbcc7acef8632afbacec22ea"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\admin\\page.tsx": {
+    "mtime": 1780856323.883721,
+    "ast_hash": "725080a7c4987b988c3493719aa5aad3",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\admin\\ayarlar\\page.tsx": {
+    "mtime": 1780665401.4937737,
+    "ast_hash": "47dbba8c581d7ea6e2d1b6b7984180a4",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\admin\\bildirimler\\page.tsx": {
+    "mtime": 1780736885.886314,
+    "ast_hash": "5d13dfcf36b4ee505a52da9a11b309cf",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\admin\\dogrulama\\page.tsx": {
+    "mtime": 1780855931.7700317,
+    "ast_hash": "45256091bc9a092efc0346ed5d735abd",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\admin\\gonderiler\\page.tsx": {
+    "mtime": 1780855931.7870255,
+    "ast_hash": "41c55ad0e5e8b371a68661b3afca5259",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\admin\\gruplar\\page.tsx": {
+    "mtime": 1780736885.9014945,
+    "ast_hash": "3ebd624fc2b7c8cbb21634452b204d8d",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\admin\\guvenlik\\page.tsx": {
+    "mtime": 1780747199.4560459,
+    "ast_hash": "542c4a7016cd73d6d2333b74f96f1e55",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\admin\\ilanlar\\page.tsx": {
+    "mtime": 1780741463.114897,
+    "ast_hash": "8f56a534da4c68655c95dd86793f9b70",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\admin\\isletmeler\\page.tsx": {
+    "mtime": 1780736885.9173853,
+    "ast_hash": "7fa10eb8384c415c90f22a8834067eea",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\admin\\kullanicilar\\page.tsx": {
+    "mtime": 1780736885.9331694,
+    "ast_hash": "ca658b10034f95fc0640b0d82647bf4c",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\admin\\mahalleler\\page.tsx": {
+    "mtime": 1780736885.9331694,
+    "ast_hash": "b36ac15e72666d2a4b5a5926aed130e4",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\admin\\moderasyon\\page.tsx": {
+    "mtime": 1780736896.049416,
+    "ast_hash": "1db3853be0c3b9932e9143c40f63ca2b",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\admin\\odemeler\\page.tsx": {
+    "mtime": 1780836056.913603,
+    "ast_hash": "70a8018212f6afdc34e0b6fae30581a1",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\admin\\raporlar\\page.tsx": {
+    "mtime": 1778758492.2948878,
+    "ast_hash": "357b01b873c1172fac181356ba58f755",
+    "semantic_hash": "357b01b873c1172fac181356ba58f755"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\admin\\reklamlar\\page.tsx": {
+    "mtime": 1780855931.8095124,
+    "ast_hash": "c8f05b390b015095eada9f67a7e9d66a",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(admin)\\admin\\yorumlar\\page.tsx": {
+    "mtime": 1780736885.9488134,
+    "ast_hash": "95c2d7e78534208d5648fa5feb926808",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(auth)\\layout.tsx": {
+    "mtime": 1778619000.880938,
+    "ast_hash": "33eb7005bd81a5e68e8053c9c7fcd3ed",
+    "semantic_hash": "33eb7005bd81a5e68e8053c9c7fcd3ed"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(auth)\\giris\\loading.tsx": {
+    "mtime": 1778619000.880938,
+    "ast_hash": "db099d7bf77045a2bc2bdd4833bed282",
+    "semantic_hash": "db099d7bf77045a2bc2bdd4833bed282"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(auth)\\giris\\page.tsx": {
+    "mtime": 1780856326.6673675,
+    "ast_hash": "ccac42aba4ad2ee360970904ba299e85",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(auth)\\kayit\\page.tsx": {
+    "mtime": 1778619000.880938,
+    "ast_hash": "71c1652b3de5b7335bc3f46430de8e55",
+    "semantic_hash": "71c1652b3de5b7335bc3f46430de8e55"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(auth)\\sifre-sifirla\\page.tsx": {
+    "mtime": 1780856331.8544776,
+    "ast_hash": "5c3c0558a653425e1674605baa1909ce",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(business)\\error.tsx": {
+    "mtime": 1780854270.0240846,
+    "ast_hash": "91f8fd0c799d27d06974a9de900e88c1",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(business)\\esnaf-kayit\\page.tsx": {
+    "mtime": 1780854796.8609684,
+    "ast_hash": "6c8472d19f0634c19971e10e1db1a4ae",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(business)\\isletme-paneli\\layout.tsx": {
+    "mtime": 1780835295.4167411,
+    "ast_hash": "a5fff78cba47fe6860d04c99aab51a99",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(business)\\isletme-paneli\\loading.tsx": {
+    "mtime": 1778619000.880938,
+    "ast_hash": "26a7c9deaf62f294acae26ff1cd1893f",
+    "semantic_hash": "26a7c9deaf62f294acae26ff1cd1893f"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(business)\\isletme-paneli\\page.tsx": {
+    "mtime": 1780821910.5005796,
+    "ast_hash": "e858a9aeaacb849c1ac41dab0f83d19d",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(business)\\isletme-paneli\\indirimler\\page.tsx": {
+    "mtime": 1780834698.4189432,
+    "ast_hash": "b0993b4acb841eba710d4486595947db",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(business)\\isletme-paneli\\istatistikler\\page.tsx": {
+    "mtime": 1780855931.825143,
+    "ast_hash": "53f88b11f94218607d99959688186e15",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(business)\\isletme-paneli\\performans\\page.tsx": {
+    "mtime": 1778619000.880938,
+    "ast_hash": "35a9f821c6c4dd2fa74d20fdc75c4b13",
+    "semantic_hash": "35a9f821c6c4dd2fa74d20fdc75c4b13"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(business)\\isletme-paneli\\qr-tara\\page.tsx": {
+    "mtime": 1780856119.8391502,
+    "ast_hash": "d4115961f3ea5c5e77229dc4dbbd9b1d",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(business)\\isletme-paneli\\reklamlar\\page.tsx": {
+    "mtime": 1780834782.466624,
+    "ast_hash": "138df6a86cb8b8473f2179f5a064b3c9",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(business)\\isletme-paneli\\uyelik\\page.tsx": {
+    "mtime": 1780816468.3035693,
+    "ast_hash": "1bed4ce228fc266b70d573c526dba6f2",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(business)\\isletme-paneli\\yorumlar\\page.tsx": {
+    "mtime": 1780831379.022879,
+    "ast_hash": "73f393696a0c467c520d0e7af614db06",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\error.tsx": {
+    "mtime": 1780854259.4052205,
+    "ast_hash": "690c6dc1b88ae952f0d1745adeb7924a",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\layout.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "fd75a8aa545db5a9c2a8b6c2d6279187",
+    "semantic_hash": "fd75a8aa545db5a9c2a8b6c2d6279187"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\loading.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "3b6f36e544aa4c912fc004cd4d3decf6",
+    "semantic_hash": "3b6f36e544aa4c912fc004cd4d3decf6"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\page.tsx": {
+    "mtime": 1780828481.3591926,
+    "ast_hash": "835bb8460ba15f60d31208d0615dc60f",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\adres-dogrulama\\page.tsx": {
+    "mtime": 1778619000.8971965,
+    "ast_hash": "532bf9d9e7f2b7570dcf632e6602a58a",
+    "semantic_hash": "532bf9d9e7f2b7570dcf632e6602a58a"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\ara\\page.tsx": {
+    "mtime": 1780830306.4567873,
+    "ast_hash": "3284b52ff4d2532a0c4e2034f12cb378",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\askida-bagis\\layout.tsx": {
+    "mtime": 1778619000.8983216,
+    "ast_hash": "8647ac8e69df850b8254f0345ce21950",
+    "semantic_hash": "8647ac8e69df850b8254f0345ce21950"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\askida-bagis\\page.tsx": {
+    "mtime": 1780855866.8260055,
+    "ast_hash": "18cf55f44896c06036473de8a3b819f4",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\ayarlar\\layout-client.tsx": {
+    "mtime": 1778619000.900452,
+    "ast_hash": "c5b6aa287e0158640dce6da1d05b17df",
+    "semantic_hash": "c5b6aa287e0158640dce6da1d05b17df"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\ayarlar\\layout.tsx": {
+    "mtime": 1778619000.900452,
+    "ast_hash": "bd0a6217e52eb9c004d39f2bbe475ede",
+    "semantic_hash": "bd0a6217e52eb9c004d39f2bbe475ede"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\ayarlar\\loading.tsx": {
+    "mtime": 1778619000.900452,
+    "ast_hash": "519cc4533df232ae5bb5bde463d2d8e7",
+    "semantic_hash": "519cc4533df232ae5bb5bde463d2d8e7"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\ayarlar\\page.tsx": {
+    "mtime": 1780856123.9902987,
+    "ast_hash": "c4fca3a7cced2a531199d59a04ca3549",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\ayarlar\\adres-dogrulama\\page.tsx": {
+    "mtime": 1778619000.8993995,
+    "ast_hash": "8ad3f34c6a5ba95ab1accce3455c196f",
+    "semantic_hash": "8ad3f34c6a5ba95ab1accce3455c196f"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\ayarlar\\bildirimler\\page.tsx": {
+    "mtime": 1780855931.8473327,
+    "ast_hash": "91b975730bc32d69525cc345eb9ab224",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\ayarlar\\gizlilik\\page.tsx": {
+    "mtime": 1778619000.8999255,
+    "ast_hash": "fff679bc01e01b282bb3fbcf0091b32e",
+    "semantic_hash": "fff679bc01e01b282bb3fbcf0091b32e"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\ayarlar\\hesabi-sil\\page.tsx": {
+    "mtime": 1780856121.168217,
+    "ast_hash": "3d6cc62086ebb8921ffd3dcdf6cdd0ca",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\ayarlar\\mahalle\\page.tsx": {
+    "mtime": 1780855933.2260232,
+    "ast_hash": "7e8a59306a378356d425e43c132b3e21",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\bildirimler\\layout.tsx": {
+    "mtime": 1778619000.9015129,
+    "ast_hash": "095b766d48cdee6278363ddec1421095",
+    "semantic_hash": "095b766d48cdee6278363ddec1421095"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\bildirimler\\loading.tsx": {
+    "mtime": 1778619000.9020452,
+    "ast_hash": "fc3a91fdd3114da3739c6287e0821610",
+    "semantic_hash": "fc3a91fdd3114da3739c6287e0821610"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\bildirimler\\page.tsx": {
+    "mtime": 1780829487.127134,
+    "ast_hash": "ab2470ba84d1225bfc2538b9c3f1e20b",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\blog\\layout.tsx": {
+    "mtime": 1778619000.9030936,
+    "ast_hash": "4a57687b05e741997af532854dc040f8",
+    "semantic_hash": "4a57687b05e741997af532854dc040f8"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\blog\\loading.tsx": {
+    "mtime": 1778619000.9030936,
+    "ast_hash": "51d029d8b1a31709aab5357649e184c3",
+    "semantic_hash": "51d029d8b1a31709aab5357649e184c3"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\blog\\page.tsx": {
+    "mtime": 1780856131.0520384,
+    "ast_hash": "cbc45daed028b9accdb7822f4e9ea34b",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\blog\\[slug]\\page.tsx": {
+    "mtime": 1780859225.2304063,
+    "ast_hash": "4e1f2a3110bbf936ae5eb0cd47991a72",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\cerez-politikasi\\layout.tsx": {
+    "mtime": 1778619000.9036188,
+    "ast_hash": "31473e44cc4fb76963808addf4742541",
+    "semantic_hash": "31473e44cc4fb76963808addf4742541"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\cerez-politikasi\\page.tsx": {
+    "mtime": 1780745287.1220987,
+    "ast_hash": "f6dbffe3096930666434344d34172bd7",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\davet\\page.tsx": {
+    "mtime": 1780745287.1266272,
+    "ast_hash": "e36cd674f6f50b7c0f859c479fa1ba7b",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\etkinlikler\\layout.tsx": {
+    "mtime": 1778619000.9052048,
+    "ast_hash": "741913aa5e0f5097a2bc6c74ff5f8679",
+    "semantic_hash": "741913aa5e0f5097a2bc6c74ff5f8679"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\etkinlikler\\loading.tsx": {
+    "mtime": 1778619000.9052048,
+    "ast_hash": "980e9ddaa2476ca897c3df3501594ae1",
+    "semantic_hash": "980e9ddaa2476ca897c3df3501594ae1"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\etkinlikler\\page.tsx": {
+    "mtime": 1780856138.113837,
+    "ast_hash": "892d99d8f22fb36e74a97df39e6e5633",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\etkinlikler\\olustur\\page.tsx": {
+    "mtime": 1780856135.2894301,
+    "ast_hash": "0fbe2e59575ec815a9a1f563de5f5e5b",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\etkinlikler\\[id]\\page.tsx": {
+    "mtime": 1780826325.053959,
+    "ast_hash": "3e7fde4b84f442db676802534bb26481",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\favoriler\\page.tsx": {
+    "mtime": 1780855944.2890549,
+    "ast_hash": "6d7065959a26a0437546096e3b6b19f0",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\gizlilik\\layout.tsx": {
+    "mtime": 1778619000.9067802,
+    "ast_hash": "a59bb0e2e9e17ac784dc6e20099346be",
+    "semantic_hash": "a59bb0e2e9e17ac784dc6e20099346be"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\gizlilik\\page.tsx": {
+    "mtime": 1780855934.6056943,
+    "ast_hash": "2f0b41a008aa8507c8a7f1a7bdf5f7be",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\gonderi\\[id]\\page.tsx": {
+    "mtime": 1780828584.8818483,
+    "ast_hash": "4f8830d701f5920978a4824659d85901",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\gruplar\\layout.tsx": {
+    "mtime": 1778619000.90783,
+    "ast_hash": "cdfd7c0ecb2969f0da00c226a0776a46",
+    "semantic_hash": "cdfd7c0ecb2969f0da00c226a0776a46"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\gruplar\\loading.tsx": {
+    "mtime": 1778619000.90783,
+    "ast_hash": "3905fea09ff4049f5db6f2b9a51991ab",
+    "semantic_hash": "3905fea09ff4049f5db6f2b9a51991ab"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\gruplar\\page.tsx": {
+    "mtime": 1780827808.9941638,
+    "ast_hash": "dcd1173f9e847ab4c7bdb32bd8831726",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\gruplar\\olustur\\page.tsx": {
+    "mtime": 1780827933.349829,
+    "ast_hash": "3e4e982cc1cc029ec6272a1f87cc013d",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\gruplar\\[slug]\\page.tsx": {
+    "mtime": 1780827878.8153992,
+    "ast_hash": "b8bcfc3971b0047ac2b410a2b8dfe8bd",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\guvenlik\\layout.tsx": {
+    "mtime": 1778619000.90783,
+    "ast_hash": "c5b14ec9c57ac0e3738f4b6c86741a54",
+    "semantic_hash": "c5b14ec9c57ac0e3738f4b6c86741a54"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\guvenlik\\page.tsx": {
+    "mtime": 1780855936.0332289,
+    "ast_hash": "005863b61d43ab1bdfdc0a3283f3348a",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\hakkinda\\layout.tsx": {
+    "mtime": 1778619000.90783,
+    "ast_hash": "2407340882e5fadb89b60de63159e96d",
+    "semantic_hash": "2407340882e5fadb89b60de63159e96d"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\hakkinda\\page.tsx": {
+    "mtime": 1780855937.9117012,
+    "ast_hash": "cfcc87a1bffa64ac730f0ae746eaa46a",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\hesap-kilitli\\page.tsx": {
+    "mtime": 1778619000.90783,
+    "ast_hash": "b703d9b295ba0563e9459be98e5a427f",
+    "semantic_hash": "b703d9b295ba0563e9459be98e5a427f"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\iletisim\\layout.tsx": {
+    "mtime": 1778619000.90783,
+    "ast_hash": "ff276bce9e1e7ddc003d97abcf2692b9",
+    "semantic_hash": "ff276bce9e1e7ddc003d97abcf2692b9"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\iletisim\\page.tsx": {
+    "mtime": 1780850434.1566708,
+    "ast_hash": "8c32ff684fb049eccb897903ca95e577",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\isletme-ekle\\page.tsx": {
+    "mtime": 1780856543.580438,
+    "ast_hash": "9002832d8170feea92160fe511b8f671",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\isletmeler\\layout.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "3002ec950666009f197688662f7d38c7",
+    "semantic_hash": "3002ec950666009f197688662f7d38c7"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\isletmeler\\loading.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "522fbb9d5e9a6ad4e01976c5a467c7bf",
+    "semantic_hash": "522fbb9d5e9a6ad4e01976c5a467c7bf"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\isletmeler\\page.tsx": {
+    "mtime": 1780827066.384521,
+    "ast_hash": "9dd6fed9bfdb46f63d7ca9abf5dec7dd",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\isletmeler\\kategori\\[slug]\\page.tsx": {
+    "mtime": 1780827116.7449749,
+    "ast_hash": "25eb9ef13bf5c94ba005e7cf6babd1ea",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\isletmeler\\[slug]\\page.tsx": {
+    "mtime": 1780826989.2160318,
+    "ast_hash": "bfb9ab5289f108aa1549988fd4948ba4",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\kariyer\\layout.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "78eee83b534a1d394a42a9e9ad6e5308",
+    "semantic_hash": "78eee83b534a1d394a42a9e9ad6e5308"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\kariyer\\page.tsx": {
+    "mtime": 1780855940.2696667,
+    "ast_hash": "a72aa2699239d497991b8c61e47f51e7",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\kesfet\\kesfet-map.tsx": {
+    "mtime": 1780833194.6355596,
+    "ast_hash": "34179bf92449271cf401e4577b451a2f",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\kesfet\\layout.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "9c678c6cb8b99b0d1925fcc24adc702b",
+    "semantic_hash": "9c678c6cb8b99b0d1925fcc24adc702b"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\kesfet\\loading.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "38347d278b6144ff3a239cfe3548543c",
+    "semantic_hash": "38347d278b6144ff3a239cfe3548543c"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\kesfet\\page.tsx": {
+    "mtime": 1780833305.624568,
+    "ast_hash": "4f07555ce8bf5027e8b569f69ca94e85",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\kesfet\\[id]\\page.tsx": {
+    "mtime": 1780833164.248103,
+    "ast_hash": "a916ae7ef5b031247fa4c1788317cfda",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\komsuma-yardim\\page.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "d96ba8e9dd15aa86f9ddd480cf5a8a6a",
+    "semantic_hash": "d96ba8e9dd15aa86f9ddd480cf5a8a6a"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\konum-secimi\\google-map-component.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "4d66aa8dca7293d626c9dd56174454a2",
+    "semantic_hash": "4d66aa8dca7293d626c9dd56174454a2"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\konum-secimi\\map-component.tsx": {
+    "mtime": 1780856544.9928558,
+    "ast_hash": "af4c167d756b1ce470766c2d8274791f",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\konum-secimi\\page.tsx": {
+    "mtime": 1780856548.3023205,
+    "ast_hash": "c0f6b7f68fb051208c053e98c6b69c7c",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\kosullar\\layout.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "a92866d5bd53a611f5d16109a86a18dd",
+    "semantic_hash": "a92866d5bd53a611f5d16109a86a18dd"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\kosullar\\page.tsx": {
+    "mtime": 1780855941.6798978,
+    "ast_hash": "6a0ddda0443bf38d756874e63c77b264",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\kvkk\\layout.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "85b452dc1a7bf5687d6543fbbee8ae55",
+    "semantic_hash": "85b452dc1a7bf5687d6543fbbee8ae55"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\kvkk\\page.tsx": {
+    "mtime": 1780850411.5721426,
+    "ast_hash": "fb5515f6ac129967b53c649c7e1870f4",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\mahallem-kart\\layout.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "df960ead46e2a321408b565737f6f9d3",
+    "semantic_hash": "df960ead46e2a321408b565737f6f9d3"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\mahallem-kart\\page.tsx": {
+    "mtime": 1780854838.3113585,
+    "ast_hash": "aeafddea0914368e64f34ba12e35c5b0",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\mesajlar\\layout.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "fd37ec6aa749add3c5ef150e84e170ea",
+    "semantic_hash": "fd37ec6aa749add3c5ef150e84e170ea"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\mesajlar\\loading.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "cae78880ce6e5ebd6e833d6d5cff29d2",
+    "semantic_hash": "cae78880ce6e5ebd6e833d6d5cff29d2"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\mesajlar\\page.tsx": {
+    "mtime": 1780856562.124859,
+    "ast_hash": "6628268b24a64fdca9fd83a0bc4f4e7c",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\mesajlar\\new\\page.tsx": {
+    "mtime": 1780745287.1774466,
+    "ast_hash": "ce49e5093a6fbfdc553f524adf35e27b",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\nasil-calisir\\layout.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "15bf1391e59eb2314458fae609ad3e39",
+    "semantic_hash": "15bf1391e59eb2314458fae609ad3e39"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\nasil-calisir\\page.tsx": {
+    "mtime": 1780850434.154109,
+    "ast_hash": "985defc05a25697a8e750a773d75d37d",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\odunc-kirala\\layout.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "a83df77b59287973f18c8a6958af3404",
+    "semantic_hash": "a83df77b59287973f18c8a6958af3404"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\odunc-kirala\\page.tsx": {
+    "mtime": 1780833761.720465,
+    "ast_hash": "522f0f3b7f70041ed4e840b52c9f8a64",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\odunc-kirala\\ilan-ver\\page.tsx": {
+    "mtime": 1780856571.6618922,
+    "ast_hash": "487db0f8995c011e4b998ca3a66420f2",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\odunc-kirala\\[id]\\page.tsx": {
+    "mtime": 1780833647.8442154,
+    "ast_hash": "4f112ab3bc1d43c33b9b12ab0a3b4973",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\pazar\\layout.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "8982e080e3b74b439e0f53e7cd6f2488",
+    "semantic_hash": "8982e080e3b74b439e0f53e7cd6f2488"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\pazar\\loading.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "c2982c0f19df60b77a4eabbe9e785e18",
+    "semantic_hash": "c2982c0f19df60b77a4eabbe9e785e18"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\pazar\\page.tsx": {
+    "mtime": 1780834099.5533981,
+    "ast_hash": "1decd641093ccbbbfa7a41676557d532",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\pazar\\ilan\\[id]\\listing-detail-client.tsx": {
+    "mtime": 1780858213.050367,
+    "ast_hash": "59c1a681e470797f66a39459b5a86fed",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\pazar\\ilan\\[id]\\page.tsx": {
+    "mtime": 1778619000.9118435,
+    "ast_hash": "935283eec1024da9597fbe16e522158b",
+    "semantic_hash": "935283eec1024da9597fbe16e522158b"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\pazar\\ilan-ver\\page.tsx": {
+    "mtime": 1780856573.575812,
+    "ast_hash": "c1b005876b5c3a306f519b83c3aebb2e",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\pazar\\ilanlarim\\page.tsx": {
+    "mtime": 1780834182.2099657,
+    "ast_hash": "e2fc53d42a91bcf5294d325fad413dce",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\pazar\\kategori\\[slug]\\page.tsx": {
+    "mtime": 1780856574.960267,
+    "ast_hash": "b96ffc72fe2ba04643267758cfedf9e0",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\pazar\\odeme\\page.tsx": {
+    "mtime": 1780856630.4436483,
+    "ast_hash": "6f99bea89ff2ed2923fce720dc6d1078",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\profil\\loading.tsx": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "4f25eb1f20def7b97cc205b805d5913b",
+    "semantic_hash": "4f25eb1f20def7b97cc205b805d5913b"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\profil\\page.tsx": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "c27776d6d050b23755bd93c672a1a5bf",
+    "semantic_hash": "c27776d6d050b23755bd93c672a1a5bf"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\profil\\duzenle\\page.tsx": {
+    "mtime": 1780831194.2073567,
+    "ast_hash": "56f9d8391fc033f952bb72078364572e",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\profil\\me\\page.tsx": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "7cc19bbb5f69bc1184353261f6224f0e",
+    "semantic_hash": "7cc19bbb5f69bc1184353261f6224f0e"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\profil\\[id]\\page.tsx": {
+    "mtime": 1780858273.7592323,
+    "ast_hash": "eceb096e67a7a0a5895d1364e3cc92da",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\referans-kullan\\page.tsx": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "a20d6b2d3c0342a76e115e88eb82ff81",
+    "semantic_hash": "a20d6b2d3c0342a76e115e88eb82ff81"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\topluluk-kurallari\\layout.tsx": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "7066c5d4f272810be8f722db38dce5ac",
+    "semantic_hash": "7066c5d4f272810be8f722db38dce5ac"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\topluluk-kurallari\\page.tsx": {
+    "mtime": 1780850434.1460457,
+    "ast_hash": "24c7186144a3d3dc6065c8fbb5d5544a",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\uyarilar\\layout.tsx": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "9b451a6e9aa3ad80d40db92ea94e8c4b",
+    "semantic_hash": "9b451a6e9aa3ad80d40db92ea94e8c4b"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\uyarilar\\page.tsx": {
+    "mtime": 1780856577.783472,
+    "ast_hash": "5c17b005962477d69c33d3047cddba69",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\uyarilar\\new\\page.tsx": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "1253d3a10b2a8d9613439f853dea9121",
+    "semantic_hash": "1253d3a10b2a8d9613439f853dea9121"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\yardim\\layout.tsx": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "b513586e4a2be79d37cbfc15dd3b5580",
+    "semantic_hash": "b513586e4a2be79d37cbfc15dd3b5580"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\yardim\\page.tsx": {
+    "mtime": 1780856586.2509694,
+    "ast_hash": "4d03af8c7b44d9e5eb33fdc487bb004f",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\yardim\\kategori\\[slug]\\page.tsx": {
+    "mtime": 1780856579.1956148,
+    "ast_hash": "b09ef9b4916dea1612f832c06fa31b1a",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\yardim\\makale\\[slug]\\page.tsx": {
+    "mtime": 1780856580.6046016,
+    "ast_hash": "c40b4c0b89e07f73df965528432ffca6",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\yardim\\sss\\page.tsx": {
+    "mtime": 1780856587.178174,
+    "ast_hash": "9cc1476315ee7666f85581531b845468",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\(main)\\yerel-haberler\\page.tsx": {
+    "mtime": 1780855943.0606394,
+    "ast_hash": "55f1ab6ef3201129b837d6772a4f3062",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\api\\account\\delete\\route.ts": {
+    "mtime": 1778758492.299401,
+    "ast_hash": "87332089b3ae499d8cd86ec75849c43e",
+    "semantic_hash": "87332089b3ae499d8cd86ec75849c43e"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\api\\health\\route.ts": {
+    "mtime": 1780856550.9036508,
+    "ast_hash": "cb5aa4823ff2b39bb4db3602ea3f3277",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\api\\og\\route.tsx": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "a8f78e9521e80854af02315341667df6",
+    "semantic_hash": "a8f78e9521e80854af02315341667df6"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\api\\payment\\route.ts": {
+    "mtime": 1780856549.6905744,
+    "ast_hash": "8e4db413880852de21a7f9312a57981d",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\api\\payment\\callback\\route.ts": {
+    "mtime": 1780858595.8243008,
+    "ast_hash": "e9de18d9242f1a12418331bedd488785",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\api\\verify-document\\route.ts": {
+    "mtime": 1780860374.130463,
+    "ast_hash": "cd02277e0278ca3235097b0758ff7e6d",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\auth\\callback\\route.ts": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "143075855df0ae5749f37a9ced7d1426",
+    "semantic_hash": "143075855df0ae5749f37a9ced7d1426"
+  },
+  "C:\\dev\\komsu-app\\src\\app\\auth\\signout\\route.ts": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "cd668c7bcf6b2ff32d91f12912c46d67",
+    "semantic_hash": "cd668c7bcf6b2ff32d91f12912c46d67"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\alerts\\alert-card.tsx": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "15adefb7667e423b7f9680ecf6b69a5d",
+    "semantic_hash": "15adefb7667e423b7f9680ecf6b69a5d"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\business\\business-card.tsx": {
+    "mtime": 1780855717.1178088,
+    "ast_hash": "a33ce2dd13e9ccea3f9833243bbe1b6f",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\business\\business-packages.tsx": {
+    "mtime": 1780855557.0003343,
+    "ast_hash": "ff97f20e0270282c8e9d530855c88532",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\business\\review-form.tsx": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "a743fc3c6786be49db332c06b7497a49",
+    "semantic_hash": "a743fc3c6786be49db332c06b7497a49"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\business\\subscription-expired-overlay.tsx": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "68e7ce52a464c7823f6505ee1d6c28c5",
+    "semantic_hash": "68e7ce52a464c7823f6505ee1d6c28c5"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\events\\event-card.tsx": {
+    "mtime": 1780855558.4115856,
+    "ast_hash": "efa7802bbf7017615291dee6219d02e5",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\events\\event-form.tsx": {
+    "mtime": 1780855560.2870445,
+    "ast_hash": "3d79b990c3a60fec05510b3ee2912f5f",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\feed\\address-verification-banner.tsx": {
+    "mtime": 1780855561.691358,
+    "ast_hash": "badfd12f5f9a8eaab49bb8a5c58de346",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\feed\\comment-section.tsx": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "368403314fcb042a654b8248b9f026ac",
+    "semantic_hash": "368403314fcb042a654b8248b9f026ac"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\feed\\index.ts": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "f59e33762626cca17e7abc7486fa0272",
+    "semantic_hash": "f59e33762626cca17e7abc7486fa0272"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\feed\\poll-card.tsx": {
+    "mtime": 1780855717.1358216,
+    "ast_hash": "1eaa2a2f0206bfc961404c1a20816f31",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\feed\\post-card.tsx": {
+    "mtime": 1780857146.3103201,
+    "ast_hash": "a08657f5f5e2c4dc396290c085818256",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\feed\\post-filters.tsx": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "c74f5715afa2fe401a41171ec5fbd8fa",
+    "semantic_hash": "c74f5715afa2fe401a41171ec5fbd8fa"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\feed\\post-form-modal.tsx": {
+    "mtime": 1780836187.2310722,
+    "ast_hash": "9bc68a7e1fe2129e1090fa9075e874a6",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\feed\\post-form.tsx": {
+    "mtime": 1780855731.3556237,
+    "ast_hash": "2996d05df6f591a11081f98b0d99ef8b",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\feed\\reaction-bar.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "6524e33291c4dea6f479bab2a2032d30",
+    "semantic_hash": "6524e33291c4dea6f479bab2a2032d30"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\groups\\group-card.tsx": {
+    "mtime": 1780855717.1521873,
+    "ast_hash": "b8076d2c49e24641d0059e9928f066ee",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\groups\\group-header.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "bf04a53a65ffb9789161388446b8d73c",
+    "semantic_hash": "bf04a53a65ffb9789161388446b8d73c"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\layout\\bottom-bar.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "0350d04bdfafa40d9210e617a3a331c2",
+    "semantic_hash": "0350d04bdfafa40d9210e617a3a331c2"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\layout\\footer.tsx": {
+    "mtime": 1780746085.1473324,
+    "ast_hash": "52d32c302b910d4eb8d1f320abb3dbcc",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\layout\\mobile-drawer.tsx": {
+    "mtime": 1780855725.3417852,
+    "ast_hash": "48a881c12b061533c958c3bbdde68cc9",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\layout\\navbar.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "9dbed4061afc173eb73f94927fb93b51",
+    "semantic_hash": "9dbed4061afc173eb73f94927fb93b51"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\layout\\notification-bell.tsx": {
+    "mtime": 1780855563.583863,
+    "ast_hash": "bfc91e0610aab95898f056c1b9885a8c",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\layout\\right-sidebar.tsx": {
+    "mtime": 1780835381.877408,
+    "ast_hash": "75034c8a764a747efae6fba808f25ddd",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\layout\\search-dropdown.tsx": {
+    "mtime": 1780835819.2933178,
+    "ast_hash": "9e6aab68aaac0483e3f77324e2905955",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\layout\\sidebar.tsx": {
+    "mtime": 1780746085.1503322,
+    "ast_hash": "3faa5f857520f6f06699c33681d1c0d2",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\layout\\user-dropdown.tsx": {
+    "mtime": 1780855723.4606538,
+    "ast_hash": "b6f7e0d47623d5d309425b60ffb0fdfd",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\map\\google-map.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "38d9fa83a9184d9d456a2be90c55b1e8",
+    "semantic_hash": "38d9fa83a9184d9d456a2be90c55b1e8"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\map\\leaflet-map.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "4d76a088e11d32bc9bd3ffaac6563ca4",
+    "semantic_hash": "4d76a088e11d32bc9bd3ffaac6563ca4"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\marketplace\\category-filter.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "2f56e34e38407bdc5e41811b0155c035",
+    "semantic_hash": "2f56e34e38407bdc5e41811b0155c035"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\marketplace\\featured-listing-modal.tsx": {
+    "mtime": 1780855717.1682174,
+    "ast_hash": "6086c3abbd903c1aa7aab930781399d1",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\marketplace\\index.ts": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "628c578b5c7ec474348f2ab29573f9c7",
+    "semantic_hash": "628c578b5c7ec474348f2ab29573f9c7"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\marketplace\\listing-card.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "6a5767fa43d2e6c66ea58a511fb3538d",
+    "semantic_hash": "6a5767fa43d2e6c66ea58a511fb3538d"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\marketplace\\listing-form.tsx": {
+    "mtime": 1780855728.6345148,
+    "ast_hash": "f31b95ec1040178f5caf40095a1aa25c",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\marketplace\\listing-quota-banner.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "b5c66ef3f8433bab7280db02871b5356",
+    "semantic_hash": "b5c66ef3f8433bab7280db02871b5356"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\marketplace\\payment-modal.tsx": {
+    "mtime": 1780855566.4052987,
+    "ast_hash": "82ac3fc17ab05d9f401d32f7aae47e45",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\messaging\\chat-bubble.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "7e5f7cf5ea48ee7084decd103350ef15",
+    "semantic_hash": "7e5f7cf5ea48ee7084decd103350ef15"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\messaging\\conversation-list.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "9febc1803d05b982cba157ad95349670",
+    "semantic_hash": "9febc1803d05b982cba157ad95349670"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\messaging\\message-input.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "efc760f52a136a41e5de23c72e446f89",
+    "semantic_hash": "efc760f52a136a41e5de23c72e446f89"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\notifications\\notification-item.tsx": {
+    "mtime": 1780855564.9908626,
+    "ast_hash": "7172bcd7bbcd08f445cb4b1ce57c357f",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\payment\\payment-modal.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "4ec9e08812aaa65b3875f66b929e3b8f",
+    "semantic_hash": "4ec9e08812aaa65b3875f66b929e3b8f"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\qr\\qr-generator.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "35c3fb14502f1aea9dc730b98f5ff4dd",
+    "semantic_hash": "35c3fb14502f1aea9dc730b98f5ff4dd"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\qr\\qr-scanner.tsx": {
+    "mtime": 1780855727.2243536,
+    "ast_hash": "ef72e698231abfaf6869dd621eb5b662",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\shared\\back-to-top.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "2a7849f109ad2e80a9171ec71d08cb12",
+    "semantic_hash": "2a7849f109ad2e80a9171ec71d08cb12"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\shared\\cookie-banner.tsx": {
+    "mtime": 1778758492.3014011,
+    "ast_hash": "deea5c0faa0cac1653ce9cd65d449037",
+    "semantic_hash": "deea5c0faa0cac1653ce9cd65d449037"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\shared\\image-lightbox.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "ffe0c5bc0a06cedb56b74f1d72bde1e7",
+    "semantic_hash": "ffe0c5bc0a06cedb56b74f1d72bde1e7"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\shared\\json-ld.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "1568deca08912017ef94768dde72780d",
+    "semantic_hash": "1568deca08912017ef94768dde72780d"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\shared\\native-app-init.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "88f98ec1eb40eec74bad03d823bea759",
+    "semantic_hash": "88f98ec1eb40eec74bad03d823bea759"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\shared\\pwa-install-prompt.tsx": {
+    "mtime": 1780745287.2319973,
+    "ast_hash": "4bb6c88f7a447e5a3cc26eb76840b2d9",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\shared\\report-modal.tsx": {
+    "mtime": 1780857220.7548301,
+    "ast_hash": "de554130e6c13c14a64bd79d54fc6710",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\shared\\share-modal.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "5fe0153dbd6d623745b670c1ce55575e",
+    "semantic_hash": "5fe0153dbd6d623745b670c1ce55575e"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\shared\\welcome-modal.tsx": {
+    "mtime": 1780745287.2357056,
+    "ast_hash": "0bd09387f0dc8f243fefcc0c613353d3",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\avatar.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "5d252fcd5e1c5232a506a048fb630bc5",
+    "semantic_hash": "5d252fcd5e1c5232a506a048fb630bc5"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\badge.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "814914a95ad01d517171ec9ab9794d55",
+    "semantic_hash": "814914a95ad01d517171ec9ab9794d55"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\button.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "c7f79ba00c3b02428fc0c57f0b06b176",
+    "semantic_hash": "c7f79ba00c3b02428fc0c57f0b06b176"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\card.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "e24c38036aa1b1d0bf59401d9a141de3",
+    "semantic_hash": "e24c38036aa1b1d0bf59401d9a141de3"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\chip.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "44f6f8da66daf84b702c2a550cfcd2cd",
+    "semantic_hash": "44f6f8da66daf84b702c2a550cfcd2cd"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\divider.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "313809961b547cafcb2718eb330e9f73",
+    "semantic_hash": "313809961b547cafcb2718eb330e9f73"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\dropdown.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "b4e258fdb156259a66056d419b790707",
+    "semantic_hash": "b4e258fdb156259a66056d419b790707"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\empty-state.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "0e89ecb0cc1fe713363dcf4ce0217829",
+    "semantic_hash": "0e89ecb0cc1fe713363dcf4ce0217829"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\focus-trap.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "680622c63a23fb55dec7e1709a6b2883",
+    "semantic_hash": "680622c63a23fb55dec7e1709a6b2883"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\image-carousel.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "c7a9ce2f4f2bc71e01f782eba7cdd8ab",
+    "semantic_hash": "c7a9ce2f4f2bc71e01f782eba7cdd8ab"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\input.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "e5ba1482f4a177709456f02fb9c77428",
+    "semantic_hash": "e5ba1482f4a177709456f02fb9c77428"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\modal.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "2d7225b83b9c2ed039426f1ec44f77bb",
+    "semantic_hash": "2d7225b83b9c2ed039426f1ec44f77bb"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\progress-bar.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "a7f7fd0e95836d9475b9eb68efea5a9b",
+    "semantic_hash": "a7f7fd0e95836d9475b9eb68efea5a9b"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\pull-to-refresh.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "6f55254192576228f95a8cb8ab4a0431",
+    "semantic_hash": "6f55254192576228f95a8cb8ab4a0431"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\skeleton.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "b234b1f66785f409d521f324ae868160",
+    "semantic_hash": "b234b1f66785f409d521f324ae868160"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\skip-link.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "e734fc3b5307c45ae63d38d55f8e28f0",
+    "semantic_hash": "e734fc3b5307c45ae63d38d55f8e28f0"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\spinner.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "5044457a061deee2c650f5b43fbb7e58",
+    "semantic_hash": "5044457a061deee2c650f5b43fbb7e58"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\tabs.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "ae078c5593ca07da072cc9cf6992ddf9",
+    "semantic_hash": "ae078c5593ca07da072cc9cf6992ddf9"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\textarea.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "24efc51fd42e2ef8c28c763662f2df7e",
+    "semantic_hash": "24efc51fd42e2ef8c28c763662f2df7e"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\toast-provider.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "326a67312881a20e6583bc754e12deed",
+    "semantic_hash": "326a67312881a20e6583bc754e12deed"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\toast.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "287912b556bfff26e2c00d54fa5bc4f3",
+    "semantic_hash": "287912b556bfff26e2c00d54fa5bc4f3"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\ui\\verified-message-button.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "0142f790d43bfc82065b02a89d47fb25",
+    "semantic_hash": "0142f790d43bfc82065b02a89d47fb25"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\verification\\address-verification-status.tsx": {
+    "mtime": 1780855567.8157582,
+    "ast_hash": "d6f99e9e19e5b20d830bbd833c254336",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\verification\\verified-badge.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "dd1099c66328bb24c231f603182461ec",
+    "semantic_hash": "dd1099c66328bb24c231f603182461ec"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\widgets\\neighborhood-stats-widget.tsx": {
+    "mtime": 1778619000.9588842,
+    "ast_hash": "736468d8444834e3433ed6674405b39c",
+    "semantic_hash": "736468d8444834e3433ed6674405b39c"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\widgets\\trending-widget.tsx": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "6ead2527a5c3ab91fc56b56e60fe0f28",
+    "semantic_hash": "6ead2527a5c3ab91fc56b56e60fe0f28"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\widgets\\upcoming-events-widget.tsx": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "8bf1c9312b41da5e802aec3e37e7108a",
+    "semantic_hash": "8bf1c9312b41da5e802aec3e37e7108a"
+  },
+  "C:\\dev\\komsu-app\\src\\components\\widgets\\weather-widget.tsx": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "4babbffe33a3f685d42ee6e67ecfddcb",
+    "semantic_hash": "4babbffe33a3f685d42ee6e67ecfddcb"
+  },
+  "C:\\dev\\komsu-app\\src\\data\\turkey-locations.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "cea869537de054fb838408627fb98571",
+    "semantic_hash": "cea869537de054fb838408627fb98571"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\barcode-reader.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "b8afbcefa23aefdaa51030169c341393",
+    "semantic_hash": "b8afbcefa23aefdaa51030169c341393"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\capacitor.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "682f49b2736998b83dbdcc1ca6ecbbfe",
+    "semantic_hash": "682f49b2736998b83dbdcc1ca6ecbbfe"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\demo-images.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "403a51423d4d19bca9bbf1cec3485a9a",
+    "semantic_hash": "403a51423d4d19bca9bbf1cec3485a9a"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\pricing.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "d5775d38007210c395dd32e88bd2d3bd",
+    "semantic_hash": "d5775d38007210c395dd32e88bd2d3bd"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\providers.tsx": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "e80d9efb68b3c8c112f749abc5897e28",
+    "semantic_hash": "e80d9efb68b3c8c112f749abc5897e28"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\rate-limit.ts": {
+    "mtime": 1778758492.3024013,
+    "ast_hash": "9f43e5bb033dcec4d47fac5808d05723",
+    "semantic_hash": "9f43e5bb033dcec4d47fac5808d05723"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\seo.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "4eeafd9bc250a6a038b83716cc80844b",
+    "semantic_hash": "4eeafd9bc250a6a038b83716cc80844b"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\upload.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "a739da6b63ce9689f6fa8ddccd6c2223",
+    "semantic_hash": "a739da6b63ce9689f6fa8ddccd6c2223"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\utils.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "d9837f38cc05303254571985e3164050",
+    "semantic_hash": "d9837f38cc05303254571985e3164050"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\index.ts": {
+    "mtime": 1780745020.9982326,
+    "ast_hash": "8192ec0ecc9d92c0a06799c3a491fc8d",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\use-auth.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "fc2e10723b2444b0a35fc6355a8ade1b",
+    "semantic_hash": "fc2e10723b2444b0a35fc6355a8ade1b"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\use-click-outside.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "1a45d3102431dc32f7e34bf5f5f2ce3b",
+    "semantic_hash": "1a45d3102431dc32f7e34bf5f5f2ce3b"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\use-debounce.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "330cdc24fb166dccf47d18a2755df4cd",
+    "semantic_hash": "330cdc24fb166dccf47d18a2755df4cd"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\use-donation-products.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "075d78b5bb114bd87fe72dee1c21a9b3",
+    "semantic_hash": "075d78b5bb114bd87fe72dee1c21a9b3"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\use-donations.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "2e262fa9d3964a1f7aea80379e7cef95",
+    "semantic_hash": "2e262fa9d3964a1f7aea80379e7cef95"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\use-events.ts": {
+    "mtime": 1780826242.028874,
+    "ast_hash": "49074ad12d53aadd323d31a61876f7b4",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\use-groups-businesses.ts": {
+    "mtime": 1780829005.767246,
+    "ast_hash": "752a6a618d5c2716c31cf88d5c46eb21",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\use-help-requests.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "6cfc4181604a84226cb28aee4055876f",
+    "semantic_hash": "6cfc4181604a84226cb28aee4055876f"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\use-infinite-scroll.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "add866ebef9ab67c57cef3451c522be7",
+    "semantic_hash": "add866ebef9ab67c57cef3451c522be7"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\use-lending.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "c74cbc00719d5158016c7f9b3d979934",
+    "semantic_hash": "c74cbc00719d5158016c7f9b3d979934"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\use-listings.ts": {
+    "mtime": 1780855411.7932637,
+    "ast_hash": "90ad0c5530e57dc80b1912d6a1fdf01b",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\use-local-storage.ts": {
+    "mtime": 1780855495.104211,
+    "ast_hash": "4a8f97a27954cb88115ebd67977d0784",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\use-media-query.ts": {
+    "mtime": 1780745020.9865124,
+    "ast_hash": "b1a999d40d26b7938ef3df74474b922e",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\use-notifications.ts": {
+    "mtime": 1780829685.1339474,
+    "ast_hash": "5da1c2cee0be1775154c06e43d4c9396",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\use-posts.ts": {
+    "mtime": 1780855413.199462,
+    "ast_hash": "97acb117035a4b796538e2c9ffc07dfd",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\use-profile.ts": {
+    "mtime": 1780855414.5383227,
+    "ast_hash": "41abb24784c79802a257f32525888775",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\use-realtime.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "03d606fefefd2205d6df14364ad4486c",
+    "semantic_hash": "03d606fefefd2205d6df14364ad4486c"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\hooks\\use-toast.ts": {
+    "mtime": 1780855496.2919576,
+    "ast_hash": "1015f32bb5730dbf9678cc6cb86b98b7",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\services\\business-subscription.ts": {
+    "mtime": 1780752584.5683334,
+    "ast_hash": "0de2ca28964e21f665734c103ef3d736",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\services\\content-moderation.ts": {
+    "mtime": 1780855570.5023801,
+    "ast_hash": "dc848ca8c2817e22ee1f9e0f1e9974c1",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\services\\listing-quota.ts": {
+    "mtime": 1780752853.2647824,
+    "ast_hash": "fd851b942ab8fc1f417c60e5652332b6",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\services\\payment.ts": {
+    "mtime": 1780756033.022264,
+    "ast_hash": "07d081ea41783de746d3fd6cf1f6fb62",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\stores\\toast-store.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "b3411e054c7c5a0d9ec1d3dcdd1f346c",
+    "semantic_hash": "b3411e054c7c5a0d9ec1d3dcdd1f346c"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\supabase\\client.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "12fc6f02eef7a77f13da981d2219c259",
+    "semantic_hash": "12fc6f02eef7a77f13da981d2219c259"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\supabase\\middleware.ts": {
+    "mtime": 1780855498.1947677,
+    "ast_hash": "3a03b8576c55767485ce6c424083a66e",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\supabase\\server.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "d95bc49ce94ef1c72ef2b1d89f5c25e2",
+    "semantic_hash": "d95bc49ce94ef1c72ef2b1d89f5c25e2"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\supabase\\types.ts": {
+    "mtime": 1780781455.9908657,
+    "ast_hash": "f9824d5cf5d1aa9a6739e8cb3f4c80ed",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\utils\\format.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "6c30d3acb8b6056ddb9553de89e5e505",
+    "semantic_hash": "6c30d3acb8b6056ddb9553de89e5e505"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\utils\\index.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "04d949e0574e67dc0cb64802b5551e91",
+    "semantic_hash": "04d949e0574e67dc0cb64802b5551e91"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\utils\\show-toast.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "56bbc61801db796d78156568705d9a4c",
+    "semantic_hash": "56bbc61801db796d78156568705d9a4c"
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\validations\\auth.ts": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "4f2e0ce91e436b286cd834eea9ec4730",
+    "semantic_hash": "4f2e0ce91e436b286cd834eea9ec4730"
+  },
+  "C:\\dev\\komsu-app\\src\\types\\modules.d.ts": {
+    "mtime": 1780745456.1460843,
+    "ast_hash": "545c1220639bc64a11c132e9a008a5e8",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\__tests__\\paytr-hash.test.ts": {
+    "mtime": 1780668113.060102,
+    "ast_hash": "72b0c558509e3bd30407b36ff479b806",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\__tests__\\rate-limit.test.ts": {
+    "mtime": 1780856541.7013292,
+    "ast_hash": "508b9ba02b718bab8fb5cfc9931fbdef",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\__tests__\\setup.ts": {
+    "mtime": 1778758492.2888875,
+    "ast_hash": "2c271435e60d9aeb6cd3a5e1e122a5c0",
+    "semantic_hash": "2c271435e60d9aeb6cd3a5e1e122a5c0"
+  },
+  "C:\\dev\\komsu-app\\src\\__tests__\\tc-kimlik.test.ts": {
+    "mtime": 1778758492.2898898,
+    "ast_hash": "5d9e6b9fd1247ae8f715c131b35d04f6",
+    "semantic_hash": "5d9e6b9fd1247ae8f715c131b35d04f6"
+  },
+  "C:\\dev\\komsu-app\\supabase\\migrations\\20260310140001_user_profiles.sql": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "3d2430d4ce68b855ee73dce64583c6a1",
+    "semantic_hash": "3d2430d4ce68b855ee73dce64583c6a1"
+  },
+  "C:\\dev\\komsu-app\\supabase\\migrations\\20260310140002_core_tables.sql": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "fcf5adcbcdca1ca1762939211d89c7df",
+    "semantic_hash": "fcf5adcbcdca1ca1762939211d89c7df"
+  },
+  "C:\\dev\\komsu-app\\supabase\\migrations\\20260310140003_posts_comments.sql": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "79a295c577737442736b8878dcadad4b",
+    "semantic_hash": "79a295c577737442736b8878dcadad4b"
+  },
+  "C:\\dev\\komsu-app\\supabase\\migrations\\20260310140004_listings_events.sql": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "65b02e804095bcdd3adafee00e8b4035",
+    "semantic_hash": "65b02e804095bcdd3adafee00e8b4035"
+  },
+  "C:\\dev\\komsu-app\\supabase\\migrations\\20260310140005_groups_businesses.sql": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "b4b28e59c82cb39c31ba6ee920d53a64",
+    "semantic_hash": "b4b28e59c82cb39c31ba6ee920d53a64"
+  },
+  "C:\\dev\\komsu-app\\supabase\\migrations\\20260310140006_notifications_alerts_misc.sql": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "4f4215bcc3e59ef91824c90c96e79a4c",
+    "semantic_hash": "4f4215bcc3e59ef91824c90c96e79a4c"
+  },
+  "C:\\dev\\komsu-app\\supabase\\migrations\\20260310140007_rls_indexes.sql": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "3d8457bfb8aabb6d8c84cd614757a36e",
+    "semantic_hash": "3d8457bfb8aabb6d8c84cd614757a36e"
+  },
+  "C:\\dev\\komsu-app\\supabase\\migrations\\20260310140008_donations_products.sql": {
+    "mtime": 1778619000.9744895,
+    "ast_hash": "12f49530203b6966c591e0659e81cc43",
+    "semantic_hash": "12f49530203b6966c591e0659e81cc43"
+  },
+  "C:\\dev\\komsu-app\\supabase\\migrations\\20260502120000_security_hardening.sql": {
+    "mtime": 1778758492.3034012,
+    "ast_hash": "1b08ec9ff68dad682af5beb09a9fb621",
+    "semantic_hash": "1b08ec9ff68dad682af5beb09a9fb621"
+  },
+  "C:\\dev\\komsu-app\\supabase\\migrations\\20260502130000_revoke_security_definer_authenticated.sql": {
+    "mtime": 1778758492.3034012,
+    "ast_hash": "3d7c605c9eabaeb033619561d04ceb0e",
+    "semantic_hash": "3d7c605c9eabaeb033619561d04ceb0e"
+  },
+  "C:\\dev\\komsu-app\\supabase\\migrations\\20260502140000_merge_user_profiles_into_profiles.sql": {
+    "mtime": 1778758492.3034012,
+    "ast_hash": "02008f4e5205e11f5cd60a2000d0d735",
+    "semantic_hash": "02008f4e5205e11f5cd60a2000d0d735"
+  },
+  "C:\\dev\\komsu-app\\supabase\\migrations\\20260502150000_address_verifications_unique_pending.sql": {
+    "mtime": 1778758492.3034012,
+    "ast_hash": "6859514989fafe8928ea330eec96102a",
+    "semantic_hash": "6859514989fafe8928ea330eec96102a"
+  },
+  "C:\\dev\\komsu-app\\supabase\\migrations\\20260502160000_create_audit_log.sql": {
+    "mtime": 1778758492.3034012,
+    "ast_hash": "320ac5ecf2200de65906c31a697c5b89",
+    "semantic_hash": "320ac5ecf2200de65906c31a697c5b89"
+  },
+  "C:\\dev\\komsu-app\\next-env.d.ts": {
+    "mtime": 1780854314.8604152,
+    "ast_hash": "b698cdd97fe8e3bd16dcd74899ad7cef",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\.claude\\launch.json": {
+    "mtime": 1780777876.332243,
+    "ast_hash": "becc2a1fde9c8af2bb0579b9e049e1d2",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\.claude\\settings.json": {
+    "mtime": 1779529575.9457312,
+    "ast_hash": "5d6ecd96cf065b16e8bb9fbf5d7d8f0d",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\global-error.tsx": {
+    "mtime": 1780854186.8868241,
+    "ast_hash": "be2c069f090f37fc0686d568fabbc8eb",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\api\\client-error\\route.ts": {
+    "mtime": 1780854168.2101307,
+    "ast_hash": "967d6cb3be47c99c3b06abf48a118e8a",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\components\\shared\\client-error-reporter.tsx": {
+    "mtime": 1780854197.3259482,
+    "ast_hash": "40e6bcc2123ccfa93eb25d9805642eb9",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\logger.ts": {
+    "mtime": 1780853997.20325,
+    "ast_hash": "818e518d57c46e2696571235819e2007",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\services\\edevlet-match.ts": {
+    "mtime": 1780860271.8040524,
+    "ast_hash": "ac28fa0fbedc431bc7c0e406fd68ba3f",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\services\\paytr-oid.ts": {
+    "mtime": 1780858579.4623451,
+    "ast_hash": "93c0e8946db2f68ce346962378cb47ee",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\lib\\utils\\report-client-error.ts": {
+    "mtime": 1780854156.3642306,
+    "ast_hash": "57160b937a81b1dc5ec89ab58320a40a",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\__tests__\\business-subscription.test.ts": {
+    "mtime": 1780763968.507286,
+    "ast_hash": "88401547c3e4f22c58649e898f6a9ee9",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\__tests__\\content-moderation.test.ts": {
+    "mtime": 1780764226.1994126,
+    "ast_hash": "19b3a0b4188e690af1ccdaf4a77819e6",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\__tests__\\edevlet-match.test.ts": {
+    "mtime": 1780860482.2794933,
+    "ast_hash": "a4e3083fc9d822610f4e12e608b2b8b0",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\__tests__\\format-edge.test.ts": {
+    "mtime": 1780764175.6936984,
+    "ast_hash": "d6058040ca8bcd1339b38e538564dbf7",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\__tests__\\format.test.ts": {
+    "mtime": 1780750090.2540858,
+    "ast_hash": "7b31b33124a09e76207a9603d16246f8",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\__tests__\\listing-quota.test.ts": {
+    "mtime": 1780859828.3338325,
+    "ast_hash": "1b8b759f8efabe95cc42af256909dcc3",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\__tests__\\observability.test.ts": {
+    "mtime": 1780854936.7877276,
+    "ast_hash": "f26bc5bf2464cdc7a1dbe23447ad617b",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\__tests__\\payment-callback.test.ts": {
+    "mtime": 1780859926.8629515,
+    "ast_hash": "02799625fe0ca1f18fba8dd511f364d2",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\__tests__\\payment-logic.test.ts": {
+    "mtime": 1780783192.6495728,
+    "ast_hash": "f29d1f87b8c1f4b7d6185ae213532d27",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\__tests__\\paytr-oid.test.ts": {
+    "mtime": 1780858652.7941916,
+    "ast_hash": "cda0442a6f7099fd06280572f0a93178",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\__tests__\\pricing-extra.test.ts": {
+    "mtime": 1780764098.4470785,
+    "ast_hash": "793a1c32b559381507d4b225b07ef30d",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\__tests__\\pricing.test.ts": {
+    "mtime": 1780749422.3242633,
+    "ast_hash": "88ab3b4a7a622d7369b8e414f0cdcafc",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\__tests__\\validations.test.ts": {
+    "mtime": 1780749485.1190734,
+    "ast_hash": "bf4f6902b0e46cb80b5bf55a6cd22b07",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\supabase\\.temp\\linked-project.json": {
+    "mtime": 1780747003.477061,
+    "ast_hash": "7c6784e5b6e188e9e9a58cba9ef790fa",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\test-results\\.last-run.json": {
+    "mtime": 1780853787.5025923,
+    "ast_hash": "f196824657d8858bc7fa44eecbba38b1",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\AUDIT_REPORT.md": {
+    "mtime": 1778758492.2833753,
+    "ast_hash": "26825e6ba9eef4b54690b8f5262f95cc",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\CHANGES_DETAIL.md": {
+    "mtime": 1778619000.865371,
+    "ast_hash": "c8d6b544b3d47b6e6eb060b0f0f0f174",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\CLAUDE-CODE-DEVIR.md": {
+    "mtime": 1780760310.3999858,
+    "ast_hash": "a3964559b7f1f48fadd8e9e99632c01c",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\CLAUDE.md": {
+    "mtime": 1780759021.3367288,
+    "ast_hash": "26f17c60d64276e4ce60490081650c04",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\E2E_TEST_RAPORU.md": {
+    "mtime": 1778619000.865371,
+    "ast_hash": "4878193a69cfb1b4163eba7cb1f615bf",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\IMPLEMENTATION_SUMMARY.md": {
+    "mtime": 1778619000.865371,
+    "ast_hash": "7ea8ba72d256beb24a5a6c2a4af45205",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\MOBILE_APP_BUILD.md": {
+    "mtime": 1778619000.865371,
+    "ast_hash": "0e5b7666d14eb797f518d1c595680613",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\PAZARA-HAZIRLIK-DENETIM-RAPORU-2026-06-06.md": {
+    "mtime": 1780821521.40187,
+    "ast_hash": "9a57f8930abdf94feb9ce457a888caf6",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\PAZARA-HAZIRLIK-DENETIM-RAPORU.md": {
+    "mtime": 1780562165.843737,
+    "ast_hash": "199a16cfd52f50eaa7d141ab9c33056a",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\README.md": {
+    "mtime": 1778619000.865371,
+    "ast_hash": "5f81a6bbcb7c5bfa7fc74a596aa34cf5",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\SKELETON_USAGE.md": {
+    "mtime": 1778619000.865371,
+    "ast_hash": "c3e4219bb8491347dfd72a7a5d46a056",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\TECH_DEBT.md": {
+    "mtime": 1780860601.120059,
+    "ast_hash": "f8950758e5d298ce437162c9afd56017",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\UI_COMPONENTS_GUIDE.md": {
+    "mtime": 1778619000.865371,
+    "ast_hash": "175ec22e3836856b5f6d5ec611477f64",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\UTILITY_COMPONENTS_GUIDE.md": {
+    "mtime": 1778619000.865371,
+    "ast_hash": "cbbe267054cd8e218ffa8facb756de8c",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\VERIFICATION_REPORT.md": {
+    "mtime": 1778619000.865371,
+    "ast_hash": "da2f2559ea2b059f3a541bb1e0277dee",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\.claude\\CLAUDE.md": {
+    "mtime": 1779529575.9348228,
+    "ast_hash": "817fe671013b35ae0bc9301dfe449a87",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\.claude\\skills\\graphify\\SKILL.md": {
+    "mtime": 1779529575.9336047,
+    "ast_hash": "d03bd3b98c97110ec2dd0abc1b8dd654",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\.github\\workflows\\ci.yml": {
+    "mtime": 1780854513.2851388,
+    "ast_hash": "fcf3457c2a2a9a73f300d24a6591c951",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\playwright-report\\index.html": {
+    "mtime": 1780853787.5015929,
+    "ast_hash": "7cb972f641e6d08cc57258988d9f7eef",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\public\\robots.txt": {
+    "mtime": 1778619000.880938,
+    "ast_hash": "151ea4ba649fb89e997d72c53e1b788c",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\public\\file.svg": {
+    "mtime": 1778619000.865371,
+    "ast_hash": "d09f95206c3fa0bb9bd9fefabfd0ea71",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\public\\globe.svg": {
+    "mtime": 1778619000.865371,
+    "ast_hash": "2aaafa6a49b6563925fe440891e32717",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\public\\icon-192.png": {
+    "mtime": 1778619000.865371,
+    "ast_hash": "9002f6866d672c63ac5d327065f4b94c",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\public\\icon-512.png": {
+    "mtime": 1778619000.865371,
+    "ast_hash": "0d4ba3109c2c846e0207398afa44d0be",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\public\\next.svg": {
+    "mtime": 1778619000.865371,
+    "ast_hash": "8e061864f388b47f33a1c3780831193e",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\public\\vercel.svg": {
+    "mtime": 1778619000.880938,
+    "ast_hash": "c0af2f507b369b085b35ef4bbe3bcf1e",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\public\\window.svg": {
+    "mtime": 1778619000.880938,
+    "ast_hash": "a2760511c65806022ad20adf74370ff3",
+    "semantic_hash": ""
+  },
+  "C:\\dev\\komsu-app\\src\\app\\icon.svg": {
+    "mtime": 1778619000.943133,
+    "ast_hash": "f7ecc5f4b13f6b2a2c757486e555a50b",
+    "semantic_hash": ""
+  }
+}

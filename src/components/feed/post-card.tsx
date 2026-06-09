@@ -3,10 +3,11 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { MoreHorizontal, Globe, Heart, MessageCircle, Share2, Pin, Send, X, ChevronRight } from 'lucide-react'
+import { MoreHorizontal, Globe, Heart, MessageCircle, Share2, Pin, Send, X, ChevronRight, Flag } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { toggleReaction, createComment } from '@/lib/hooks/use-posts'
 import { useCurrentUser } from '@/lib/hooks/use-auth'
+import { ReportModal } from '@/components/shared/report-modal'
 
 export const POST_CATEGORIES = [
   { id: 'tumu', label: 'Tümü', badgeColor: 'bg-surface-active text-text-secondary' },
@@ -49,6 +50,8 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
   const [commentText, setCommentText] = useState('')
   const [expanded, setExpanded] = useState(false)
   const [submittingComment, setSubmittingComment] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [reportOpen, setReportOpen] = useState(false)
   const categoryInfo = getCategoryInfo(post.category)
   const isLongText = post.body.length > 200
 
@@ -101,9 +104,33 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
               </p>
             </div>
           </div>
-          <button aria-label="Daha fazla seçenek" className="p-1.5 hover:bg-surface-hover rounded-full transition-colors">
-            <MoreHorizontal className="w-5 h-5 text-text-muted" />
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label="Daha fazla seçenek"
+              aria-haspopup="menu"
+              aria-expanded={menuOpen}
+              className="p-1.5 hover:bg-surface-hover rounded-full transition-colors"
+            >
+              <MoreHorizontal className="w-5 h-5 text-text-muted" />
+            </button>
+            {menuOpen && (
+              <>
+                {/* Dışarı tıklayınca menüyü kapatan görünmez katman */}
+                <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} aria-hidden="true" />
+                <div role="menu" className="absolute right-0 top-full mt-1 z-20 w-44 bg-surface border border-border rounded-lg shadow-lg py-1">
+                  <button
+                    role="menuitem"
+                    onClick={() => { setMenuOpen(false); setReportOpen(true) }}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-text-secondary hover:bg-surface-hover transition-colors"
+                  >
+                    <Flag className="w-4 h-4" />
+                    Şikâyet Et
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
@@ -214,6 +241,13 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
           )}
         </>
       )}
+
+      <ReportModal
+        isOpen={reportOpen}
+        onClose={() => setReportOpen(false)}
+        type="post"
+        targetId={post.id}
+      />
     </article>
   )
 }

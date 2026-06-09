@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useState, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
+import { getFeedImageUrl } from '@/lib/demo-images';
 
 interface ArticleStep {
   title: string;
@@ -282,7 +282,7 @@ export default function ArticlePage() {
             href="/yardim"
             className="inline-block px-6 py-3 bg-[#00833e] hover:bg-[#006b32] text-white font-medium rounded-lg transition-colors"
           >
-            Yardım Merkezi'ne Dön
+            Yardım Merkezi&apos;ne Dön
           </Link>
         </div>
       </div>

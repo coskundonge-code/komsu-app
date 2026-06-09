@@ -201,7 +201,7 @@ export default function NewConversationPage() {
               <div className="text-center py-12">
                 <p className="text-text-primary font-medium">Kullanıcı bulunamadı</p>
                 <p className="text-text-muted text-sm mt-1">
-                  "{searchQuery}" için sonuç yok. Başka bir ad deneyin.
+                  &quot;{searchQuery}&quot; için sonuç yok. Başka bir ad deneyin.
                 </p>
               </div>
             ) : (

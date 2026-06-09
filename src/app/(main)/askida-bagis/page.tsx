@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import {
   Heart,
   Gift,
@@ -44,7 +45,6 @@ import { createClient } from '@/lib/supabase/client'
 import { useCurrentUser } from '@/lib/hooks/use-auth'
 import { getDonations, createDonation, claimDonation } from '@/lib/hooks/use-donations'
 import {
-  getDonationProducts,
   getBusinessProducts,
   createDonationProduct,
   updateDonationProduct,
@@ -331,7 +331,7 @@ function AskidaBagisPageContent() {
       const { data, error } = await getDonations({ status: 'available', limit: 50 })
       if (!error && data && data.length > 0) {
         setAvailableDonations(data)
-        const mapped: DonationItem[] = data.map((d: any, i: number) => ({
+        const mapped: DonationItem[] = data.map((d: any) => ({
           id: d.id,
           donor: d.profiles?.full_name || 'Anonim',
           items: d.title,
@@ -415,10 +415,10 @@ function AskidaBagisPageContent() {
         const { data } = await supabase
           .from('businesses')
           .select('*')
-          .eq('owner_id', user.id)
+          .eq('owner_id', user?.id)
           .single()
         setUserBusiness(data)
-      } catch (e) {
+      } catch {
         // User may not have a business
       }
     }
@@ -660,7 +660,7 @@ function AskidaBagisPageContent() {
     if (!user) return
     setClaimingId(donationId)
     try {
-      const { data, error } = await claimDonation(donationId, user.id)
+      const { error } = await claimDonation(donationId, user.id)
       if (!error) {
         setAvailableDonations(prev => prev.filter(d => d.id !== donationId))
         setDonationStats(prev => ({ ...prev, items: Math.max(0, prev.items - 1) }))
@@ -686,7 +686,7 @@ function AskidaBagisPageContent() {
       isSaving: false,
     })
 
-    const { data, error } = await getBusinessProducts(businessId)
+    const { data } = await getBusinessProducts(businessId)
     setProductManageModal(prev => ({
       ...prev,
       products: data || [],
@@ -1985,7 +1985,40 @@ function AskidaBagisPageContent() {
   )
 }
 
+// NOT (2026-06-07 / pazara-hazırlık denetimi):
+// "Askıda Bağış" özelliği henüz tamamlanmadı. Ödeme adımı SAHTE bir kart formu
+// (bkz. ~satır 1382 "Fake iyzico") olup var olmayan /api/payment/iyzico ucuna
+// POST atıyordu (404) ve gerçek kart numarası topluyordu — bu bir PCI/uyumluluk
+// riski ve Apple/Google mağaza ret sebebidir. Ayrıca DB boşken kullanıcıya sahte
+// istatistik (47 ürün / 8 işletme) gösteriyordu.
+// Gerçek kullanıcılar bozuk/sahte ödeme akışına ulaşmasın diye özellik geçici
+// olarak "yakında" ekranıyla kapatıldı. TÜM çalışma kodu (AskidaBagisPageContent)
+// aşağıda KORUNUYOR; ödeme PayTR'a bağlanıp test edildikten sonra tek satırla
+// (return <AskidaBagisPageContent />) geri açılabilir.
 export default function AskidaBagisPage() {
+  return (
+    <div className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center px-4 text-center">
+      <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+        <Heart className="h-10 w-10 text-primary" />
+      </div>
+      <h1 className="mb-2 text-2xl font-bold">Askıda Bağış çok yakında</h1>
+      <p className="mb-6 text-text-muted">
+        Mahalle esnafıyla dayanışma özelliğimizi güvenli ödeme altyapısıyla
+        birlikte hazırlıyoruz. Çok yakında burada olacak.
+      </p>
+      <Link
+        href="/"
+        className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 font-medium text-white transition hover:opacity-90"
+      >
+        <ArrowRight className="h-4 w-4" />
+        Ana sayfaya dön
+      </Link>
+    </div>
+  )
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- özellik tamamlanınca geri açılacak
+function _AskidaBagisPageGatedContent() {
   return (
     <Suspense fallback={<div className="w-full py-12 text-center text-text-muted">Yükleniyor...</div>}>
       <AskidaBagisPageContent />

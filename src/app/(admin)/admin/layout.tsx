@@ -4,6 +4,10 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+
+// NOT (2026-06-07): /admin/odemeler artık canlı `payments` tablosuna bağlı olduğu için
+// eski "mock veri" uyarı bandı (MockDataBanner + MOCK_DATA_ROUTES) kaldırıldı.
+// Bütün admin panelleri gerçek veriyle çalışıyor.
 import {
   Menu,
   X,
@@ -172,7 +176,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
         {/* Content Area */}
         <div className="flex-1 overflow-auto">
-          <div className="p-4 sm:p-8">{children}</div>
+          <div className="p-4 sm:p-8">
+            {children}
+          </div>
         </div>
       </div>
     </div>

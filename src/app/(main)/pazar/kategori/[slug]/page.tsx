@@ -1,45 +1,66 @@
 'use client';
 
-import { useState } from 'react';
-import { Search, Plus, Heart, MapPin, ChevronDown, MessageCircle, X } from 'lucide-react';
+import { useState, useMemo, use } from 'react';
+import { Search, Plus, Heart, MapPin, MessageCircle, X, Package, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
+import { useListings } from '@/lib/hooks/use-listings';
 
-// Category mapping from slug to Turkish name
+function formatTimeAgo(date: Date): string {
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+  if (diffHours < 1) return 'az önce';
+  if (diffHours < 24) return `${diffHours} saat`;
+  if (diffDays < 30) return `${diffDays} gün`;
+  return `${Math.floor(diffDays / 30)} ay`;
+}
+
+// Category mapping from slug to Turkish name.
+// NOT: name alanları canlı listing_categories.name ile BİREBİR eşleşmeli (gerçek veriyi
+// kategori adına göre filtrelediğimiz için). Slug'lar da canlı slug kolonuyla aynı.
 const categoryMap: Record<string, { name: string; description: string }> = {
+  'arac': {
+    name: 'Araç',
+    description: 'Bisiklet, scooter, araba aksesuarları ve araç ürünleri'
+  },
+  'bebek-cocuk': {
+    name: 'Bebek & Çocuk',
+    description: 'Bebek arabası, oyuncak, çocuk giyim ve daha fazlası'
+  },
+  'diger': {
+    name: 'Diğer',
+    description: 'Diğer kategorilere uymayan ürünler'
+  },
   'elektronik': {
     name: 'Elektronik',
     description: 'Bilgisayar, telefon, tablet ve diğer elektronik ürünler'
-  },
-  'mobilya': {
-    name: 'Mobilya',
-    description: 'Masa, sandalye, kanepe ve diğer ev mobilyaları'
-  },
-  'giyim': {
-    name: 'Giyim',
-    description: 'Elbise, gömlek, ayakkabı ve diğer giyim eşyaları'
-  },
-  'spor': {
-    name: 'Spor',
-    description: 'Spor ekipmanı, yoga matı, dumbbells ve fitness ürünleri'
-  },
-  'kitap': {
-    name: 'Kitaplar',
-    description: 'Roman, teknik kitaplar, çocuk kitapları ve daha fazlası'
   },
   'ev-bahce': {
     name: 'Ev & Bahçe',
     description: 'Ev dekorasyonu, bahçe aletleri ve ev tekstilleri'
   },
-  'arac': {
-    name: 'Araçlar',
-    description: 'Bisiklet, scooter, araba aksesuarları ve araç ürünleri'
+  'giyim': {
+    name: 'Giyim',
+    description: 'Elbise, gömlek, ayakkabı ve diğer giyim eşyaları'
   },
-  'diger': {
-    name: 'Diğer',
-    description: 'Diğer kategorilere uymayan ürünler'
+  'kitap-kirtasiye': {
+    name: 'Kitap & Kırtasiye',
+    description: 'Roman, teknik kitaplar, kırtasiye ve daha fazlası'
+  },
+  'mobilya': {
+    name: 'Mobilya',
+    description: 'Masa, sandalye, kanepe ve diğer ev mobilyaları'
+  },
+  'spor-hobi': {
+    name: 'Spor & Hobi',
+    description: 'Spor ekipmanı, hobi malzemeleri ve fitness ürünleri'
+  },
+  'ucretsiz': {
+    name: 'Ücretsiz',
+    description: 'Komşulardan ücretsiz paylaşılan ürünler'
   }
 };
 
@@ -47,149 +68,55 @@ const sortOptions = [
   { label: 'En Yeni', value: 'newest' },
   { label: 'Fiyat (Düşük-Yüksek)', value: 'price-low' },
   { label: 'Fiyat (Yüksek-Düşük)', value: 'price-high' },
-  { label: 'Yakındakiler', value: 'nearest' },
 ];
 
 const conditionOptions = [
   { label: 'Sıfır', value: 'new' },
-  { label: 'Az Kullanılmış', value: 'like-new' },
+  { label: 'Az Kullanılmış', value: 'like_new' },
   { label: 'İyi', value: 'good' },
   { label: 'Orta', value: 'fair' },
 ];
 
-// Mock listings data
-const mockListings = [
-  {
-    id: '1',
-    title: 'Laptop Lenovo IdeaPad 5 - Az Kullanılmış',
-    price: 8500,
-    image: getFeedImageUrl(1, 500, 500),
-    location: 'Kadıköy',
-    neighborhood: 'Moda',
-    timeAgo: '2 saat',
-    distance: '2 km',
-    condition: 'like-new',
-    category: 'elektronik',
-  },
-  {
-    id: '2',
-    title: 'Samsung Galaxy Tab S9 - 11 inç, Gümüş',
-    price: 4200,
-    image: getFeedImageUrl(2, 500, 500),
-    location: 'Caferağa',
-    neighborhood: 'Caferağa',
-    timeAgo: '4 saat',
-    distance: '3 km',
-    condition: 'good',
-    category: 'elektronik',
-  },
-  {
-    id: '3',
-    title: 'iPhone 14 Pro Max - Sıfır Kutu Açılmamış',
-    price: 9200,
-    image: getFeedImageUrl(3, 500, 500),
-    location: 'Moda',
-    neighborhood: 'Moda',
-    timeAgo: '5 saat',
-    distance: '1 km',
-    condition: 'new',
-    category: 'elektronik',
-  },
-  {
-    id: '4',
-    title: 'Wireless Bluetooth Kulaklık - Siyah',
-    price: 850,
-    image: getFeedImageUrl(4, 500, 500),
-    location: 'Fenerbahçe',
-    neighborhood: 'Fenerbahçe',
-    timeAgo: '6 saat',
-    distance: '5 km',
-    condition: 'good',
-    category: 'elektronik',
-  },
-  {
-    id: '5',
-    title: 'Fotoğraf Makinesi Canon EOS R6 - İyi Durumda',
-    price: 12500,
-    image: getFeedImageUrl(5, 500, 500),
-    location: 'Kadıköy',
-    neighborhood: 'Güzeltepe',
-    timeAgo: '1 gün',
-    distance: '4 km',
-    condition: 'good',
-    category: 'elektronik',
-  },
-  {
-    id: '6',
-    title: 'Harici SSD 1TB - Sıfır, Hızlı Teslimat',
-    price: 2800,
-    image: getFeedImageUrl(6, 500, 500),
-    location: 'Moda',
-    neighborhood: 'Moda',
-    timeAgo: '1 gün',
-    distance: '1 km',
-    condition: 'new',
-    category: 'elektronik',
-  },
-  {
-    id: '7',
-    title: 'Monitor LG 27 Inch 4K - Çalışıyor Mükemmel',
-    price: 5500,
-    image: getFeedImageUrl(7, 500, 500),
-    location: 'Caferağa',
-    neighborhood: 'Caferağa',
-    timeAgo: '2 gün',
-    distance: '3 km',
-    condition: 'good',
-    category: 'elektronik',
-  },
-  {
-    id: '8',
-    title: 'Kontrol Cihazı PS5 - Orijinal, Kullanılı',
-    price: 1200,
-    image: getFeedImageUrl(8, 500, 500),
-    location: 'Fenerbahçe',
-    neighborhood: 'Fenerbahçe',
-    timeAgo: '2 gün',
-    distance: '5 km',
-    condition: 'fair',
-    category: 'elektronik',
-  },
-  {
-    id: '9',
-    title: 'Tablet Huawei MatePad - 10.9 Inç',
-    price: 3800,
-    image: getFeedImageUrl(9, 500, 500),
-    location: 'Kadıköy',
-    neighborhood: 'Moda',
-    timeAgo: '3 saat',
-    distance: '2 km',
-    condition: 'like-new',
-    category: 'elektronik',
-  },
-  {
-    id: '10',
-    title: 'Yazıcı Epson L8180 - Çok Az Kullanılmış',
-    price: 4500,
-    image: getFeedImageUrl(10, 500, 500),
-    location: 'Moda',
-    neighborhood: 'Moda',
-    timeAgo: '3 saat',
-    distance: '1 km',
-    condition: 'like-new',
-    category: 'elektronik',
-  },
-];
-
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export default function CategoryPage({ params }: PageProps) {
-  const slug = params.slug.toLowerCase();
+  // Next 16: params is a Promise even in client components — must unwrap with use().
+  const { slug: slugParam } = use(params);
+  const slug = slugParam.toLowerCase();
   const categoryInfo = categoryMap[slug];
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [selectedSort, setSelectedSort] = useState('newest');
+  const [visibleCount, setVisibleCount] = useState(8);
+
+  // Price range filter
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+
+  // Condition filter
+  const [selectedConditions, setSelectedConditions] = useState<Set<string>>(new Set());
+
+  // Gerçek ilanlar (pazar ile aynı useListings hook'u) — sahte mockListings yerine.
+  // Hook'lar erken-return'dan ÖNCE çağrılmalı (React hook kuralları).
+  const { data: listingsResult, isLoading: loading } = useListings({ status: 'active', limit: 100 });
+  const allListings = useMemo(() => {
+    if (!listingsResult?.data) return [];
+    return (listingsResult.data as any[]).map((item) => ({
+      id: item.id,
+      title: item.title || 'Başlıksız İlan',
+      price: item.price || 0,
+      image: item.media_urls && item.media_urls.length > 0 ? item.media_urls[0] : null,
+      neighborhood: item.neighborhoods?.name || null,
+      timeAgo: item.created_at ? formatTimeAgo(new Date(item.created_at)) : '',
+      condition: item.condition || null,
+      category: item.listing_categories?.name || 'Diğer',
+    }));
+  }, [listingsResult]);
 
   // Redirect or handle invalid category
   if (!categoryInfo) {
@@ -209,21 +136,9 @@ export default function CategoryPage({ params }: PageProps) {
     );
   }
 
-  // Filter listings by category
-  const categoryListings = mockListings.filter(l => l.category === slug);
+  // Filter listings by category (gerçek veriden, kategori ADINA göre)
+  const categoryListings = allListings.filter((l) => l.category === categoryInfo.name);
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [selectedSort, setSelectedSort] = useState('newest');
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [visibleCount, setVisibleCount] = useState(8);
-
-  // Price range filter
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
-
-  // Condition filter
-  const [selectedConditions, setSelectedConditions] = useState<Set<string>>(new Set());
 
   const toggleCondition = (value: string) => {
     const next = new Set(selectedConditions);
@@ -254,7 +169,7 @@ export default function CategoryPage({ params }: PageProps) {
     }
 
     // Condition filter
-    if (selectedConditions.size > 0 && !selectedConditions.has(l.condition)) {
+    if (selectedConditions.size > 0 && (!l.condition || !selectedConditions.has(l.condition))) {
       return false;
     }
 
@@ -268,8 +183,6 @@ export default function CategoryPage({ params }: PageProps) {
         return a.price - b.price;
       case 'price-high':
         return b.price - a.price;
-      case 'nearest':
-        return parseFloat(a.distance) - parseFloat(b.distance);
       case 'newest':
       default:
         return 0;
@@ -395,7 +308,11 @@ export default function CategoryPage({ params }: PageProps) {
 
           {/* Main Grid - Listings */}
           <div className="flex-1">
-            {visibleListings.length > 0 ? (
+            {loading ? (
+              <div className="bg-white rounded-lg shadow-sm border border-[#e0e0e0] p-12 text-center">
+                <p className="text-[#8f8f8f]">Yükleniyor...</p>
+              </div>
+            ) : visibleListings.length > 0 ? (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                   {visibleListings.map((listing) => (
@@ -406,28 +323,36 @@ export default function CategoryPage({ params }: PageProps) {
                     >
                       {/* Image Container */}
                       <div className="relative aspect-square overflow-hidden bg-[#f0f2f5]">
-                        <Image
-                          src={listing.image}
-                          alt={listing.title}
-                          fill
-                          unoptimized
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                        />
+                        {listing.image ? (
+                          <Image
+                            src={listing.image}
+                            alt={listing.title}
+                            fill
+                            unoptimized
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-[#8f8f8f]">
+                            <Package className="w-10 h-10" />
+                          </div>
+                        )}
 
                         {/* Condition Badge */}
-                        <div className="absolute top-3 left-3 flex items-center gap-1">
-                          <span
-                            className={cn(
-                              'text-xs font-bold px-2.5 py-1 rounded-md',
-                              listing.condition === 'new' && 'bg-green-500 text-white',
-                              listing.condition === 'like-new' && 'bg-blue-500 text-white',
-                              listing.condition === 'good' && 'bg-yellow-500 text-white',
-                              listing.condition === 'fair' && 'bg-orange-500 text-white'
-                            )}
-                          >
-                            {conditionOptions.find(c => c.value === listing.condition)?.label}
-                          </span>
-                        </div>
+                        {listing.condition && (
+                          <div className="absolute top-3 left-3 flex items-center gap-1">
+                            <span
+                              className={cn(
+                                'text-xs font-bold px-2.5 py-1 rounded-md',
+                                listing.condition === 'new' && 'bg-green-500 text-white',
+                                listing.condition === 'like_new' && 'bg-blue-500 text-white',
+                                listing.condition === 'good' && 'bg-yellow-500 text-white',
+                                listing.condition === 'fair' && 'bg-orange-500 text-white'
+                              )}
+                            >
+                              {conditionOptions.find(c => c.value === listing.condition)?.label}
+                            </span>
+                          </div>
+                        )}
 
                         {/* Favorite Button */}
                         <button
@@ -467,16 +392,19 @@ export default function CategoryPage({ params }: PageProps) {
                           {listing.title}
                         </p>
 
-                        {/* Meta Info */}
-                        <div className="flex items-center gap-1.5 text-xs text-[#8f8f8f]">
-                          <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="truncate">
-                            {listing.timeAgo} • {listing.distance}
-                          </span>
-                        </div>
-                        <div className="text-xs text-[#8f8f8f] mt-1">
-                          {listing.neighborhood}
-                        </div>
+                        {/* Meta Info — yalnızca gerçek veriden gelen alanlar */}
+                        {listing.neighborhood && (
+                          <div className="flex items-center gap-1.5 text-xs text-[#8f8f8f]">
+                            <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                            <span className="truncate">{listing.neighborhood}</span>
+                          </div>
+                        )}
+                        {listing.timeAgo && (
+                          <div className="flex items-center gap-1.5 text-xs text-[#8f8f8f] mt-1">
+                            <Clock className="w-3.5 h-3.5 flex-shrink-0" />
+                            <span className="truncate">{listing.timeAgo}</span>
+                          </div>
+                        )}
                       </div>
                     </Link>
                   ))}

@@ -16,7 +16,6 @@ export interface FeaturedListingModalProps {
 
 export function FeaturedListingModal({
   isOpen,
-  listingId,
   listingTitle,
   onClose,
   onSelectPlan,
@@ -55,7 +54,7 @@ export function FeaturedListingModal({
           {/* Description */}
           <div className="bg-green-50 border border-green-200 rounded-lg p-3">
             <p className="text-sm text-gray-700">
-              <span className="font-semibold text-primary">"{listingTitle}"</span> ilanını
+              <span className="font-semibold text-primary">&quot;{listingTitle}&quot;</span> ilanını
               ana sayfa ve arama sonuçlarında öne çıkartın.
             </p>
           </div>
@@ -74,7 +73,7 @@ export function FeaturedListingModal({
               </li>
               <li className="flex items-start gap-2">
                 <Sparkles className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                <span>İlanınızda "Ön Plana Çıkmış" rozeti gösterilir</span>
+                <span>İlanınızda &quot;Ön Plana Çıkmış&quot; rozeti gösterilir</span>
               </li>
             </ul>
           </div>

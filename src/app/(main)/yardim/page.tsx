@@ -1,9 +1,8 @@
 'use client';
 
-import { Search, ChevronDown, MessageCircle, FileText, Shield, Users, Settings, HelpCircle, Lightbulb, AlertCircle, Lock, Home, Book } from 'lucide-react';
+import { Search, MessageCircle, FileText, Users, HelpCircle, Lightbulb, AlertCircle, Lock, Home, Book } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { cn } from '@/lib/utils';
 
 const categories = [
   { icon: Users, title: "Hesap ve Profil", slug: "hesap-profil", count: 12 },
@@ -62,9 +61,6 @@ const faqs = {
 
 export default function HelpPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
-
-  const filteredFaqs = expandedCategory ? faqs[expandedCategory as keyof typeof faqs] || [] : [];
   const searchResults = searchQuery.length > 2
     ? Object.entries(faqs).flatMap(([cat, items]) =>
         items.filter(item =>
@@ -183,7 +179,7 @@ export default function HelpPage() {
           <div className="text-center py-16">
             <AlertCircle className="w-16 h-16 text-text-muted mx-auto mb-4" />
             <h3 className="text-lg font-bold text-text-primary mb-2">Sonuç bulunamadı</h3>
-            <p className="text-text-muted mb-8">"{searchQuery}" için bir sonuç bulamadık.</p>
+            <p className="text-text-muted mb-8">&quot;{searchQuery}&quot; için bir sonuç bulamadık.</p>
             <button
               onClick={() => setSearchQuery("")}
               className="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-hover transition-colors"

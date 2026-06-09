@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Shield, X, Clock, UserPlus, MapPin, AlertTriangle, CheckCircle } from 'lucide-react'
+import { Shield, X, Clock, UserPlus, MapPin, AlertTriangle } from 'lucide-react'
 
 interface AddressVerificationBannerProps {
   status?: 'unverified' | 'pending' | 'locked' | 'referral' | 'verified'

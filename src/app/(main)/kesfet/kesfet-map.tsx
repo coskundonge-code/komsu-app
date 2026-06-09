@@ -135,8 +135,6 @@ export default function KesfetMap() {
   const mapRef = useRef<L.Map | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [loading, setLoading] = useState(true)
-  const [userCount, setUserCount] = useState(0)
-  const [businessCount, setBusinessCount] = useState(0)
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
@@ -151,7 +149,7 @@ export default function KesfetMap() {
 
       if (session?.user) {
         const { data: myProfile } = await supabase
-          .from('user_profiles')
+          .from('profiles')
           .select('location_lat, location_lng')
           .eq('id', session.user.id)
           .single()
@@ -183,7 +181,7 @@ export default function KesfetMap() {
 
       // Fetch all users with location
       const { data: users } = await supabase
-        .from('user_profiles')
+        .from('profiles')
         .select('id, full_name, location_lat, location_lng, gender, avatar_url')
         .not('location_lat', 'is', null)
         .not('location_lng', 'is', null)
@@ -239,62 +237,13 @@ export default function KesfetMap() {
         `)
       })
 
-      // If no real neighbors, add demo neighbors around user's location
-      if (mapUsers.length < 5) {
-        const demoNeighbors = [
-          { name: 'Ayşe H.', gender: 'female' as const, dLat: 0.0015, dLng: -0.0020 },
-          { name: 'Mehmet K.', gender: 'male' as const, dLat: -0.0012, dLng: 0.0018 },
-          { name: 'Fatma Y.', gender: 'female' as const, dLat: 0.0022, dLng: 0.0010 },
-          { name: 'Ali D.', gender: 'male' as const, dLat: -0.0008, dLng: -0.0025 },
-          { name: 'Zeynep S.', gender: 'female' as const, dLat: 0.0005, dLng: 0.0030 },
-          { name: 'Emre T.', gender: 'male' as const, dLat: -0.0020, dLng: -0.0005 },
-          { name: 'Deniz A.', gender: 'male' as const, dLat: 0.0018, dLng: -0.0012 },
-          { name: 'Seda B.', gender: 'female' as const, dLat: -0.0025, dLng: 0.0008 },
-          { name: 'Burak C.', gender: 'male' as const, dLat: 0.0010, dLng: 0.0022 },
-          { name: 'Merve Ö.', gender: 'female' as const, dLat: -0.0015, dLng: -0.0018 },
-        ]
-
-        demoNeighbors.forEach((n) => {
-          const icon = n.gender === 'female' ? femaleIcon : maleIcon
-          const genderLabel = n.gender === 'female' ? 'Bayan' : 'Bay'
-          const lat = myLat + n.dLat + (Math.random() - 0.5) * 0.0005
-          const lng = myLng + n.dLng + (Math.random() - 0.5) * 0.0005
-          const marker = L.marker([lat, lng], { icon }).addTo(map)
-          marker.bindPopup(`
-            <div style="min-width:140px;">
-              <div style="font-weight:600;font-size:14px;margin-bottom:4px;">${n.name}</div>
-              <div style="color:#6B7280;font-size:12px;">${genderLabel}</div>
-            </div>
-          `)
-        })
-      }
-
-      // If no real businesses, add demo businesses
-      if (mapBusinesses.length < 3) {
-        const demoBusinesses = [
-          { name: 'Mahalle Fırını', cat: 'Fırın', dLat: 0.0008, dLng: 0.0015, rating: 4.7 },
-          { name: 'Berber Hasan', cat: 'Berber', dLat: -0.0010, dLng: -0.0012, rating: 4.5 },
-          { name: 'Eczane Hayat', cat: 'Eczane', dLat: 0.0020, dLng: -0.0008, rating: 4.9 },
-          { name: 'Market Güneş', cat: 'Market', dLat: -0.0018, dLng: 0.0022, rating: 4.3 },
-          { name: 'Cafe Komşu', cat: 'Kafe', dLat: 0.0003, dLng: -0.0028, rating: 4.6 },
-        ]
-
-        demoBusinesses.forEach((b) => {
-          const lat = myLat + b.dLat + (Math.random() - 0.5) * 0.0003
-          const lng = myLng + b.dLng + (Math.random() - 0.5) * 0.0003
-          const marker = L.marker([lat, lng], { icon: businessIcon }).addTo(map)
-          marker.bindPopup(`
-            <div style="min-width:160px;">
-              <div style="font-weight:600;font-size:14px;margin-bottom:2px;">${b.name}</div>
-              <div style="color:#6B7280;font-size:12px;margin-bottom:2px;">${b.cat}</div>
-              <div style="color:#F59E0B;font-size:12px;">★ ${b.rating}</div>
-            </div>
-          `)
-        })
-      }
-
-      setUserCount(mapUsers.length > 0 ? mapUsers.length : 10)
-      setBusinessCount(mapBusinesses.length > 0 ? mapBusinesses.length : 5)
+      // NOT (2026-06-07): Burada eskiden gerçek komşu sayısı 5'in, işletme sayısı
+      // 3'ün altındaysa haritaya rastgele koordinatlı SAHTE komşular (demoNeighbors)
+      // ve SAHTE işletmeler (demoBusinesses) ekleniyor, sayaçlar da 10/5'e
+      // yuvarlanıyordu. Gerçek kullanıcıya uydurma kişi/işletme göstermek dürüstlük
+      // ihlaliydi; tamamı kaldırıldı. Harita yalnızca gerçek profilleri ve gerçek
+      // işletmeleri gösterir; veri yoksa yalnızca "Benim Konumum" görünür.
+      // Bkz. TECH_DEBT #12.
       setLoading(false)
     }
 

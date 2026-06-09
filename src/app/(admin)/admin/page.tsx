@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   Users,
@@ -14,15 +13,11 @@ import {
   CheckCircle,
   AlertCircle,
   BarChart3,
-  PieChart as PieChartIcon,
   UserCheck,
   Shield,
   AlertTriangle,
   FileText,
-  Clock,
   Zap,
-  ArrowUp,
-  TrendingDown,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
@@ -216,43 +211,12 @@ const SYSTEM_STATUS = [
 ];
 
 export default function AdminDashboard() {
-  const router = useRouter();
   const { user, profile, loading: authLoading } = useCurrentUser();
   const [stats, setStats] = useState(DEFAULT_STATS);
   const [sortedNeighborhoods, setSortedNeighborhoods] = React.useState(TOP_NEIGHBORHOODS);
   const [sortKey, setSortKey] = React.useState('score');
   const [statsLoading, setStatsLoading] = useState(true);
-  const [neighborhoodsData, setNeighborhoodsData] = useState(TOP_NEIGHBORHOODS);
-
-  // Check admin access
-  if (!authLoading && (!user || profile?.is_admin !== true)) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Yetkisiz Erişim</h1>
-          <p className="text-gray-600 mb-6">
-            Bu sayfaya erişim için admin yetkisi gereklidir.
-          </p>
-          <Link
-            href="/"
-            className="inline-block px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
-          >
-            Ana Sayfaya Dön
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  if (authLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <p className="text-gray-600">Yükleniyor...</p>
-        </div>
-      </div>
-    );
-  }
+  const [, setNeighborhoodsData] = useState(TOP_NEIGHBORHOODS);
 
   useEffect(() => {
     async function fetchStats() {
@@ -331,6 +295,37 @@ export default function AdminDashboard() {
     fetchStats();
     fetchNeighborhoods();
   }, []);
+
+  // Check admin access
+  if (!authLoading && (!user || profile?.is_admin !== true)) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Yetkisiz Erişim</h1>
+          <p className="text-gray-600 mb-6">
+            Bu sayfaya erişim için admin yetkisi gereklidir.
+          </p>
+          <Link
+            href="/"
+            className="inline-block px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
+          >
+            Ana Sayfaya Dön
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-gray-600">Yükleniyor...</p>
+        </div>
+      </div>
+    );
+  }
+
 
   const handleSort = (key: string) => {
     const isAsc = sortKey === key;

@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 import { createClient } from '@/lib/supabase/client'
 import { provinces, type Province, type District } from '@/data/turkey-locations'
 import {
-  MapPin, Check, AlertCircle, Loader2, Search, ChevronDown, Navigation, MousePointerClick
+  MapPin, Check, AlertCircle, Loader2, ChevronDown, Navigation, MousePointerClick
 } from 'lucide-react'
 
 // Dynamic import for Leaflet map (no SSR)
@@ -95,7 +95,7 @@ async function geocodeAddress(address: string, components?: { il?: string; ilce?
   const queries: string[] = [address]
 
   if (components) {
-    const { il, ilce, mahalle, cadde, binaNo } = components
+    const { il, ilce, mahalle, cadde } = components
     // Strategy 2: Without building number
     if (cadde && mahalle && ilce && il) {
       queries.push(`${cadde}, ${mahalle}, ${ilce}, ${il}, Türkiye`)
@@ -441,34 +441,35 @@ export default function KonumSecimi() {
         return
       }
 
-      // Update user_profiles
+      // Update profiles (extended fields: il/ilçe/mahalle)
+      // location_confirmed_at artık tek doğruluk kaynağı: middleware doğrulama
+      // kapısını profiles'tan okuyor (forge edilebilir user_metadata'dan değil).
       const { error: profileError } = await supabase
-        .from('user_profiles')
+        .from('profiles')
         .update({
-          il: formData.il.name,
-          ilce: formData.ilce.name,
-          mahalle: formData.mahalle,
+          location_province: formData.il.name,
+          location_district: formData.ilce.name,
+          location_neighborhood: formData.mahalle,
+          location_confirmed_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         })
-        .eq('user_id', user.id)
+        .eq('id', user.id)
 
       if (profileError) throw profileError
 
       // Insert into user_addresses
+      // Canli sema gercek kolonlari: address_line, city, district, lat, lng, is_primary
       const { error: addressError } = await supabase
         .from('user_addresses')
         .insert({
           user_id: user.id,
-          il: formData.il.name,
-          ilce: formData.ilce.name,
-          mahalle: formData.mahalle,
-          cadde: formData.cadde,
-          bina_no: formData.binaNo || null,
-          bina_adi: formData.binaAdi || null,
-          posta_kodu: formData.postaKodu || null,
-          latitude: pinLat,
-          longitude: pinLng,
-          created_at: new Date().toISOString(),
+          address_line: [formData.mahalle, formData.cadde, formData.binaNo ? 'No: ' + formData.binaNo : '', formData.binaAdi, formData.postaKodu]
+            .filter(Boolean).join(' ').trim(),
+          city: formData.il.name,
+          district: formData.ilce.name,
+          lat: pinLat,
+          lng: pinLng,
+          is_primary: true,
         })
 
       if (addressError) throw addressError
@@ -799,9 +800,9 @@ export default function KonumSecimi() {
                 <div className="p-4 bg-surface border-t border-border">
                   <p className="text-xs text-text-muted">
                     {confirmed ? (
-                      <span className="text-green-600 font-medium">✓ Adres doğrulandı ve harita'da konumlandırıldı</span>
+                      <span className="text-green-600 font-medium">✓ Adres doğrulandı ve harita&apos;da konumlandırıldı</span>
                     ) : (
-                      <span>Adresinizi doğruladıktan sonra harita'da otomatik konumlandırılacaktır</span>
+                      <span>Adresinizi doğruladıktan sonra harita&apos;da otomatik konumlandırılacaktır</span>
                     )}
                   </p>
                 </div>
@@ -846,9 +847,9 @@ export default function KonumSecimi() {
             <div className="p-4 bg-surface border-t border-border">
               <p className="text-xs text-text-muted">
                 {confirmed ? (
-                  <span className="text-green-600 font-medium">✓ Adres doğrulandı ve harita'da konumlandırıldı</span>
+                  <span className="text-green-600 font-medium">✓ Adres doğrulandı ve harita&apos;da konumlandırıldı</span>
                 ) : (
-                  <span>Adresinizi doğruladıktan sonra harita'da otomatik konumlandırılacaktır</span>
+                  <span>Adresinizi doğruladıktan sonra harita&apos;da otomatik konumlandırılacaktır</span>
                 )}
               </p>
             </div>

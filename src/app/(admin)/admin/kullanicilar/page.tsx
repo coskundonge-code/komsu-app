@@ -1,706 +1,202 @@
 'use client';
 
-import { toast } from '@/lib/utils/show-toast'
-
-import React, { useState, useMemo, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import React, { useState, useMemo } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createClient } from '@/lib/supabase/client';
-import { useCurrentUser } from '@/lib/hooks/use-auth';
-import {
-  Search,
-  MoreVertical,
-  CheckCircle,
-  XCircle,
-  AlertCircle,
-  Users,
-  TrendingUp,
-  Mail,
-  Ban,
-  UserCheck,
-  ChevronLeft,
-  ChevronRight,
-  Eye,
-  Edit,
-  Trash2,
-  X,
-  Lock,
-  Unlock,
-} from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight, Users, Shield, ShieldOff, Lock, Unlock, CheckCircle } from 'lucide-react';
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  neighborhood?: string;
-  joinDate: string;
-  status: 'active' | 'inactive' | 'suspended';
-  posts: number;
-  reviews: number;
-  lastSeen?: string;
-  avatar: string;
-  engagement: number;
-  is_verified?: boolean;
-  is_admin?: boolean;
+// AUDIT_REPORT.md K3 — gerçek profiles tablosuna bağlı
+
+type UserRow = {
+  id: string
+  email: string
+  full_name: string
+  phone: string | null
+  is_verified: boolean
+  is_admin: boolean
+  account_locked: boolean
+  edevlet_verified_at: string | null
+  location_district: string | null
+  location_province: string | null
+  created_at: string
 }
 
-const MOCK_USERS: User[] = [
-  {
-    id: '1',
-    name: 'Ahmet K.',
-    email: 'ahmet@example.com',
-    neighborhood: 'Beşiktaş',
-    joinDate: '2024-01-15',
-    status: 'active',
-    posts: 34,
-    reviews: 12,
-    lastSeen: '2 dakika önce',
-    avatar: 'AK',
-    engagement: 92,
-  },
-  {
-    id: '2',
-    name: 'Fatma D.',
-    email: 'fatma@example.com',
-    neighborhood: 'Kadıköy',
-    joinDate: '2023-11-20',
-    status: 'active',
-    posts: 28,
-    reviews: 8,
-    lastSeen: '1 saat önce',
-    avatar: 'FD',
-    engagement: 78,
-  },
-  {
-    id: '3',
-    name: 'Mustafa T.',
-    email: 'mustafa@example.com',
-    neighborhood: 'Şişli',
-    joinDate: '2023-09-10',
-    status: 'active',
-    posts: 56,
-    reviews: 23,
-    lastSeen: '3 dakika önce',
-    avatar: 'MT',
-    engagement: 95,
-  },
-  {
-    id: '4',
-    name: 'Elif Y.',
-    email: 'elif@example.com',
-    neighborhood: 'Cihangir',
-    joinDate: '2023-08-05',
-    status: 'suspended',
-    posts: 12,
-    reviews: 3,
-    lastSeen: '5 gün önce',
-    avatar: 'EY',
-    engagement: 35,
-  },
-  {
-    id: '5',
-    name: 'Hasan B.',
-    email: 'hasan@example.com',
-    neighborhood: 'Levent',
-    joinDate: '2024-02-01',
-    status: 'inactive',
-    posts: 5,
-    reviews: 1,
-    lastSeen: '2 hafta önce',
-    avatar: 'HB',
-    engagement: 15,
-  },
-  {
-    id: '6',
-    name: 'Ayşe S.',
-    email: 'ayse@example.com',
-    neighborhood: 'Fatih',
-    joinDate: '2023-12-12',
-    status: 'active',
-    posts: 42,
-    reviews: 15,
-    lastSeen: '30 dakika önce',
-    avatar: 'AS',
-    engagement: 85,
-  },
-  {
-    id: '7',
-    name: 'İbrahim M.',
-    email: 'ibrahim@example.com',
-    neighborhood: 'Moda',
-    joinDate: '2024-01-20',
-    status: 'active',
-    posts: 19,
-    reviews: 6,
-    lastSeen: '4 saat önce',
-    avatar: 'IM',
-    engagement: 68,
-  },
-  {
-    id: '8',
-    name: 'Zeynep A.',
-    email: 'zeynep@example.com',
-    neighborhood: 'Caferağa',
-    joinDate: '2023-10-30',
-    status: 'suspended',
-    posts: 8,
-    reviews: 2,
-    lastSeen: '1 ay önce',
-    avatar: 'ZA',
-    engagement: 25,
-  },
-];
-
-const STATUS_CONFIG = {
-  active: {
-    label: 'Aktif',
-    color: 'bg-green-100 text-green-800',
-    badgeBg: 'bg-primary-light',
-    badgeText: 'text-primary-hover',
-    icon: CheckCircle,
-  },
-  inactive: {
-    label: 'Pasif',
-    color: 'bg-gray-100 text-gray-800',
-    badgeBg: 'bg-gray-100',
-    badgeText: 'text-gray-700',
-    icon: AlertCircle,
-  },
-  suspended: {
-    label: 'Askıya Alındı',
-    color: 'bg-red-100 text-red-800',
-    badgeBg: 'bg-red-50',
-    badgeText: 'text-red-700',
-    icon: XCircle,
-  },
-};
-
-interface ConfirmModal {
-  isOpen: boolean;
-  action: string;
-  userId?: string;
-  userName?: string;
+async function fetchUsers(): Promise<UserRow[]> {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, email, full_name, phone, is_verified, is_admin, account_locked, edevlet_verified_at, location_district, location_province, created_at')
+    .order('created_at', { ascending: false })
+    .limit(1000)
+  if (error) throw error
+  return ((data as any[]) || []).map((u) => ({
+    id: u.id, email: u.email || '', full_name: u.full_name || '',
+    phone: u.phone, is_verified: u.is_verified || false,
+    is_admin: u.is_admin || false, account_locked: u.account_locked || false,
+    edevlet_verified_at: u.edevlet_verified_at,
+    location_district: u.location_district, location_province: u.location_province,
+    created_at: u.created_at,
+  }))
 }
 
 export default function KullanicilarPage() {
-  const router = useRouter();
-  const { user: authUser, profile, loading: authLoading } = useCurrentUser();
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive' | 'suspended'>('all');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [confirmModal, setConfirmModal] = useState<ConfirmModal>({
-    isOpen: false,
-    action: '',
-  });
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [detailsModal, setDetailsModal] = useState(false);
-  const [users, setUsers] = useState<User[]>(MOCK_USERS);
-  const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient()
+  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'verified' | 'locked' | 'admin'>('all')
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 15
 
-  const itemsPerPage = 8;
+  const { data: users = [], isLoading, error }: { data?: UserRow[]; isLoading: boolean; error: Error | null } = useQuery({
+    queryKey: ['admin', 'users'],
+    queryFn: fetchUsers,
+  })
 
-  // Check admin access
-  if (!authLoading && (!authUser || profile?.is_admin !== true)) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Yetkisiz Erişim</h1>
-          <p className="text-gray-600 mb-6">
-            Bu sayfaya erişim için admin yetkisi gereklidir.
-          </p>
-          <Link
-            href="/"
-            className="inline-block px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
-          >
-            Ana Sayfaya Dön
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, patch }: { id: string; patch: Partial<UserRow> }) => {
+      const supabase = createClient()
+      const { error } = await supabase.from('profiles').update(patch).eq('id', id)
+      if (error) throw error
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'users'] }),
+  })
 
-  if (authLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <p className="text-gray-600">Yükleniyor...</p>
-        </div>
-      </div>
-    );
-  }
+  const filtered = useMemo(() => {
+    return users.filter((u) => {
+      const q = searchTerm.toLowerCase()
+      const matchesSearch = !q ||
+        u.full_name.toLowerCase().includes(q) ||
+        u.email.toLowerCase().includes(q) ||
+        (u.phone || '').toLowerCase().includes(q)
+      const matchesStatus =
+        statusFilter === 'all' ||
+        (statusFilter === 'verified' && u.is_verified) ||
+        (statusFilter === 'locked' && u.account_locked) ||
+        (statusFilter === 'admin' && u.is_admin)
+      return matchesSearch && matchesStatus
+    })
+  }, [users, searchTerm, statusFilter])
 
-  // Fetch users from Supabase
-  useEffect(() => {
-    async function fetchUsers() {
-      setLoading(true);
-      const supabase = createClient();
-      try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('id, email, full_name, is_verified, is_admin, created_at')
-          .order('created_at', { ascending: false });
+  const paginated = useMemo(() => filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage), [filtered, currentPage])
+  const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage))
 
-        if (!error && data) {
-          const mappedUsers: User[] = data.map((profile: any) => ({
-            id: profile.id,
-            name: profile.full_name || 'İsimsiz Kullanıcı',
-            email: profile.email || '',
-            joinDate: profile.created_at,
-            status: profile.is_verified ? 'active' : 'inactive',
-            posts: 0,
-            reviews: 0,
-            avatar: (profile.full_name || 'U').substring(0, 2).toUpperCase(),
-            engagement: profile.is_verified ? 75 : 25,
-            is_verified: profile.is_verified,
-            is_admin: profile.is_admin,
-          }));
-          setUsers(mappedUsers);
-        }
-      } catch (err) {
-        console.error('Kullanıcılar yüklenirken hata:', err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchUsers();
-  }, []);
-
-  const filteredUsers = useMemo(() => {
-    return users.filter((user) => {
-      const matchesSearch =
-        user.name.toLowerCase().includes(search.toLowerCase()) ||
-        user.email.toLowerCase().includes(search.toLowerCase()) ||
-        (user.neighborhood || '').toLowerCase().includes(search.toLowerCase());
-      const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
-      return matchesSearch && matchesStatus;
-    });
-  }, [search, statusFilter]);
-
-  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
-  const paginatedUsers = filteredUsers.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const stats = {
+  const counts = {
     total: users.length,
-    active: users.filter((u) => u.status === 'active').length,
-    inactive: users.filter((u) => u.status === 'inactive').length,
-    suspended: users.filter((u) => u.status === 'suspended').length,
-  };
-
-  const handleAction = (action: string, user: User) => {
-    setConfirmModal({
-      isOpen: true,
-      action,
-      userId: user.id,
-      userName: user.name,
-    });
-  };
-
-  const confirmAction = async () => {
-    const supabase = createClient();
-    try {
-      if (confirmModal.action === 'suspend') {
-        // Lock/suspend user in Supabase (would need status field in profiles table)
-        await (supabase as any)
-          .from('profiles')
-          .update({ verified: false })
-          .eq('id', confirmModal.userId);
-
-        setUsers(prev => prev.map(u =>
-          u.id === confirmModal.userId ? { ...u, status: 'suspended' } : u
-        ));
-      } else if (confirmModal.action === 'unsuspend') {
-        // Unlock/unsuspend user
-        await (supabase as any)
-          .from('profiles')
-          .update({ verified: true })
-          .eq('id', confirmModal.userId);
-
-        setUsers(prev => prev.map(u =>
-          u.id === confirmModal.userId ? { ...u, status: 'active' } : u
-        ));
-      } else if (confirmModal.action === 'delete') {
-        // Soft delete or archive user
-        console.log(`User ${confirmModal.userId} deletion initiated`);
-      }
-    } catch (error) {
-      console.error('Action failed:', error);
-      toast.error('İşlem başarısız oldu');
-    }
-    setConfirmModal({ isOpen: false, action: '' });
-  };
-
-  const viewDetails = (user: User) => {
-    setSelectedUser(user);
-    setDetailsModal(true);
-  };
+    verified: users.filter(u => u.is_verified).length,
+    edevletVerified: users.filter(u => u.edevlet_verified_at).length,
+    locked: users.filter(u => u.account_locked).length,
+    admin: users.filter(u => u.is_admin).length,
+  }
 
   return (
-    <div>
+    <div className="p-8 max-w-7xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Kullanıcı Yönetimi</h1>
-        <p className="text-gray-600">
-          {loading ? 'Yükleniyor...' : `Toplam ${stats.total} kullanıcı yönetiliyor`}
-        </p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3"><Users className="text-primary" /> Kullanıcı Yönetimi</h1>
+        <p className="text-gray-600">Kullanıcı hesaplarını yönetin, doğrulayın, kilitleyin</p>
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-surface rounded-lg border border-border p-4 hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-xs font-medium">Toplam</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
-            </div>
-            <Users className="text-primary" size={28} />
-          </div>
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+        <div className="bg-surface p-4 rounded-lg border border-border">
+          <p className="text-gray-600 text-xs">Toplam</p>
+          <p className="text-2xl font-bold mt-1 text-primary">{counts.total}</p>
         </div>
-        <div className="bg-surface rounded-lg border border-border p-4 hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-xs font-medium">Aktif</p>
-              <p className="text-2xl font-bold text-green-700">{stats.active}</p>
-            </div>
-            <UserCheck className="text-green-600" size={28} />
-          </div>
+        <div className="bg-surface p-4 rounded-lg border border-border">
+          <p className="text-gray-600 text-xs">Doğrulanmış</p>
+          <p className="text-2xl font-bold mt-1 text-green-600">{counts.verified}</p>
         </div>
-        <div className="bg-surface rounded-lg border border-border p-4 hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-xs font-medium">Pasif</p>
-              <p className="text-2xl font-bold text-gray-700">{stats.inactive}</p>
-            </div>
-            <AlertCircle className="text-gray-600" size={28} />
-          </div>
+        <div className="bg-surface p-4 rounded-lg border border-border">
+          <p className="text-gray-600 text-xs">eDevlet</p>
+          <p className="text-2xl font-bold mt-1 text-blue-600">{counts.edevletVerified}</p>
         </div>
-        <div className="bg-surface rounded-lg border border-border p-4 hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-xs font-medium">Askıya</p>
-              <p className="text-2xl font-bold text-red-700">{stats.suspended}</p>
-            </div>
-            <Ban className="text-red-600" size={28} />
-          </div>
+        <div className="bg-surface p-4 rounded-lg border border-border">
+          <p className="text-gray-600 text-xs">Kilitli</p>
+          <p className="text-2xl font-bold mt-1 text-red-600">{counts.locked}</p>
+        </div>
+        <div className="bg-surface p-4 rounded-lg border border-border">
+          <p className="text-gray-600 text-xs">Admin</p>
+          <p className="text-2xl font-bold mt-1 text-yellow-600">{counts.admin}</p>
         </div>
       </div>
 
-      {/* Search and Filter */}
-      <div className="bg-surface rounded-lg border border-border p-6 mb-6">
-        <div className="flex gap-4 mb-4">
-          <div className="flex-1 relative">
-            <Search size={20} className="absolute left-3 top-3 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Ad, e-posta veya mahalle ile ara..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
+      <div className="bg-surface p-6 rounded-lg border border-border mb-6 flex gap-4 flex-wrap">
+        <div className="flex-1 min-w-64 relative">
+          <Search className="absolute left-3 top-3 text-gray-400" size={20} />
+          <input type="text" placeholder="Ad, e-posta veya telefon ara..." value={searchTerm}
+            onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1) }}
+            className="w-full pl-10 pr-4 py-2 border border-border rounded-lg" />
         </div>
-
-        {/* Status Filter */}
-        <div className="flex gap-2 flex-wrap">
-          {(['all', 'active', 'inactive', 'suspended'] as const).map((status) => (
-            <button
-              key={status}
-              onClick={() => {
-                setStatusFilter(status);
-                setCurrentPage(1);
-              }}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                statusFilter === status
-                  ? 'bg-primary text-white'
-                  : 'bg-background text-gray-700 hover:bg-gray-200 border border-border'
-              }`}
-            >
-              {status === 'all'
-                ? 'Tümü'
-                : status === 'active'
-                ? 'Aktif'
-                : status === 'inactive'
-                ? 'Pasif'
-                : 'Askıya Alındı'}
-            </button>
-          ))}
-        </div>
+        <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value as any); setCurrentPage(1) }}
+          className="px-4 py-2 border border-border rounded-lg">
+          <option value="all">Tüm Kullanıcılar</option>
+          <option value="verified">Doğrulanmış</option>
+          <option value="locked">Kilitli</option>
+          <option value="admin">Admin</option>
+        </select>
       </div>
 
-      {/* Users Table */}
-      <div className="bg-surface rounded-lg border border-border overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-background border-b border-border">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                  Kullanıcı
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                  Mahalle
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                  Katılım Tarihi
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                  Durum
-                </th>
-                <th className="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                  Katılım
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                  Paylaşım / Yorum
-                </th>
-                <th className="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                  İşlem
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#e0e0e0]">
-              {paginatedUsers.map((user) => {
-                const StatusIcon =
-                  STATUS_CONFIG[user.status as keyof typeof STATUS_CONFIG].icon;
-                const statusConfig =
-                  STATUS_CONFIG[user.status as keyof typeof STATUS_CONFIG];
+      {isLoading && <div className="bg-surface p-8 rounded-lg text-center text-gray-600">Yükleniyor…</div>}
+      {error && <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg">Hata: {(error as Error).message}</div>}
 
-                return (
-                  <tr
-                    key={user.id}
-                    className="hover:bg-surface-hover transition-colors"
-                  >
+      {!isLoading && !error && (
+        <div className="bg-surface rounded-lg border border-border overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-background border-b border-border">
+                <tr>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">Kullanıcı</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">İletişim</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">Konum</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">Durum</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">Kayıt</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold">İşlem</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginated.map((u) => (
+                  <tr key={u.id} className="border-b border-border hover:bg-background">
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className="w-10 h-10 rounded-full flex items-center justify-center font-semibold text-white"
-                          style={{ backgroundColor: '#00833e' }}
-                        >
-                          {user.avatar}
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            {user.name}
-                          </p>
-                          <p className="text-xs text-gray-500">{user.email}</p>
-                        </div>
+                      <div className="flex items-center gap-2">
+                        <p className="font-semibold text-gray-900">{u.full_name || '—'}</p>
+                        {u.is_admin && <Shield size={14} className="text-yellow-600" />}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-700">
-                      {user.neighborhood}
+                    <td className="px-6 py-4 text-sm">
+                      <p className="text-gray-700">{u.email}</p>
+                      {u.phone && <p className="text-xs text-gray-500">{u.phone}</p>}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-700">
-                      {new Date(user.joinDate).toLocaleDateString('tr-TR')}
+                    <td className="px-6 py-4 text-sm text-gray-600">
+                      {u.location_district ? `${u.location_district}${u.location_province ? ', ' + u.location_province : ''}` : '—'}
                     </td>
-                    <td className="px-6 py-4">
-                      <div
-                        className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${statusConfig.badgeBg} ${statusConfig.badgeText}`}
-                      >
-                        <StatusIcon size={14} />
-                        {statusConfig.label}
-                      </div>
+                    <td className="px-6 py-4 flex flex-wrap gap-1">
+                      {u.is_verified && <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full inline-flex items-center gap-1"><CheckCircle size={12} /> Doğrulandı</span>}
+                      {u.edevlet_verified_at && <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full">eDevlet</span>}
+                      {u.account_locked && <span className="text-xs px-2 py-1 bg-red-100 text-red-800 rounded-full inline-flex items-center gap-1"><Lock size={12} /> Kilitli</span>}
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-center">
-                        <div className="w-full max-w-xs">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs font-medium text-gray-600">
-                              {user.engagement}%
-                            </span>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div
-                              className="bg-primary h-2 rounded-full"
-                              style={{ width: `${user.engagement}%` }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-700">
-                      <div>
-                        <p className="font-medium text-gray-900">{user.posts}</p>
-                        <p className="text-xs text-gray-500">
-                          {user.reviews} yorum
-                        </p>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-center gap-1">
-                        <button
-                          onClick={() => viewDetails(user)}
-                          className="p-2 hover:bg-blue-50 rounded transition-colors text-blue-600"
-                          title="Detayları Görüntüle"
-                        >
-                          <Eye size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleAction('edit', user)}
-                          className="p-2 hover:bg-amber-50 rounded transition-colors text-amber-600"
-                          title="Düzenle"
-                        >
-                          <Edit size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleAction(user.status === 'suspended' ? 'unsuspend' : 'suspend', user)}
-                          className="p-2 hover:bg-orange-50 rounded transition-colors text-orange-600"
-                          title={user.status === 'suspended' ? 'Askıyı Kaldır' : 'Askıya Al'}
-                        >
-                          {user.status === 'suspended' ? <Unlock size={16} /> : <Lock size={16} />}
-                        </button>
-                        <button
-                          onClick={() => handleAction('delete', user)}
-                          className="p-2 hover:bg-red-50 rounded transition-colors text-red-600"
-                          title="Sil"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
+                    <td className="px-6 py-4 text-sm text-gray-500">{new Date(u.created_at).toLocaleDateString('tr-TR')}</td>
+                    <td className="px-6 py-4 flex gap-1">
+                      <button onClick={() => updateMutation.mutate({ id: u.id, patch: { account_locked: !u.account_locked } as any })}
+                        disabled={updateMutation.isPending}
+                        className={`p-1 rounded disabled:opacity-50 ${u.account_locked ? 'text-green-600 hover:bg-green-50' : 'text-red-600 hover:bg-red-50'}`}
+                        title={u.account_locked ? 'Kilidi aç' : 'Hesabı kilitle'}>
+                        {u.account_locked ? <Unlock size={16} /> : <Lock size={16} />}
+                      </button>
+                      <button onClick={() => updateMutation.mutate({ id: u.id, patch: { is_admin: !u.is_admin } as any })}
+                        disabled={updateMutation.isPending}
+                        className={`p-1 rounded disabled:opacity-50 ${u.is_admin ? 'text-gray-600' : 'text-yellow-600 hover:bg-yellow-50'}`}
+                        title={u.is_admin ? 'Admin yetkisini kaldır' : 'Admin yap'}>
+                        {u.is_admin ? <ShieldOff size={16} /> : <Shield size={16} />}
+                      </button>
                     </td>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Pagination */}
-      <div className="mt-6 flex items-center justify-between">
-        <p className="text-sm text-gray-600">
-          Sayfa {currentPage} / {totalPages} ({filteredUsers.length} sonuç)
-        </p>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-            disabled={currentPage === 1}
-            className="flex items-center gap-2 px-3 py-2 border border-border rounded-lg text-gray-700 hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            <ChevronLeft size={16} />
-            Önceki
-          </button>
-          <button
-            onClick={() =>
-              setCurrentPage(Math.min(totalPages, currentPage + 1))
-            }
-            disabled={currentPage === totalPages}
-            className="flex items-center gap-2 px-3 py-2 border border-border rounded-lg text-gray-700 hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            Sonraki
-            <ChevronRight size={16} />
-          </button>
-        </div>
-      </div>
-
-      {/* Details Modal */}
-      {detailsModal && selectedUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-surface rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto">
-            <div className="sticky top-0 bg-surface border-b border-border px-6 py-4 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900">Kullanıcı Detayları</h2>
-              <button
-                onClick={() => setDetailsModal(false)}
-                className="p-1 hover:bg-gray-100 rounded transition-colors"
-              >
-                <X size={20} className="text-gray-600" />
-              </button>
-            </div>
-
-            <div className="p-6 space-y-4">
-              <div className="flex items-center gap-4 pb-4 border-b border-border">
-                <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center font-bold text-white text-xl"
-                  style={{ backgroundColor: '#00833e' }}
-                >
-                  {selectedUser.avatar}
-                </div>
-                <div>
-                  <p className="text-lg font-bold text-gray-900">{selectedUser.name}</p>
-                  <p className="text-sm text-gray-600">{selectedUser.email}</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs font-medium text-gray-600 uppercase">Mahalle</p>
-                  <p className="text-sm font-semibold text-gray-900">{selectedUser.neighborhood}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-gray-600 uppercase">Durum</p>
-                  <p className={`text-sm font-semibold ${STATUS_CONFIG[selectedUser.status].color}`}>
-                    {STATUS_CONFIG[selectedUser.status].label}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-gray-600 uppercase">Katılım Tarihi</p>
-                  <p className="text-sm font-semibold text-gray-900">
-                    {new Date(selectedUser.joinDate).toLocaleDateString('tr-TR')}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-gray-600 uppercase">Son Görülme</p>
-                  <p className="text-sm font-semibold text-gray-900">{selectedUser.lastSeen}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-gray-600 uppercase">Paylaşımlar</p>
-                  <p className="text-sm font-semibold text-gray-900">{selectedUser.posts}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-gray-600 uppercase">Yorumlar</p>
-                  <p className="text-sm font-semibold text-gray-900">{selectedUser.reviews}</p>
-                </div>
-              </div>
-
-              <div>
-                <p className="text-xs font-medium text-gray-600 uppercase mb-2">Katılım Oranı</p>
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 bg-gray-200 rounded-full h-3">
-                    <div
-                      className="bg-primary h-3 rounded-full"
-                      style={{ width: `${selectedUser.engagement}%` }}
-                    />
-                  </div>
-                  <span className="text-sm font-semibold text-gray-900">{selectedUser.engagement}%</span>
-                </div>
-              </div>
-            </div>
+                ))}
+                {paginated.length === 0 && (<tr><td colSpan={6} className="px-6 py-12 text-center text-gray-500">Kullanıcı bulunamadı.</td></tr>)}
+              </tbody>
+            </table>
           </div>
-        </div>
-      )}
-
-      {/* Confirmation Modal */}
-      {confirmModal.isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-surface rounded-lg p-6 max-w-sm w-full">
-            <h2 className="text-lg font-bold text-gray-900 mb-2">İşlemi Onayla</h2>
-            <p className="text-gray-600 mb-6">
-              {confirmModal.action === 'delete'
-                ? `${confirmModal.userName} kullanıcısını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`
-                : confirmModal.action === 'suspend'
-                ? `${confirmModal.userName} kullanıcısını askıya almak istediğinizden emin misiniz?`
-                : confirmModal.action === 'unsuspend'
-                ? `${confirmModal.userName} kullanıcısının askısını kaldırmak istediğinizden emin misiniz?`
-                : `${confirmModal.action} işlemini gerçekleştirmek istediğinizden emin misiniz?`}
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setConfirmModal({ isOpen: false, action: '' })}
-                className="flex-1 px-4 py-2 border border-border rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors"
-              >
-                İptal
-              </button>
-              <button
-                onClick={confirmAction}
-                className={`flex-1 px-4 py-2 rounded-lg text-white font-medium transition-colors ${
-                  confirmModal.action === 'delete'
-                    ? 'bg-red-600 hover:bg-red-700'
-                    : 'bg-primary hover:bg-primary-hover'
-                }`}
-              >
-                Onayla
-              </button>
+          <div className="flex items-center justify-between px-6 py-4 border-t border-border">
+            <span className="text-sm text-gray-600">Sayfa {currentPage} / {totalPages} ({filtered.length} kullanıcı)</span>
+            <div className="flex gap-2">
+              <button onClick={() => setCurrentPage(Math.max(1, currentPage - 1))} disabled={currentPage === 1} className="p-2 hover:bg-background rounded-lg disabled:opacity-50"><ChevronLeft size={20} /></button>
+              <button onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))} disabled={currentPage === totalPages} className="p-2 hover:bg-background rounded-lg disabled:opacity-50"><ChevronRight size={20} /></button>
             </div>
           </div>
         </div>

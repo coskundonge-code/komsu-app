@@ -7,7 +7,6 @@ import dynamic from "next/dynamic";
 const GoogleMap = dynamic(() => import("@/components/map/google-map"), { ssr: false });
 import {
   MapPin,
-  Map,
   ChevronLeft,
   Filter,
   Check,
@@ -386,7 +385,7 @@ export default function MahallePage() {
             <div>
               <p className="text-sm text-blue-900">
                 <span className="font-semibold">İpucu:</span> Mahalle ayarlarınız
-                hemen uygulanır. Değişiklikleri görmek için feed'inizi yenileyin.
+                hemen uygulanır. Değişiklikleri görmek için feed&apos;inizi yenileyin.
               </p>
             </div>
           </div>

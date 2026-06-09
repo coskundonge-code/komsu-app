@@ -2,13 +2,12 @@
 
 import { Suspense, useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Mail, Lock, ArrowLeft, Eye, EyeOff, CheckCircle2, Home } from 'lucide-react'
 import { resetPasswordSchema, resetPasswordFormSchema } from '@/lib/validations/auth'
 
 function SifreSifirlaContent() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const [step, setStep] = useState<'request' | 'reset' | 'success'>('request')
   const [email, setEmail] = useState('')
@@ -61,7 +60,7 @@ function SifreSifirlaContent() {
 
       setStep('success')
       setEmail('')
-    } catch (err) {
+    } catch {
       setError('Bir hata oluştu. Lütfen tekrar deneyin.')
     } finally {
       setIsLoading(false)
@@ -103,7 +102,7 @@ function SifreSifirlaContent() {
       }
 
       setStep('success')
-    } catch (err) {
+    } catch {
       setError('Şifre güncelleme başarısız oldu.')
     } finally {
       setIsLoading(false)
@@ -128,7 +127,7 @@ function SifreSifirlaContent() {
         setError(resetError.message)
         return
       }
-    } catch (err) {
+    } catch {
       setError('Bir hata oluştu. Lütfen tekrar deneyin.')
     } finally {
       setIsLoading(false)

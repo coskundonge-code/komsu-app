@@ -198,145 +198,55 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  // Marketplace Categories (sample)
-  const marketplaceCategoryPages: MetadataRoute.Sitemap = [
-    {
-      url: `${baseUrl}/pazar/kategori`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/pazar/kategori/elektronik`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/pazar/kategori/mobilya`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/pazar/kategori/elbise-giyim`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/pazar/kategori/kitap-dergi`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/pazar/kategori/cocuk-urunleri`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/pazar/kategori/spor-outdoor`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/pazar/kategori/estetik-berber`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/pazar/kategori/ev-hizmetleri`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/pazar/kategori/turizm-seyahat`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/pazar/kategori/bilgisayar-teknoloji`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
+  // Marketplace Categories — canlı listing_categories.slug ile birebir eşleşen gerçek
+  // kategori sayfaları (eski liste mevcut olmayan slug'lara işaret ediyordu; ayrıca
+  // /pazar/kategori index route'u yok → 404 olduğu için sitemap'ten çıkarıldı).
+  const marketplaceCategorySlugs = [
+    "arac",
+    "bebek-cocuk",
+    "diger",
+    "elektronik",
+    "ev-bahce",
+    "giyim",
+    "kitap-kirtasiye",
+    "mobilya",
+    "spor-hobi",
+    "ucretsiz",
   ];
+  const marketplaceCategoryPages: MetadataRoute.Sitemap = marketplaceCategorySlugs.map(
+    (slug) => ({
+      url: `${baseUrl}/pazar/kategori/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: 0.85,
+    })
+  );
 
-  // Business Categories (sample)
-  const businessCategoryPages: MetadataRoute.Sitemap = [
-    {
-      url: `${baseUrl}/isletmeler/kategori`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/isletmeler/kategori/restoran-kafe`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/isletmeler/kategori/ozel-egitim`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/isletmeler/kategori/saglik-tiyp`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/isletmeler/kategori/fitness-spor`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/isletmeler/kategori/berber-kuafor`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/isletmeler/kategori/tiyatro-sinema`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/isletmeler/kategori/teknoloji-bilgisayar`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/isletmeler/kategori/emlakcilik`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/isletmeler/kategori/sigortacilik`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/isletmeler/kategori/bankacilk`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.85,
-    },
+  // Business Categories — canlı business_categories.slug ile birebir eşleşen
+  // gerçek kategori sayfaları (eski liste mevcut olmayan slug'lara + var olmayan
+  // /isletmeler/kategori index route'una işaret ediyordu → 404'ler çıkarıldı).
+  const businessCategorySlugs = [
+    "restoran-kafe",
+    "market-bakkal",
+    "saglik",
+    "egitim",
+    "guzellik-bakim",
+    "tamirci-servis",
+    "temizlik",
+    "nakliyat",
+    "hukuk-danismanlik",
+    "emlak",
+    "evcil-hayvan",
+    "diger-isletme",
   ];
+  const businessCategoryPages: MetadataRoute.Sitemap = businessCategorySlugs.map(
+    (slug) => ({
+      url: `${baseUrl}/isletmeler/kategori/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: 0.85,
+    })
+  );
 
   // Combine all pages
   return [

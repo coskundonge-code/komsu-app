@@ -2,20 +2,17 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { getFeedImageUrl, getAvatarUrl } from '@/lib/demo-images';
+import { useState, use } from 'react';
+import { getFeedImageUrl } from '@/lib/demo-images';
 import {
   ArrowLeft,
   Calendar,
-  User,
-  BookOpen,
   Share2,
   Facebook,
   Twitter,
   MessageCircle,
   Link as LinkIcon,
   Clock,
-  ChevronRight,
   ArrowRight,
 } from 'lucide-react';
 
@@ -130,7 +127,7 @@ const blogArticles: Record<string, any> = {
         text: 'Güvenlik, bir kişinin değil, bir topluluğun işidir. Başlayın ve fark yaratın!',
       },
     ],
-    relatedArticles: [2, 5, 9],
+    relatedArticles: [2, 3],
   },
   'mahallem-topluluk-yonetimi': {
     id: 2,
@@ -197,7 +194,7 @@ const blogArticles: Record<string, any> = {
         text: 'Çatışmalar her topluluğun parçasıdır. Sessiz ve profesyonel bir şekilde ele alın. Gerekirse tartışmayı özel mesajlara taşıyın.',
       },
     ],
-    relatedArticles: [1, 4, 7],
+    relatedArticles: [1, 3],
   },
   'yerel-isletmecilerin-basari-hikayeleri': {
     id: 3,
@@ -252,7 +249,7 @@ const blogArticles: Record<string, any> = {
         text: 'Başarının sırrı? Mahallede yaşayan insanları anlama ve onların ihtiyaçlarına hızlı cevap verme.',
       },
     ],
-    relatedArticles: [1, 4, 8],
+    relatedArticles: [1, 2],
   },
 };
 
@@ -285,72 +282,19 @@ const allArticles = [
     category: 'İşletme Hikayeleri',
     readTime: '6 dk',
   },
-  {
-    id: 4,
-    slug: 'yeni-ozellik-komsu-yardim-agi',
-    title: 'Yeni Özellik: Komşu Yardım Ağı',
-    excerpt: 'Mahalle sakinlerinin birbirlerine yardım etmesi için tasarlanmış yeni özelliği keşfet.',
-    image: getFeedImageUrl(4, 400, 300),
-    category: 'Uygulama Güncellemeleri',
-    readTime: '4 dk',
-  },
-  {
-    id: 5,
-    slug: 'beyoglu-mahallesi-guvenli-topluluk',
-    title: 'Beyoğlu Mahallesi: Güvenli Bir Topluluk Hikayesi',
-    excerpt: 'Nasıl bir mahalle "en güvenli mahalle" unvanını kazandığını gördük.',
-    image: getFeedImageUrl(5, 400, 300),
-    category: 'Mahalle Haberleri',
-    readTime: '8 dk',
-  },
-  {
-    id: 6,
-    slug: 'cevrimici-guvenlik-ipuclari',
-    title: 'Çevrimiçi Güvenlik: Her Mahalle Sakininin Bilmesi Gerekenler',
-    excerpt: 'Platformda güvenli kalmanın ve mahallenizdeki mevcut tehditleri tanımanın yolları.',
-    image: getFeedImageUrl(6, 400, 300),
-    category: 'Güvenlik İpuçları',
-    readTime: '6 dk',
-  },
-  {
-    id: 7,
-    slug: 'topluluk-etkinligi-mahalle-piknigi',
-    title: 'Topluluk Etkinliği: İlk Mahalle Pikniği Başarılı Oldu',
-    excerpt: 'Beşiktaş Mahallesi sakinleri ilk kez buluştu ve harika vakit geçirdi.',
-    image: getFeedImageUrl(7, 400, 300),
-    category: 'Mahalle Haberleri',
-    readTime: '5 dk',
-  },
-  {
-    id: 8,
-    slug: 'mahallem-mobil-hizli-kullanma-ipuclari',
-    title: 'Mahallemiz Mobilini Hızlı Kullanma İpuçları',
-    excerpt: 'Mobil uygulamayı en etkili şekilde kullanmak için hızlı rehberimiz.',
-    image: getFeedImageUrl(8, 400, 300),
-    category: 'Uygulama Güncellemeleri',
-    readTime: '3 dk',
-  },
-  {
-    id: 9,
-    slug: 'atil-alanlari-toplum-bahcelerine-donusturme',
-    title: 'Mahallede Atıl Alanları Topluluk Bahçelerine Dönüştürme',
-    excerpt:
-      'Yeşil alanlar ve topluluk bahçeleri oluşturarak mahallenizi nasıl güzelleştirebilirsiniz?',
-    image: getFeedImageUrl(9, 400, 300),
-    category: 'Topluluk',
-    readTime: '7 dk',
-  },
 ];
 
 export default function BlogDetailPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
+  // Next 16: params is a Promise even in client components — must unwrap with use().
+  const { slug } = use(params);
   const [copied, setCopied] = useState(false);
   const [activeTableOfContents, setActiveTableOfContents] = useState<number | null>(null);
 
-  const article = blogArticles[params.slug];
+  const article = blogArticles[slug];
 
   if (!article) {
     return (
@@ -375,14 +319,14 @@ export default function BlogDetailPage({
     .filter(Boolean);
 
   const handleCopyLink = () => {
-    const url = `${window.location.origin}/blog/${params.slug}`;
+    const url = `${window.location.origin}/blog/${slug}`;
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleShare = (platform: string) => {
-    const url = `${window.location.origin}/blog/${params.slug}`;
+    const url = `${window.location.origin}/blog/${slug}`;
     const title = article.title;
 
     let shareUrl = '';
@@ -718,9 +662,12 @@ export default function BlogDetailPage({
           <p className="text-green-100 mb-8 max-w-2xl mx-auto">
             Mahallenizdeki komşularınızla tanışın, bilgi paylaşın ve birlikte güçlü bir topluluk oluşturun.
           </p>
-          <button className="px-8 py-3 bg-white text-[#00833e] rounded-lg font-bold hover:bg-green-50 transition-colors">
+          <Link
+            href="/kayit"
+            className="inline-block px-8 py-3 bg-white text-[#00833e] rounded-lg font-bold hover:bg-green-50 transition-colors"
+          >
             Hemen Başla
-          </button>
+          </Link>
         </section>
       </div>
 
@@ -729,55 +676,12 @@ export default function BlogDetailPage({
         <div className="max-w-7xl mx-auto px-4 py-12">
           <h2 className="text-2xl font-bold text-[#333] mb-8">Yorumlar</h2>
           <div className="max-w-2xl">
-            <div className="mb-8 p-6 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0]">
-              <textarea
-                placeholder="Düşüncelerinizi paylaşın..."
-                className="w-full p-4 border border-[#e0e0e0] rounded-lg focus:outline-none focus:border-[#00833e] resize-none"
-                rows={4}
-              />
-              <button className="mt-4 px-6 py-2 bg-[#00833e] text-white rounded-lg hover:bg-[#006b32] transition-colors font-medium">
-                Yorum Gönder
-              </button>
-            </div>
-            <div className="space-y-6">
-              <div className="pb-6 border-b border-[#e0e0e0]">
-                <div className="flex gap-4 mb-3">
-                  <Image
-                    src={getFeedImageUrl(201, 40, 40)}
-                    alt="Yorum Yazarı"
-                    width={40}
-                    height={40}
-                    unoptimized
-                    className="rounded-full"
-                  />
-                  <div className="flex-grow">
-                    <h4 className="font-semibold text-[#333]">Merve Sarı</h4>
-                    <p className="text-xs text-[#8f8f8f]">3 gün önce</p>
-                  </div>
-                </div>
-                <p className="text-[#404040]">
-                  Harika bir yazı! Mahallede uygulamaya koyacak çok pratik bilgiler var.
-                </p>
-              </div>
-              <div className="pb-6 border-b border-[#e0e0e0]">
-                <div className="flex gap-4 mb-3">
-                  <Image
-                    src={getFeedImageUrl(202, 40, 40)}
-                    alt="Yorum Yazarı"
-                    width={40}
-                    height={40}
-                    unoptimized
-                    className="rounded-full"
-                  />
-                  <div className="flex-grow">
-                    <h4 className="font-semibold text-[#333]">Oğuzhan Kılıç</h4>
-                    <p className="text-xs text-[#8f8f8f]">1 hafta önce</p>
-                  </div>
-                </div>
-                <p className="text-[#404040]">
-                  Komşularımla bu yazıyı paylaştım ve çok olumlu tepkiler aldık. Teşekkürler!
-                </p>
-              </div>
+            <div className="p-8 bg-[#f0f2f5] rounded-lg border border-[#e0e0e0] text-center">
+              <MessageCircle size={32} className="mx-auto text-[#8f8f8f] mb-3" />
+              <p className="text-[#404040] font-medium">Yorumlar çok yakında</p>
+              <p className="text-sm text-[#8f8f8f] mt-1">
+                Bu yazıya yorum yapma özelliği yakında aktif olacak.
+              </p>
             </div>
           </div>
         </div>
