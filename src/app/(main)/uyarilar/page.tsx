@@ -19,7 +19,6 @@ import {
   Bell,
   Loader2,
 } from 'lucide-react';
-import Link from 'next/link';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
 import { getAlerts, createAlert } from '@/lib/hooks/use-notifications';
 import { toast } from '@/lib/utils/show-toast';
@@ -400,10 +399,9 @@ export default function AlertsPage() {
           ) : (
             <div className="space-y-4">
               {filteredAlerts.map((alert) => (
-                <Link
+                <div
                   key={alert.id}
-                  href={`/uyarilar/${alert.id}`}
-                  className={`block ${getSeverityColor(alert.severity)} rounded-lg p-5 border-2 border-l-4 hover:shadow-lg transition-all hover:-translate-y-0.5 cursor-pointer`}
+                  className={`block ${getSeverityColor(alert.severity)} rounded-lg p-5 border-2 border-l-4 transition-all`}
                 >
                   <div className="flex items-start gap-4">
                     {/* Large Severity Icon */}
@@ -447,7 +445,7 @@ export default function AlertsPage() {
                       </div>
                     </div>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           )}

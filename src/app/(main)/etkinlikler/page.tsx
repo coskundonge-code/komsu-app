@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useState, useMemo, useEffect } from 'react';
 import { getEvents, rsvpEvent } from '@/lib/hooks/use-events';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
+import { toast } from '@/lib/utils/show-toast';
 
 const MONTH_ABBREVIATIONS = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
 
@@ -86,6 +87,8 @@ function mapDbEvent(e: any): Event {
     social: 'social', sports: 'sports', education: 'education',
     culture: 'culture', music: 'music', online: 'online',
   };
+  // getEvents `event_attendees(count)` seçer → [{ count: N }] döner; gerçek sayıyı oku.
+  const attendeeCount = e.event_attendees?.[0]?.count ?? 0;
   return {
     id: e.id,
     title: e.title,
@@ -97,8 +100,8 @@ function mapDbEvent(e: any): Event {
     coverImage: e.cover_image || '',
     isInterested: false,
     category: categoryMap[e.category] || 'social',
-    interestedCount: e.attendee_count || 0,
-    attendees: e.attendee_count || 0,
+    interestedCount: attendeeCount,
+    attendees: attendeeCount,
     organizerName: e.profiles?.full_name || 'Organizatör',
     organizerImage: e.profiles?.avatar_url || '',
     isOnline: e.is_online || false,
@@ -137,8 +140,12 @@ export default function EventsPage() {
     if (!user) return;
     const isCurrentlyInterested = interested[eventId];
     const newStatus = isCurrentlyInterested ? 'not_attending' : 'interested';
-    setInterested(prev => ({ ...prev, [eventId]: !isCurrentlyInterested }));
-    await rsvpEvent(eventId, user.id, newStatus);
+    setInterested(prev => ({ ...prev, [eventId]: !isCurrentlyInterested })); // iyimser güncelle
+    const { error } = await rsvpEvent(eventId, user.id, newStatus);
+    if (error) {
+      setInterested(prev => ({ ...prev, [eventId]: isCurrentlyInterested })); // hata: geri al
+      toast.error('İşlem kaydedilemedi, tekrar deneyin');
+    }
   }
 
   const filtered = useMemo(() => {

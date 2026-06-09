@@ -20,6 +20,7 @@ import { cn } from '@/lib/utils';
 import { getListingById, getListings } from '@/lib/hooks/use-listings';
 import { VerifiedMessageButton } from '@/components/ui/verified-message-button';
 import { ReportModal } from '@/components/shared/report-modal';
+import { toast } from '@/lib/utils/show-toast';
 
 // NOT (2026-06-07): Bu sayfa eskiden gerçek ilan bulunamadığında sahte
 // "Laptop / IKEA Kanepe / PS5" (mockListingsDB) gösteriyor; gerçek satıcılara
@@ -260,13 +261,29 @@ export default function ListingDetailClient({ id }: { id: string }) {
         {showShareMenu && (
           <div className="bg-white border-t border-[#e0e0e0] px-4 py-3">
             <div className="max-w-7xl mx-auto flex gap-2 flex-wrap">
-              <button className="px-4 py-2 bg-[#f0f2f5] rounded-full text-sm font-medium text-[#404040] hover:bg-[#e0e0e0] transition-colors">
+              <button
+                onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(`${listing.title} ${window.location.href}`)}`, '_blank', 'noopener,noreferrer')}
+                className="px-4 py-2 bg-[#f0f2f5] rounded-full text-sm font-medium text-[#404040] hover:bg-[#e0e0e0] transition-colors"
+              >
                 WhatsApp&apos;ta Paylaş
               </button>
-              <button className="px-4 py-2 bg-[#f0f2f5] rounded-full text-sm font-medium text-[#404040] hover:bg-[#e0e0e0] transition-colors">
+              <button
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(window.location.href)
+                    toast.success('Bağlantı kopyalandı')
+                  } catch {
+                    toast.error('Bağlantı kopyalanamadı')
+                  }
+                }}
+                className="px-4 py-2 bg-[#f0f2f5] rounded-full text-sm font-medium text-[#404040] hover:bg-[#e0e0e0] transition-colors"
+              >
                 Bağlantıyı Kopyala
               </button>
-              <button className="px-4 py-2 bg-[#f0f2f5] rounded-full text-sm font-medium text-[#404040] hover:bg-[#e0e0e0] transition-colors">
+              <button
+                onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank', 'noopener,noreferrer')}
+                className="px-4 py-2 bg-[#f0f2f5] rounded-full text-sm font-medium text-[#404040] hover:bg-[#e0e0e0] transition-colors"
+              >
                 Facebook&apos;ta Paylaş
               </button>
             </div>
