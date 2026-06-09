@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { toggleReaction, createComment } from '@/lib/hooks/use-posts'
 import { useCurrentUser } from '@/lib/hooks/use-auth'
 import { ReportModal } from '@/components/shared/report-modal'
+import { toast } from '@/lib/utils/show-toast'
 
 export const POST_CATEGORIES = [
   { id: 'tumu', label: 'Tümü', badgeColor: 'bg-surface-active text-text-secondary' },
@@ -35,6 +36,7 @@ export interface FeedPostData {
   body: string
   image?: string
   reactions: number
+  likedByMe?: boolean
   comments: number
   feed: string
 }
@@ -45,7 +47,7 @@ interface FeedPostCardProps {
 
 export function FeedPostCard({ post }: FeedPostCardProps) {
   const { user, profile } = useCurrentUser()
-  const [liked, setLiked] = useState(false)
+  const [liked, setLiked] = useState(!!post.likedByMe)
   const [showComment, setShowComment] = useState(false)
   const [commentText, setCommentText] = useState('')
   const [expanded, setExpanded] = useState(false)
@@ -55,11 +57,18 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
   const categoryInfo = getCategoryInfo(post.category)
   const isLongText = post.body.length > 200
 
+  // Kullanıcının kendi mevcut tepkisini hariç tutan temel sayı; gösterilen sayı
+  // (temel + beğenildi mi) gerçek toggle yönüyle tutarlı hareket eder.
+  const baseReactions = Math.max(0, post.reactions - (post.likedByMe ? 1 : 0))
+
   const handleLike = async () => {
     if (!user) return
+    const next = !liked
+    setLiked(next) // iyimser güncelle
     const { error } = await toggleReaction(post.id, user.id, 'like')
-    if (!error) {
-      setLiked(!liked)
+    if (error) {
+      setLiked(!next) // hata: geri al
+      toast.error('Beğeni kaydedilemedi, tekrar deneyin')
     }
   }
 
@@ -173,7 +182,7 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
                 <span className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center text-[10px]">👍</span>
                 <span className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-[10px]">❤️</span>
               </span>
-              <span className="text-[13px]">{post.reactions + (liked ? 1 : 0)}</span>
+              <span className="text-[13px]">{baseReactions + (liked ? 1 : 0)}</span>
             </div>
             <span className="text-[13px]">{post.comments} yorum</span>
           </div>

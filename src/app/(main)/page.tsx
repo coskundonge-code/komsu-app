@@ -11,7 +11,7 @@ const PostFormModal = dynamic(() => import('@/components/feed/post-form-modal').
 import { AddressVerificationBanner } from '@/components/feed/address-verification-banner'
 import { FeedPostCard, type FeedPostData } from '@/components/feed/post-card'
 import { useCurrentUser } from '@/lib/hooks/use-auth'
-import { getPosts } from '@/lib/hooks/use-posts'
+import { getPosts, getMyReactions } from '@/lib/hooks/use-posts'
 import { createClient } from '@/lib/supabase/client'
 
 // NOT (2026-06-07): Bu sayfa eskiden 8 sahte gönderi (mockPosts) + getFeedImageUrl
@@ -82,11 +82,15 @@ export default function FeedPage() {
 
       const { data } = await getPosts({ limit: 20 })
       if (cancelled) return
-      const mapped: FeedPostData[] = ((data as any[]) || []).map((p: any) => ({
+      const rows = (data as any[]) || []
+      // Mevcut kullanıcının bu gönderiler için kendi 'like' tepkilerini getir.
+      const likedSet = user?.id ? await getMyReactions(rows.map((p) => p.id), user.id) : new Set<string>()
+      if (cancelled) return
+      const mapped: FeedPostData[] = rows.map((p: any) => ({
         id: p.id,
         author: {
           name: p.profiles?.full_name || 'Komşu',
-          initial: (p.profiles?.full_name || 'K')[0].toUpperCase(),
+          initial: (p.profiles?.full_name?.trim()?.[0] || 'K').toUpperCase(),
           neighborhood: p.neighborhoods ? `${p.neighborhoods.district}, ${p.neighborhoods.name}` : 'Mahalle',
           profileId: p.author_id,
         },
@@ -98,6 +102,7 @@ export default function FeedPage() {
         body: p.body || '',
         image: p.media_urls?.[0] || undefined,
         reactions: p.reaction_count || 0,
+        likedByMe: likedSet.has(p.id),
         comments: p.comment_count || 0,
         feed: 'all',
       }))

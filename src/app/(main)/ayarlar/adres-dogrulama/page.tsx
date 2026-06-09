@@ -343,7 +343,7 @@ export default function AdresDogrulamaPage() {
                             )}
                           >
                             <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-sm">
-                              {(neighbor.full_name || '?')[0].toUpperCase()}
+                              {(neighbor.full_name?.trim()?.[0] || '?').toUpperCase()}
                             </div>
                             <div className="flex-1">
                               <p className="font-medium text-text-primary text-sm">{neighbor.full_name}</p>

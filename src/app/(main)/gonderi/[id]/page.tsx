@@ -5,9 +5,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, Globe, Heart, MessageCircle, Share2, MoreHorizontal, Send, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { getPostById, createComment, toggleReaction } from '@/lib/hooks/use-posts'
+import { getPostById, createComment, toggleReaction, getMyReactions } from '@/lib/hooks/use-posts'
 import { getCategoryInfo } from '@/components/feed/post-card'
 import { useCurrentUser } from '@/lib/hooks/use-auth'
+import { toast } from '@/lib/utils/show-toast'
 
 // NOT (2026-06-07): Bu sayfa eskiden TAMAMEN sahteydi. mockPost/mockComments
 // state'e konuyordu ve JSX doğrudan `mockPost`/`mockComments` sabitlerini
@@ -49,6 +50,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
   const { user, profile } = useCurrentUser()
 
   const [liked, setLiked] = useState(false)
+  const [likedByMe, setLikedByMe] = useState(false)
   const [commentText, setCommentText] = useState('')
   const [post, setPost] = useState<PostView | null>(null)
   const [comments, setComments] = useState<CommentView[]>([])
@@ -64,10 +66,18 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
       const p = data as any
       if (p && !error) {
         const n = p.neighborhoods
+        // Mevcut kullanıcının bu gönderi için kendi 'like' tepkisini getir.
+        if (user?.id) {
+          const likedSet = await getMyReactions([p.id], user.id)
+          if (cancelled) return
+          const mine = likedSet.has(p.id)
+          setLikedByMe(mine)
+          setLiked(mine)
+        }
         setPost({
           id: p.id,
           authorName: p.profiles?.full_name || 'Komşu',
-          authorInitial: (p.profiles?.full_name || 'K')[0].toUpperCase(),
+          authorInitial: (p.profiles?.full_name?.trim()?.[0] || 'K').toUpperCase(),
           authorId: p.author_id || null,
           neighborhood: n ? `${n.district}, ${n.name}` : '',
           timeAgo: formatDate(p.created_at),
@@ -83,7 +93,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
             .map((c: any) => ({
               id: c.id,
               author: c.profiles?.full_name || 'Komşu',
-              initial: (c.profiles?.full_name || 'K')[0].toUpperCase(),
+              initial: (c.profiles?.full_name?.trim()?.[0] || 'K').toUpperCase(),
               text: c.body,
               timeAgo: formatDate(c.created_at),
               _ts: c.created_at ? new Date(c.created_at).getTime() : 0,
@@ -99,7 +109,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
     return () => {
       cancelled = true
     }
-  }, [postId])
+  }, [postId, user?.id])
 
   const handleCommentSubmit = async () => {
     if (!commentText.trim() || !user) return
@@ -127,8 +137,13 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
 
   const handleLike = async () => {
     if (!user) return
+    const next = !liked
+    setLiked(next) // iyimser güncelle
     const { error } = await toggleReaction(postId, user.id, 'like')
-    if (!error) setLiked(!liked)
+    if (error) {
+      setLiked(!next) // hata: geri al
+      toast.error('Beğeni kaydedilemedi, tekrar deneyin')
+    }
   }
 
   if (loading) {
@@ -197,7 +212,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
         )}
 
         <div className="px-4 py-2 flex items-center justify-between text-xs text-text-muted border-t border-border-light">
-          <span>{post.reactions + (liked ? 1 : 0)} beğeni</span>
+          <span>{Math.max(0, post.reactions - (likedByMe ? 1 : 0)) + (liked ? 1 : 0)} beğeni</span>
           <span>{post.comments} yorum</span>
         </div>
 
