@@ -31,12 +31,18 @@ const navItems = [
 
 export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
   const pathname = usePathname()
-  const { user, profile } = useCurrentUser()
+  const { user, profile, neighborhood } = useCurrentUser()
   const metadata = user?.user_metadata
   const userName = profile?.full_name || metadata?.full_name || 'Kullanıcı'
-  const userNeighborhood = metadata?.ilce && metadata?.il
-    ? `${metadata.ilce}, ${metadata.il}`
-    : 'Konum belirtilmemiş'
+  // Konum: önce mahalle üyeliği, sonra profil konumu, sonra eski metadata.
+  const userNeighborhood =
+    neighborhood?.district && neighborhood?.name
+      ? `${neighborhood.district}, ${neighborhood.name}`
+      : profile?.location_district && profile?.location_province
+        ? `${profile.location_district}, ${profile.location_province}`
+        : metadata?.ilce && metadata?.il
+          ? `${metadata.ilce}, ${metadata.il}`
+          : 'Konum belirtilmemiş'
   // Gerçek avatar varsa onu kullan; yoksa baş harfli nötr placeholder (sahte foto değil)
   const userAvatar =
     (profile as any)?.avatar_url || metadata?.avatar_url || getDefaultAvatar(userName)

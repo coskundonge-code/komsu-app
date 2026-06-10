@@ -5,6 +5,7 @@ import { MessageCircle, X } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { conversationTypeFor } from '@/lib/utils/conversation';
 
 interface VerifiedMessageButtonProps {
   recipientId: string;
@@ -56,7 +57,10 @@ export function VerifiedMessageButton({
       // client-side flow (read conversation_participants, then insert BOTH
       // participants) was broken by RLS — it recursed on read and rejected the
       // recipient's participant row. The SECURITY DEFINER RPC handles both safely.
-      const conversationType = listingId ? 'marketplace' : 'direct';
+      // NOT: conversations.type CHECK kısıtı yalnızca 'direct'|'group'|'listing'
+      // kabul eder; 'marketplace' kısıtı ihlal edip RPC'yi patlatıyordu (ilandan
+      // mesaj gönderme tamamen kırıktı). Tür DB-geçerli değerlere kilitli helper'dan.
+      const conversationType = conversationTypeFor(listingId);
       const conversationTitle = listingTitle
         ? `${listingTitle} - ${recipientName}`
         : `Chat with ${recipientName}`;

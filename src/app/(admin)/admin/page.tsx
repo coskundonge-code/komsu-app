@@ -238,24 +238,36 @@ export default function AdminDashboard() {
           .from('businesses')
           .select('*', { count: 'exact', head: true });
 
-        // Update stats with real data
+        // Gerçek raporlar (open) sayısı
+        const { count: reportCount } = await supabase
+          .from('reports')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'open');
+
+        // Update stats with real data. NOT: gerçek değerin yanındaki sahte
+        // delta metinleri ('+324 bu hafta' vb.) kaldırıldı — gerçek sayıyla
+        // çelişip yanıltıyordu. Delta için tarihsel snapshot altyapısı yok.
         const newStats = [
           {
             ...DEFAULT_STATS[0],
             value: (userCount ?? 0).toLocaleString('tr-TR'),
+            change: '',
           },
           {
             ...DEFAULT_STATS[1],
             value: (postCount ?? 0).toLocaleString('tr-TR'),
+            change: '',
           },
           {
             ...DEFAULT_STATS[2],
             value: (businessCount ?? 0).toLocaleString('tr-TR'),
+            change: '',
           },
           {
             ...DEFAULT_STATS[3],
-            value: '0',
-            change: '0 beklemede',
+            value: (reportCount ?? 0).toLocaleString('tr-TR'),
+            change: `${reportCount ?? 0} açık`,
+            trend: (reportCount ?? 0) > 0 ? 'warning' : 'up',
           },
         ];
         setStats(newStats);

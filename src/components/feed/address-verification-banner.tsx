@@ -1,21 +1,45 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { Shield, X, Clock, UserPlus, MapPin, AlertTriangle } from 'lucide-react'
+import { useCurrentUser } from '@/lib/hooks/use-auth'
 
 interface AddressVerificationBannerProps {
+  // Opsiyonel override; verilmezse durum giriş yapan kullanıcının profilinden türetilir.
   status?: 'unverified' | 'pending' | 'locked' | 'referral' | 'verified'
   daysRemaining?: number
 }
 
 export function AddressVerificationBanner({
-  status = 'unverified',
-  daysRemaining = 7
+  status: statusProp,
+  daysRemaining: daysProp,
 }: AddressVerificationBannerProps) {
+  const { profile, loading } = useCurrentUser()
   const [dismissed, setDismissed] = useState(false)
 
-  if (dismissed || status === 'verified') return null
+  // Gerçek doğrulama durumunu profilden türet. Eskiden bileşen prop almadan
+  // çağrılıyor (page.tsx) ve her zaman varsayılan 'unverified' + sabit "7 gün"
+  // gösteriyordu — e-Devlet'i doğrulanmış kullanıcılar bile sahte sayaçla
+  // doğrulamaya zorlanıyordu. Artık edevlet_verified_at / account_locked /
+  // edevlet_verification_deadline'a bakar; doğrulanmışsa hiç görünmez.
+  const derived = useMemo(() => {
+    if (statusProp) return { status: statusProp, days: daysProp ?? 7 }
+    if (!profile) return null
+    if (profile.edevlet_verified_at) return { status: 'verified' as const, days: 0 }
+    if (profile.account_locked) return { status: 'locked' as const, days: 0 }
+    let days = 7
+    if (profile.edevlet_verification_deadline) {
+      const ms = new Date(profile.edevlet_verification_deadline).getTime() - Date.now()
+      days = Math.min(7, Math.max(0, Math.ceil(ms / 86_400_000)))
+    }
+    return { status: 'unverified' as const, days }
+  }, [statusProp, daysProp, profile])
+
+  if (loading || dismissed || !derived || derived.status === 'verified') return null
+
+  const status = derived.status
+  const daysRemaining = derived.days
 
   if (status === 'locked') {
     return (
