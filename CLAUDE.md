@@ -2,9 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Otonomi (kullanıcı izni: "Tam serbest", 2026-06-06)
+## Otonomi (kullanıcı izni: "Tam serbest", 2026-06-06 · `/otonom-surus` ile doğrulandı 2026-06-10)
 
 Sahip kod bilmiyor ve her adımda onay sorulmasından rahatsız. **Onay sorma, işi yap, sonucu sade Türkçe anlat.** Bu, kalıcı bir izindir.
+
+Kurulum durumu (2026-06-10): `.claude/settings.local.json` → `"defaultMode": "bypassPermissions"` aktif; dosya git izlemesinden çıkarıldı (`.gitignore`'da, bir daha commit'lenmez). Ayar değişikliği oturum yeniden başlatılınca tam etkili olur.
 
 Onaysız yapılabilecekler (varsayılan):
 - Kod düzenleme, dosya oluşturma/silme, refactor.
