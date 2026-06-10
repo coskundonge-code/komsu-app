@@ -6,13 +6,13 @@ const createClient = () => createTypedClient() as any
 export interface Donation {
   id: string
   user_id: string
-  neighborhood_id: string
+  neighborhood_id?: string | null
   donation_type: string
   title: string
   description?: string
   amount?: number
   quantity?: number
-  status: 'available' | 'claimed' | 'expired'
+  status: 'available' | 'claimed' | 'completed' | 'expired'
   claimed_by?: string
   claimed_at?: string
   qr_code?: string
@@ -23,22 +23,36 @@ export interface Donation {
   // Joined fields
   profiles?: { full_name: string; avatar_url?: string }
   businesses?: { name: string }
+  neighborhoods?: { name: string }
 }
+
+// NOT: donations'ta profiles'a İKİ FK var (user_id = bağışçı, claimed_by = alan).
+// İpuçsuz `profiles(...)` PostgREST'te belirsizlik (PGRST201 → 300) üretir —
+// Komşuma Yardım'daki bug'ın aynısı. Bağışçı profili açık FK ipucuyla embed edilir.
+const DONATION_SELECT =
+  '*, profiles!donations_user_id_fkey(full_name, avatar_url), businesses(name), neighborhoods(name)'
 
 export async function getDonations(options?: {
   neighborhoodId?: string
   status?: string
   limit?: number
+  userId?: string
+  claimedBy?: string
+  /** true → süresi geçmiş bağışları da getir (varsayılan: yalnızca süresi geçmemişler) */
+  includeExpired?: boolean
 }) {
   const supabase = createClient()
   let query = supabase
     .from('donations')
-    .select('*, profiles(full_name, avatar_url), businesses(name)')
+    .select(DONATION_SELECT)
     .order('created_at', { ascending: false })
 
   if (options?.neighborhoodId) query = query.eq('neighborhood_id', options.neighborhoodId)
   if (options?.status) query = query.eq('status', options.status)
-  if (options?.limit) query = query.limit(options.limit)
+  if (options?.userId) query = query.eq('user_id', options.userId)
+  if (options?.claimedBy) query = query.eq('claimed_by', options.claimedBy)
+  if (!options?.includeExpired) query = query.gt('expires_at', new Date().toISOString())
+  query = query.limit(options?.limit ?? 50)
 
   const { data, error } = await query
   return { data, error }
@@ -52,31 +66,33 @@ export async function createDonation(donation: {
   description?: string
   amount?: number
   quantity?: number
-  business_id?: string
+  business_id?: string | null
 }) {
   const supabase = createClient()
   const { data, error } = await supabase
     .from('donations')
-    .insert(donation)
+    // Eşya askısında uygulama üzerinden para akmaz; 'pending' ödeme durumu
+    // yanıltıcı olurdu. Para bağışı PayTR canlıya bağlanınca ayrı akış olacak.
+    .insert({ ...donation, payment_status: 'completed' })
     .select()
     .single()
   return { data, error }
 }
 
-export async function claimDonation(donationId: string, userId: string) {
+/**
+ * Askıdan alma — SECURITY DEFINER `claim_donation` RPC'si ile atomik.
+ * (Eski istemci-update yolu RLS'te her zaman 0 satır etkiliyordu: UPDATE
+ * politikası user_id/claimed_by istiyor, alan kişi henüz ikisi de değil.)
+ * Dönüş: { conversationReady: donor_id } — teslimatı konuşmak için bağışçıyla
+ * mesajlaşma başlatmakta kullanılır.
+ */
+export async function claimDonation(donationId: string) {
   const supabase = createClient()
-  const { data, error } = await supabase
-    .from('donations')
-    .update({
-      status: 'claimed',
-      claimed_by: userId,
-      claimed_at: new Date().toISOString(),
-    })
-    .eq('id', donationId)
-    .eq('status', 'available')
-    .select()
-    .single()
-  return { data, error }
+  const { data, error } = await supabase.rpc('claim_donation', {
+    p_donation_id: donationId,
+  })
+  const row = Array.isArray(data) ? data[0] : data
+  return { data: row as { donation_id: string; donor_id: string } | undefined, error }
 }
 
 export async function deleteDonation(donationId: string, userId: string) {

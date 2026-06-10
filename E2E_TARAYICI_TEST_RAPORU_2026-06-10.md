@@ -131,6 +131,32 @@ geçer). Parola: `MahalleTest2026!`
 
 ---
 
+## 5b. EK (aynı gün, sahip isteğiyle): Askıda Bağış çalışır hale getirildi ✅
+
+Sahip "askıda kısmını da çalışır hale getir" dedi. "Çok yakında" placeholder'ı kaldırıldı;
+özellik **parasız eşya/ürün askısı** modeliyle gerçek çalışır yapıldı (eski prototipteki
+sahte kart formu — PCI riski — geri getirilmedi; kartla bağış + esnaf QR, PayTR canlıya
+bağlanınca ayrı tur; sayfada dürüst bilgi kutusu var).
+
+- **Bulunan 2 gizli bug (eski kodda):** (1) "Bağışı Al" RLS'te her zaman 0 satır
+  etkiliyordu — UPDATE politikası `user_id/claimed_by` istiyor, alan kişi henüz ikisi de
+  değil → alma HİÇ çalışmamıştı; (2) DELETE politikası yoktu → bağışçı bağışını geri
+  çekemiyordu. Ayrıca donations'ta profiles'a 2 FK olduğundan ipuçsuz embed belirsizdi.
+- **Düzeltme (migration `askida_bagis_claim_rpc_and_delete_policy`):** atomik, yarış-güvenli
+  `claim_donation` RPC'si (kendi bağışını alamaz, süresi dolmuş alınamaz; iki kişi aynı anda
+  basarsa yalnız biri alır) + "kendi + henüz alınmamış" silme politikası. Hook'ta açık FK
+  ipucu (`profiles!donations_user_id_fkey`) + süresi dolmuşları gizleme.
+- **Yeni sayfa (2028 → ~600 satır):** Askıda Ne Var? / Askıya Bırak / Bağışlarım sekmeleri;
+  gerçek istatistikler; alınan bağışta **"Bağışçıyla Mesajlaş"** (mevcut güvenli sohbet
+  RPC'si + otomatik teslimat mesajı). Mock işletme/sahte istatistik/sahte QR/kart formu silindi
+  (eski kod git geçmişinde: `cf5cc7f`).
+- **Tarayıcıda uçtan uca doğrulandı:** Komşu Ayşe askıya bıraktı (DB ✓) → İhtiyaç Fatma
+  listede gördü → askıdan aldı (DB: claimed + claimed_by ✓) → "Bağışçıyla Mesajlaş" →
+  sohbet açıldı + otomatik mesaj gitti ✓ → Bağışlarım/Aldıklarım (1) ✓.
+- tsc 0 · 268/268 test · build 0.
+
+---
+
 ## 6. Geliştirme alanları (not edildi — bu turda düzeltilmedi)
 
 - 🟡 **Perf — `useCurrentUser` N+1 fetch fırtınası:** Tek sayfa yüklemesinde
