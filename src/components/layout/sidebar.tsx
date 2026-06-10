@@ -27,13 +27,21 @@ const navItems = [
 export function Sidebar({ className, ...props }: SidebarProps) {
   const pathname = usePathname()
   const [isCollapsed, setIsCollapsed] = useState(false)
-  const { user } = useCurrentUser()
+  const { user, profile, neighborhood } = useCurrentUser()
   const metadata = user?.user_metadata
-  const fullName = metadata?.full_name || 'Kullanıcı'
+  const fullName = profile?.full_name || metadata?.full_name || 'Kullanıcı'
   const nameInitial = fullName.charAt(0).toUpperCase()
-  const locationText = metadata?.ilce && metadata?.il
-    ? `${metadata.ilce}, ${metadata.il}`
-    : 'Konum belirtilmemiş'
+  // Konum: önce mahalle üyeliği (ilçe, mahalle), sonra profil konum alanları,
+  // sonra eski user_metadata. Eskiden yalnızca metadata.ilce/il okunuyordu →
+  // konumunu yeni akışla profiles'a yazan kullanıcılar "Konum belirtilmemiş" görüyordu.
+  const locationText =
+    neighborhood?.district && neighborhood?.name
+      ? `${neighborhood.district}, ${neighborhood.name}`
+      : profile?.location_district && profile?.location_province
+        ? `${profile.location_district}, ${profile.location_province}`
+        : metadata?.ilce && metadata?.il
+          ? `${metadata.ilce}, ${metadata.il}`
+          : 'Konum belirtilmemiş'
 
   const isActive = (href: string) => {
     return pathname === href || (href !== '/' && pathname?.startsWith(href))

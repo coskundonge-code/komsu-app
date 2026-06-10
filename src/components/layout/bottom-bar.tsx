@@ -1,13 +1,28 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Home, ShoppingBag, Plus, Bell, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useCurrentUser } from '@/lib/hooks/use-auth'
+import { getNotifications } from '@/lib/hooks/use-notifications'
 
 export function BottomBar() {
   const pathname = usePathname()
-  const unreadCount = 3
+  const { user } = useCurrentUser()
+  // Eskiden sabit `unreadCount = 3` idi → herkese sahte "3" rozeti gösteriyordu.
+  // Artık giriş yapan kullanıcının gerçek okunmamış bildirim sayısı.
+  const [unreadCount, setUnreadCount] = useState(0)
+
+  useEffect(() => {
+    if (!user?.id) { setUnreadCount(0); return }
+    let cancelled = false
+    getNotifications(user.id, { unreadOnly: true, limit: 100 })
+      .then(({ data }) => { if (!cancelled) setUnreadCount(Array.isArray(data) ? data.length : 0) })
+      .catch(() => { if (!cancelled) setUnreadCount(0) })
+    return () => { cancelled = true }
+  }, [user?.id])
 
   // Keşfet removed — replaced with Satılık & Ücretsiz (Pazar)
   const items = [

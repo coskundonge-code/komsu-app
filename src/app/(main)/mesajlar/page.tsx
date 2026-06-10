@@ -256,12 +256,20 @@ function ChatView({
             </button>
           )}
           <div className="relative flex-shrink-0">
-            <img
-              src={selected?.avatar || ""}
-              alt={selected?.name || ""}
-              loading="lazy"
-              className="w-12 h-12 rounded-full object-cover shadow-sm"
-            />
+            {/* Boş src="" tarayıcıyı sayfayı yeniden indirmeye zorluyordu; avatar
+                yoksa baş-harfli nötr placeholder göster. */}
+            {selected?.avatar ? (
+              <img
+                src={selected.avatar}
+                alt={selected?.name || ""}
+                loading="lazy"
+                className="w-12 h-12 rounded-full object-cover shadow-sm"
+              />
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold shadow-sm">
+                {(selected?.name?.[0] || '?').toUpperCase()}
+              </div>
+            )}
             {selected?.online && (
               <span className="absolute bottom-0 right-0 w-3 h-3 bg-primary rounded-full border-2 border-white" />
             )}

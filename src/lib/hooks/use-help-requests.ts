@@ -29,9 +29,13 @@ export async function getHelpRequests(options?: {
   limit?: number
 }) {
   const supabase = createClient()
+  // Talep sahibinin profilini açık FK ipucuyla embed et. help_requests'te hem
+  // user_id hem helper_id artık profiles'a FK'lı; ipuçsuz `profiles(...)` iki
+  // ilişkiyle eşleşip PostgREST'te 300 (PGRST201 ambiguous) üretir. Talep
+  // sahibi = user_id. (Konvansiyon: posts da `profiles!posts_author_id_fkey`.)
   let query = supabase
     .from('help_requests')
-    .select('*, profiles(full_name, avatar_url)')
+    .select('*, profiles!help_requests_user_id_fkey(full_name, avatar_url)')
     .order('created_at', { ascending: false })
 
   if (options?.neighborhoodId) query = query.eq('neighborhood_id', options.neighborhoodId)

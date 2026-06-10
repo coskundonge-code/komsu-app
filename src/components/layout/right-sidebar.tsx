@@ -16,18 +16,24 @@ const hiddenOnRoutes = ['/pazar', '/odunc-kirala']
 
 export function RightSidebar() {
   const pathname = usePathname()
-  const { user } = useCurrentUser()
+  const { user, profile, neighborhood } = useCurrentUser()
   const metadata = user?.user_metadata
 
   // Hide right sidebar entirely on marketplace pages
   const shouldHide = hiddenOnRoutes.some(route => pathname?.startsWith(route))
   if (shouldHide) return null
 
-  const locationText = metadata?.ilce && metadata?.mahalle
-    ? `${metadata.ilce}, ${metadata.mahalle}`
-    : metadata?.ilce && metadata?.il
-    ? `${metadata.ilce}, ${metadata.il}`
-    : 'Konum belirtilmemiş'
+  // Konum: önce mahalle üyeliği, sonra profil konumu, sonra eski metadata.
+  const locationText =
+    neighborhood?.district && neighborhood?.name
+      ? `${neighborhood.district}, ${neighborhood.name}`
+      : profile?.location_district && profile?.location_province
+        ? `${profile.location_district}, ${profile.location_province}`
+        : metadata?.ilce && metadata?.mahalle
+          ? `${metadata.ilce}, ${metadata.mahalle}`
+          : metadata?.ilce && metadata?.il
+            ? `${metadata.ilce}, ${metadata.il}`
+            : 'Konum belirtilmemiş'
 
   return (
     <div className="w-[320px] flex-shrink-0 hidden xl:block py-4 pl-2 pr-0 space-y-3">
