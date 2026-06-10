@@ -102,15 +102,29 @@ export async function toggleReaction(postId: string, userId: string, reactionTyp
     .eq('post_id', postId)
     .eq('user_id', userId)
     .eq('type', reactionType)
-    .single()
+    .maybeSingle()
 
   if (existing) {
     const { error } = await supabase.from('reactions').delete().eq('id', existing.id)
-    return { added: false, error }
+    return { added: false, liked: false, error }
   } else {
     const { error } = await supabase.from('reactions').insert({ post_id: postId, user_id: userId, type: reactionType })
-    return { added: true, error }
+    return { added: true, liked: true, error }
   }
+}
+
+// Verilen gönderi id'leri için mevcut kullanıcının kendi 'like' tepkilerini getirir.
+// Beğeni butonunu doğru başlatmak için kullanılır (yoksa hep "beğenilmemiş" görünürdü).
+export async function getMyReactions(postIds: string[], userId: string, reactionType = 'like') {
+  if (!postIds.length || !userId) return new Set<string>()
+  const supabase = createClient()
+  const { data } = await supabase
+    .from('reactions')
+    .select('post_id')
+    .eq('user_id', userId)
+    .eq('type', reactionType)
+    .in('post_id', postIds)
+  return new Set<string>(((data as any[]) || []).map((r) => r.post_id))
 }
 
 export async function createComment(postId: string, userId: string, content: string) {

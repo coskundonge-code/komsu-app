@@ -2,7 +2,7 @@
 
 import React, { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { ChevronLeft, Search, Send, Image as ImageIcon, Smile, MessageCirclePlus, Phone, Video, MessageSquare, ShoppingBag } from "lucide-react";
+import { ChevronLeft, Search, Send, Image as ImageIcon, Smile, MessageCirclePlus, MessageSquare, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useCurrentUser } from "@/lib/hooks/use-auth";
@@ -277,15 +277,6 @@ function ChatView({
           </div>
         </div>
 
-        {/* Header Actions */}
-        <div className="flex items-center gap-1 flex-shrink-0">
-          <button className="p-2 hover:bg-background rounded-full transition-colors" aria-label="Telefon ara">
-            <Phone size={20} className="text-primary" />
-          </button>
-          <button className="p-2 hover:bg-background rounded-full transition-colors" aria-label="Video ara">
-            <Video size={20} className="text-primary" />
-          </button>
-        </div>
       </div>
 
       {/* Messages */}

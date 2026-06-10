@@ -70,64 +70,22 @@ export default function NewConversationPage() {
     try {
       const supabase = createClient();
 
-      // Check if conversation already exists between these two users
-      const { data: existingParticipants, error: participantError } = await supabase
-        .from('conversation_participants')
-        .select('conversation_id')
-        .eq('user_id', user.id);
+      // Find-or-create the conversation atomically on the server (SECURITY
+      // DEFINER RPC). The old client flow recursed on read (RLS 42P17) and was
+      // rejected when inserting the other participant.
+      const { data: convRows, error: rpcError } = await supabase.rpc(
+        'get_or_create_direct_conversation',
+        { p_other_user: selectedUser.id } as any
+      );
 
-      if (participantError) throw participantError;
+      if (rpcError) throw rpcError;
 
-      if (existingParticipants && existingParticipants.length > 0) {
-        // Get all conversation IDs the current user is part of
-        const userConversationIds = existingParticipants.map((p: any) => p.conversation_id);
+      const row = Array.isArray(convRows) ? convRows[0] : convRows;
+      const conversationId: string | undefined = row?.conversation_id;
+      if (!conversationId) throw new Error('Sohbet kimliği alınamadı');
 
-        // Check if any of these conversations have the selected user
-        const { data: existingConversation, error: checkError } = await supabase
-          .from('conversation_participants')
-          .select('conversation_id')
-          .eq('user_id', selectedUser.id)
-          .in('conversation_id', userConversationIds)
-          .limit(1)
-          .single();
-
-        if (!checkError && existingConversation) {
-          // Conversation already exists, just redirect
-          router.push(`/mesajlar?selected=${existingConversation.conversation_id}`);
-          return;
-        }
-      }
-
-      // Create new conversation
-      const { data: newConversation, error: createError } = await supabase
-        .from('conversations')
-        .insert({
-          type: 'direct',
-          title: null,
-        } as any)
-        .select()
-        .single();
-
-      if (createError) throw createError;
-
-      // Add participants
-      const { error: participantInsertError } = await supabase
-        .from('conversation_participants')
-        .insert([
-          {
-            conversation_id: newConversation.id,
-            user_id: user.id,
-          },
-          {
-            conversation_id: newConversation.id,
-            user_id: selectedUser.id,
-          },
-        ] as any);
-
-      if (participantInsertError) throw participantInsertError;
-
-      // Redirect to the new conversation
-      router.push(`/mesajlar?selected=${newConversation.id}`);
+      // Redirect to the conversation
+      router.push(`/mesajlar?selected=${conversationId}`);
     } catch (err) {
       console.error('Error creating conversation:', err);
       setError('Sohbet oluşturulurken bir hata oluştu');

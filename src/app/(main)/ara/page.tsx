@@ -158,6 +158,7 @@ export default function SearchResultsPage() {
     const like = `%${term}%`
 
     ;(async () => {
+      try {
       const [postsRes, bizRes, peopleRes, eventsRes, groupsRes, listingsRes] = await Promise.all([
         supabase
           .from('posts')
@@ -260,7 +261,13 @@ export default function SearchResultsPage() {
       }))
 
       setResults({ posts, businesses, people, events, groups, listings })
-      setLoading(false)
+      } catch (err) {
+        // Sorgulardan biri reddedilirse spinner sonsuza dek dönmesin: logla + boş sonuç.
+        console.error('[ara] arama başarısız:', err)
+        if (!cancelled) setResults(EMPTY_RESULTS)
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
     })()
 
     return () => {

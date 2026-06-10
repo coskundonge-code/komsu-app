@@ -2,7 +2,14 @@
 
 import { createClient } from '@/lib/supabase/client'
 
-export async function uploadImage(
+// Görsel backstop doğrulaması. GERÇEK sınır Supabase storage RLS/bucket
+// politikaları olmalı (istemci bu kütüphaneyi atlayabilir); bu kontrol normal
+// akışta yanlış/aşırı büyük dosyayı erken eler.
+const MAX_IMAGE_SIZE = 20 * 1024 * 1024 // 20MB
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif']
+
+// Asıl yükleme (doğrulamadan bağımsız) — uploadImage ve uploadVideo ortak kullanır.
+async function uploadToStorage(
   file: File,
   bucket: string,
   folder: string
@@ -31,6 +38,22 @@ export async function uploadImage(
     .getPublicUrl(data.path)
 
   return { url: publicUrl, error: null }
+}
+
+export async function uploadImage(
+  file: File,
+  bucket: string,
+  folder: string
+): Promise<{ url: string | null; error: string | null }> {
+  // Tür yalnızca mevcutsa denetlenir (bazı dosyaların type'ı boş gelebilir),
+  // boyut her zaman.
+  if (file.type && !ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    return { url: null, error: 'Desteklenmeyen görsel formatı. JPEG, PNG, WebP, GIF veya AVIF yükleyin.' }
+  }
+  if (file.size > MAX_IMAGE_SIZE) {
+    return { url: null, error: 'Görsel çok büyük. Maksimum 20MB olmalı.' }
+  }
+  return uploadToStorage(file, bucket, folder)
 }
 
 export async function uploadMultipleImages(
@@ -69,7 +92,8 @@ export async function uploadVideo(
     return { url: null, error: 'Video dosyası çok büyük. Maksimum 100MB olmalı.' };
   }
 
-  return uploadImage(file, bucket, folder);
+  // Doğrudan storage'a (uploadImage görsel doğrulaması videoyu reddederdi).
+  return uploadToStorage(file, bucket, folder);
 }
 
 /**

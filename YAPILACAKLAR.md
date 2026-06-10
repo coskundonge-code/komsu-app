@@ -3,9 +3,37 @@
 > Bu dosya, uygulamanın canlıya/mağazaya çıkması için **kalan tüm işlerin** sade
 > listesidir. "Kim yapacak" ve "ne zaman" ölçütüne göre üçe ayrıldı.
 > Teknik ayrıntılar: `TECH_DEBT.md` · Operasyon: `RUNBOOK.md`
-> Son güncelleme: 2026-06-09
+> Son güncelleme: 2026-06-10
 
 İşaretler: ⬜ yapılacak · ✅ yapıldı · 🔴 yayın engeli (bu olmadan canlıya çıkılmaz)
+
+---
+
+## ✅ E2E SON KONTROL (2026-06-10) — düzeltmeler uygulandı · ayrıntı: `E2E_SON_KONTROL_RAPORU.md`
+
+17 modüllük uçtan-uca denetim yapıldı; güvenlik temeli **sağlam** (canlı DB'de
+doğrulandı: ödeme/kart sahteciliği, yetki yükseltme, veri sızıntısı kapalı). Bulunan
+**tüm P0/P1 + yüksek-değerli P2'ler onaysız düzeltildi** (coskun rafı, tsc/build/264 test yeşil):
+
+- 🔴 ✅ **Mesajlaşma (P0)** — RLS sonsuz özyineleme + güvenli sohbet oluşturma RPC;
+  migration `20260610120000`, canlı DB'de doğrulandı. [32eed98]
+- 🟠 ✅ **Post beğeni** DB'den başlar + optimistic/rollback + doğru sayaç. [f94d4fd]
+- 🟠 ✅ **Uyarılar kartı 404** → ölü link kaldırıldı. [0332708]
+- 🟠 ✅ **/kaydol CTA + SEO/PWA gating** (blog/robots/sitemap/manifest). [9773ab0]
+- 🟡 ✅ **P2:** arama sonsuz spinner, boş-isim feed çöküşü, etkinlik katılımcı sayısı +
+  RSVP rollback, ilan paylaş butonları, işlevsiz chat butonları, PWA ikon temizliği,
+  görsel yükleme tür/boyut doğrulaması. [f94d4fd · 0332708 · 43ac3c5]
+
+**Bilerek ertelenenler (gerekçeli, raporda):**
+- ⬜ **API Origin/CSRF kontrolü** — uygulama Capacitor mobil de; naif Origin kontrolü
+  mobili kırar → origin allowlist'i ile dikkatli yapılmalı (SameSite=Lax kısmi koruma).
+- ⬜ **Feed → React Query + pazar favori kalıcılığı** (mimari/şema, ayrı tur).
+- ⬜ **robots'un işaret ettiği app sayfaları login-gated** (public landing = ürün kararı).
+- ⬜ verify-document headless Chrome · CSP unsafe-inline · PostGIS advisor · sitemap
+  dinamik içerik · /favoriler içerik uyumu — düşük öncelik / karar gerektirir.
+
+**Karar: E2E teknik kapısı GEÇTİ (açık P0/P1 yok).** Yayın hâlâ aşağıdaki A bölümündeki
+yasal/PayTR/avukat maddelerine bağlı (bunlar teknik değil, sahip/avukat işi).
 
 ---
 

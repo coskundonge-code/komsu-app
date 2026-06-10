@@ -142,7 +142,7 @@ export default function AboutPage() {
             Mahallemiz&apos;e katılarak mahallenizle bağlantı kurun, yeni arkadaşlar edinin ve güçlü bir topluluk oluşturun.
           </p>
           <Link
-            href="/kaydol"
+            href="/kayit"
             className="inline-block px-8 py-4 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover transition-colors shadow-lg"
           >
             Hemen Başla
