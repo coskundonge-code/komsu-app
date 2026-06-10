@@ -56,7 +56,10 @@ export function VerifiedMessageButton({
       // client-side flow (read conversation_participants, then insert BOTH
       // participants) was broken by RLS — it recursed on read and rejected the
       // recipient's participant row. The SECURITY DEFINER RPC handles both safely.
-      const conversationType = listingId ? 'marketplace' : 'direct';
+      // NOT: conversations.type CHECK kısıtı yalnızca 'direct'|'group'|'listing'
+      // kabul eder; 'marketplace' kısıtı ihlal edip RPC'yi patlatıyordu (ilandan
+      // mesaj gönderme tamamen kırıktı). İlan sohbetleri için doğru tür 'listing'.
+      const conversationType = listingId ? 'listing' : 'direct';
       const conversationTitle = listingTitle
         ? `${listingTitle} - ${recipientName}`
         : `Chat with ${recipientName}`;
