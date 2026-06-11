@@ -66,16 +66,20 @@ export async function createHelpRequest(request: {
   return { data, error }
 }
 
-export async function offerHelp(requestId: string, helperId: string) {
+/**
+ * Yardım teklifi — SECURITY DEFINER `offer_help` RPC'si ile atomik.
+ * (Eski istemci-update yolu RLS'te her zaman 0 satır etkiliyordu: UPDATE
+ * politikası user_id/helper_id istiyor, yardım etmek isteyen henüz ikisi de
+ * değil — donations'taki claim bug'ının aynısı. RPC ayrıca adres doğrulaması
+ * ister ve aynı talebi yalnızca tek kişinin üstlenmesini garanti eder.)
+ */
+export async function offerHelp(requestId: string) {
   const supabase = createClient()
-  const { data, error } = await supabase
-    .from('help_requests')
-    .update({ status: 'in_progress', helper_id: helperId })
-    .eq('id', requestId)
-    .eq('status', 'open')
-    .select()
-    .single()
-  return { data, error }
+  const { data, error } = await supabase.rpc('offer_help', {
+    p_request_id: requestId,
+  })
+  const row = Array.isArray(data) ? data[0] : data
+  return { data: row as { request_id: string; requester_id: string } | undefined, error }
 }
 
 export async function completeHelpRequest(requestId: string, userId: string) {

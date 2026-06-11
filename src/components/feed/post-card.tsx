@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { MoreHorizontal, Globe, Heart, MessageCircle, Share2, Pin, Send, X, ChevronRight, Flag } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { toggleReaction, createComment } from '@/lib/hooks/use-posts'
+import { useVerificationGate } from '@/components/shared/verification-gate'
 import { useCurrentUser } from '@/lib/hooks/use-auth'
 import { ReportModal } from '@/components/shared/report-modal'
 import { toast } from '@/lib/utils/show-toast'
@@ -61,8 +62,11 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
   // (temel + beğenildi mi) gerçek toggle yönüyle tutarlı hareket eder.
   const baseReactions = Math.max(0, post.reactions - (post.likedByMe ? 1 : 0))
 
+  const { checkVerified, gateModal } = useVerificationGate('Beğeni ve yorum yapabilmek')
+
   const handleLike = async () => {
     if (!user) return
+    if (!(await checkVerified())) return
     const next = !liked
     setLiked(next) // iyimser güncelle
     const { error } = await toggleReaction(post.id, user.id, 'like')
@@ -74,6 +78,7 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
 
   const handleCommentSubmit = async () => {
     if (!commentText.trim() || !user) return
+    if (!(await checkVerified())) return
     setSubmittingComment(true)
     try {
       const { error } = await createComment(post.id, user.id, commentText)
@@ -91,6 +96,7 @@ export function FeedPostCard({ post }: FeedPostCardProps) {
       'bg-surface rounded-xl shadow-card border transition-all duration-200 animate-fadeIn overflow-hidden',
       post.isPinned ? 'border-cat-lostfound/30' : 'border-border'
     )}>
+      {gateModal}
       {post.isPinned && (
         <div className="bg-cat-lostfound-light text-cat-lostfound px-4 py-2 flex items-center gap-2 text-xs font-semibold border-b border-cat-lostfound/20">
           <Pin className="w-3.5 h-3.5" />

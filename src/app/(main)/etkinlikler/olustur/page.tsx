@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { createEvent } from '@/lib/hooks/use-events';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
+import { useVerificationGate } from '@/components/shared/verification-gate';
 import {
   Camera,
   MapPin,
@@ -177,10 +178,13 @@ export default function CreateEventPage() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const { checkVerified, gateModal } = useVerificationGate('Etkinlik oluşturabilmek');
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
     if (!user) { setSubmitError('Giriş yapmalısınız.'); return; }
+    if (!(await checkVerified())) return;
 
     setIsSubmitting(true);
     setSubmitError('');
@@ -222,6 +226,7 @@ export default function CreateEventPage() {
 
   return (
     <div className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
+      {gateModal}
       {/* Header */}
       <div className="bg-gradient-to-r from-primary to-primary-hover text-white py-12 px-6 rounded-2xl mb-8 max-w-6xl mx-auto">
         <h1 className="text-4xl font-bold mb-2">

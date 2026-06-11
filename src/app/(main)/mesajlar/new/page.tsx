@@ -6,6 +6,7 @@ import { ChevronLeft, Search, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
 import { createClient as createTypedClient } from '@/lib/supabase/client';
+import { useVerificationGate, isVerificationError } from '@/components/shared/verification-gate';
 import type { Database } from '@/lib/supabase/types';
 
 const createClient = () => createTypedClient() as any;
@@ -61,8 +62,11 @@ export default function NewConversationPage() {
     return () => clearTimeout(timeout);
   }, [searchQuery, user]);
 
+  const { checkVerified, openGate, gateModal } = useVerificationGate('Mesaj gönderebilmek');
+
   const handleUserSelect = async (selectedUser: ProfileRow) => {
     if (!user) return;
+    if (!(await checkVerified())) return;
 
     setIsCreating(true);
     setError('');
@@ -88,7 +92,12 @@ export default function NewConversationPage() {
       router.push(`/mesajlar?selected=${conversationId}`);
     } catch (err) {
       console.error('Error creating conversation:', err);
-      setError('Sohbet oluşturulurken bir hata oluştu');
+      if (isVerificationError(err)) {
+        openGate();
+        setError('');
+      } else {
+        setError('Sohbet oluşturulurken bir hata oluştu');
+      }
       setIsCreating(false);
     }
   };
@@ -103,6 +112,7 @@ export default function NewConversationPage() {
 
   return (
     <div className="h-screen bg-surface flex flex-col">
+      {gateModal}
       {/* Header */}
       <div className="flex items-center gap-4 p-4 border-b border-border">
         <Link

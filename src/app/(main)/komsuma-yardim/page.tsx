@@ -5,6 +5,8 @@ import { Heart, MapPin, Clock, AlertCircle, Plus, X, Users, HandHeart, ArrowRigh
 import { cn } from '@/lib/utils';
 import { getHelpRequests, createHelpRequest, offerHelp, type HelpRequest as HelpRequestType } from '@/lib/hooks/use-help-requests';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
+import { useVerificationGate } from '@/components/shared/verification-gate';
+import { toast } from '@/lib/utils/show-toast';
 
 type Tab = 'requests' | 'offers';
 type Category = 'all' | 'elderly' | 'shopping' | 'health' | 'household' | 'transport';
@@ -114,8 +116,11 @@ export default function KomsumaYardim() {
     setLoading(false);
   }
 
+  const { checkVerified, gateModal } = useVerificationGate('Yardım talebi oluşturabilmek veya yardım edebilmek');
+
   async function handleCreate() {
     if (!user) { setCreateForm(f => ({ ...f, error: 'Giriş yapmalısınız.' })); return; }
+    if (!(await checkVerified())) return;
     if (!createForm.title.trim() || !createForm.description.trim()) {
       setCreateForm(f => ({ ...f, error: 'Başlık ve açıklama zorunludur.' }));
       return;
@@ -144,8 +149,15 @@ export default function KomsumaYardim() {
 
   async function handleOfferHelp(id: string) {
     if (!user) return;
-    await offerHelp(id, user.id);
-    setItems(prev => prev.map(r => r.id === id ? { ...r, helpers: (r.helpers || 0) + 1 } : r));
+    if (!(await checkVerified())) return;
+    const { data, error } = await offerHelp(id);
+    if (error || !data) {
+      toast.error('Yardım teklifi gönderilemedi — talep kapanmış ya da başka bir komşu üstlenmiş olabilir');
+      fetchItems();
+      return;
+    }
+    toast.success('Teşekkürler! Yardımı sen üstlendin 💚');
+    setItems(prev => prev.map(r => r.id === id ? { ...r, helpers: (r.helpers || 0) + 1, status: 'in_progress' as any } : r));
   }
 
   const filteredItems = selectedCategory === 'all'
@@ -154,6 +166,7 @@ export default function KomsumaYardim() {
 
   return (
     <div className="min-h-screen">
+      {gateModal}
       {/* Hero Header */}
       <div className="bg-surface border-b border-border">
         <div className="px-4 sm:px-6 py-5">

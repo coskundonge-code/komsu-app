@@ -37,6 +37,7 @@ import {
   type Donation,
 } from '@/lib/hooks/use-donations'
 import { toast } from '@/lib/utils/show-toast'
+import { useVerificationGate, isVerificationError } from '@/components/shared/verification-gate'
 
 // Kategoriler — donation_type olarak kategori id'si yazılır.
 const CATEGORIES = [
@@ -237,13 +238,17 @@ export default function AskidaBagisPage() {
     if (activeTab === 'mine') loadMine()
   }, [activeTab, loadMine])
 
+  const { checkVerified, openGate, gateModal } = useVerificationGate('Askıda bağış bırakabilmek veya alabilmek')
+
   // --- Askıdan al (atomik RPC; yarış güvenli) ---
   const handleClaim = async (donation: Donation) => {
     if (!user) { router.push('/giris'); return }
+    if (!(await checkVerified())) return
     setClaimingId(donation.id)
     const { data, error } = await claimDonation(donation.id)
     setClaimingId(null)
     if (error || !data) {
+      if (isVerificationError(error)) { openGate(); return }
       toast.error('Bağış alınamadı — başka bir komşu sizden önce almış olabilir')
       loadAvailable()
       return
@@ -300,6 +305,7 @@ export default function AskidaBagisPage() {
   // --- Askıya bırak ---
   const handleCreate = async () => {
     if (!user) { router.push('/giris'); return }
+    if (!(await checkVerified())) return
     const itemName = form.itemName.trim()
     if (!itemName) { toast.error('Ne bıraktığınızı yazın (örn. Ekmek, Çocuk montu)'); return }
     if (form.quantity < 1) { toast.error('Adet en az 1 olmalı'); return }
@@ -350,6 +356,7 @@ export default function AskidaBagisPage() {
 
   return (
     <div className="w-full">
+      {gateModal}
       {/* Hero */}
       <div className="relative bg-gradient-to-r from-primary via-[#009d4e] to-[#00833e] text-white overflow-hidden">
         <div className="relative max-w-6xl mx-auto px-4 py-8 sm:py-10 text-center">

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useMemo, useEffect } from 'react';
 import { getEvents, rsvpEvent } from '@/lib/hooks/use-events';
+import { useVerificationGate } from '@/components/shared/verification-gate';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
 import { toast } from '@/lib/utils/show-toast';
 
@@ -136,8 +137,11 @@ export default function EventsPage() {
     };
   }, []);
 
+  const { checkVerified, gateModal } = useVerificationGate('Etkinliğe katılabilmek');
+
   async function handleRsvp(eventId: string) {
     if (!user) return;
+    if (!(await checkVerified())) return;
     const isCurrentlyInterested = interested[eventId];
     const newStatus = isCurrentlyInterested ? 'not_attending' : 'interested';
     setInterested(prev => ({ ...prev, [eventId]: !isCurrentlyInterested })); // iyimser güncelle
@@ -173,6 +177,7 @@ export default function EventsPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {gateModal}
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Header with Title and Create Button */}
         <div className="flex items-center justify-between mb-8">

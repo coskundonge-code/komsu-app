@@ -21,6 +21,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect, use } from 'react';
 import { getEventById, getEvents, rsvpEvent } from '@/lib/hooks/use-events';
+import { useVerificationGate } from '@/components/shared/verification-gate';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -137,11 +138,14 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
     }
   }, [user, attendees]);
 
+  const { checkVerified, gateModal } = useVerificationGate('Etkinliğe katılabilmek');
+
   async function handleRsvp(next: 'joined' | 'interested' | 'none') {
     if (!user) {
       toast.error('Katılmak için giriş yapmalısınız');
       return;
     }
+    if (!(await checkVerified())) return;
     const newStatus = next === 'joined' ? 'attending' : next === 'interested' ? 'interested' : 'not_attending';
     const prev = rsvpStatus;
     setRsvpStatus(next);
@@ -249,6 +253,7 @@ END:VCALENDAR`;
 
   return (
     <div className="min-h-screen bg-[#f0f2f5]">
+      {gateModal}
       {/* Header with Back Button */}
       <div className="sticky top-0 z-40 bg-white border-b border-[#e0e0e0] py-3 sm:py-4">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">

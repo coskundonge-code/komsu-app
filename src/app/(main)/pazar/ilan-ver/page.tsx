@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { createListing } from '@/lib/hooks/use-listings';
 import { createClient } from '@/lib/supabase/client';
+import { useVerificationGate } from '@/components/shared/verification-gate';
 import { uploadMultipleMedia } from '@/lib/upload';
 import { checkCanPost, consumeFreeQuota, LISTING_FEE, FREE_LISTING_LIMIT } from '@/lib/services/listing-quota';
 import { moderateMediaFiles, analyzeContent, submitForModeration } from '@/lib/services/content-moderation';
@@ -330,12 +331,16 @@ export default function CreateListingPage() {
     }
   };
 
+  const { checkVerified, gateModal } = useVerificationGate('İlan verebilmek');
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!isFormValid()) {
       return;
     }
+
+    if (!(await checkVerified())) return;
 
     setIsSubmitting(true);
     try {
@@ -447,6 +452,7 @@ export default function CreateListingPage() {
 
   return (
     <div className="min-h-screen bg-background py-8">
+      {gateModal}
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">

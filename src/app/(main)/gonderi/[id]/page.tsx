@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { ArrowLeft, Globe, Heart, MessageCircle, Share2, MoreHorizontal, Send, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getPostById, createComment, toggleReaction, getMyReactions } from '@/lib/hooks/use-posts'
+import { useVerificationGate } from '@/components/shared/verification-gate'
 import { getCategoryInfo } from '@/components/feed/post-card'
 import { useCurrentUser } from '@/lib/hooks/use-auth'
 import { toast } from '@/lib/utils/show-toast'
@@ -113,6 +114,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
 
   const handleCommentSubmit = async () => {
     if (!commentText.trim() || !user) return
+    if (!(await checkVerified())) return
     setSubmittingComment(true)
     try {
       const { data, error } = await createComment(postId, user.id, commentText)
@@ -135,8 +137,11 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
     }
   }
 
+  const { checkVerified, gateModal } = useVerificationGate('Beğeni ve yorum yapabilmek')
+
   const handleLike = async () => {
     if (!user) return
+    if (!(await checkVerified())) return
     const next = !liked
     setLiked(next) // iyimser güncelle
     const { error } = await toggleReaction(postId, user.id, 'like')
@@ -172,6 +177,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
 
   return (
     <div className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 space-y-4">
+      {gateModal}
       <Link href="/" className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary-hover font-medium transition-colors">
         <ArrowLeft className="w-4 h-4" />
         Geri Dön

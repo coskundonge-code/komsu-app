@@ -9,6 +9,7 @@ import { createPost } from '@/lib/hooks/use-posts';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
 import { uploadMultipleImages } from '@/lib/upload';
 import { createClient } from '@/lib/supabase/client';
+import { useVerificationGate } from '@/components/shared/verification-gate';
 
 const POST_TYPES = [
   { id: 'general', label: 'Genel', icon: Tag },
@@ -157,6 +158,8 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
     setLocation(null);
   };
 
+  const { checkVerified, gateModal } = useVerificationGate('Gönderi paylaşabilmek');
+
   const handleSubmit = async () => {
     if (!body.trim()) {
       toast.warning('Lütfen gönderi içeriği yazınız');
@@ -175,6 +178,8 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
       toast.error('Gönderi oluşturmak için giriş yapmanız gerekir');
       return;
     }
+
+    if (!(await checkVerified())) return;
 
     setIsSubmitting(true);
     try {
@@ -277,6 +282,7 @@ export function PostFormModal({ isOpen, onClose, onSubmit }: PostFormModalProps)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {gateModal}
       {/* Backdrop with blur */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"

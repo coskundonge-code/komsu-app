@@ -3,7 +3,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
-import { startFreeTrial, MONTHLY_PRICE, YEARLY_PRICE, FREE_TRIAL_MONTHS } from '@/lib/services/business-subscription';
+import { MONTHLY_PRICE, YEARLY_PRICE, FREE_TRIAL_MONTHS } from '@/lib/services/business-subscription';
+import { useVerificationGate } from '@/components/shared/verification-gate';
 import {
   ChevronLeft,
   Upload,
@@ -69,7 +70,18 @@ interface FormData {
   facebook: string;
   twitter: string;
   workingHours: WorkingHours;
+  // İşletme doğrulaması (2026-06-11): belge bilgileri admin onay kuyruğuna gider;
+  // belge DOSYASI saklanmaz (KVKK) — yalnızca beyan edilen alanlar.
+  vkn: string;
+  documentType: 'vergi_levhasi' | 'faaliyet_belgesi' | 'esnaf_sicil';
+  documentBarcode: string;
 }
+
+const DOCUMENT_TYPES = [
+  { id: 'vergi_levhasi' as const, label: 'Vergi Levhası', hint: 'VKN + ünvan + işyeri adresi içerir (GİB)' },
+  { id: 'faaliyet_belgesi' as const, label: 'Oda Faaliyet Belgesi', hint: 'e-Devlet barkodlu belge' },
+  { id: 'esnaf_sicil' as const, label: 'Esnaf Sicil Belgesi', hint: 'e-Devlet barkodlu belge' },
+];
 
 export default function IsletmeEklePage() {
   const [step, setStep] = useState(1);
@@ -93,6 +105,9 @@ export default function IsletmeEklePage() {
     instagram: '',
     facebook: '',
     twitter: '',
+    vkn: '',
+    documentType: 'vergi_levhasi',
+    documentBarcode: '',
     workingHours: DAYS.reduce(
       (acc, day) => ({
         ...acc,
@@ -188,11 +203,16 @@ export default function IsletmeEklePage() {
     }));
   };
 
+  const { checkVerified, gateModal } = useVerificationGate('İşletme kaydı oluşturabilmek');
+
   const handleSubmit = async () => {
     if (!userId) {
       setError('Lütfen önce giriş yapın.');
       return;
     }
+
+    // İşletme sahibi önce KENDİ adresini doğrulamış olmalı (sunucu RPC'si de zorlar)
+    if (!(await checkVerified())) return;
 
     setIsSubmitting(true);
     setError(null);
@@ -264,9 +284,22 @@ export default function IsletmeEklePage() {
         throw new Error('İşletme oluşturulamadı: ' + bizError.message);
       }
 
-      // 3 aylık ücretsiz deneme başlat
+      // Doğrulama başvurusu: belge bilgileri admin kuyruğuna düşer, işletme
+      // 'pending' durumuna geçer (onaylanana kadar halka görünmez).
+      // NOT: ücretsiz deneme artık burada DEĞİL, admin ONAYINDA başlar —
+      // onay beklerken deneme süresi yanmaz.
       if (business) {
-        await startFreeTrial(business.id);
+        const { error: verError } = await (supabase.rpc as any)('submit_business_verification', {
+          p_business_id: business.id,
+          p_document_type: formData.documentType,
+          p_vkn: formData.vkn.replace(/\s/g, ''),
+          p_document_barcode: formData.documentBarcode.trim() || null,
+          p_ocr_unvan: formData.name.trim(),
+          p_ocr_adres: formData.address.trim(),
+        });
+        if (verError) {
+          throw new Error('Doğrulama başvurusu gönderilemedi: ' + verError.message);
+        }
       }
 
       setIsSuccess(true);
@@ -295,14 +328,19 @@ export default function IsletmeEklePage() {
     return !!(formData.phone.replace(/\s/g, '').length >= 10);
   };
 
+  const isStep4Valid = (): boolean => {
+    return /^[0-9]{10,11}$/.test(formData.vkn.replace(/\s/g, ''));
+  };
+
   const getStepButtonDisabled = (): boolean => {
     if (step === 1) return !isStep1Valid();
     if (step === 2) return !isStep2Valid();
     if (step === 3) return !isStep3Valid();
+    if (step === 4) return !isStep4Valid();
     return false;
   };
 
-  const stepLabels = ['Görseller', 'Temel Bilgiler', 'İletişim & Saatler', 'Onay'];
+  const stepLabels = ['Görseller', 'Temel Bilgiler', 'İletişim & Saatler', 'Doğrulama & Onay'];
 
   // Success Screen
   if (isSuccess) {
@@ -319,19 +357,21 @@ export default function IsletmeEklePage() {
               <Check size={40} className="text-primary" />
             </div>
             <h2 className="text-3xl font-bold text-gray-900 mb-3">
-              Tebrikler! 🎉
+              Başvurunuz Alındı! 🎉
             </h2>
             <p className="text-text-muted mb-4 text-lg">
-              İşletmeniz başarıyla oluşturuldu ve <strong>{FREE_TRIAL_MONTHS} aylık ücretsiz deneme</strong> süreniz başladı.
+              İşletmeniz oluşturuldu ve <strong>doğrulama için incelemeye alındı</strong>.
+              Onaylanana kadar komşularınıza görünmez; genellikle 1-2 iş günü sürer.
             </p>
             <div className="bg-primary-light rounded-xl p-4 mb-8 text-left">
               <div className="flex items-start gap-3">
                 <Gift className="text-primary mt-0.5 flex-shrink-0" size={20} />
                 <div>
-                  <p className="text-sm font-semibold text-primary-hover">Ücretsiz Deneme Süresi</p>
+                  <p className="text-sm font-semibold text-primary-hover">Ücretsiz Deneme Onayla Başlar</p>
                   <p className="text-sm text-text-muted mt-1">
-                    {FREE_TRIAL_MONTHS} ay boyunca tüm özellikleri ücretsiz kullanabilirsiniz.
-                    Kredi kartı bilgisi gerekmez. Süre sonunda aylık {MONTHLY_PRICE.toLocaleString('tr-TR')}₺
+                    İşletmeniz onaylandığında <strong>{FREE_TRIAL_MONTHS} aylık ücretsiz deneme</strong> süreniz
+                    başlar — onay beklerken süreniz yanmaz. Kredi kartı bilgisi gerekmez.
+                    Süre sonunda aylık {MONTHLY_PRICE.toLocaleString('tr-TR')}₺
                     veya yıllık {YEARLY_PRICE.toLocaleString('tr-TR')}₺ ile devam edebilirsiniz.
                   </p>
                 </div>
@@ -359,6 +399,7 @@ export default function IsletmeEklePage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {gateModal}
       {/* Header */}
       <div className="bg-gradient-to-r from-primary to-[#00a344] text-white py-8 px-4">
         <div className="max-w-5xl mx-auto">
@@ -716,11 +757,72 @@ export default function IsletmeEklePage() {
             </div>
           )}
 
-          {/* Step 4: Confirmation & Pricing Summary */}
+          {/* Step 4: Verification + Confirmation & Pricing Summary */}
           {step === 4 && (
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Özet & Onay</h2>
-              <p className="text-text-muted mb-8">Bilgilerinizi kontrol edin ve işletmenizi oluşturun</p>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Doğrulama & Onay</h2>
+              <p className="text-text-muted mb-8">İşletme belgenizi beyan edin, bilgilerinizi kontrol edin</p>
+
+              {/* İşletme Doğrulama Bilgileri */}
+              <div className="bg-surface rounded-xl border border-border p-5 mb-8">
+                <div className="flex items-center gap-2 mb-1">
+                  <Shield size={18} className="text-primary" />
+                  <h3 className="text-base font-bold text-gray-900">İşletme Doğrulama Bilgileri</h3>
+                </div>
+                <p className="text-xs text-text-muted mb-4">
+                  İşletmeler için doğrulama zorunludur. Beyan ettiğiniz bilgiler yönetici
+                  tarafından kontrol edilir; belge dosyası yüklemeniz gerekmez, bilgileriniz
+                  yalnızca doğrulama amacıyla kullanılır.
+                </p>
+
+                <label className="block text-sm font-semibold text-gray-900 mb-2">Belge Türü</label>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {DOCUMENT_TYPES.map((dt) => (
+                    <button
+                      key={dt.id}
+                      type="button"
+                      onClick={() => setFormData((p) => ({ ...p, documentType: dt.id }))}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${
+                        formData.documentType === dt.id
+                          ? 'bg-primary text-white border-primary'
+                          : 'bg-background text-text-primary border-border hover:border-primary'
+                      }`}
+                      title={dt.hint}
+                    >
+                      {dt.label}
+                    </button>
+                  ))}
+                </div>
+
+                <label htmlFor="biz-vkn" className="block text-sm font-semibold text-gray-900 mb-2">
+                  Vergi Kimlik No (VKN) <span className="text-red-500">*</span>
+                  <span className="font-normal text-text-muted"> — şahıs işletmesinde TCKN olabilir</span>
+                </label>
+                <input
+                  id="biz-vkn"
+                  type="text"
+                  inputMode="numeric"
+                  value={formData.vkn}
+                  onChange={(e) => setFormData((p) => ({ ...p, vkn: e.target.value.replace(/[^0-9]/g, '').slice(0, 11) }))}
+                  placeholder="10-11 haneli numara"
+                  className="w-full px-4 py-3 border border-border rounded-xl text-sm bg-background focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition mb-1"
+                />
+                {formData.vkn.length > 0 && !isStep4Valid() && (
+                  <p className="text-xs text-red-500 mb-3">VKN/TCKN 10-11 haneli olmalı.</p>
+                )}
+
+                <label htmlFor="biz-barcode" className="block text-sm font-semibold text-gray-900 mb-2 mt-3">
+                  Belge Barkod / Doğrulama No <span className="font-normal text-text-muted">(varsa — e-Devlet belgelerinde bulunur)</span>
+                </label>
+                <input
+                  id="biz-barcode"
+                  type="text"
+                  value={formData.documentBarcode}
+                  onChange={(e) => setFormData((p) => ({ ...p, documentBarcode: e.target.value.toUpperCase().slice(0, 30) }))}
+                  placeholder="Örn: ABCD-1234-EFGH-5678"
+                  className="w-full px-4 py-3 border border-border rounded-xl text-sm bg-background focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition"
+                />
+              </div>
 
               {/* Business Preview */}
               <div className="mb-8 rounded-xl overflow-hidden border border-border">
@@ -817,9 +919,9 @@ export default function IsletmeEklePage() {
               <div className="bg-blue-50 rounded-lg p-4 mb-6 flex items-start gap-3">
                 <Store size={18} className="text-blue-600 mt-0.5 flex-shrink-0" />
                 <p className="text-sm text-blue-800">
-                  İşletmeniz oluşturulduktan sonra moderasyon sürecine alınır.
-                  Onaylandıktan sonra komşularınız tarafından görüntülenebilir.
-                  Deneme süresi boyunca tüm özellikler kullanılabilir.
+                  İşletmeniz doğrulama onayına kadar komşularınıza <strong>görünmez</strong>.
+                  Beyan ettiğiniz belge bilgileri yönetici tarafından kontrol edilir
+                  (genellikle 1-2 iş günü). Ücretsiz deneme süreniz onayla birlikte başlar.
                 </p>
               </div>
             </div>

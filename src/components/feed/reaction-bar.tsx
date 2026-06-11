@@ -5,6 +5,7 @@ import { Heart, ThumbsUp, CheckCircle, Laugh, Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toggleReaction } from '@/lib/hooks/use-posts';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
+import { useVerificationGate } from '@/components/shared/verification-gate';
 
 export interface ReactionBarProps {
   initialLikes?: number;
@@ -42,8 +43,11 @@ export function ReactionBar({
     wow: 'wow',
   };
 
+  const { checkVerified, gateModal } = useVerificationGate('Tepki verebilmek');
+
   const handleReaction = async (type: string) => {
     if (!user || !postId) return;
+    if (!(await checkVerified())) return;
 
     setIsLoading(true);
     try {
@@ -79,6 +83,7 @@ export function ReactionBar({
 
   return (
     <div className="flex flex-wrap gap-2 py-2">
+      {gateModal}
       <button
         onClick={() => handleReaction('like')}
         disabled={isLoading}

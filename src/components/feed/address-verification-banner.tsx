@@ -2,69 +2,34 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
-import { Shield, X, Clock, UserPlus, MapPin, AlertTriangle } from 'lucide-react'
+import { Shield, X, Clock, MapPin } from 'lucide-react'
 import { useCurrentUser } from '@/lib/hooks/use-auth'
 
 interface AddressVerificationBannerProps {
   // Opsiyonel override; verilmezse durum giriş yapan kullanıcının profilinden türetilir.
-  status?: 'unverified' | 'pending' | 'locked' | 'referral' | 'verified'
+  status?: 'unverified' | 'pending' | 'verified'
   daysRemaining?: number
 }
 
 export function AddressVerificationBanner({
   status: statusProp,
-  daysRemaining: daysProp,
 }: AddressVerificationBannerProps) {
   const { profile, loading } = useCurrentUser()
   const [dismissed, setDismissed] = useState(false)
 
-  // Gerçek doğrulama durumunu profilden türet. Eskiden bileşen prop almadan
-  // çağrılıyor (page.tsx) ve her zaman varsayılan 'unverified' + sabit "7 gün"
-  // gösteriyordu — e-Devlet'i doğrulanmış kullanıcılar bile sahte sayaçla
-  // doğrulamaya zorlanıyordu. Artık edevlet_verified_at / account_locked /
-  // edevlet_verification_deadline'a bakar; doğrulanmışsa hiç görünmez.
+  // Kademeli kapı modeli (2026-06-11): e-Devlet doğrulaması zorunlu değil,
+  // süre/kilit yok — ama her ETKİLEŞİM (gönderi, yorum, ilan, askıda, yardım,
+  // mesaj...) için gerekli. Banner bunu dürüstçe anlatır; doğrulanmışsa görünmez.
   const derived = useMemo(() => {
-    if (statusProp) return { status: statusProp, days: daysProp ?? 7 }
+    if (statusProp) return { status: statusProp }
     if (!profile) return null
-    if (profile.edevlet_verified_at) return { status: 'verified' as const, days: 0 }
-    if (profile.account_locked) return { status: 'locked' as const, days: 0 }
-    let days = 7
-    if (profile.edevlet_verification_deadline) {
-      const ms = new Date(profile.edevlet_verification_deadline).getTime() - Date.now()
-      days = Math.min(7, Math.max(0, Math.ceil(ms / 86_400_000)))
-    }
-    return { status: 'unverified' as const, days }
-  }, [statusProp, daysProp, profile])
+    if (profile.edevlet_verified_at) return { status: 'verified' as const }
+    return { status: 'unverified' as const }
+  }, [statusProp, profile])
 
   if (loading || dismissed || !derived || derived.status === 'verified') return null
 
   const status = derived.status
-  const daysRemaining = derived.days
-
-  if (status === 'locked') {
-    return (
-      <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
-            <AlertTriangle className="w-5 h-5 text-red-600" />
-          </div>
-          <div className="flex-1">
-            <h3 className="font-semibold text-red-800 text-sm">Hesabınız Kilitlendi</h3>
-            <p className="text-red-700 text-xs mt-1">
-              Adres doğrulama süresi doldu. Hesabınızı açmak için adresinizi doğrulayın.
-            </p>
-            <Link
-              href="/adres-dogrulama"
-              className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
-            >
-              <Shield className="w-4 h-4" />
-              Şimdi Doğrula
-            </Link>
-          </div>
-        </div>
-      </div>
-    )
-  }
 
   if (status === 'pending') {
     return (
@@ -87,7 +52,7 @@ export function AddressVerificationBanner({
     )
   }
 
-  // unverified - main state for new users
+  // unverified — yeni kullanıcılar için ana durum (zorlama yok, dürüst bilgi)
   return (
     <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
       <div className="flex items-start gap-3">
@@ -95,51 +60,24 @@ export function AddressVerificationBanner({
           <MapPin className="w-5 h-5 text-blue-600" />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="font-semibold text-blue-800 text-sm">Adresinizi Doğrulayın</h3>
-            {daysRemaining <= 10 && (
-              <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-medium rounded-full">
-                {daysRemaining} gün kaldı!
-              </span>
-            )}
-          </div>
+          <h3 className="font-semibold text-blue-800 text-sm">Adresinizi Doğrulayın</h3>
           <p className="text-blue-700 text-xs mt-1">
-            Mahallenizi doğrulayın ve tüm özellikleri kullanın.
-            {daysRemaining > 0 && <> <strong>{daysRemaining} gün</strong> içinde doğrulamanız gerekiyor.</>}
+            Gezinmek serbest — ama gönderi paylaşmak, ilan vermek, askıda bağış ve
+            mesajlaşma gibi tüm etkileşimler için e-Devlet adres doğrulaması gerekir.
+            Yaklaşık 2 dakika sürer, belgeniz saklanmaz.
           </p>
 
-          {/* Progress bar */}
-          <div className="mt-3 mb-3">
-            <div className="flex items-center justify-between text-xs text-blue-600 mb-1">
-              <span>Süre</span>
-              <span>{daysRemaining}/7 gün</span>
-            </div>
-            <div className="w-full bg-blue-200 rounded-full h-1.5">
-              <div
-                className={`h-1.5 rounded-full transition-all ${daysRemaining <= 10 ? 'bg-red-500' : 'bg-blue-500'}`}
-                style={{ width: `${((7 - daysRemaining) / 7) * 100}%` }}
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="mt-3">
             <Link
               href="/adres-dogrulama"
               className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-hover transition-colors"
             >
               <Shield className="w-4 h-4" />
-              e-Devlet ile Doğrula
-            </Link>
-            <Link
-              href="/referans-kullan"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-surface text-blue-700 text-sm font-medium rounded-lg border border-blue-300 hover:bg-blue-50 transition-colors"
-            >
-              <UserPlus className="w-4 h-4" />
-              Referans Kodu Kullan
+              e-Devlet ile Doğrula (~2 dk)
             </Link>
           </div>
         </div>
-        <button onClick={() => setDismissed(true)} className="p-1 hover:bg-blue-100 rounded-lg flex-shrink-0">
+        <button onClick={() => setDismissed(true)} aria-label="Kapat" className="p-1 hover:bg-blue-100 rounded-lg flex-shrink-0">
           <X className="w-4 h-4 text-blue-400" />
         </button>
       </div>

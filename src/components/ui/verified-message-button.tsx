@@ -40,14 +40,15 @@ export function VerifiedMessageButton({
         return;
       }
 
-      // Check if user is a verified neighbor
-      const { data: neighborData, error: neighborError } = await supabase
-        .from('neighborhood_members')
-        .select('user_id')
-        .eq('user_id', user.id)
-        .single();
+      // Adres doğrulaması kontrolü — tek doğruluk kaynağı sunucudaki
+      // is_verified_neighbor (profiles.edevlet_verified_at). Eski kontrol
+      // neighborhood_members tablosuna bakıyordu; kapı kararıyla (2026-06-11)
+      // tüm etkileşim e-Devlet doğrulamasına bağlandı.
+      const { data: isVerified, error: verifyError } = await (supabase.rpc as any)(
+        'is_verified_neighbor',
+      );
 
-      if (neighborError || !neighborData) {
+      if (verifyError || isVerified !== true) {
         setShowVerificationModal(true);
         setIsLoading(false);
         return;

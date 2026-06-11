@@ -1,7 +1,56 @@
 # Öneri: Kademeli Doğrulama ve İşlem Kapıları Sistemi
 
-Tarih: 2026-06-11 · Durum: ÖNERİ (sahip onayı bekliyor, kod değişikliği yapılmadı)
+Tarih: 2026-06-11 · Durum: ✅ **UYGULANDI** (aynı gün, sahip onayı + revizyonuyla)
 Hazırlık: 3 paralel kod-keşif ajanı + canlı Supabase şema sorguları.
+
+## ✅ UYGULAMA SONUCU (2026-06-11)
+
+**Sahip revizyonu:** Mahalleli (S1) seviyesi de YALNIZCA gezer/okur — "adres
+doğrulamadan etkileşim olmamalı." Buna göre kapı matrisi sadeleşti:
+**görüntüleme serbest, HER etkileşim Doğrulanmış Komşu (S2) ister.**
+
+Uygulananlar:
+- **Sunucu kapıları (4 migration):** `is_verified_neighbor()` tek doğruluk kaynağı;
+  15 INSERT politikası (posts, comments, reactions, events, event_attendees,
+  listings, lending_items, donations, help_requests, groups, group_members,
+  business_reviews, poll_votes, conversations, messages) + `claim_donation` ve
+  `get_or_create_direct_conversation` RPC kapıları. 8 GEVŞEK politika kaldırıldı
+  (6 `auth.role()='authenticated'` INSERT + 2 `USING(true)` businesses SELECT —
+  permissive OR kapıyı deliyordu).
+- **Bonus düzeltme:** Komşuma Yardım "Yardım Et" RLS'te hiç çalışmıyordu
+  (donations claim bug'ının aynısı) → atomik `offer_help` RPC + UI bağlandı.
+- **UI:** Ortak `VerificationRequiredModal` + `useVerificationGate` hook'u; 12
+  yüzeye bağlandı (feed composer/beğeni/yorum, gönderi detayı, etkinlik
+  liste/detay RSVP + oluşturma, grup oluşturma, pazar + ödünç ilan-ver, askıda
+  bırak/al, komşuma yardım, mesajlar/new, VerifiedMessageButton). Banner yeni
+  modeli anlatıyor; middleware'den 7 gün/kilit mantığı kaldırıldı (konum seçimi
+  zorunlu kalmaya devam — belgesiz, 1 dk).
+- **İşletme:** `verification_status/vkn/business_type` kolonları +
+  `business_verifications` kuyruğu + guard trigger (sahip kendini doğrulayamaz)
+  + yayın kapısı (doğrulanmamış işletme halka görünmez) + kayıt sihirbazında
+  "Doğrulama & Onay" adımı (belge türü + VKN + barkod; belge dosyası saklanmaz)
+  + admin onay/ret ekranı + **trial onay anında sunucuda başlar**.
+- **Test kanıtı:** SQL JWT simülasyonu (doğrulanmamış→posts RLS reddi,
+  claim/mesaj→VERIFICATION_REQUIRED; doğrulanmış→kabul) + gerçek tarayıcı
+  (doğrulanmamış Deniz: beğeni/gönderi/askıda → kapı modalı, DB sızıntısı 0;
+  doğrulanmış Ayşe: bannersız, kapısız etkileşim; işletme: Zeynep başvuru →
+  pending → halka gizli → admin onayı → verified + listede). tsc 0 · 268/268 ·
+  build 0.
+
+Bilinen sınırlar / notlar:
+- Sahip (Coşkun) ve Arzu hesapları DOĞRULANMAMIŞ — uygulamada ~2 dk'lık
+  e-Devlet doğrulaması yapmadan etkileşim kuramazsınız (kapılar herkese eşit).
+- Yeni doğrulanmamış test hesabı: `test.dogrulanmamis@mahallemiz.test` (şifre
+  diğer test hesaplarıyla aynı).
+- İşletme kayıt formunun görselli adımları (1-3) tarayıcıda elle test edilmedi
+  (dosya yükleme otomasyonu); adım 4 alanları + RPC sunucuda doğrulandı.
+- Grup "katıl" butonu zaten yalnızca görseldi (DB'ye yazmıyor) — sunucu kapısı
+  hazır, UI bağlantısı ayrı iş.
+- Eski mock /isletmeler liste verisi DB'den geliyorsa bile artık yalnız
+  doğrulanmış işletmeler döner; donations kartlarında doğrulanmamış işletme
+  adı null görünebilir (kabul edildi).
+
+---
 
 ## 0. Sahibin istediği
 

@@ -16,6 +16,7 @@ import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import { uploadMultipleMedia } from '@/lib/upload';
 import { toast } from '@/lib/utils/show-toast';
+import { useVerificationGate } from '@/components/shared/verification-gate';
 
 type Step = 1 | 2 | 3;
 
@@ -136,8 +137,11 @@ export default function NewListingPage() {
     }
   };
 
+  const { checkVerified, gateModal } = useVerificationGate('İlan verebilmek');
+
   const handleSubmit = async () => {
     if (!isStep3Valid) return;
+    if (!(await checkVerified())) return;
 
     setIsSubmitting(true);
     try {
@@ -247,6 +251,7 @@ export default function NewListingPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {gateModal}
       <div className="max-w-2xl mx-auto py-6 px-4">
         {/* Back Button */}
         <Link

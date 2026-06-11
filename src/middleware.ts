@@ -65,7 +65,7 @@ async function checkVerification(
 ): Promise<NextResponse | null> {
   const { data: profile } = await supabase
     .from('profiles')
-    .select('location_confirmed_at, edevlet_verified_at, edevlet_verification_deadline')
+    .select('location_confirmed_at')
     .eq('id', userId)
     .single()
 
@@ -75,14 +75,12 @@ async function checkVerification(
     return NextResponse.redirect(url)
   }
 
-  if (profile.edevlet_verification_deadline && !profile.edevlet_verified_at) {
-    const deadline = new Date(profile.edevlet_verification_deadline)
-    if (deadline < new Date()) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/hesap-kilitli'
-      return NextResponse.redirect(url)
-    }
-  }
+  // NOT (2026-06-11, sahip kararı): e-Devlet doğrulaması artık kayıtta zorunlu
+  // DEĞİL — eski "7 gün içinde doğrula yoksa hesap kilitlenir" (deadline →
+  // /hesap-kilitli) mekanizması kaldırıldı. Bunun yerine kademeli kapı modeli:
+  // gezme/okuma serbest; HER etkileşim (gönderi, yorum, beğeni, ilan, askıda,
+  // yardım, mesaj, etkinlik) sunucu tarafında is_verified_neighbor() ile
+  // e-Devlet doğrulaması ister (RLS + RPC; migration: verification_gates_all_interactions).
 
   return null
 }

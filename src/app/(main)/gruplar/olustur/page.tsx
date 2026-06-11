@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createGroup } from '@/lib/hooks/use-groups-businesses';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
+import { useVerificationGate } from '@/components/shared/verification-gate';
 
 // NOT (2026-06-07): Bu formdan SADECE gerçekten kaydedilen alanlar bırakıldı
 // (ad, açıklama, kategori, gizlilik). Kaldırılanlar: sahte "üye davet et" (uydurma
@@ -41,12 +42,15 @@ export default function CreateGroupPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
+  const { checkVerified, gateModal } = useVerificationGate('Grup kurabilmek');
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
       setSubmitError('Giriş yapmalısınız.');
       return;
     }
+    if (!(await checkVerified())) return;
     if (!formData.name.trim()) {
       setSubmitError('Grup adı zorunludur.');
       return;
@@ -92,6 +96,7 @@ export default function CreateGroupPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f0f2f5' }}>
+      {gateModal}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Back Button */}
         <Link
