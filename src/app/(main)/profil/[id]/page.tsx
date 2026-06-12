@@ -17,6 +17,7 @@ import {
   Tag,
   Loader2,
   Flag,
+  Ban,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect, use, useRef } from 'react';
@@ -24,6 +25,8 @@ import { cn } from '@/lib/utils';
 import { AddressVerificationStatus } from '@/components/verification/address-verification-status';
 import { ReportModal } from '@/components/shared/report-modal';
 import { useCurrentUser } from '@/lib/hooks/use-auth';
+import { blockUser, unblockUser, isUserBlocked } from '@/lib/hooks/use-blocked-users';
+import { toast } from '@/lib/utils/show-toast';
 import { getFullProfile } from '@/lib/hooks/use-profile';
 import { getUserGroups } from '@/lib/hooks/use-groups-businesses';
 
@@ -87,9 +90,33 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
   const [groupsData, setGroupsData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [reportOpen, setReportOpen] = useState(false);
+  // Engelleme (Apple 1.2(b)): engellenen kişiyle mesajlaşma sunucuda kapanır,
+  // gönderileri akışta gizlenir.
+  const [blocked, setBlocked] = useState(false);
+  const [blockBusy, setBlockBusy] = useState(false);
 
   const isOwnProfile = id === 'me' || (user && id === user.id);
   const targetUserId = id === 'me' ? user?.id : id;
+
+  useEffect(() => {
+    if (!isOwnProfile && targetUserId && user) {
+      isUserBlocked(targetUserId).then(setBlocked);
+    }
+  }, [isOwnProfile, targetUserId, user]);
+
+  const handleToggleBlock = async () => {
+    if (!targetUserId || blockBusy) return;
+    if (!blocked && !window.confirm('Bu komşuyu engellemek istiyor musunuz? Aranızdaki mesajlaşma kapanır ve gönderileri akışınızda gizlenir.')) return;
+    setBlockBusy(true);
+    const { error } = blocked ? await unblockUser(targetUserId) : await blockUser(targetUserId);
+    setBlockBusy(false);
+    if (error) {
+      toast.error('İşlem tamamlanamadı, tekrar deneyin');
+      return;
+    }
+    setBlocked(!blocked);
+    toast.success(blocked ? 'Engel kaldırıldı' : 'Komşu engellendi');
+  };
 
   useEffect(() => {
     async function fetchProfile() {
@@ -225,6 +252,19 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
                         >
                           <Flag size={16} />
                           Şikâyet Et
+                        </button>
+                        <button
+                          onClick={handleToggleBlock}
+                          disabled={blockBusy}
+                          className={cn(
+                            'inline-flex items-center justify-center gap-2 px-4 py-2 border font-medium rounded-lg transition-all disabled:opacity-50',
+                            blocked
+                              ? 'border-red-300 text-red-600 hover:bg-red-50'
+                              : 'border-[#e0e0e0] text-[#8f8f8f] hover:text-red-600 hover:border-red-300'
+                          )}
+                        >
+                          <Ban size={16} />
+                          {blocked ? 'Engeli Kaldır' : 'Engelle'}
                         </button>
                       </div>
                     )}

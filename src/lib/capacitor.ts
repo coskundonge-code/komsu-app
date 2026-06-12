@@ -95,6 +95,37 @@ export async function registerPushNotifications() {
   return result;
 }
 
+/**
+ * Push token'ı al ve sunucuya kaydet (push_tokens tablosu, RLS: kendi kaydı).
+ * Native uygulama açılışında giriş yapmış kullanıcı için çağrılır.
+ * GÖNDERİM tarafı (FCM/APNs) Firebase projesi açılınca eklenecek — token
+ * envanteri şimdiden birikir ki ilk bildirim gününde kitle hazır olsun.
+ */
+export async function registerAndStorePushToken(
+  userId: string,
+  saveToken: (token: string, platform: 'ios' | 'android') => Promise<void>,
+) {
+  if (!isNativeApp()) return;
+  const mod = await capImport('@capacitor/push-notifications');
+  if (!mod?.PushNotifications) return;
+
+  const platform = getPlatform();
+  if (platform !== 'ios' && platform !== 'android') return;
+
+  await mod.PushNotifications.addListener('registration', async (token: { value: string }) => {
+    try {
+      await saveToken(token.value, platform);
+    } catch (err) {
+      console.warn('Push token kaydedilemedi:', err);
+    }
+  });
+
+  const result = await mod.PushNotifications.requestPermissions();
+  if (result.receive === 'granted') {
+    await mod.PushNotifications.register();
+  }
+}
+
 // Get current geolocation
 export async function getCurrentPosition() {
   if (!isNativeApp()) {

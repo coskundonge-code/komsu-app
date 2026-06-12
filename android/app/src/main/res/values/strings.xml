@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Mahallemiz</string>
+    <string name="title_activity_main">Mahallemiz</string>
+    <string name="package_name">com.mahallemiz.app</string>
+    <string name="custom_url_scheme">com.mahallemiz.app</string>
+</resources>

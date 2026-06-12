@@ -1,0 +1,11 @@
+[
+  {
+    "_NOT": "Android App Links şablonu. Play Console'da 'Play App Signing' sertifikasının SHA-256 parmak izini doldur (Setup → App signing), dosyayı 'assetlinks.json' adıyla public/.well-known/ altına koy ve deploy et. Test: https://developers.google.com/digital-asset-links/tools/generator",
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.mahallemiz.app",
+      "sha256_cert_fingerprints": ["PLAY_APP_SIGNING_SHA256_BURAYA"]
+    }
+  }
+]

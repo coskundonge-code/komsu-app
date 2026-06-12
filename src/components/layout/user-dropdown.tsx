@@ -96,15 +96,10 @@ export function UserDropdown({ isOpen, onClose }: UserDropdownProps) {
           <span className="text-sm font-medium">İşletmem</span>
         </Link>
 
-        {/* Mahallemiz Kart — sidebar'dan taşındı */}
-        <Link
-          href="/mahallem-kart"
-          onClick={onClose}
-          className="flex items-center gap-3 px-4 py-2.5 text-text-primary hover:bg-background transition-colors"
-        >
-          <CreditCard className="w-4 h-4 flex-shrink-0" />
-          <span className="text-sm font-medium">Mahallemiz Kart</span>
-        </Link>
+        {/* Mahallemiz Kart linki kaldırıldı (2026-06-11, mağaza hazırlığı):
+            sayfa "çok yakında" placeholder'ı — yarım özellik mağaza incelemesinde
+            2.1 (tamlık) ret sebebi. Özellik bitince link geri gelir
+            (sayfa /mahallem-kart URL'inde duruyor). */}
 
         {/* Favorilerim */}
         <Link

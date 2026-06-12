@@ -4,6 +4,7 @@ import * as React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ToastProvider, ToastViewport } from "@/components/ui/toast";
 import { ToastContainer } from "@/components/ui/toast-provider";
+import { PushInit } from "@/components/shared/push-init";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,6 +28,8 @@ export function Providers({ children }: ProvidersProps) {
         {children}
         <ToastViewport />
         <ToastContainer />
+        {/* Native uygulamada push token kaydı; web'de no-op */}
+        <PushInit />
       </ToastProvider>
     </QueryClientProvider>
   );

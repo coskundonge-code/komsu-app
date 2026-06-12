@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { getBlockedUsers, unblockUser as unblockUserDb } from "@/lib/hooks/use-blocked-users";
+import { toast } from "@/lib/utils/show-toast";
 import {
   Lock,
   Eye,
@@ -32,14 +34,32 @@ export default function GizlilikPage() {
   const [showActivityStatus, setShowActivityStatus] = useState(true);
   const [saved, setSaved] = useState(false);
 
-  const [blockedUsers, setBlockedUsers] = useState<BlockedUser[]>([
-    { id: "1", name: "Ahmet K.", avatar: "👤" },
-    { id: "2", name: "Fatma D.", avatar: "👤" },
-    { id: "3", name: "Mehmet Y.", avatar: "👤" },
-  ]);
+  // Gerçek engellenenler listesi (blocked_users tablosu). Eski sürümde burada
+  // 3 sahte kullanıcılı mock liste vardı — Apple 1.2(b) gereği gerçeğe bağlandı.
+  const [blockedUsers, setBlockedUsers] = useState<BlockedUser[]>([]);
+  const [blockedLoading, setBlockedLoading] = useState(true);
 
-  const unblockUser = (id: string) => {
-    setBlockedUsers(blockedUsers.filter((user) => user.id !== id));
+  useEffect(() => {
+    getBlockedUsers().then(({ data }) => {
+      setBlockedUsers(
+        (data || []).map((r) => ({
+          id: r.blocked_id,
+          name: r.profiles?.full_name || "Komşu",
+          avatar: "👤",
+        }))
+      );
+      setBlockedLoading(false);
+    });
+  }, []);
+
+  const unblockUser = async (id: string) => {
+    const { error } = await unblockUserDb(id);
+    if (error) {
+      toast.error("Engel kaldırılamadı, tekrar deneyin");
+      return;
+    }
+    toast.success("Engel kaldırıldı");
+    setBlockedUsers((prev) => prev.filter((user) => user.id !== id));
   };
 
   const handleSave = () => {
@@ -250,7 +270,9 @@ export default function GizlilikPage() {
           <h2 className="text-lg font-semibold text-text-primary mb-4">
             Engellenen Kullanıcılar
           </h2>
-          {blockedUsers.length > 0 ? (
+          {blockedLoading ? (
+            <p className="text-sm text-text-muted text-center py-6">Yükleniyor…</p>
+          ) : blockedUsers.length > 0 ? (
             <div className="space-y-3">
               {blockedUsers.map((user) => (
                 <div
@@ -279,26 +301,24 @@ export default function GizlilikPage() {
               </p>
             </div>
           )}
-          <button className="w-full mt-4 py-2 px-4 border border-border text-text-primary font-medium rounded-lg hover:bg-background transition-colors">
-            Yeni Kullanıcı Engelle
-          </button>
+          <p className="text-xs text-text-muted mt-4">
+            Bir komşuyu engellemek için profil sayfasındaki &ldquo;Engelle&rdquo; düğmesini
+            kullanın. Engellediğiniz kişiyle aranızda mesajlaşma kapanır ve
+            gönderileri akışınızda gizlenir.
+          </p>
         </div>
 
-        {/* Data Management */}
+        {/* Veri Yönetimi — KVKK veri talepleri e-posta üzerinden; sahte/işlevsiz
+            buton mağaza ret riskidir (eski "Verilerimizi İndir"/"Tüm Gönderileri
+            Sil" düğmeleri hiçbir şey yapmıyordu, kaldırıldı). */}
         <div className="bg-surface rounded-lg border border-border p-6 mb-6">
           <h2 className="text-lg font-semibold text-text-primary mb-4">Veri Yönetimi</h2>
-          <div className="space-y-3">
-            <button className="w-full py-3 px-4 bg-background border border-border text-text-primary font-semibold rounded-lg hover:bg-[#e8eaed] transition-colors flex items-center justify-center gap-2">
-              <Download className="w-5 h-5" />
-              Verilerimizi İndir
-            </button>
-            <button className="w-full py-3 px-4 bg-background border border-border text-text-primary font-semibold rounded-lg hover:bg-[#e8eaed] transition-colors flex items-center justify-center gap-2">
-              <Trash2 className="w-5 h-5" />
-              Tüm Gönderileri Sil
-            </button>
-          </div>
-          <p className="text-xs text-text-muted mt-4">
-            İndirme isteğiniz işlenecek ve tüm verileriniz güvenli bir şekilde indirilecektir.
+          <p className="text-sm text-text-muted">
+            KVKK kapsamındaki veri taleplerinizi (verilerin kopyası, düzeltme,
+            silme) <a href="mailto:kvkk@mahallem.com" className="text-primary font-medium">kvkk@mahallem.com</a>{" "}
+            adresine iletebilirsiniz. Hesabınızı kalıcı olarak silmek için{" "}
+            <Link href="/ayarlar/hesabi-sil" className="text-primary font-medium">Hesabı Sil</Link>{" "}
+            sayfasını kullanın.
           </p>
         </div>
 

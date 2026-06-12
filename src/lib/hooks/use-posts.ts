@@ -41,11 +41,23 @@ export async function getPosts(options?: {
   offset?: number
 }) {
   const supabase = createClient()
+
+  // Engellenen kullanıcıların gönderileri gizlenir (Apple 1.2(b)).
+  // RLS yalnızca kendi engel listemi okutur; boşsa filtre eklenmez.
+  const { data: blockedRows } = await (supabase as any)
+    .from('blocked_users')
+    .select('blocked_id')
+  const blockedIds: string[] = (blockedRows || []).map((r: { blocked_id: string }) => r.blocked_id)
+
   let query = supabase
     .from('posts')
     .select('*, profiles!posts_author_id_fkey(full_name, avatar_url), neighborhoods(name, district)')
     .order('is_pinned', { ascending: false })
     .order('created_at', { ascending: false })
+
+  if (blockedIds.length > 0) {
+    query = query.not('author_id', 'in', `(${blockedIds.join(',')})`)
+  }
 
   if (options?.neighborhoodId) {
     query = query.eq('neighborhood_id', options.neighborhoodId)

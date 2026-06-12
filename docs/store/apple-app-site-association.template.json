@@ -1,0 +1,19 @@
+{
+  "_NOT": "iOS Universal Links şablonu. Apple Developer hesabı açılınca TEAM_ID'yi doldur, bu dosyayı 'apple-app-site-association' adıyla (UZANTISIZ) public/.well-known/ altına koy ve deploy et. Doğrulama: https://branch.io/resources/aasa-validator/",
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAM_ID.com.mahallemiz.app",
+        "paths": [
+          "/pazar/ilan/*",
+          "/gonderi/*",
+          "/etkinlikler/*",
+          "/isletmeler/*",
+          "/askida-bagis",
+          "/davet*"
+        ]
+      }
+    ]
+  }
+}
