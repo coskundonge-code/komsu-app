@@ -54,15 +54,33 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Hesap silinemedi (auth)' }, { status: 500 })
     }
 
-    // 3. Storage temizliği (best-effort; kullanıcının kendi prefix'i altındaki dosyalar)
+    // 3. Storage temizliği (best-effort). Bucket adları ve yükleme önekleri
+    //    GERÇEK yükleme akışlarıyla eşleştirildi (E2E Son Kontrol 2026-06-12):
+    //      pazar/ilan-ver     -> listing-images/marketplace/{uid}
+    //      odunc-kirala       -> listing-images/odunc-kirala/{uid}
+    //      gönderi görseli    -> post-images/{uid}
+    //      işletme logo/kapak -> business-images/logos|covers/{uid}
+    //      'documents'        -> e-Devlet belge taramaları (KVKK + Apple 5.1.1(v))
+    //    Eski liste 'listings' diye var olmayan bucket'a bakıyor; post-images,
+    //    lending-images ve gerçek listing-images öneklerini hiç silmiyordu →
+    //    KVKK Md.7 silme yükümlülüğü eksik kalıyordu.
     try {
-      const buckets = ['avatars', 'business-images', 'listings']
-      for (const bucket of buckets) {
-        const { data: files } = await admin.storage.from(bucket).list(user.id, { limit: 1000 })
-        if (files && files.length > 0) {
-          await admin.storage
-            .from(bucket)
-            .remove(files.map((f) => `${user.id}/${f.name}`))
+      const cleanupTargets: Array<[string, string[]]> = [
+        ['avatars', [user.id]],
+        ['listing-images', [`marketplace/${user.id}`, `odunc-kirala/${user.id}`, user.id]],
+        ['post-images', [user.id]],
+        ['lending-images', [user.id]],
+        ['business-images', [`logos/${user.id}`, `covers/${user.id}`]],
+        ['documents', [user.id]],
+      ]
+      for (const [bucket, prefixes] of cleanupTargets) {
+        for (const prefix of prefixes) {
+          const { data: files } = await admin.storage.from(bucket).list(prefix, { limit: 1000 })
+          if (files && files.length > 0) {
+            await admin.storage
+              .from(bucket)
+              .remove(files.map((f) => `${prefix}/${f.name}`))
+          }
         }
       }
     } catch (err) {

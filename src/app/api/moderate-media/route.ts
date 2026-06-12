@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { rateLimit, getClientIp, rateLimitResponse } from '@/lib/rate-limit'
+import { createClient as createServerClient } from '@/lib/supabase/server'
 import { decideSafeSearch, type SafeSearchAnnotation } from '@/lib/services/image-moderation'
 
 /**
@@ -31,6 +32,18 @@ export async function POST(request: NextRequest) {
   const ip = getClientIp(request)
   const rl = await rateLimit(`moderate-media:${ip}`, { limit: 40, windowMs: 60_000 })
   if (!rl.success) return rateLimitResponse(rl) as unknown as NextResponse
+
+  // Oturum zorunlu: bu uç yalnızca uygulama içi yüklemelerde çağrılır. Anonim
+  // erişim, Vision API maliyetini (40 tarama/dk × IP) kötüye kullanmaya açıktı
+  // (E2E Son Kontrol denetimi 2026-06-12).
+  const supabase = await createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return NextResponse.json(
+      { approved: false, flags: [], note: 'auth_required' },
+      { status: 401 }
+    )
+  }
 
   const apiKey = process.env.GOOGLE_CLOUD_VISION_API_KEY
   if (!apiKey) {

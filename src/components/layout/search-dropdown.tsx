@@ -88,7 +88,10 @@ export function SearchDropdown({ isOpen, onClose, searchQuery }: SearchDropdownP
     let cancelled = false
     setLoading(true)
     const supabase = createClient() as any
-    const like = `%${term}%`
+    // PostgREST .or() filtre enjeksiyonu: , ( ) karakterleri filtre ağacını
+    // bölüyor (arama bozuluyor / filtre mantığı değişebiliyor). Ayıkla.
+    // (E2E Son Kontrol denetimi 2026-06-12)
+    const like = `%${term.replace(/[,()]/g, ' ').trim()}%`
 
     const timer = setTimeout(async () => {
       const [postsRes, bizRes, peopleRes, eventsRes, groupsRes, listingsRes] = await Promise.all([

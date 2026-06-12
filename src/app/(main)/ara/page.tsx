@@ -155,7 +155,10 @@ export default function SearchResultsPage() {
     let cancelled = false
     setLoading(true)
     const supabase = createClient() as any
-    const like = `%${term}%`
+    // PostgREST .or() filtre enjeksiyonu: , ( ) karakterleri filtre ağacını
+    // bölüyor (arama bozuluyor / filtre mantığı değişebiliyor). Ayıkla.
+    // (E2E Son Kontrol denetimi 2026-06-12)
+    const like = `%${term.replace(/[,()]/g, ' ').trim()}%`
 
     ;(async () => {
       try {

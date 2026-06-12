@@ -52,30 +52,47 @@ function memoryRateLimit(key: string, opts: RateLimitOptions): RateLimitResult {
 }
 
 // ----- Upstash sliding window (production) -----
-let upstashLimiter: any = null
-let upstashInitTried = false
+// Limiter'lar yapılandırma (limit+pencere) başına ayrı tutulur. Eski sürüm TEK
+// limiter'ı ilk çağrının ayarlarıyla kuruyordu; sonraki uçlar (örn. 5/10dk olan
+// verify-document) ilk ucun penceresini miras alıyordu — limitler fiilen
+// yanlıştı (E2E Son Kontrol denetimi 2026-06-12).
+let upstashRedis: unknown = null
+let redisInitTried = false
+const upstashLimiters = new Map<string, any>()
 
 async function getUpstashLimiter(opts: RateLimitOptions) {
-  if (upstashInitTried) return upstashLimiter
+  if (!redisInitTried) {
+    redisInitTried = true
+    const url = process.env.UPSTASH_REDIS_REST_URL
+    const token = process.env.UPSTASH_REDIS_REST_TOKEN
+    if (url && token) {
+      try {
+        const { Redis } = await import('@upstash/redis')
+        upstashRedis = new Redis({ url, token })
+      } catch (err) {
+        console.warn('[rate-limit] Upstash not available, falling back to memory:', err)
+        upstashRedis = null
+      }
+    }
+  }
+  if (!upstashRedis) return null
 
-  upstashInitTried = true
-  const url = process.env.UPSTASH_REDIS_REST_URL
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN
-  if (!url || !token) return null
+  const cfgKey = `${opts.limit}:${Math.ceil(opts.windowMs / 1000)}s`
+  const cached = upstashLimiters.get(cfgKey)
+  if (cached) return cached
 
   try {
     const { Ratelimit } = await import('@upstash/ratelimit')
-    const { Redis } = await import('@upstash/redis')
-    const redis = new Redis({ url, token })
-    upstashLimiter = new Ratelimit({
-      redis,
+    const limiter = new Ratelimit({
+      redis: upstashRedis as any,
       limiter: Ratelimit.slidingWindow(opts.limit, `${Math.ceil(opts.windowMs / 1000)} s`),
       analytics: true,
-      prefix: 'mahallemiz:rl',
+      prefix: `mahallemiz:rl:${cfgKey}`,
     })
-    return upstashLimiter
+    upstashLimiters.set(cfgKey, limiter)
+    return limiter
   } catch (err) {
-    console.warn('[rate-limit] Upstash not available, falling back to memory:', err)
+    console.warn('[rate-limit] Upstash limiter init failed, falling back to memory:', err)
     return null
   }
 }
